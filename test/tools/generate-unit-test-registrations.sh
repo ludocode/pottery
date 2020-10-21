@@ -12,40 +12,42 @@
 set -e
 echo "Generating unit test registrations..."
 
-SRC=$1
+OUT=$1
 shift
 OBJS=$@
 
-LIST=test/build/pottery_unit_test_list
-rm -f $LIST $SRC
+LIST=$OUT.list
+rm -f $LIST $OUT
 
 for f in $OBJS; do
     objdump -t $f|grep 'F \.text.*\<pottery_unit_test_register_'|awk '{print $6}' >> $LIST
 done
 
-cat >>$SRC <<EOF
+cat >>$OUT <<EOF
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 EOF
 
-sed 's/.*/void &(void);/' $LIST >> $SRC
+sed 's/.*/void &(void);/' $LIST >> $OUT
 
-cat >>$SRC <<EOF
+cat >>$OUT <<EOF
 
-#ifdef __cplusplus
-}
-#endif
+void pottery_register_unit_tests(void);
 
 void pottery_register_unit_tests(void) {
 EOF
 
-sed 's/.*/    &();/' $LIST >> $SRC
+sed 's/.*/    &();/' $LIST >> $OUT
 
-cat >>$SRC <<EOF
+cat >>$OUT <<EOF
 }
+
+#ifdef __cplusplus
+}
+#endif
 EOF
 
 echo "Registered $(wc -l $LIST|awk '{print $1}') tests."
-echo "Wrote $SRC"
+echo "Wrote $OUT"

@@ -51,8 +51,8 @@ void pottery_intro_sort(
         #endif
         )
 {
-    // Just call into quick_sort. We've configured it to fallback to shell_sort
-    // for small lists and heap_sort when too deep.
+    // Just call into quick_sort. We've configured it to fallback to
+    // insertion_sort for small lists and heap_sort when too deep.
     pottery_intro_sort_quick_sort(context, count
             #if POTTERY_INTRO_SORT_SEPARATE_LIFECYCLE_CONTEXT
             , lifecycle_context

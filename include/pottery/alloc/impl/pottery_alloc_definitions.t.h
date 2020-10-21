@@ -109,7 +109,7 @@ void* pottery_alloc_impl_malloc_array_at_least_ea(POTTERY_ALLOC_CONTEXT_ARG
             #else
                 size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_GOOD_SIZE((size));
             #endif
-            assert(new_size >= size);
+            pottery_assert(new_size >= size);
             *count = new_size / element_size;
             return pottery_alloc_impl_malloc_ea(POTTERY_ALLOC_CONTEXT_VAL alignment, *size);
 
@@ -231,7 +231,7 @@ void* pottery_alloc_impl_malloc_array_at_least_fa(POTTERY_ALLOC_CONTEXT_ARG
             #else
                 size_t new_size = POTTERY_ALLOC_MALLOC_GOOD_SIZE((size));
             #endif
-            assert(new_size >= size);
+            pottery_assert(new_size >= size);
             *count = new_size / element_size;
             return pottery_alloc_impl_malloc_fa(POTTERY_ALLOC_CONTEXT_VAL alignment, new_size);
 

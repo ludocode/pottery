@@ -59,6 +59,10 @@
  * because my unit test framework is not ready to be released yet.)
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 
 static inline void* pottery_test_malloc(size_t size) {
@@ -110,7 +114,9 @@ static inline char* pottery_test_strdup(const char* str) {
 
 
 #ifdef __cplusplus
-extern "C" {
+#define POTTERY_EXTERN_C extern "C"
+#else
+#define POTTERY_EXTERN_C /*nothing*/
 #endif
 
 typedef struct pottery_test_case_t {
@@ -120,6 +126,7 @@ typedef struct pottery_test_case_t {
     bool registered;
 } pottery_test_case_t;
 
+POTTERY_EXTERN_C
 void pottery_unit_test_register(pottery_test_case_t* test_case);
 
 #define POTTERY_TEST_CASE_IMPL(name) \
@@ -136,9 +143,9 @@ void pottery_unit_test_register(pottery_test_case_t* test_case);
 
 
 /*
- * With some compilers (e.g. with TinyCC) we cannot register the test
- * automatically. In this case we create a registration function but we give it
- * external linkage.
+ * With some compilers (e.g. TinyCC) we cannot register the test automatically.
+ * In this case we create a registration function but we give it external
+ * linkage.
  *
  * A separate script parses the compiled object files, pulls out the
  * registration functions, and calls them in a special registration function
@@ -152,7 +159,9 @@ void pottery_register_unit_tests(void);
 #define POTTERY_TEST_IMPL(name) \
     POTTERY_TEST_CASE_IMPL(name) \
     \
-    void pottery_unit_test_register_##name(void) { \
+    POTTERY_EXTERN_C void pottery_unit_test_register_##name(void);  \
+    \
+    POTTERY_EXTERN_C void pottery_unit_test_register_##name(void) { \
         pottery_unit_test_register(&pottery_unit_test_case_##name); \
     } \
     \
@@ -214,8 +223,6 @@ void pottery_register_unit_tests(void);
  * whole-program optimization.
  *
  * https://stackoverflow.com/a/2390626
- *
- * TODO THIS IS NOT TESTED YET
  */
 
 #elif defined(_MSC_VER)
@@ -274,6 +281,12 @@ void pottery_register_unit_tests(void);
 #define POTTERY_TEST POTTERY_CUSTOM_TEST
 #endif
 
+
+
+// While unit testing, assert() is disabled in both Pottery code and unit tests
+#if defined(__GNUC__) && !defined(POTTERY_TEST_EXAMPLE)
+#pragma GCC poison assert
+#endif
 
 
 #ifdef __cplusplus

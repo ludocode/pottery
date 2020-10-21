@@ -189,7 +189,8 @@ POTTERY_HEAP_EXTERN
 void pottery_heap_build_impl(pottery_state_t state, size_t count) {
     if (count <= 1)
         return;
-    for (size_t i = pottery_heap_parent(count - 1) + 1; i > 0;) {
+    size_t i;
+    for (i = pottery_heap_parent(count - 1) + 1; i > 0;) {
         --i;
         pottery_heap_sift_down(state, count, i);
     }
@@ -252,7 +253,8 @@ POTTERY_HEAP_EXTERN
 size_t pottery_heap_valid_count_impl(pottery_state_t state, size_t count) {
     if (count <= 1)
         return count;
-    for (size_t index = 1; index < count; ++index) {
+    size_t index;
+    for (index = 1; index < count; ++index) {
         size_t parent_index = pottery_heap_parent(index);
         pottery_value_t* current = pottery_access(state, index);
         pottery_value_t* parent = pottery_access(state, parent_index);

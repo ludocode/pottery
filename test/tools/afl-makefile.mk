@@ -36,12 +36,12 @@ print:
 	@echo
 	@echo "    echo core | sudo tee /proc/sys/kernel/core_pattern"
 	@echo "    echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor"
-	@echo '    (undo this last one with "ondemand" instead of "performance")
+	@echo '    (undo this last one with "ondemand" instead of "performance")'
 
 .PHONY: all
 all: $(EXES)
 
-$(EXES): $(BUILD)/%: $(SRC)/%.c test/tools/afl-makefile.mk
+$(EXES): $(BUILD)/%: $(SRC)/%.c $(MAKEFILE_LIST)
 	@mkdir -p $(dir $@)
 	AFL_HARDEN=1 $(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 	@echo

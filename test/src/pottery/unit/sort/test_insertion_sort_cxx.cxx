@@ -34,5 +34,5 @@ namespace {
 }
 
 // Instantiate sort_ints tests
-#define POTTERY_TEST_SORT_INT_PREFIX pottery_insertion_sort_int
+#define POTTERY_TEST_SORT_INT_PREFIX pottery_cxx_insertion_sort_int
 #include "pottery/unit/sort/test_sort_ints.t.h"

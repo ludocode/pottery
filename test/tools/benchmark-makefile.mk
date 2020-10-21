@@ -1,6 +1,5 @@
 BUILD := test/build/benchmark
 RUNNER := $(BUILD)/runner
-MAKEFILE := test/tools/benchmark-makefile.mk
 
 .PHONY: all
 all: $(RUNNER)
@@ -39,13 +38,13 @@ ALL_OBJS := $(C_OBJS) $(CXX_OBJS)
 $(RUNNER): $(ALL_OBJS)
 	$(CXX) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ $^
 
-$(C_OBJS): $(BUILD)/%.o: % $(MAKEFILE)
+$(C_OBJS): $(BUILD)/%.o: % $(MAKEFILE_LIST)
 	@mkdir -p $(dir $@)
-	ccache $(CC) -c $(CPPFLAGS) $(CFLAGS) -o $@ $<
+	$(CC) -c $(CPPFLAGS) $(CFLAGS) -o $@ $<
 
-$(CXX_OBJS): $(BUILD)/%.o: % $(MAKEFILE)
+$(CXX_OBJS): $(BUILD)/%.o: % $(MAKEFILE_LIST)
 	@mkdir -p $(dir $@)
-	ccache $(CC) -c $(CPPFLAGS) $(CXXFLAGS) -o $@ $<
+	$(CC) -c $(CPPFLAGS) $(CXXFLAGS) -o $@ $<
 
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/#depdelete
 DEPS := $(ALL_OBJS:%.o=%.d)

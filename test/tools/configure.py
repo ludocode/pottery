@@ -85,10 +85,10 @@ else:
     ret = subprocess.run([cc, "--version"], universal_newlines=True,
             capture_output=True)
     if ret.returncode == 0:
-        if ret.stdout.startswith("clang "):
-            compiler = "Clang"
-        elif ret.stdout.startswith("cparser "):
+        if ret.stdout.startswith("cparser "):
             compiler = "cparser"
+        elif "clang" in ret.stdout:
+            compiler = "Clang"
         elif "(GCC)" in ret.stdout:
             compiler = "GCC"
     else:
@@ -225,7 +225,6 @@ else:
 defaultCPPFlags += [
     "-Iinclude", "-Iexamples", "-Itest/src",
     "-DPOTTERY_UNIT_TEST",
-    "-Dassert=pottery_assert", # TODO get rid of this hack
 ]
 
 # optimization

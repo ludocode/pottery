@@ -82,13 +82,15 @@ int main(void) {
 
 void pottery_unit_test_register(pottery_test_case_t* test_case) {
 
-    // this is a safety check against duplicate registration. this can happen
-    // due to incorrect parsing of register functions when doing a non-clean
-    // build with tcc
+    // This is a safety check against duplicate registration. This used to
+    // happen due to incorrect parsing of register functions when doing a
+    // non-clean build with a compiler that doesn't support static constructors
     if (test_case->registered) {
-        printf("Duplicate registration! %s\n", test_case->name);
+        fflush(stdout);
+        fprintf(stderr, "Duplicate registration! %s\n", test_case->name);
         abort();
     }
+    test_case->registered = true;
 
     test_case->next = test_case_first;
     test_case_first = test_case;

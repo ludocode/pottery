@@ -35,6 +35,7 @@
  */
 
 
+#define POTTERY_TEST_EXAMPLE
 
 // We're going to replace printf() so we need to include stdio first.
 #include <stdio.h>

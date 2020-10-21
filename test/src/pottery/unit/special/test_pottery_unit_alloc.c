@@ -29,4 +29,6 @@
 #include "pottery/alloc/pottery_alloc_static.t.h"
 
 POTTERY_TEST(alloc) {
+    void* p = my_project_malloc(1, 1);
+    my_project_free(1, p);
 }
