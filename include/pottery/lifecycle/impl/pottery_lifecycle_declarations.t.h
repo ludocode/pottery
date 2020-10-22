@@ -36,11 +36,14 @@
 
 #if defined(POTTERY_LIFECYCLE_VALUE_TYPE)
 typedef POTTERY_LIFECYCLE_VALUE_TYPE pottery_lifecycle_value_t;
-typedef pottery_lifecycle_value_t* pottery_lifecycle_ref_t;
-typedef const pottery_lifecycle_value_t* pottery_lifecycle_const_ref_t;
-#else
+#endif
+
+#ifdef POTTERY_LIFECYCLE_REF_TYPE
 typedef POTTERY_LIFECYCLE_REF_TYPE pottery_lifecycle_ref_t;
 typedef POTTERY_LIFECYCLE_REF_TYPE pottery_lifecycle_const_ref_t;
+#else
+typedef pottery_lifecycle_value_t* pottery_lifecycle_ref_t;
+typedef const pottery_lifecycle_value_t* pottery_lifecycle_const_ref_t;
 #endif
 
 #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
@@ -161,7 +164,6 @@ void pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_ARG
 
     #else
         #error "Lifecycle template bug! No destroy() implementation but CAN_DESTROY is 1"
-        #include "pottery_fatal"
     #endif
 }
 
@@ -208,7 +210,6 @@ pottery_error_t pottery_lifecycle_init(POTTERY_LIFECYCLE_CONTEXT_ARG
 
     #else
         #error "Lifecycle template bug! No init() implementation but CAN_INIT is 1"
-        #include "pottery_fatal"
     #endif
 }
 #endif
@@ -255,7 +256,6 @@ pottery_error_t pottery_lifecycle_init_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
 
     #else
         #error "Lifecycle template bug! No init_copy() implementation but CAN_INIT_COPY is 1"
-        #include "pottery_fatal"
     #endif
 }
 #endif
@@ -405,7 +405,6 @@ void pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_ARG
 
     #else
         #error "Lifecycle template bug! No swap() implementation but CAN_SWAP is 1"
-        #include "pottery_fatal"
     #endif
 }
 #endif
@@ -454,7 +453,6 @@ pottery_error_t pottery_lifecycle_init_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
 
     #else
         #error "Lifecycle template bug! No init_steal() implementation but CAN_INIT_STEAL is 1"
-        #include "pottery_fatal"
     #endif
 }
 #endif
@@ -516,7 +514,6 @@ void pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_ARG
 
     #else
         #error "Lifecycle template bug! No move() implementation but CAN_MOVE is 1"
-        #include "pottery_fatal"
     #endif
 }
 #endif
@@ -565,7 +562,6 @@ pottery_error_t pottery_lifecycle_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
 
     #else
         #error "Lifecycle template bug! No copy() implementation but CAN_COPY is 1"
-        #include "pottery_fatal"
     #endif
 }
 #endif
@@ -614,7 +610,6 @@ pottery_error_t pottery_lifecycle_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
 
     #else
         #error "Lifecycle template bug! No steal() implementation but CAN_STEAL is 1"
-        #include "pottery_fatal"
     #endif
 
     // TODO

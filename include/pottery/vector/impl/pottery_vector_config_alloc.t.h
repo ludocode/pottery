@@ -26,8 +26,6 @@
 #error "This is header internal to Pottery. Do not include it."
 #endif
 
-#include "pottery/pottery_dependencies.h"
-
 #define POTTERY_ALLOC_PREFIX POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _alloc)
 
 

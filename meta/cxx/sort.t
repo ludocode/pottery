@@ -39,9 +39,9 @@ struct {lower_name}_wrapper {
 
     #define POTTERY_{UPPER_NAME}_PREFIX {lower_name}
     #define POTTERY_{UPPER_NAME}_VALUE_TYPE value_type
-    #define POTTERY_{UPPER_NAME}_CONTEXT_TYPE RandomAccessIterator
+    #define POTTERY_{UPPER_NAME}_REF_TYPE RandomAccessIterator
     #define POTTERY_{UPPER_NAME}_LIFECYCLE_MOVE_BY_VALUE 1
-    #define POTTERY_{UPPER_NAME}_COMPARE_CONTEXT_TYPE Less
+    #define POTTERY_{UPPER_NAME}_CONTEXT_TYPE Less
     #define POTTERY_{UPPER_NAME}_COMPARE_LESS(less, left, right) less(*left, *right)
     #include "pottery/{lower_name}/pottery_{lower_name}_static.t.h"
 };
@@ -56,13 +56,13 @@ inline void {lower_name}(RandomAccessIterator first, RandomAccessIterator last) 
     typedef typename std::iterator_traits<RandomAccessIterator>::value_type value_type;
     typedef typename std::less<value_type> Less;
     size_t count = pottery_cast(size_t, last - first);
-    detail::{lower_name}_wrapper<RandomAccessIterator, Less>::{lower_name}(first, count, Less());
+    detail::{lower_name}_wrapper<RandomAccessIterator, Less>::{lower_name}(Less(), first, count);
 }
 
 template <typename RandomAccessIterator, typename Less>
 inline void {lower_name}(RandomAccessIterator first, RandomAccessIterator last, Less less) {
     size_t count = pottery_cast(size_t, last - first);
-    detail::{lower_name}_wrapper<RandomAccessIterator, Less>::{lower_name}(first, count, less);
+    detail::{lower_name}_wrapper<RandomAccessIterator, Less>::{lower_name}(less, first, count);
 }
 
 } // namespace pottery

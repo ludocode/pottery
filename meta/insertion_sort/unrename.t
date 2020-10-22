@@ -31,8 +31,5 @@
 
 #undef {PREFIX}
 #undef {PREFIX}_access
-#undef {PREFIX}_move
-#undef {PREFIX}_swap
-#undef {PREFIX}_before
 #undef {PREFIX}_by_move
 #undef {PREFIX}_by_swap

@@ -24,7 +24,6 @@
 
 #ifndef POTTERY_LIFECYCLE_CAN_DESTROY
 #error "The Lifecycle template was either not instantiated or was already cleaned up."
-#include "pottery_fatal"
 #endif
 
 #ifndef POTTERY_LIFECYCLE_NO_CLEANUP

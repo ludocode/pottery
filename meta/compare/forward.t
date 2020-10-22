@@ -25,13 +25,6 @@
 //!!! END_LICENSE
 // Forwards compare configuration from {SRC} to {DEST}
 
-// Note that ref/value types are not forwarded because templates may define
-// either REF_TYPE or VALUE_TYPE, and dynamic containers usually define
-// VALUE_TYPE as their ELEMENT_TYPE.
-
-#ifdef {SRC}_CONTEXT_TYPE
-    #define {DEST}_CONTEXT_TYPE {SRC}_CONTEXT_TYPE
-#endif
 #ifdef {SRC}_BY_VALUE
     #define {DEST}_BY_VALUE {SRC}_BY_VALUE
 #endif

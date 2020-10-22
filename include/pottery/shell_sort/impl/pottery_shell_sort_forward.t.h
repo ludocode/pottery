@@ -28,9 +28,12 @@
 
 #ifdef POTTERY_SHELL_SORT_VALUE_TYPE
 typedef POTTERY_SHELL_SORT_VALUE_TYPE pottery_shell_sort_value_t;
-typedef pottery_shell_sort_value_t* pottery_shell_sort_ref_t;
-#else
+#endif
+
+#ifdef POTTERY_SHELL_SORT_REF_TYPE
 typedef POTTERY_SHELL_SORT_REF_TYPE pottery_shell_sort_ref_t;
+#else
+typedef pottery_shell_sort_value_t* pottery_shell_sort_ref_t;
 #endif
 
 #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
@@ -46,7 +49,7 @@ typedef struct pottery_shell_sort_state_t {
 } pottery_shell_sort_state_t;
 
 #if POTTERY_FORWARD_DECLARATIONS
-POTTERY_SHELL_SORT_EXTERN
-pottery_shell_sort_ref_t pottery_shell_sort_access(
-        pottery_shell_sort_state_t state, size_t index);
+static inline
+pottery_shell_sort_ref_t pottery_shell_sort_access(pottery_shell_sort_state_t state,
+        pottery_shell_sort_ref_t first, size_t index);
 #endif

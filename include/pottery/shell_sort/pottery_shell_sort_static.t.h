@@ -31,6 +31,17 @@
 #include "pottery/shell_sort/impl/pottery_shell_sort_macros.t.h"
 #include "pottery/shell_sort/impl/pottery_shell_sort_forward.t.h"
 
+#include "pottery/shell_sort/impl/pottery_shell_sort_config_lifecycle.t.h"
+#include "pottery/lifecycle/pottery_lifecycle_declare.t.h"
+
+#include "pottery/shell_sort/impl/pottery_shell_sort_config_compare.t.h"
+#include "pottery/compare/pottery_compare_static.t.h"
+
+// cleanup before insertion_sort since we need insertion_sort to define its own
+// compare and lifecycle functions that wrap ours
+#include "pottery/compare/pottery_compare_cleanup.t.h"
+#include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
+
 #include "pottery/shell_sort/impl/pottery_shell_sort_config_insertion_sort.t.h"
 #include "pottery/insertion_sort/pottery_insertion_sort_static.t.h"
 

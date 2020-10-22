@@ -32,7 +32,6 @@ typedef POTTERY_ALLOC_CONTEXT_TYPE pottery_alloc_context_t;
 
 #ifndef pottery_alignmax
 #error "Maximum fundamental alignment is not known! Define pottery_alignmax."
-#include "pottery_fatal"
 #endif
 
 

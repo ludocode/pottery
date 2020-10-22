@@ -28,34 +28,24 @@
 
 #ifdef POTTERY_HEAP_SORT_VALUE_TYPE
 typedef POTTERY_HEAP_SORT_VALUE_TYPE pottery_heap_sort_value_t;
-typedef pottery_heap_sort_value_t* pottery_heap_sort_ref_t;
-#else
+#endif
+
+#ifdef POTTERY_HEAP_SORT_REF_TYPE
 typedef POTTERY_HEAP_SORT_REF_TYPE pottery_heap_sort_ref_t;
+#else
+typedef pottery_heap_sort_value_t* pottery_heap_sort_ref_t;
 #endif
 
 #ifdef POTTERY_HEAP_SORT_CONTEXT_TYPE
 typedef POTTERY_HEAP_SORT_CONTEXT_TYPE pottery_heap_sort_context_t;
-#else
-typedef pottery_heap_sort_ref_t pottery_heap_sort_context_t;
-#endif
-
-#if POTTERY_HEAP_SORT_SEPARATE_LIFECYCLE_CONTEXT
-typedef POTTERY_HEAP_SORT_LIFECYCLE_CONTEXT_TYPE pottery_heap_sort_lifecycle_context_t;
-#endif
-#if POTTERY_HEAP_SORT_SEPARATE_COMPARE_CONTEXT
-typedef POTTERY_HEAP_SORT_COMPARE_CONTEXT_TYPE pottery_heap_sort_compare_context_t;
 #endif
 
 #if POTTERY_FORWARD_DECLARATIONS
 POTTERY_HEAP_SORT_EXTERN
 void pottery_heap_sort(
+        #ifdef POTTERY_HEAP_SORT_CONTEXT_TYPE
         pottery_heap_sort_context_t context,
-        size_t count
-        #if POTTERY_HEAP_SORT_SEPARATE_LIFECYCLE_CONTEXT
-        , pottery_heap_sort_lifecycle_context_t lifecycle_context
         #endif
-        #if POTTERY_HEAP_SORT_SEPARATE_COMPARE_CONTEXT
-        , pottery_heap_sort_compare_context_t compare_context
-        #endif
-        );
+        pottery_heap_sort_ref_t first,
+        size_t count);
 #endif

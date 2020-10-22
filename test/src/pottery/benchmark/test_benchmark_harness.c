@@ -26,13 +26,13 @@
 #include <stdio.h>
 
 // c
-void pottery_benchmark_insertion_sort_wrapper(int* ints, size_t count);
 void pottery_benchmark_shell_sort_wrapper(int* ints, size_t count);
 void pottery_benchmark_quick_sort_wrapper(int* ints, size_t count);
 void pottery_benchmark_intro_sort_wrapper(int* ints, size_t count);
 void pottery_benchmark_heap_sort_wrapper(int* ints, size_t count);
 void stb_sort_wrapper(int* ints, size_t count);
 void qsort_wrapper(int* ints, size_t count);
+void pottery_qsort_simple_wrapper(int* ints, size_t count);
 void pqsort_wrapper(int* ints, size_t count);
 void justinow_introsort_c_wrapper(int* ints, size_t count);
 void swenson_timsort_wrapper(int* ints, size_t count);
@@ -103,13 +103,18 @@ static void benchmark_sorts() {
     size_t count = 10*1000*1000;
     int* ints = pottery_cast(int*, malloc(sizeof(int) * count));
     size_t i;
-    for (i = 0; i < count; ++i)
+    for (i = 0; i < count; ++i) {
+        #if 0
+        // RAND_MAX is typically only around 65536, so use this to generate
+        // tons of duplicates to see how well algorithms handle them.
         ints[i] = rand();
+        #else
+        // This generates mostly unique numbers.
+        ints[i] = (rand() << 16) ^ rand();
+        #endif
+    }
 
     printf("\nSorting %zi random ints\n", count);
-
-    // Don't bother benchmarking insertion sort normally, it's way too slow.
-    //benchmark_sort(ints, count, pottery_benchmark_insertion_sort_wrapper, "pottery_insertion_sort");
 
     // This one is buggy, skip it
     //benchmark_sort(ints, count, justinow_introsort_c_wrapper, "justinow/introsort-c");
@@ -122,6 +127,7 @@ static void benchmark_sorts() {
     #endif
     benchmark_sort(ints, count, pottery_benchmark_quick_sort_wrapper, "pottery_quick_sort");
     benchmark_sort(ints, count, pottery_benchmark_intro_sort_wrapper, "pottery_intro_sort");
+    benchmark_sort(ints, count, pottery_qsort_simple_wrapper, "pottery_qsort_simple");
     benchmark_sort(ints, count, stb_sort_wrapper, "nothings/stb quicksort");
     benchmark_sort(ints, count, qsort_wrapper, "qsort");
     benchmark_sort(ints, count, std_sort_wrapper, "std::sort");

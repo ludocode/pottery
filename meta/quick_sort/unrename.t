@@ -32,8 +32,6 @@
 
 #undef {PREFIX}
 #undef {PREFIX}_access
-#undef {PREFIX}_before
-#undef {PREFIX}_swap
 #undef {PREFIX}_prepare_pivot
 #undef {PREFIX}_partition
 #undef {PREFIX}_impl

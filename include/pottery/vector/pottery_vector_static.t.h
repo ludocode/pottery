@@ -24,16 +24,18 @@
 
 #define POTTERY_VECTOR_IMPL
 
+#ifndef POTTERY_VECTOR_EXTERN
+    #define POTTERY_VECTOR_EXTERN pottery_maybe_unused static
+#endif
+
+#include "pottery/vector/impl/pottery_vector_macros.t.h"
+#include "pottery/vector/impl/pottery_vector_forward.t.h"
+
 #include "pottery/vector/impl/pottery_vector_config_alloc.t.h"
 #include "pottery/alloc/pottery_alloc_static.t.h"
 
 #include "pottery/vector/impl/pottery_vector_config_lifecycle.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_static.t.h"
-
-#ifndef POTTERY_VECTOR_EXTERN
-    #define POTTERY_VECTOR_EXTERN pottery_maybe_unused static
-#endif
-#include "pottery/vector/impl/pottery_vector_macros.t.h"
 #include "pottery/vector/impl/pottery_vector_declarations.t.h"
 #include "pottery/vector/impl/pottery_vector_definitions.t.h"
 #include "pottery/vector/impl/pottery_vector_unmacros.t.h"

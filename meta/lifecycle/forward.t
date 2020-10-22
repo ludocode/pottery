@@ -25,10 +25,6 @@
 
 // Forwards lifecycle configuration from {SRC} to {DEST}
 
-// Note that types are not forwarded because algorithms usually define REF_TYPE
-// (as the user-defined type) while dynamic containers usually define
-// VALUE_TYPE (e.g. as a pointer to their ELEMENT_TYPE.)
-
 #ifdef {SRC}_BY_VALUE
     #define {DEST}_BY_VALUE {SRC}_BY_VALUE
 #endif

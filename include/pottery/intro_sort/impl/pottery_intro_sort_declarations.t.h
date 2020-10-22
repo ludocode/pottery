@@ -28,9 +28,12 @@
 
 #ifdef POTTERY_INTRO_SORT_VALUE_TYPE
 typedef POTTERY_INTRO_SORT_VALUE_TYPE pottery_intro_sort_value_t;
-typedef pottery_intro_sort_value_t* pottery_intro_sort_ref_t;
-#else
+#endif
+
+#ifdef POTTERY_INTRO_SORT_REF_TYPE
 typedef POTTERY_INTRO_SORT_REF_TYPE pottery_intro_sort_ref_t;
+#else
+typedef pottery_intro_sort_value_t* pottery_intro_sort_ref_t;
 #endif
 
 #ifdef POTTERY_INTRO_SORT_CONTEXT_TYPE
@@ -41,24 +44,18 @@ typedef pottery_intro_sort_ref_t pottery_intro_sort_context_t;
 
 static inline
 void pottery_intro_sort(
+        #ifdef POTTERY_INTRO_SORT_CONTEXT_TYPE
         pottery_intro_sort_context_t context,
-        size_t count
-        #if POTTERY_INTRO_SORT_SEPARATE_LIFECYCLE_CONTEXT
-        , pottery_intro_sort_lifecycle_context_t lifecycle_context
         #endif
-        #if POTTERY_INTRO_SORT_SEPARATE_COMPARE_CONTEXT
-        , pottery_intro_sort_compare_context_t compare_context
-        #endif
-        )
+        pottery_intro_sort_ref_t first,
+        size_t count)
 {
     // Just call into quick_sort. We've configured it to fallback to
     // insertion_sort for small lists and heap_sort when too deep.
-    pottery_intro_sort_quick_sort(context, count
-            #if POTTERY_INTRO_SORT_SEPARATE_LIFECYCLE_CONTEXT
-            , lifecycle_context
+    pottery_intro_sort_quick_sort(
+            #ifdef POTTERY_INTRO_SORT_CONTEXT_TYPE
+            context,
             #endif
-            #if POTTERY_INTRO_SORT_SEPARATE_COMPARE_CONTEXT
-            , compare_context
-            #endif
-            );
+            first,
+            count);
 }

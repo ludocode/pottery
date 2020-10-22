@@ -31,7 +31,6 @@
 
 #ifdef POTTERY_LIFECYCLE_CAN_DESTROY
 #error "A previous instantiation of the Lifecycle template was not cleaned up."
-#include "pottery_fatal"
 #endif
 
 
@@ -110,18 +109,11 @@
 
 #ifndef POTTERY_LIFECYCLE_PREFIX
 #error "POTTERY_LIFECYCLE_PREFIX is not defined."
-#include "pottery_fatal"
 #endif
 
 // must have one of ref or value type
 #if !defined(POTTERY_LIFECYCLE_REF_TYPE) && !defined(POTTERY_LIFECYCLE_VALUE_TYPE)
 #error "One of POTTERY_LIFECYCLE_REF_TYPE or POTTERY_LIFECYCLE_VALUE_TYPE must be defined."
-#include "pottery_fatal"
-#endif
-#if defined(POTTERY_LIFECYCLE_REF_TYPE) && defined(POTTERY_LIFECYCLE_VALUE_TYPE)
-#error "At most one of POTTERY_LIFECYCLE_REF_TYPE or POTTERY_LIFECYCLE_VALUE_TYPE must be defined."
-// TODO get rid of all pottery_fatal, rely on -Wfatal-errors instead
-#include "pottery_fatal"
 #endif
 
 

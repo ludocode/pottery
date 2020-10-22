@@ -32,10 +32,7 @@
 
 #define {PREFIX} {MACRO}()
 #define {PREFIX}_access {MACRO}(_access)
-#define {PREFIX}_before {MACRO}(_before)
 #define {PREFIX}_set_index {MACRO}(_set_index)
-#define {PREFIX}_move {MACRO}(_move)
-#define {PREFIX}_swap {MACRO}(_swap)
 
 #define {PREFIX}_parent {MACRO}(_parent)
 #define {PREFIX}_child_left {MACRO}(_child_left)
@@ -46,7 +43,6 @@
 #define {PREFIX}_push_impl {MACRO}(_push_impl)
 #define {PREFIX}_pop_impl {MACRO}(_pop_impl)
 #define {PREFIX}_remove_impl {MACRO}(_remove_impl)
-#define {PREFIX}_valid_impl {MACRO}(_valid_impl)
 #define {PREFIX}_valid_count_impl {MACRO}(_valid_count_impl)
 #define {PREFIX}_build {MACRO}(_build)
 #define {PREFIX}_push {MACRO}(_push)

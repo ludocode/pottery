@@ -30,7 +30,6 @@
 
 #ifndef POTTERY_TEST_ARRAY_INT_PREFIX
 #error "Misconfigured template"
-#include "pottery_fatal"
 #endif
 
 #define POTTERY_TEST_ARRAY_INT_NAME(x) \

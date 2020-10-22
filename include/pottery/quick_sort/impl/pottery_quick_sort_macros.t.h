@@ -49,18 +49,11 @@
     #define POTTERY_QUICK_SORT_EXTERN /*nothing*/
 #endif
 
-// See if we should accept a separate lifecycle context parameter
-#if defined(POTTERY_QUICK_SORT_LIFECYCLE_CONTEXT_TYPE) && !POTTERY_QUICK_SORT_CONTEXT_IS_LIFECYCLE_CONTEXT
-    #define POTTERY_QUICK_SORT_SEPARATE_LIFECYCLE_CONTEXT 1
+// Context forwarding
+#ifdef POTTERY_QUICK_SORT_CONTEXT_TYPE
+    #define POTTERY_QUICK_SORT_CONTEXT_VAL(state) state.context,
 #else
-    #define POTTERY_QUICK_SORT_SEPARATE_LIFECYCLE_CONTEXT 0
-#endif
-
-// See if we should accept a separate compare context parameter
-#if defined(POTTERY_QUICK_SORT_COMPARE_CONTEXT_TYPE) && !POTTERY_QUICK_SORT_CONTEXT_IS_COMPARE_CONTEXT
-    #define POTTERY_QUICK_SORT_SEPARATE_COMPARE_CONTEXT 1
-#else
-    #define POTTERY_QUICK_SORT_SEPARATE_COMPARE_CONTEXT 0
+    #define POTTERY_QUICK_SORT_CONTEXT_VAL(state) /*nothing*/
 #endif
 
 
@@ -96,9 +89,6 @@
 
     #define pottery_quick_sort POTTERY_QUICK_SORT_NAME()
     #define pottery_quick_sort_access POTTERY_QUICK_SORT_NAME(_access)
-    #define pottery_quick_sort_before POTTERY_QUICK_SORT_NAME(_before)
-    #define pottery_quick_sort_swap POTTERY_QUICK_SORT_NAME(_swap)
-    #define pottery_quick_sort_median POTTERY_QUICK_SORT_NAME(_median)
     #define pottery_quick_sort_prepare_pivot POTTERY_QUICK_SORT_NAME(_prepare_pivot)
     #define pottery_quick_sort_partition POTTERY_QUICK_SORT_NAME(_partition)
     #define pottery_quick_sort_impl POTTERY_QUICK_SORT_NAME(_impl)

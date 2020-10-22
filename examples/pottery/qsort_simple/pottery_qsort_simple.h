@@ -22,17 +22,12 @@
  * SOFTWARE.
  */
 
-//!!! END_LICENSE
-// Renames quick_sort identifiers with prefix "{PREFIX}"
-// using macro {MACRO}()
-#define {PREFIX}_ref_t {MACRO}(_ref_t)
-#define {PREFIX}_const_ref_t {MACRO}(_const_ref_t)
-#define {PREFIX}_value_t {MACRO}(_value_t)
-#define {PREFIX}_context_t {MACRO}(_context_t)
-#define {PREFIX}_state_t {MACRO}(_state_t)
+#ifndef POTTERY_QSORT_SIMPLE_H
+#define POTTERY_QSORT_SIMPLE_H 1
 
-#define {PREFIX} {MACRO}()
-#define {PREFIX}_access {MACRO}(_access)
-#define {PREFIX}_prepare_pivot {MACRO}(_prepare_pivot)
-#define {PREFIX}_partition {MACRO}(_partition)
-#define {PREFIX}_impl {MACRO}(_impl)
+#include <stddef.h>
+
+void pottery_qsort_simple(void* first, size_t count, size_t element_size,
+            int (*compare)(const void* left, const void* right));
+
+#endif

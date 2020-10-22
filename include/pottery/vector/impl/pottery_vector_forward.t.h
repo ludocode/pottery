@@ -22,17 +22,38 @@
  * SOFTWARE.
  */
 
-//!!! END_LICENSE
-// Renames quick_sort identifiers with prefix "{PREFIX}"
-// using macro {MACRO}()
-#define {PREFIX}_ref_t {MACRO}(_ref_t)
-#define {PREFIX}_const_ref_t {MACRO}(_const_ref_t)
-#define {PREFIX}_value_t {MACRO}(_value_t)
-#define {PREFIX}_context_t {MACRO}(_context_t)
-#define {PREFIX}_state_t {MACRO}(_state_t)
+#ifndef POTTERY_VECTOR_IMPL
+#error "This is an internal header. Do not include it."
+#endif
 
-#define {PREFIX} {MACRO}()
-#define {PREFIX}_access {MACRO}(_access)
-#define {PREFIX}_prepare_pivot {MACRO}(_prepare_pivot)
-#define {PREFIX}_partition {MACRO}(_partition)
-#define {PREFIX}_impl {MACRO}(_impl)
+#ifndef POTTERY_VECTOR_INTERNAL_CAPACITY
+    #define POTTERY_VECTOR_INTERNAL_CAPACITY 0
+#endif
+
+typedef POTTERY_VECTOR_ELEMENT_TYPE pottery_vector_element_t;
+typedef pottery_vector_element_t* pottery_vector_entry_t;
+
+#ifdef POTTERY_VECTOR_CONTEXT_TYPE
+typedef POTTERY_VECTOR_CONTEXT_TYPE pottery_vector_context_t;
+#endif
+
+typedef struct pottery_vector_t {
+    pottery_vector_element_t* values;
+    size_t count;
+
+    union {
+        size_t capacity;
+        #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
+        pottery_vector_element_t internal[POTTERY_VECTOR_INTERNAL_CAPACITY];
+        #endif
+    } u;
+
+    #ifdef POTTERY_DEBUG
+    struct pottery_vector_t* self_check;
+    void* leak_check;
+    #endif
+
+    #ifdef POTTERY_VECTOR_CONTEXT_TYPE
+    pottery_vector_context_t context;
+    #endif
+} pottery_vector_t;

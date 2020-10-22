@@ -32,8 +32,5 @@
 
 #define {PREFIX} {MACRO}()
 #define {PREFIX}_access {MACRO}(_access)
-#define {PREFIX}_move {MACRO}(_move)
-#define {PREFIX}_swap {MACRO}(_swap)
-#define {PREFIX}_before {MACRO}(_before)
 #define {PREFIX}_by_move {MACRO}(_by_move)
 #define {PREFIX}_by_swap {MACRO}(_by_swap)

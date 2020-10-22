@@ -24,7 +24,6 @@
 
 #ifndef POTTERY_COMPARE_CAN_EQUAL
 #error "The Compare template was either not instantiated or was already cleaned up."
-#include "pottery_fatal"
 #endif
 
 #ifndef POTTERY_COMPARE_NO_CLEANUP

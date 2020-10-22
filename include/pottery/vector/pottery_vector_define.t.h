@@ -24,13 +24,14 @@
 
 #define POTTERY_VECTOR_IMPL
 
+#include "pottery/vector/impl/pottery_vector_macros.t.h"
+
 #include "pottery/vector/impl/pottery_vector_config_alloc.t.h"
 #include "pottery/alloc/pottery_alloc_define.t.h"
 
 #include "pottery/vector/impl/pottery_vector_config_lifecycle.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_define.t.h"
 
-#include "pottery/vector/impl/pottery_vector_macros.t.h"
 #include "pottery/vector/impl/pottery_vector_definitions.t.h"
 #include "pottery/vector/impl/pottery_vector_unmacros.t.h"
 

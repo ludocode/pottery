@@ -1,10 +1,25 @@
 #include <stdio.h>
 
+// TODO
+#if 0
 #define POTTERY_INTRO_SORT_PREFIX sort_strings
 #define POTTERY_INTRO_SORT_VALUE_TYPE const char*
 #define POTTERY_INTRO_SORT_LIFECYCLE_MOVE_BY_VALUE 1
 #define POTTERY_INTRO_SORT_COMPARE_THREE_WAY(x, y) strcmp(*x, *y)
 #include "pottery/intro_sort/pottery_intro_sort_static.t.h"
+#elif 1
+#define POTTERY_SHELL_SORT_PREFIX sort_strings
+#define POTTERY_SHELL_SORT_VALUE_TYPE const char*
+#define POTTERY_SHELL_SORT_LIFECYCLE_MOVE_BY_VALUE 1
+#define POTTERY_SHELL_SORT_COMPARE_THREE_WAY(x, y) strcmp(*x, *y)
+#include "pottery/shell_sort/pottery_shell_sort_static.t.h"
+#else
+#define POTTERY_INSERTION_SORT_PREFIX sort_strings
+#define POTTERY_INSERTION_SORT_VALUE_TYPE const char*
+#define POTTERY_INSERTION_SORT_LIFECYCLE_MOVE_BY_VALUE 1
+#define POTTERY_INSERTION_SORT_COMPARE_THREE_WAY(x, y) strcmp(*x, *y)
+#include "pottery/insertion_sort/pottery_insertion_sort_static.t.h"
+#endif
 
 int main(void) {
     const char* players[] = {

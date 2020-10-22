@@ -31,68 +31,22 @@
  */
 
 typedef struct pottery_quick_sort_state_t {
+    #ifdef POTTERY_QUICK_SORT_CONTEXT_TYPE
     pottery_quick_sort_context_t context;
-    #if POTTERY_QUICK_SORT_SEPARATE_LIFECYCLE_CONTEXT
-    pottery_quick_sort_lifecycle_context_t lifecycle_context;
     #endif
-    #if POTTERY_QUICK_SORT_SEPARATE_COMPARE_CONTEXT
-    pottery_quick_sort_compare_context_t compare_context;
-    #endif
+    pottery_quick_sort_ref_t first;
 } pottery_quick_sort_state_t;
 
 // Gets the ref for the element at index.
 static pottery_always_inline
 pottery_quick_sort_ref_t pottery_quick_sort_access(pottery_quick_sort_state_t state, size_t index) {
+    (void)state;
+
     #ifndef POTTERY_QUICK_SORT_ACCESS
-        // With no defined access expression, the context is a simple array.
-        return state.context + index;
+        // With no defined access expression, it's a simple array.
+        return state.first + index;
     #else
-        return POTTERY_QUICK_SORT_ACCESS(state.context, index);
-    #endif
-}
-
-// Compares left and right; returns true if left comes before right.
-static pottery_always_inline
-bool pottery_quick_sort_before(pottery_quick_sort_state_t state,
-        pottery_quick_sort_ref_t left, pottery_quick_sort_ref_t right)
-{
-    #if POTTERY_QUICK_SORT_CONTEXT_IS_COMPARE_CONTEXT
-        return pottery_quick_sort_compare_less(state.context, left, right);
-    #elif defined(POTTERY_QUICK_SORT_COMPARE_CONTEXT_TYPE)
-        return pottery_quick_sort_compare_less(state.compare_context, left, right);
-    #else
-        (void)state;
-        return pottery_quick_sort_compare_less(left, right);
-    #endif
-}
-
-// Returns the median of the three values.
-static pottery_always_inline
-pottery_quick_sort_ref_t pottery_quick_sort_median(pottery_quick_sort_state_t state,
-        pottery_quick_sort_ref_t a, pottery_quick_sort_ref_t b, pottery_quick_sort_ref_t c)
-{
-    #if POTTERY_QUICK_SORT_CONTEXT_IS_COMPARE_CONTEXT
-        return pottery_quick_sort_compare_median(state.context, a, b, c);
-    #elif defined(POTTERY_QUICK_SORT_COMPARE_CONTEXT_TYPE)
-        return pottery_quick_sort_compare_median(state.compare_context, a, b, c);
-    #else
-        (void)state;
-        return pottery_quick_sort_compare_median(a, b, c);
-    #endif
-}
-
-// Swaps left and right.
-static pottery_always_inline
-void pottery_quick_sort_swap(pottery_quick_sort_state_t state,
-        pottery_quick_sort_ref_t left, pottery_quick_sort_ref_t right)
-{
-    #if POTTERY_QUICK_SORT_CONTEXT_IS_LIFECYCLE_CONTEXT
-        pottery_quick_sort_lifecycle_swap(state.context, left, right);
-    #elif defined(POTTERY_QUICK_SORT_LIFECYCLE_CONTEXT_TYPE)
-        pottery_quick_sort_lifecycle_swap(state.lifecycle_context, left, right);
-    #else
-        (void)state;
-        pottery_quick_sort_lifecycle_swap(left, right);
+        return POTTERY_QUICK_SORT_ACCESS(POTTERY_QUICK_SORT_CONTEXT_VAL(state) state.first, index);
     #endif
 }
 
@@ -117,36 +71,37 @@ void pottery_quicksort_prepare_pivot(pottery_state_t state, size_t start_index, 
     // choose elements for the median
     // (slightly awkward average here to avoid overflow
     size_t middle_index = start_index + (end_index - start_index) / 2;
-    pottery_value_t* start = pottery_access(state, start_index);
-    pottery_value_t* middle = pottery_access(state, middle_index);
-    pottery_value_t* end = pottery_access(state, end_index);
+    pottery_quick_sort_ref_t start = pottery_access(state, start_index);
+    pottery_quick_sort_ref_t middle = pottery_access(state, middle_index);
+    pottery_quick_sort_ref_t end = pottery_access(state, end_index);
 
     // if there are at most some arbitrary threshold of elements, use median
     if (end_index - start_index + 1 <= 128) {
-        pottery_value_t* median = pottery_quick_sort_median(state, start, middle, end);
+        pottery_quick_sort_ref_t median = pottery_quick_sort_compare_median(
+                POTTERY_QUICK_SORT_CONTEXT_VAL(state) start, middle, end);
         if (median != start)
-            pottery_quick_sort_swap(state, start, median);
+            pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL(state) start, median);
         return;
     }
 
     // use ninther
     size_t third_offset = (end_index - start_index) / 3;
     size_t sixth_offset = (end_index - start_index) / 6;
-    pottery_value_t* left_middle = pottery_access(state, start_index + sixth_offset);
-    pottery_value_t* left_end = pottery_access(state, start_index + third_offset);
-    pottery_value_t* right_start = pottery_access(state, middle_index + third_offset);
-    pottery_value_t* right_middle = pottery_access(state, middle_index + third_offset + sixth_offset);
+    pottery_quick_sort_ref_t left_middle = pottery_access(state, start_index + sixth_offset);
+    pottery_quick_sort_ref_t left_end = pottery_access(state, start_index + third_offset);
+    pottery_quick_sort_ref_t right_start = pottery_access(state, middle_index + third_offset);
+    pottery_quick_sort_ref_t right_middle = pottery_access(state, middle_index + third_offset + sixth_offset);
 
-    pottery_value_t* median = pottery_quick_sort_median(state,
-            pottery_quick_sort_median(state, start, left_middle, left_end),
-            pottery_quick_sort_median(state, left_end, middle, right_start),
-            pottery_quick_sort_median(state, right_start, right_middle, end));
+    pottery_quick_sort_ref_t median = pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL(state)
+            pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL(state) start, left_middle, left_end),
+            pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL(state) left_end, middle, right_start),
+            pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL(state) right_start, right_middle, end));
 
-    //if (median != pottery_quick_sort_median(state, start, middle, end))
-    //    printf("found better median %i instead of %i\n", *median, *pottery_quick_sort_median(state, start, middle, end));
+    //if (median != pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL(state) start, middle, end))
+    //    printf("found better median %i instead of %i\n", *median, *pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL(state) start, middle, end));
 
     if (median != start)
-        pottery_quick_sort_swap(state, start, median);
+        pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL(state) start, median);
 }
 
 static
@@ -161,7 +116,7 @@ size_t pottery_quicksort_partition(pottery_state_t state, size_t start_index, si
     pottery_assert(end_index - start_index >= 1);
 
     pottery_quicksort_prepare_pivot(state, start_index, end_index);
-    pottery_value_t* pivot = pottery_access(state, start_index);
+    pottery_quick_sort_ref_t pivot = pottery_access(state, start_index);
 
     #if 0
     printf("chose pivot %i at %zi\n", *pivot, start_index);
@@ -180,10 +135,12 @@ size_t pottery_quicksort_partition(pottery_state_t state, size_t start_index, si
         // wouldn't meet in the middle when all elements are equal.
         do {
             ++low;
-        } while (low < high && pottery_before(state, pottery_access(state, low), pivot));
+        } while (low < high && pottery_quick_sort_compare_less(
+                    POTTERY_QUICK_SORT_CONTEXT_VAL(state) pottery_access(state, low), pivot));
         do {
             --high;
-        } while (low < high && pottery_before(state, pivot, pottery_access(state, high)));
+        } while (low < high && pottery_quick_sort_compare_less(
+                    POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, pottery_access(state, high)));
 
         if (low >= high)
             break;
@@ -193,7 +150,7 @@ size_t pottery_quicksort_partition(pottery_state_t state, size_t start_index, si
                 *pottery_access(state, low), high, *pottery_access(state, high));
         #endif
 
-        pottery_swap(state, pottery_access(state, low), pottery_access(state, high));
+        pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL(state) pottery_access(state, low), pottery_access(state, high));
     }
 
     // It's possible that the above algorithm stopped on an element that was
@@ -202,7 +159,7 @@ size_t pottery_quicksort_partition(pottery_state_t state, size_t start_index, si
     #if 0
     printf("finished loop, resulting low: %zi\n", low);
     #endif
-    if (low > end_index || pottery_before(state, pivot, pottery_access(state, low)))
+    if (low > end_index || pottery_quick_sort_compare_less(POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, pottery_access(state, low)))
         --low;
 
     // Unlike in normal Hoare partitioning, we now know where the pivot element
@@ -211,7 +168,7 @@ size_t pottery_quicksort_partition(pottery_state_t state, size_t start_index, si
         #if 0
         printf("swapping pivot %zi with %zi\n", start_index, high);
         #endif
-        pottery_swap(state, pivot, pottery_access(state, low));
+        pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, pottery_access(state, low));
     }
 
     #if 0
@@ -246,14 +203,9 @@ void pottery_quicksort_impl(pottery_state_t state, size_t start, size_t end, siz
 
     if (count <= count_limit) {
         POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK(
-                state.context + start, // TODO need offset/count for sort algorithms, this isn't necessarily a pointer to first element
+                POTTERY_QUICK_SORT_CONTEXT_VAL(state)
+                pottery_quick_sort_access(state, start),
                 count
-                #if POTTERY_QUICK_SORT_SEPARATE_LIFECYCLE_CONTEXT
-                , state.lifecycle_context
-                #endif
-                #if POTTERY_QUICK_SORT_SEPARATE_COMPARE_CONTEXT
-                , state.compare_context
-                #endif
                 );
         return;
     }
@@ -263,14 +215,9 @@ void pottery_quicksort_impl(pottery_state_t state, size_t start, size_t end, siz
     #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
     if (depth_limit == 0) {
         POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK(
-                state.context + start, // TODO need offset/count for sort algorithms, this isn't necessarily a pointer to first element
+                POTTERY_QUICK_SORT_CONTEXT_VAL(state)
+                pottery_quick_sort_access(state, start),
                 count
-                #if POTTERY_QUICK_SORT_SEPARATE_LIFECYCLE_CONTEXT
-                , state.lifecycle_context
-                #endif
-                #if POTTERY_QUICK_SORT_SEPARATE_COMPARE_CONTEXT
-                , state.compare_context
-                #endif
                 );
         return;
     }
@@ -296,23 +243,17 @@ void pottery_quicksort_impl(pottery_state_t state, size_t start, size_t end, siz
 
 POTTERY_QUICK_SORT_EXTERN
 void pottery_quick_sort(
+        #ifdef POTTERY_QUICK_SORT_CONTEXT_TYPE
         pottery_quick_sort_context_t context,
+        #endif
+        pottery_quick_sort_ref_t first,
         size_t count
-        #if POTTERY_QUICK_SORT_SEPARATE_LIFECYCLE_CONTEXT
-        , pottery_quick_sort_lifecycle_context_t lifecycle_context
-        #endif
-        #if POTTERY_QUICK_SORT_SEPARATE_COMPARE_CONTEXT
-        , pottery_quick_sort_compare_context_t compare_context
-        #endif
 ) {
     pottery_quick_sort_state_t state = {
+        #ifdef POTTERY_QUICK_SORT_CONTEXT_TYPE
         context,
-        #if POTTERY_QUICK_SORT_SEPARATE_LIFECYCLE_CONTEXT
-        lifecycle_context,
         #endif
-        #if POTTERY_QUICK_SORT_SEPARATE_COMPARE_CONTEXT
-        compare_context,
-        #endif
+        first,
     };
 
     if (count <= 1)

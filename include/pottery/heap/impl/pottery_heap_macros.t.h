@@ -61,6 +61,8 @@
     //
     // TODO: heap functions using move aren't actually implemented yet, it
     // always swaps.
+    // TODO this wouldn't work here anyway since macros are usually included
+    // before lifecycle functions.
     #if 0 && POTTERY_LIFECYCLE_CAN_MOVE && defined(POTTERY_HEAP_VALUE_TYPE)
         #define POTTERY_HEAP_USE_MOVE 1
     #else
@@ -68,24 +70,11 @@
     #endif
 #endif
 
-// See if we should accept a separate compare context parameter
-#ifndef POTTERY_HEAP_CONTEXT_IS_COMPARE_CONTEXT
-    #define POTTERY_HEAP_CONTEXT_IS_COMPARE_CONTEXT 0
-#endif
-#if defined(POTTERY_HEAP_COMPARE_CONTEXT_TYPE) && !POTTERY_HEAP_CONTEXT_IS_COMPARE_CONTEXT
-    #define POTTERY_HEAP_SEPARATE_COMPARE_CONTEXT 1
+// Context forwarding
+#ifdef POTTERY_HEAP_CONTEXT_TYPE
+    #define POTTERY_HEAP_CONTEXT_VAL(state) state.context,
 #else
-    #define POTTERY_HEAP_SEPARATE_COMPARE_CONTEXT 0
-#endif
-
-// See if we should accept a separate lifecycle context parameter
-#ifndef POTTERY_HEAP_CONTEXT_IS_LIFECYCLE_CONTEXT
-    #define POTTERY_HEAP_CONTEXT_IS_LIFECYCLE_CONTEXT 0
-#endif
-#if defined(POTTERY_HEAP_LIFECYCLE_CONTEXT_TYPE) && !POTTERY_HEAP_CONTEXT_IS_LIFECYCLE_CONTEXT
-    #define POTTERY_HEAP_SEPARATE_LIFECYCLE_CONTEXT 1
-#else
-    #define POTTERY_HEAP_SEPARATE_LIFECYCLE_CONTEXT 0
+    #define POTTERY_HEAP_CONTEXT_VAL(state) /*nothing*/
 #endif
 
 
@@ -97,7 +86,6 @@
 // legacy stuff
 #define pottery_access POTTERY_HEAP_NAME(_access)
 #define pottery_value_t POTTERY_HEAP_NAME(_legacy_value_t) // TODO remove
-#define pottery_accessor_t POTTERY_HEAP_NAME(_accessor_t)
 #define pottery_context_t POTTERY_HEAP_NAME(_context_t)
 #define pottery_state_t POTTERY_HEAP_NAME(_state_t)
 
@@ -112,10 +100,7 @@
 
     #define pottery_heap POTTERY_HEAP_NAME()
     #define pottery_heap_access POTTERY_HEAP_NAME(_access)
-    #define pottery_heap_before POTTERY_HEAP_NAME(_before)
     #define pottery_heap_set_index POTTERY_HEAP_NAME(_set_index)
-    #define pottery_heap_move POTTERY_HEAP_NAME(_move)
-    #define pottery_heap_swap POTTERY_HEAP_NAME(_swap)
 
     #define pottery_heap_parent POTTERY_HEAP_NAME(_parent)
     #define pottery_heap_child_left POTTERY_HEAP_NAME(_child_left)
@@ -126,7 +111,6 @@
     #define pottery_heap_push_impl POTTERY_HEAP_NAME(_push_impl)
     #define pottery_heap_pop_impl POTTERY_HEAP_NAME(_pop_impl)
     #define pottery_heap_remove_impl POTTERY_HEAP_NAME(_remove_impl)
-    #define pottery_heap_valid_impl POTTERY_HEAP_NAME(_valid_impl)
     #define pottery_heap_valid_count_impl POTTERY_HEAP_NAME(_valid_count_impl)
     #define pottery_heap_build POTTERY_HEAP_NAME(_build)
     #define pottery_heap_push POTTERY_HEAP_NAME(_push)

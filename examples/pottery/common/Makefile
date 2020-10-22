@@ -13,7 +13,7 @@ FORCE:
 
 CPPFLAGS :=
 CPPFLAGS += -I../../../include -DPOTTERY_AVAILABLE=1
-CPPFLAGS += -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter
+CPPFLAGS += -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter -Wfatal-errors
 CPPFLAGS += -MD -MP
 
 CFLAGS = -O0 -g

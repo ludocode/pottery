@@ -32,27 +32,23 @@
 
 #ifdef POTTERY_HEAP_VALUE_TYPE
 typedef POTTERY_HEAP_VALUE_TYPE pottery_heap_value_t;
-typedef pottery_heap_value_t* pottery_heap_ref_t;
-#else
-typedef POTTERY_HEAP_REF_TYPE pottery_heap_ref_t;
 #endif
 
-typedef pottery_heap_value_t pottery_value_t; // TODO remove
-
-#ifdef POTTERY_HEAP_ACCESSOR_TYPE
-typedef POTTERY_HEAP_ACCESSOR_TYPE pottery_accessor_t;
+#ifdef POTTERY_HEAP_REF_TYPE
+typedef POTTERY_HEAP_REF_TYPE pottery_heap_ref_t;
 #else
-typedef pottery_heap_value_t* pottery_accessor_t;
+typedef pottery_heap_value_t* pottery_heap_ref_t;
+#endif
+
+#ifdef POTTERY_HEAP_CONTEXT_TYPE
+typedef POTTERY_HEAP_CONTEXT_TYPE pottery_heap_context_t;
 #endif
 
 typedef struct pottery_state_t {
-    pottery_accessor_t accessor;
-    #if POTTERY_HEAP_SEPARATE_LIFECYCLE_CONTEXT
-    pottery_heap_lifecycle_context_t lifecycle_context;
+    #ifdef POTTERY_HEAP_CONTEXT_TYPE
+    pottery_heap_context_t context;
     #endif
-    #if POTTERY_HEAP_SEPARATE_COMPARE_CONTEXT
-    pottery_heap_compare_context_t compare_context;
-    #endif
+    pottery_heap_ref_t first;
 } pottery_state_t;
 
 
@@ -72,29 +68,23 @@ void pottery_heap_remove_impl(pottery_state_t state, size_t current_count, size_
 
 POTTERY_HEAP_EXTERN
 size_t pottery_heap_valid_count_impl(pottery_state_t state, size_t count);
-
-POTTERY_HEAP_EXTERN
-bool pottery_heap_valid_impl(pottery_state_t state, size_t count);
 #endif
 
 
 
 static inline
-void pottery_heap_build(pottery_accessor_t accessor, size_t count
-        #if POTTERY_HEAP_SEPARATE_LIFECYCLE_CONTEXT
-        , pottery_heap_lifecycle_context_t lifecycle_context
+void pottery_heap_build(
+        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        pottery_heap_context_t context,
         #endif
-        #if POTTERY_HEAP_SEPARATE_COMPARE_CONTEXT
-        , pottery_heap_compare_context_t compare_context
-        #endif
+        pottery_heap_ref_t first,
+        size_t count
 ) {
-    pottery_state_t state = {accessor
-        #if POTTERY_HEAP_SEPARATE_LIFECYCLE_CONTEXT
-        , lifecycle_context
+    pottery_state_t state = {
+        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        context,
         #endif
-        #if POTTERY_HEAP_SEPARATE_COMPARE_CONTEXT
-        , compare_context
-        #endif
+        first,
     };
     pottery_heap_build_impl(state, count);
 }
@@ -115,21 +105,19 @@ void pottery_heap_build(pottery_accessor_t accessor, size_t count
  * avoids this ambiguity by always taking the current count as the argument.
  */
 static inline
-void pottery_heap_push(pottery_accessor_t accessor, size_t current_count, size_t push_count
-        #if POTTERY_HEAP_SEPARATE_LIFECYCLE_CONTEXT
-        , pottery_heap_lifecycle_context_t lifecycle_context
+void pottery_heap_push(
+        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        pottery_heap_context_t context,
         #endif
-        #if POTTERY_HEAP_SEPARATE_COMPARE_CONTEXT
-        , pottery_heap_compare_context_t compare_context
-        #endif
+        pottery_heap_ref_t first,
+        size_t current_count,
+        size_t push_count
 ) {
-    pottery_state_t state = {accessor
-        #if POTTERY_HEAP_SEPARATE_LIFECYCLE_CONTEXT
-        , lifecycle_context
+    pottery_state_t state = {
+        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        context,
         #endif
-        #if POTTERY_HEAP_SEPARATE_COMPARE_CONTEXT
-        , compare_context
-        #endif
+        first,
     };
     pottery_heap_push_impl(state, current_count, push_count);
 }
@@ -141,21 +129,19 @@ void pottery_heap_push(pottery_accessor_t accessor, size_t current_count, size_t
  * The resulting size of the heap will be (current_count - pop_count).
  */
 static inline
-void pottery_heap_pop(pottery_accessor_t accessor, size_t current_count, size_t pop_count
-        #if POTTERY_HEAP_SEPARATE_LIFECYCLE_CONTEXT
-        , pottery_heap_lifecycle_context_t lifecycle_context
+void pottery_heap_pop(
+        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        pottery_heap_context_t context,
         #endif
-        #if POTTERY_HEAP_SEPARATE_COMPARE_CONTEXT
-        , pottery_heap_compare_context_t compare_context
-        #endif
+        pottery_heap_ref_t first,
+        size_t current_count,
+        size_t pop_count
 ) {
-    pottery_state_t state = {accessor
-        #if POTTERY_HEAP_SEPARATE_LIFECYCLE_CONTEXT
-        , lifecycle_context
+    pottery_state_t state = {
+        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        context,
         #endif
-        #if POTTERY_HEAP_SEPARATE_COMPARE_CONTEXT
-        , compare_context
-        #endif
+        first,
     };
     pottery_heap_pop_impl(state, current_count, pop_count);
 }
@@ -167,41 +153,39 @@ void pottery_heap_pop(pottery_accessor_t accessor, size_t current_count, size_t 
  * The resulting size of the heap will be (current_count - 1).
  */
 static inline
-void pottery_heap_remove(pottery_accessor_t accessor, size_t current_count, size_t index_to_remove
-        #if POTTERY_HEAP_SEPARATE_LIFECYCLE_CONTEXT
-        , pottery_heap_lifecycle_context_t lifecycle_context
+void pottery_heap_remove(
+        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        pottery_heap_context_t context,
         #endif
-        #if POTTERY_HEAP_SEPARATE_COMPARE_CONTEXT
-        , pottery_heap_compare_context_t compare_context
-        #endif
+        pottery_heap_ref_t first,
+        size_t current_count,
+        size_t index_to_remove
 ) {
-    pottery_state_t state = {accessor
-        #if POTTERY_HEAP_SEPARATE_LIFECYCLE_CONTEXT
-        , lifecycle_context
+    pottery_state_t state = {
+        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        context,
         #endif
-        #if POTTERY_HEAP_SEPARATE_COMPARE_CONTEXT
-        , compare_context
-        #endif
+        first,
     };
     pottery_heap_remove_impl(state, current_count, index_to_remove);
 }
 
+/**
+ * Returns the number of elements in the given range that form a valid heap.
+ */
 static inline
-size_t pottery_heap_valid_count(pottery_accessor_t accessor, size_t count
-        #if POTTERY_HEAP_SEPARATE_LIFECYCLE_CONTEXT
-        , pottery_heap_lifecycle_context_t lifecycle_context
+size_t pottery_heap_valid_count(
+        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        pottery_heap_context_t context,
         #endif
-        #if POTTERY_HEAP_SEPARATE_COMPARE_CONTEXT
-        , pottery_heap_compare_context_t compare_context
-        #endif
+        pottery_heap_ref_t first,
+        size_t count
 ) {
-    pottery_state_t state = {accessor
-        #if POTTERY_HEAP_SEPARATE_LIFECYCLE_CONTEXT
-        , lifecycle_context
+    pottery_state_t state = {
+        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        context,
         #endif
-        #if POTTERY_HEAP_SEPARATE_COMPARE_CONTEXT
-        , compare_context
-        #endif
+        first,
     };
     return pottery_heap_valid_count_impl(state, count);
 }
@@ -211,21 +195,17 @@ size_t pottery_heap_valid_count(pottery_accessor_t accessor, size_t count
  * its children.)
  */
 static inline
-bool pottery_heap_valid(pottery_accessor_t accessor, size_t count
-        #if POTTERY_HEAP_SEPARATE_LIFECYCLE_CONTEXT
-        , pottery_heap_lifecycle_context_t lifecycle_context
+bool pottery_heap_valid(
+        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        pottery_heap_context_t context,
         #endif
-        #if POTTERY_HEAP_SEPARATE_COMPARE_CONTEXT
-        , pottery_heap_compare_context_t compare_context
-        #endif
+        pottery_heap_ref_t first,
+        size_t count
 ) {
-    pottery_state_t state = {accessor
-        #if POTTERY_HEAP_SEPARATE_LIFECYCLE_CONTEXT
-        , lifecycle_context
+    return count == pottery_heap_valid_count(
+        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        context,
         #endif
-        #if POTTERY_HEAP_SEPARATE_COMPARE_CONTEXT
-        , compare_context
-        #endif
-    };
-    return pottery_heap_valid_impl(state, count);
+        first,
+        count);
 }

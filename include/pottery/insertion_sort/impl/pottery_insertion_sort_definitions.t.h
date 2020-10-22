@@ -30,75 +30,16 @@
  * Helpers to wrap configuration
  */
 
-typedef struct pottery_insertion_sort_state_t {
-    pottery_insertion_sort_context_t context;
-    #if POTTERY_INSERTION_SORT_SEPARATE_LIFECYCLE_CONTEXT
-    pottery_insertion_sort_lifecycle_context_t lifecycle_context;
-    #endif
-    #if POTTERY_INSERTION_SORT_SEPARATE_COMPARE_CONTEXT
-    pottery_insertion_sort_compare_context_t compare_context;
-    #endif
-} pottery_insertion_sort_state_t;
-
 // Gets the ref for the element at index.
 static pottery_always_inline
 pottery_insertion_sort_ref_t pottery_insertion_sort_access(pottery_insertion_sort_state_t state, size_t index) {
     #ifndef POTTERY_INSERTION_SORT_ACCESS
-        // With no defined access expression, the context is a simple array.
-        return state.context + index;
+        // With no defined access expression, it's a simple array.
+        return state.first + index;
     #else
-        return POTTERY_INSERTION_SORT_ACCESS(state.context, index);
+        return POTTERY_INSERTION_SORT_ACCESS(state.context, state.first, index);
     #endif
 }
-
-// Compares left and right; returns true if left comes before right.
-static pottery_always_inline
-bool pottery_insertion_sort_before(pottery_insertion_sort_state_t state,
-        pottery_insertion_sort_ref_t left, pottery_insertion_sort_ref_t right)
-{
-    #if POTTERY_INSERTION_SORT_CONTEXT_IS_COMPARE_CONTEXT
-        return pottery_insertion_sort_compare_less(state.context, left, right);
-    #elif defined(POTTERY_INSERTION_SORT_COMPARE_CONTEXT_TYPE)
-        return pottery_insertion_sort_compare_less(state.compare_context, left, right);
-    #else
-        (void)state;
-        return pottery_insertion_sort_compare_less(left, right);
-    #endif
-}
-
-#if POTTERY_INSERTION_SORT_USE_MOVE
-// Moves from to to.
-static pottery_always_inline
-void pottery_insertion_sort_move(pottery_insertion_sort_state_t state,
-        pottery_insertion_sort_ref_t to, pottery_insertion_sort_ref_t from)
-{
-    #if POTTERY_INSERTION_SORT_CONTEXT_IS_LIFECYCLE_CONTEXT
-        pottery_insertion_sort_lifecycle_move(state.context, to, from);
-    #elif defined(POTTERY_INSERTION_SORT_LIFECYCLE_CONTEXT_TYPE)
-        pottery_insertion_sort_lifecycle_move(state.lifecycle_context, to, from);
-    #else
-        (void)state;
-        pottery_insertion_sort_lifecycle_move(to, from);
-    #endif
-}
-#endif
-
-#if !POTTERY_INSERTION_SORT_USE_MOVE
-// Swaps left and right.
-static pottery_always_inline
-void pottery_insertion_sort_swap(pottery_insertion_sort_state_t state,
-        pottery_insertion_sort_ref_t left, pottery_insertion_sort_ref_t right)
-{
-    #if POTTERY_INSERTION_SORT_CONTEXT_IS_LIFECYCLE_CONTEXT
-        pottery_insertion_sort_lifecycle_swap(state.context, left, right);
-    #elif defined(POTTERY_INSERTION_SORT_LIFECYCLE_CONTEXT_TYPE)
-        pottery_insertion_sort_lifecycle_swap(state.lifecycle_context, left, right);
-    #else
-        (void)state;
-        pottery_insertion_sort_lifecycle_swap(left, right);
-    #endif
-}
-#endif
 
 
 
@@ -119,9 +60,9 @@ void pottery_insertion_sort_by_move(pottery_insertion_sort_state_t state, size_t
         pottery_insertion_sort_ref_t current = pottery_insertion_sort_access(state, i);
         pottery_insertion_sort_ref_t previous = pottery_insertion_sort_access(state, i - 1);
 
-        if (pottery_insertion_sort_before(state, current, previous)) {
-            pottery_insertion_sort_move(state, temp, current);
-            pottery_insertion_sort_move(state, current, previous);
+        if (pottery_insertion_sort_compare_less(POTTERY_INSERTION_SORT_CONTEXT_VAL(state) current, previous)) {
+            pottery_insertion_sort_lifecycle_move(POTTERY_INSERTION_SORT_CONTEXT_VAL(state) temp, current);
+            pottery_insertion_sort_lifecycle_move(POTTERY_INSERTION_SORT_CONTEXT_VAL(state) current, previous);
 
             size_t j = i - 1;
             for (;;) {
@@ -129,12 +70,12 @@ void pottery_insertion_sort_by_move(pottery_insertion_sort_state_t state, size_t
                 if (j == 0)
                     break;
                 previous = pottery_insertion_sort_access(state, --j);
-                if (!pottery_insertion_sort_before(state, temp, previous))
+                if (!pottery_insertion_sort_compare_less(POTTERY_INSERTION_SORT_CONTEXT_VAL(state) temp, previous))
                     break;
-                pottery_insertion_sort_move(state, current, previous);
+                pottery_insertion_sort_lifecycle_move(POTTERY_INSERTION_SORT_CONTEXT_VAL(state) current, previous);
             }
 
-            pottery_insertion_sort_move(state, current, temp);
+            pottery_insertion_sort_lifecycle_move(POTTERY_INSERTION_SORT_CONTEXT_VAL(state) current, temp);
         }
     }
 }
@@ -150,9 +91,9 @@ void pottery_insertion_sort_by_swap(pottery_insertion_sort_state_t state, size_t
         size_t j;
         for (j = i; j > 0; --j) {
             pottery_insertion_sort_ref_t previous = pottery_insertion_sort_access(state, j - 1);
-            if (!pottery_insertion_sort_before(state, current, previous))
+            if (!pottery_insertion_sort_compare_less(POTTERY_INSERTION_SORT_CONTEXT_VAL(state) current, previous))
                 break;
-            pottery_insertion_sort_swap(state, current, previous);
+            pottery_insertion_sort_lifecycle_swap(POTTERY_INSERTION_SORT_CONTEXT_VAL(state) current, previous);
             current = previous;
         }
     }
@@ -165,23 +106,17 @@ void pottery_insertion_sort_by_swap(pottery_insertion_sort_state_t state, size_t
 
 POTTERY_INSERTION_SORT_EXTERN
 void pottery_insertion_sort(
+        #ifdef POTTERY_INSERTION_SORT_CONTEXT_TYPE
         pottery_insertion_sort_context_t context,
+        #endif
+        pottery_insertion_sort_ref_t first,
         size_t count
-        #if POTTERY_INSERTION_SORT_SEPARATE_LIFECYCLE_CONTEXT
-        , pottery_insertion_sort_lifecycle_context_t lifecycle_context
-        #endif
-        #if POTTERY_INSERTION_SORT_SEPARATE_COMPARE_CONTEXT
-        , pottery_insertion_sort_compare_context_t compare_context
-        #endif
 ) {
     pottery_insertion_sort_state_t state = {
+        #ifdef POTTERY_INSERTION_SORT_CONTEXT_TYPE
         context,
-        #if POTTERY_INSERTION_SORT_SEPARATE_LIFECYCLE_CONTEXT
-        lifecycle_context,
         #endif
-        #if POTTERY_INSERTION_SORT_SEPARATE_COMPARE_CONTEXT
-        compare_context,
-        #endif
+        first,
     };
 
     #if POTTERY_INSERTION_SORT_USE_MOVE

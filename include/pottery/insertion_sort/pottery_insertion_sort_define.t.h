@@ -24,6 +24,8 @@
 
 #define POTTERY_INSERTION_SORT_IMPL
 
+#include "pottery/insertion_sort/impl/pottery_insertion_sort_macros.t.h"
+
 #ifndef POTTERY_INSERTION_SORT_EXTERNAL_LIFECYCLE
     #include "pottery/insertion_sort/impl/pottery_insertion_sort_config_lifecycle.t.h"
     #include "pottery/lifecycle/pottery_lifecycle_define.t.h"
@@ -31,7 +33,6 @@
 
 // no compare
 
-#include "pottery/insertion_sort/impl/pottery_insertion_sort_macros.t.h"
 #include "pottery/insertion_sort/impl/pottery_insertion_sort_definitions.t.h"
 
 #ifndef POTTERY_INSERTION_SORT_EXTERNAL_LIFECYCLE

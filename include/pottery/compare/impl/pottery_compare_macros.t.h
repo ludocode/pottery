@@ -38,12 +38,6 @@
 // must have one of ref or value type
 #if !defined(POTTERY_COMPARE_REF_TYPE) && !defined(POTTERY_COMPARE_VALUE_TYPE)
 #error "One of POTTERY_COMPARE_REF_TYPE or POTTERY_COMPARE_VALUE_TYPE must be defined."
-#include "pottery_fatal"
-#endif
-#if defined(POTTERY_COMPARE_REF_TYPE) && defined(POTTERY_COMPARE_VALUE_TYPE)
-#error "At most one of POTTERY_COMPARE_REF_TYPE or POTTERY_COMPARE_VALUE_TYPE must be defined."
-// TODO get rid of all pottery_fatal, rely on -Wfatal-errors instead
-#include "pottery_fatal"
 #endif
 
 // context

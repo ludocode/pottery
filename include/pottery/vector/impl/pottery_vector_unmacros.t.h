@@ -96,7 +96,8 @@
 #undef POTTERY_VECTOR_INTERNAL_CAPACITY
 #undef POTTERY_VECTOR_EXTERN
 
-#undef POTTERY_VECTOR_ALLOC_CONTEXT
+#undef POTTERY_VECTOR_CONTEXT_TYPE
+#undef POTTERY_VECTOR_CONTEXT_VAL
 
 
 /*
@@ -269,6 +270,7 @@
     #undef pottery_vector_element_move_bulk_up_impl
     #undef pottery_vector_element_move_bulk_down
     #undef pottery_vector_element_move_bulk_down_impl
+    #undef pottery_vector_element_destroy_bulk
 
     // C++
     #undef pottery_vector_element_construct

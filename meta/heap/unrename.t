@@ -23,7 +23,7 @@
  */
 
 //!!! END_LICENSE
-// Un-renames insertion_sort identifiers with prefix "{PREFIX}"
+// Un-renames heap identifiers with prefix "{PREFIX}"
 #undef {PREFIX}_ref_t
 #undef {PREFIX}_value_t
 #undef {PREFIX}_context_t
@@ -31,10 +31,7 @@
 
 #undef {PREFIX}
 #undef {PREFIX}_access
-#undef {PREFIX}_before
 #undef {PREFIX}_set_index
-#undef {PREFIX}_move
-#undef {PREFIX}_swap
 
 #undef {PREFIX}_parent
 #undef {PREFIX}_child_left
@@ -45,7 +42,6 @@
 #undef {PREFIX}_push_impl
 #undef {PREFIX}_pop_impl
 #undef {PREFIX}_remove_impl
-#undef {PREFIX}_valid_impl
 #undef {PREFIX}_valid_count_impl
 #undef {PREFIX}_build
 #undef {PREFIX}_push

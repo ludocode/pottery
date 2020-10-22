@@ -258,7 +258,6 @@ void pottery_register_unit_tests(void);
 
 #else
 #error "No unit test registration mechanism configured!"
-#include "pottery_fatal"
 
 #endif
 

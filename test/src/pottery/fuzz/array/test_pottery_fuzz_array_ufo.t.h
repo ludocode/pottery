@@ -24,7 +24,6 @@
 
 #ifndef TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX
 #error "Misconfigured template"
-#include "pottery_fatal"
 #endif
 
 #ifdef TEST_POTTERY_FUZZ_MAIN

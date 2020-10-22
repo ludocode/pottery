@@ -28,27 +28,24 @@
 
 #ifdef POTTERY_QUICK_SORT_VALUE_TYPE
 typedef POTTERY_QUICK_SORT_VALUE_TYPE pottery_quick_sort_value_t;
-typedef pottery_quick_sort_value_t* pottery_quick_sort_ref_t;
-#else
+#endif
+
+#ifdef POTTERY_QUICK_SORT_REF_TYPE
 typedef POTTERY_QUICK_SORT_REF_TYPE pottery_quick_sort_ref_t;
+#else
+typedef pottery_quick_sort_value_t* pottery_quick_sort_ref_t;
 #endif
 
 #ifdef POTTERY_QUICK_SORT_CONTEXT_TYPE
 typedef POTTERY_QUICK_SORT_CONTEXT_TYPE pottery_quick_sort_context_t;
-#else
-typedef pottery_quick_sort_ref_t pottery_quick_sort_context_t;
 #endif
 
 #if POTTERY_FORWARD_DECLARATIONS
 POTTERY_QUICK_SORT_EXTERN
 void pottery_quick_sort(
+        #ifdef POTTERY_QUICK_SORT_CONTEXT_TYPE
         pottery_quick_sort_context_t context,
-        size_t count
-        #if POTTERY_QUICK_SORT_SEPARATE_LIFECYCLE_CONTEXT
-        , pottery_quick_sort_lifecycle_context_t lifecycle_context
         #endif
-        #if POTTERY_QUICK_SORT_SEPARATE_COMPARE_CONTEXT
-        , pottery_quick_sort_compare_context_t compare_context
-        #endif
-        );
+        pottery_quick_sort_ref_t first,
+        size_t count);
 #endif

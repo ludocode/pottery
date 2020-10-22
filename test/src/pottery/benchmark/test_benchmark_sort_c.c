@@ -42,20 +42,6 @@ static inline int int_compare_values(const int a, const int b) {
 
 
 
-// pottery insertion sort
-
-#define POTTERY_INSERTION_SORT_PREFIX pottery_benchmark_insertion_sort
-#define POTTERY_INSERTION_SORT_VALUE_TYPE int
-#define POTTERY_INSERTION_SORT_LIFECYCLE_BY_VALUE 1
-#define POTTERY_INSERTION_SORT_COMPARE_BY_VALUE 1
-#include "pottery/insertion_sort/pottery_insertion_sort_static.t.h"
-
-void pottery_benchmark_insertion_sort_wrapper(int* ints, size_t count) {
-    pottery_benchmark_insertion_sort(ints, count);
-}
-
-
-
 // pottery quick sort
 
 #define POTTERY_QUICK_SORT_PREFIX pottery_benchmark_quick_sort
@@ -113,7 +99,6 @@ void pottery_benchmark_heap_sort_wrapper(int* ints, size_t count) {
 
 
 // qsort()
-
 static int int_compare_pointers(const void* left, const void* right) {
     return int_compare_values(
             *pottery_reinterpret_cast(const int*, left),
@@ -123,6 +108,17 @@ static int int_compare_pointers(const void* left, const void* right) {
 void qsort_wrapper(int* ints, size_t count) {
     qsort(ints, count, sizeof(int), int_compare_pointers);
 }
+
+
+
+// pottery_qsort_simple
+
+#include "pottery/qsort_simple/pottery_qsort_simple.c"
+
+void pottery_qsort_simple_wrapper(int* ints, size_t count) {
+    pottery_qsort_simple(ints, count, sizeof(int), int_compare_pointers);
+}
+
 
 
 

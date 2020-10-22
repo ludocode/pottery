@@ -42,7 +42,6 @@
         defined(POTTERY_ALLOC_ZALLOC) || \
         defined(POTTERY_ALLOC_REALLOC))
     #error "FREE is required for a corresponding MALLOC, ZALLOC or REALLOC."
-    #include "pottery_fatal"
 #endif
 
 #if defined(POTTERY_ALLOC_FREE) && \
@@ -50,7 +49,6 @@
         !defined(POTTERY_ALLOC_ZALLOC) && \
         !defined(POTTERY_ALLOC_REALLOC)
     #error "FREE is defined but no corresponding MALLOC, ZALLOC or REALLOC is defined."
-    #include "pottery_fatal"
 #endif
 
 #if defined(POTTERY_ALLOC_MALLOC_GOOD_SIZE) && \
@@ -58,7 +56,6 @@
         !defined(POTTERY_ALLOC_ZALLOC) && \
         !defined(POTTERY_ALLOC_REALLOC)
     #error "MALLOC_GOOD_SIZE is defined but no corresponding MALLOC, ZALLOC or REALLOC is defined."
-    #include "pottery_fatal"
 #endif
 
 #if defined(POTTERY_ALLOC_MALLOC_USABLE_SIZE) && \
@@ -66,7 +63,6 @@
         !defined(POTTERY_ALLOC_ZALLOC) && \
         !defined(POTTERY_ALLOC_REALLOC)
     #error "MALLOC_USABLE_SIZE is defined but no corresponding MALLOC, ZALLOC or REALLOC is defined."
-    #include "pottery_fatal"
 #endif
 
 #if !defined(POTTERY_ALLOC_ALIGNED_FREE) && ( \
@@ -74,7 +70,6 @@
         defined(POTTERY_ALLOC_ALIGNED_ZALLOC) || \
         defined(POTTERY_ALLOC_ALIGNED_REALLOC))
     #error "ALIGNED_FREE is required for a corresponding ALIGNED_MALLOC, ALIGNED_ZALLOC or ALIGNED_REALLOC."
-    #include "pottery_fatal"
 #endif
 
 #if defined(POTTERY_ALLOC_ALIGNED_FREE) && \
@@ -82,7 +77,6 @@
         !defined(POTTERY_ALLOC_ALIGNED_ZALLOC) && \
         !defined(POTTERY_ALLOC_ALIGNED_REALLOC)
     #error "ALIGNED_FREE is defined but no corresponding ALIGNED_MALLOC, ALIGNED_ZALLOC or ALIGNED_REALLOC."
-    #include "pottery_fatal"
 #endif
 
 #if defined(POTTERY_ALLOC_ALIGNED_MALLOC_GOOD_SIZE) && \
@@ -90,7 +84,6 @@
         !defined(POTTERY_ALLOC_ALIGNED_ZALLOC) && \
         !defined(POTTERY_ALLOC_ALIGNED_REALLOC)
     #error "ALIGNED_MALLOC_GOOD_SIZE is defined but no corresponding ALIGNED_MALLOC, ALIGNED_ZALLOC or ALIGNED_REALLOC is defined."
-    #include "pottery_fatal"
 #endif
 
 #if defined(POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE) && \
@@ -98,7 +91,6 @@
         !defined(POTTERY_ALLOC_ALIGNED_ZALLOC) && \
         !defined(POTTERY_ALLOC_ALIGNED_REALLOC)
     #error "ALIGNED_MALLOC_USABLE_SIZE is defined but no corresponding ALIGNED_MALLOC, ALIGNED_ZALLOC or ALIGNED_REALLOC is defined."
-    #include "pottery_fatal"
 #endif
 
 // If we have no custom allocators defined, use the defaults.

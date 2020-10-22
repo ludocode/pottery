@@ -24,7 +24,6 @@
 
 #ifndef TEST_POTTERY_FUZZ_SORT_UFO_PREFIX
     #error "Misconfigured template"
-    #include "pottery_fatal" // TODO sweep out pottery_fatal
 #endif
 
 #include <stdio.h>

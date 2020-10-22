@@ -28,29 +28,23 @@
 
 POTTERY_HEAP_SORT_EXTERN
 void pottery_heap_sort(
+        #ifdef POTTERY_HEAP_SORT_CONTEXT_TYPE
         pottery_heap_sort_context_t context,
-        size_t count
-        #if POTTERY_HEAP_SORT_SEPARATE_LIFECYCLE_CONTEXT
-        , pottery_heap_sort_lifecycle_context_t lifecycle_context
         #endif
-        #if POTTERY_HEAP_SORT_SEPARATE_COMPARE_CONTEXT
-        , pottery_heap_sort_compare_context_t compare_context
-        #endif
-) {
-    pottery_heap_sort_heap_build(context, count
-            #if POTTERY_HEAP_SORT_SEPARATE_LIFECYCLE_CONTEXT
-            , lifecycle_context
+        pottery_heap_sort_ref_t first,
+        size_t count)
+{
+    pottery_heap_sort_heap_build(
+            #ifdef POTTERY_HEAP_SORT_CONTEXT_TYPE
+            context,
             #endif
-            #if POTTERY_HEAP_SORT_SEPARATE_COMPARE_CONTEXT
-            , compare_context
+            first,
+            count);
+    pottery_heap_sort_heap_pop(
+            #ifdef POTTERY_HEAP_SORT_CONTEXT_TYPE
+            context,
             #endif
-            );
-    pottery_heap_sort_heap_pop(context, count, count
-            #if POTTERY_HEAP_SORT_SEPARATE_LIFECYCLE_CONTEXT
-            , lifecycle_context
-            #endif
-            #if POTTERY_HEAP_SORT_SEPARATE_COMPARE_CONTEXT
-            , compare_context
-            #endif
-            );
+            first,
+            count,
+            count);
 }

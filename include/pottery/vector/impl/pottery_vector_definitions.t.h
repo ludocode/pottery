@@ -32,9 +32,7 @@ static inline pottery_vector_element_t* pottery_vector_impl_alloc(
 {
     (void)vector;
     void* ptr = pottery_vector_alloc_malloc_array_at_least(
-            #if defined(POTTERY_VECTOR_ALLOC_CONTEXT_TYPE)
-            pottery_vector_impl_alloc_context(vector),
-            #endif
+            POTTERY_VECTOR_CONTEXT_VAL(vector)
             pottery_alignof(pottery_vector_element_t),
             count, sizeof(pottery_vector_element_t));
     return pottery_cast(pottery_vector_element_t*, ptr);
@@ -46,9 +44,7 @@ static inline void pottery_vector_impl_free(pottery_vector_t* vector,
 {
     (void)vector;
     pottery_vector_alloc_free(
-            #if defined(POTTERY_VECTOR_ALLOC_CONTEXT_TYPE)
-            pottery_vector_impl_alloc_context(vector),
-            #endif
+            POTTERY_VECTOR_CONTEXT_VAL(vector)
             pottery_alignof(pottery_vector_element_t), elements);
 }
 
@@ -85,7 +81,7 @@ static void pottery_vector_impl_destroy_destruct_all(pottery_vector_t* vector) {
     size_t i;
     for (i = 0; i < vector->count; ++i) {
         pottery_vector_element_t* element = pottery_vector_at(vector, i);
-        pottery_vector_element_destroy(element);
+        pottery_vector_lifecycle_destroy(POTTERY_VECTOR_CONTEXT_VAL(vector) element);
         //pottery_vector_element_destruct(element);
     }
 }
@@ -177,12 +173,12 @@ void pottery_vector_move(pottery_vector_t* to, pottery_vector_t* from) {
 
         // move the elements
         to->count = from->count;
-        pottery_vector_element_move_bulk_restrict(to->values, from->values, to->count);
+        pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(from) to->values, from->values, to->count);
         from->count = 0;
 
         // move the context
-        #if defined(POTTERY_VECTOR_ALLOC_CONTEXT_TYPE) && !defined(POTTERY_VECTOR_ALLOC_CONTEXT)
-        to->alloc_context = from->alloc_context;
+        #ifdef POTTERY_VECTOR_CONTEXT_TYPE
+        to->context = from->context;
         #endif
 
         // destroy the source vector
@@ -259,7 +255,7 @@ pottery_error_t pottery_vector_emplace_at_bulk(pottery_vector_t* vector, size_t 
 #if POTTERY_LIFECYCLE_CAN_DESTROY
 POTTERY_VECTOR_EXTERN
 void pottery_vector_remove_at(pottery_vector_t* vector, size_t index) {
-    pottery_vector_element_destroy(pottery_vector_at(vector, index));
+    pottery_vector_lifecycle_destroy(POTTERY_VECTOR_CONTEXT_VAL(vector) pottery_vector_at(vector, index));
     pottery_vector_displace_at(vector, index);
 }
 #endif
@@ -291,7 +287,7 @@ pottery_error_t pottery_vector_impl_create_space(pottery_vector_t* vector,
 
     // see if we have enough space.
     if (new_count <= pottery_vector_capacity(vector)) {
-        pottery_vector_element_move_bulk_up(vector->values + index + count,
+        pottery_vector_lifecycle_move_bulk_up(POTTERY_VECTOR_CONTEXT_VAL(vector) vector->values + index + count,
                 vector->values + index, vector->count - index);
         vector->count += count;
         *elements = vector->values + index;
@@ -320,8 +316,8 @@ pottery_error_t pottery_vector_impl_create_space(pottery_vector_t* vector,
         return POTTERY_ERROR_ALLOC;
 
     if (vector->values != pottery_null) {
-        pottery_vector_element_move_bulk_restrict(new_values, vector->values, index);
-        pottery_vector_element_move_bulk_restrict(new_values + index + count,
+        pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(vector) new_values, vector->values, index);
+        pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(vector) new_values + index + count,
                 vector->values + index, old_count - index);
         if (true
                 #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
@@ -353,9 +349,9 @@ pottery_error_t pottery_vector_insert_at_bulk(pottery_vector_t* vector, size_t i
     size_t i;
     for (i = 0; i < count; ++i) {
         pottery_vector_element_t* element = inserted + i;
-        error = pottery_vector_element_init_copy(element, values++);
+        error = pottery_vector_lifecycle_init_copy(POTTERY_VECTOR_CONTEXT_VAL(vector) element, values++);
         if (error != POTTERY_OK) {
-            pottery_vector_element_destroy_bulk(inserted, i);
+            pottery_vector_lifecycle_destroy_bulk(POTTERY_VECTOR_CONTEXT_VAL(vector) inserted, i);
             pottery_vector_impl_remove_space(vector, index, count);
             return error;
         }
@@ -460,8 +456,8 @@ void pottery_vector_impl_remove_space(pottery_vector_t* vector, size_t index, si
 
         if (new_values != pottery_null) {
             // move values into new space
-            pottery_vector_element_move_bulk_restrict(new_values, vector->values, index);
-            pottery_vector_element_move_bulk_restrict(new_values + index,
+            pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(vector) new_values, vector->values, index);
+            pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(vector) new_values + index,
                     vector->values + index + count, new_count - index);
             pottery_vector_impl_free(vector, vector->values);
 
@@ -481,7 +477,7 @@ void pottery_vector_impl_remove_space(pottery_vector_t* vector, size_t index, si
     }
 
     // no shrink. move elements down in-place.
-    pottery_vector_element_move_bulk_down(vector->values + index,
+    pottery_vector_lifecycle_move_bulk_down(POTTERY_VECTOR_CONTEXT_VAL(vector) vector->values + index,
             vector->values + index + count, new_count - index);
 }
 
@@ -501,7 +497,7 @@ POTTERY_VECTOR_EXTERN
 void pottery_vector_remove_at_bulk(pottery_vector_t* vector, size_t index, size_t count) {
     size_t i;
     for (i = index; i < index + count; ++i) {
-        pottery_vector_element_destroy(pottery_vector_at(vector, i));
+        pottery_vector_lifecycle_destroy(POTTERY_VECTOR_CONTEXT_VAL(vector) pottery_vector_at(vector, i));
         //pottery_vector_element_destruct(pottery_vector_at(vector, i));
     }
     pottery_vector_impl_remove_space(vector, index, count);
@@ -545,9 +541,9 @@ pottery_error_t pottery_vector_impl_copy(pottery_vector_t* vector, const pottery
     size_t i;
     for (i = 0; i < count; ++i) {
         pottery_vector_element_t* element = dest + i;
-        error = pottery_vector_element_init_copy(element, src++);
+        error = pottery_vector_lifecycle_init_copy(POTTERY_VECTOR_CONTEXT_VAL(vector) element, src++);
         if (error != POTTERY_OK) {
-            pottery_vector_element_destroy_bulk(dest, i);
+            pottery_vector_lifecycle_destroy_bulk(POTTERY_VECTOR_CONTEXT_VAL(vector) dest, i);
             pottery_vector_impl_clear(vector);
             return error;
         }

@@ -26,23 +26,27 @@
 #error "This is an internal header. Do not include it."
 #endif
 
-#if POTTERY_SHELL_SORT_SEPARATE_LIFECYCLE_CONTEXT
-typedef POTTERY_SHELL_SORT_LIFECYCLE_CONTEXT_TYPE pottery_shell_sort_lifecycle_context_t;
-#endif
-#if POTTERY_SHELL_SORT_SEPARATE_COMPARE_CONTEXT
-typedef POTTERY_SHELL_SORT_COMPARE_CONTEXT_TYPE pottery_shell_sort_compare_context_t;
-#endif
-
 #if POTTERY_FORWARD_DECLARATIONS
 POTTERY_SHELL_SORT_EXTERN
 void pottery_shell_sort(
+        #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
         pottery_shell_sort_context_t context,
-        size_t count
-        #if POTTERY_SHELL_SORT_SEPARATE_LIFECYCLE_CONTEXT
-        , pottery_shell_sort_lifecycle_context_t lifecycle_context
         #endif
-        #if POTTERY_SHELL_SORT_SEPARATE_LIFECYCLE_CONTEXT
-        , pottery_shell_sort_compare_context_t compare_context
-        #endif
-        );
+        pottery_shell_sort_ref_t first,
+        size_t count);
 #endif
+
+// Gets the ref for the element at index based on the gap sequence.
+// Our embedded insertion_sort uses this as its accessor function.
+static inline
+pottery_shell_sort_ref_t pottery_shell_sort_access(pottery_shell_sort_state_t state,
+        pottery_shell_sort_ref_t first, size_t index)
+{
+    size_t real_index = state.offset + index * state.gap;
+    #ifndef POTTERY_SHELL_SORT_ACCESS
+        // With no defined access expression, it's a simple array.
+        return first + real_index;
+    #else
+        return POTTERY_SHELL_SORT_ACCESS(state.context, first, real_index);
+    #endif
+}

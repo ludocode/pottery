@@ -26,29 +26,13 @@
 #error "This is an internal header. Do not include it."
 #endif
 
-// Gets the ref for the element at index based on the gap sequence.
-// Our embedded insertion_sort uses this as its accessor function.
-POTTERY_SHELL_SORT_EXTERN
-pottery_shell_sort_ref_t pottery_shell_sort_access(pottery_shell_sort_state_t state, size_t index) {
-    size_t real_index = state.offset + index * state.gap;
-    #ifndef POTTERY_SHELL_SORT_ACCESS
-        // With no defined access expression, the context is a simple array.
-        return state.context + real_index;
-    #else
-        return POTTERY_SHELL_SORT_ACCESS(state.context, real_index);
-    #endif
-}
-
 POTTERY_SHELL_SORT_EXTERN
 void pottery_shell_sort(
+        #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
         pottery_shell_sort_context_t context,
+        #endif
+        pottery_shell_sort_ref_t first,
         size_t count
-        #if POTTERY_SHELL_SORT_SEPARATE_LIFECYCLE_CONTEXT
-        , pottery_shell_sort_lifecycle_context_t lifecycle_context
-        #endif
-        #if POTTERY_SHELL_SORT_SEPARATE_COMPARE_CONTEXT
-        , pottery_shell_sort_compare_context_t compare_context
-        #endif
 ) {
     // Calculate gaps based on Ciura sequence extended by *2.25 (A102549).
     //     https://en.wikipedia.org/wiki/Shellsort#Gap_sequences
@@ -66,6 +50,7 @@ void pottery_shell_sort(
         if (i < pottery_array_count(hardcoded_gap_sequence)) {
             next_gap = hardcoded_gap_sequence[i];
         } else {
+            // *9/4 == 2.25
             if (pottery_mul_overflow_s(gaps[i], 9, &next_gap))
                 break;
             next_gap /= 4;
@@ -77,8 +62,9 @@ void pottery_shell_sort(
 
         // Make sure we don't overflow the gaps array (this isn't supposed to
         // be possible but we check just in case)
-        if (++i == pottery_array_count(gaps)) {
+        if (pottery_unlikely(++i == pottery_array_count(gaps))) {
             pottery_assert(false); // oops? file a bug report!
+            --i;
             break;
         }
 
@@ -86,7 +72,9 @@ void pottery_shell_sort(
     }
 
     pottery_shell_sort_state_t state;
+    #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
     state.context = context;
+    #endif
 
     // Perform successive insertion sorts based on gap sequence
     for (;;) {
@@ -97,14 +85,9 @@ void pottery_shell_sort(
                 ++step_count;
 
             //printf("sorting %zi elements with offset %zi gap %zi step_count %zi\n", count, state.offset, state.gap, step_count);
-            pottery_shell_sort_insertion_sort(state, step_count
-                    #if POTTERY_SHELL_SORT_SEPARATE_LIFECYCLE_CONTEXT
-                    , lifecycle_context
-                    #endif
-                    #if POTTERY_SHELL_SORT_SEPARATE_COMPARE_CONTEXT
-                    , compare_context
-                    #endif
-                    );
+            // TODO we could simplify this by offsetting first before calling
+            // this, that way we don't have to put offset in state.
+            pottery_shell_sort_insertion_sort(state, first, step_count);
         }
 
         if (i == 0)

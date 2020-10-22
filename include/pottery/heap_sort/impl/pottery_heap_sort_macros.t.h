@@ -38,26 +38,6 @@
     #define POTTERY_HEAP_SORT_EXTERN /*nothing*/
 #endif
 
-// See if we should accept a separate lifecycle context parameter
-#ifndef POTTERY_HEAP_SORT_CONTEXT_IS_LIFECYCLE_CONTEXT
-    #define POTTERY_HEAP_SORT_CONTEXT_IS_LIFECYCLE_CONTEXT 0
-#endif
-#if defined(POTTERY_HEAP_SORT_LIFECYCLE_CONTEXT_TYPE) && !POTTERY_HEAP_SORT_CONTEXT_IS_LIFECYCLE_CONTEXT
-    #define POTTERY_HEAP_SORT_SEPARATE_LIFECYCLE_CONTEXT 1
-#else
-    #define POTTERY_HEAP_SORT_SEPARATE_LIFECYCLE_CONTEXT 0
-#endif
-
-// See if we should accept a separate compare context parameter
-#ifndef POTTERY_HEAP_SORT_CONTEXT_IS_COMPARE_CONTEXT
-    #define POTTERY_HEAP_SORT_CONTEXT_IS_COMPARE_CONTEXT 0
-#endif
-#if defined(POTTERY_HEAP_SORT_COMPARE_CONTEXT_TYPE) && !POTTERY_HEAP_SORT_CONTEXT_IS_COMPARE_CONTEXT
-    #define POTTERY_HEAP_SORT_SEPARATE_COMPARE_CONTEXT 1
-#else
-    #define POTTERY_HEAP_SORT_SEPARATE_COMPARE_CONTEXT 0
-#endif
-
 
 
 /*
@@ -89,10 +69,7 @@
 
     #define pottery_heap_sort_heap POTTERY_HEAP_SORT_HEAP_NAME()
     #define pottery_heap_sort_heap_access POTTERY_HEAP_SORT_HEAP_NAME(_access)
-    #define pottery_heap_sort_heap_before POTTERY_HEAP_SORT_HEAP_NAME(_before)
     #define pottery_heap_sort_heap_set_index POTTERY_HEAP_SORT_HEAP_NAME(_set_index)
-    #define pottery_heap_sort_heap_move POTTERY_HEAP_SORT_HEAP_NAME(_move)
-    #define pottery_heap_sort_heap_swap POTTERY_HEAP_SORT_HEAP_NAME(_swap)
 
     #define pottery_heap_sort_heap_parent POTTERY_HEAP_SORT_HEAP_NAME(_parent)
     #define pottery_heap_sort_heap_child_left POTTERY_HEAP_SORT_HEAP_NAME(_child_left)
@@ -103,7 +80,6 @@
     #define pottery_heap_sort_heap_push_impl POTTERY_HEAP_SORT_HEAP_NAME(_push_impl)
     #define pottery_heap_sort_heap_pop_impl POTTERY_HEAP_SORT_HEAP_NAME(_pop_impl)
     #define pottery_heap_sort_heap_remove_impl POTTERY_HEAP_SORT_HEAP_NAME(_remove_impl)
-    #define pottery_heap_sort_heap_valid_impl POTTERY_HEAP_SORT_HEAP_NAME(_valid_impl)
     #define pottery_heap_sort_heap_valid_count_impl POTTERY_HEAP_SORT_HEAP_NAME(_valid_count_impl)
     #define pottery_heap_sort_heap_build POTTERY_HEAP_SORT_HEAP_NAME(_build)
     #define pottery_heap_sort_heap_push POTTERY_HEAP_SORT_HEAP_NAME(_push)

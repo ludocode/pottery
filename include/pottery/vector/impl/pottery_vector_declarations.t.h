@@ -26,30 +26,9 @@
 #error "This is an internal header. Do not include it."
 #endif
 
-typedef POTTERY_VECTOR_ELEMENT_TYPE pottery_vector_element_t;
-
-typedef pottery_vector_element_t* pottery_vector_entry_t;
-
-typedef struct pottery_vector_t {
-    pottery_vector_element_t* values;
-    size_t count;
-
-    union {
-        size_t capacity;
-        #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
-        pottery_vector_element_t internal[POTTERY_VECTOR_INTERNAL_CAPACITY];
-        #endif
-    } u;
-
-    #ifdef POTTERY_DEBUG
-    struct pottery_vector_t* self_check;
-    void* leak_check;
-    #endif
-
-    #if defined(POTTERY_VECTOR_ALLOC_CONTEXT_TYPE) && !defined(POTTERY_VECTOR_ALLOC_CONTEXT)
-    pottery_vector_alloc_context_t alloc_context;
-    #endif
-} pottery_vector_t;
+#if !POTTERY_LIFECYCLE_CAN_MOVE
+    #error "Pottery vector requires a move expression. Define POTTERY_VECTOR_LIFECYCLE_MOVE, POTTERY_VECTOR_LIFECYCLE_MOVE_BY_VALUE or POTTERY_VECTOR_LIFECYCLE_BY_VALUE. See the documentation for details."
+#endif
 
 
 
@@ -271,7 +250,7 @@ pottery_error_t pottery_vector_construct_at(pottery_vector_t* vector, size_t ind
     if (error != POTTERY_OK)
         return error;
 
-    error = pottery_vector_element_construct(*entry, std::forward<Args>(args)...);
+    error = pottery_vector_lifecycle_construct(*entry, std::forward<Args>(args)...);
     if (error != POTTERY_OK)
         pottery_vector_impl_remove_space(vector, index, 1);
     return error;
@@ -306,8 +285,8 @@ pottery_error_t pottery_vector_insert_at(pottery_vector_t* vector, size_t index,
     pottery_vector_entry_t entry;
     pottery_error_t error = pottery_vector_impl_create_space(vector, index, 1, &entry);
     if (error == POTTERY_OK)
-        pottery_vector_element_init_steal(entry, &value);
-    pottery_vector_element_destroy(&value);
+        pottery_vector_lifecycle_init_steal(POTTERY_VECTOR_CONTEXT_VAL(vector) entry, &value);
+    pottery_vector_lifecycle_destroy(POTTERY_VECTOR_CONTEXT_VAL(vector) &value);
     return error;
 }
 
@@ -345,8 +324,8 @@ pottery_error_t pottery_vector_insert_at(pottery_vector_t* vector, size_t index,
     pottery_vector_entry_t entry;
     pottery_error_t error = pottery_vector_impl_create_space(vector, index, 1, &entry);
     if (error == POTTERY_OK)
-        pottery_vector_element_init_steal(entry, &value);
-    pottery_vector_element_destroy(&value);
+        pottery_vector_lifecycle_init_steal(POTTERY_VECTOR_CONTEXT_VAL(vector) entry, &value);
+    pottery_vector_lifecycle_destroy(POTTERY_VECTOR_CONTEXT_VAL(vector) &value);
     return error;
 }
 
@@ -388,7 +367,7 @@ pottery_error_t pottery_vector_insert_at(pottery_vector_t* vector, size_t index,
     if (error == POTTERY_OK)
         *entry = value;
     else
-        pottery_vector_element_destroy(&value);
+        pottery_vector_lifecycle_destroy(POTTERY_VECTOR_CONTEXT_VAL(vector) &value);
     return error;
 }
 

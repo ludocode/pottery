@@ -62,9 +62,9 @@
 
         #define POTTERY_INSERTION_SORT_PREFIX insertion_sort
         #define POTTERY_INSERTION_SORT_VALUE_TYPE value_type
-        #define POTTERY_INSERTION_SORT_CONTEXT_TYPE RandomAccessIterator
+        #define POTTERY_INSERTION_SORT_REF_TYPE RandomAccessIterator
         #define POTTERY_INSERTION_SORT_LIFECYCLE_MOVE_BY_VALUE 1
-        #define POTTERY_INSERTION_SORT_COMPARE_CONTEXT_TYPE Less
+        #define POTTERY_INSERTION_SORT_CONTEXT_TYPE Less
         #define POTTERY_INSERTION_SORT_COMPARE_LESS(less, left, right) less(*left, *right)
         #include "pottery/insertion_sort/pottery_insertion_sort_static.t.h"
     };
@@ -79,13 +79,13 @@
         typedef typename std::iterator_traits<RandomAccessIterator>::value_type value_type;
         typedef typename std::less<value_type> Less;
         size_t count = pottery_cast(size_t, last - first);
-        detail::insertion_sort_wrapper<RandomAccessIterator, Less>::insertion_sort(first, count, Less());
+        detail::insertion_sort_wrapper<RandomAccessIterator, Less>::insertion_sort(Less(), first, count);
     }
 
     template <typename RandomAccessIterator, typename Less>
     inline void insertion_sort(RandomAccessIterator first, RandomAccessIterator last, Less less) {
         size_t count = pottery_cast(size_t, last - first);
-        detail::insertion_sort_wrapper<RandomAccessIterator, Less>::insertion_sort(first, count, less);
+        detail::insertion_sort_wrapper<RandomAccessIterator, Less>::insertion_sort(less, first, count);
     }
 
     } // namespace pottery

@@ -30,7 +30,6 @@
 
 #ifndef POTTERY_TEST_SORT_INT_PREFIX
 #error "Misconfigured template"
-#include "pottery_fatal"
 #endif
 
 #define POTTERY_TEST_SORT_INT_NAME(x) \

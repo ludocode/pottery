@@ -10,7 +10,7 @@ CPPFLAGS := -O3 -flto
 CXXFLAGS :=
 
 CPPFLAGS += -Wall -Wextra -Wpedantic -Werror -Wfatal-errors
-CPPFLAGS += -Iinclude -Itest/src -Itest/build/lib
+CPPFLAGS += -Iinclude -Itest/src -Itest/build/lib -Iexamples
 CPPFLAGS += -MMD -MP
 
 # An unsafe three-way comparison of ints is sometimes done via "a - b". This

@@ -28,9 +28,12 @@
 
 #if defined(POTTERY_COMPARE_VALUE_TYPE)
 typedef POTTERY_COMPARE_VALUE_TYPE pottery_compare_value_t;
-typedef pottery_compare_value_t* pottery_compare_ref_t;
-#else
+#endif
+
+#ifdef POTTERY_COMPARE_REF_TYPE
 typedef POTTERY_COMPARE_REF_TYPE pottery_compare_ref_t;
+#else
+typedef pottery_compare_value_t* pottery_compare_ref_t;
 #endif
 
 #ifdef POTTERY_COMPARE_CONTEXT_TYPE
@@ -42,6 +45,8 @@ static inline
 bool pottery_compare_equal(POTTERY_COMPARE_CONTEXT_ARG
         pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
+    POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
+
     #if POTTERY_COMPARE_BY_VALUE
         return *left == *right;
 
@@ -112,6 +117,8 @@ static inline
 bool pottery_compare_not_equal(POTTERY_COMPARE_CONTEXT_ARG
         pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
+    POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
+
     #if POTTERY_COMPARE_BY_VALUE
         return *left != *right;
 
@@ -184,6 +191,8 @@ static inline
 bool pottery_compare_less(POTTERY_COMPARE_CONTEXT_ARG
         pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
+    POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
+
     #if POTTERY_COMPARE_BY_VALUE
         return *left < *right;
 
@@ -229,6 +238,8 @@ static inline
 bool pottery_compare_greater(POTTERY_COMPARE_CONTEXT_ARG
         pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
+    POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
+
     #if POTTERY_COMPARE_BY_VALUE
         return *left > *right;
 
@@ -274,6 +285,8 @@ static inline
 bool pottery_compare_less_or_equal(POTTERY_COMPARE_CONTEXT_ARG
         pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
+    POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
+
     #if POTTERY_COMPARE_BY_VALUE
         return *left <= *right;
 
@@ -319,6 +332,8 @@ static inline
 bool pottery_compare_greater_or_equal(POTTERY_COMPARE_CONTEXT_ARG
         pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
+    POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
+
     #if POTTERY_COMPARE_BY_VALUE
         return *left >= *right;
 
@@ -364,6 +379,8 @@ static inline
 int pottery_compare_three_way(POTTERY_COMPARE_CONTEXT_ARG
         pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
+    POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
+
     #if POTTERY_COMPARE_BY_VALUE
         return *left < *right ? -1 : (*left > *right ? 1 : 0);
 

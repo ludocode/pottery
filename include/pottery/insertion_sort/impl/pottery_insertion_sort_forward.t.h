@@ -22,17 +22,27 @@
  * SOFTWARE.
  */
 
-//!!! END_LICENSE
-// Renames quick_sort identifiers with prefix "{PREFIX}"
-// using macro {MACRO}()
-#define {PREFIX}_ref_t {MACRO}(_ref_t)
-#define {PREFIX}_const_ref_t {MACRO}(_const_ref_t)
-#define {PREFIX}_value_t {MACRO}(_value_t)
-#define {PREFIX}_context_t {MACRO}(_context_t)
-#define {PREFIX}_state_t {MACRO}(_state_t)
+#ifndef POTTERY_INSERTION_SORT_IMPL
+#error "This is an internal header. Do not include it."
+#endif
 
-#define {PREFIX} {MACRO}()
-#define {PREFIX}_access {MACRO}(_access)
-#define {PREFIX}_prepare_pivot {MACRO}(_prepare_pivot)
-#define {PREFIX}_partition {MACRO}(_partition)
-#define {PREFIX}_impl {MACRO}(_impl)
+#ifdef POTTERY_INSERTION_SORT_VALUE_TYPE
+typedef POTTERY_INSERTION_SORT_VALUE_TYPE pottery_insertion_sort_value_t;
+#endif
+
+#ifdef POTTERY_INSERTION_SORT_REF_TYPE
+typedef POTTERY_INSERTION_SORT_REF_TYPE pottery_insertion_sort_ref_t;
+#else
+typedef pottery_insertion_sort_value_t* pottery_insertion_sort_ref_t;
+#endif
+
+#ifdef POTTERY_INSERTION_SORT_CONTEXT_TYPE
+typedef POTTERY_INSERTION_SORT_CONTEXT_TYPE pottery_insertion_sort_context_t;
+#endif
+
+typedef struct pottery_insertion_sort_state_t {
+    #ifdef POTTERY_INSERTION_SORT_CONTEXT_TYPE
+    pottery_insertion_sort_context_t context;
+    #endif
+    pottery_insertion_sort_ref_t first;
+} pottery_insertion_sort_state_t;
