@@ -38,13 +38,6 @@
     #error "POTTERY_INTRO_SORT_PREFIX is not defined."
 #endif
 
-#if !POTTERY_LIFECYCLE_CAN_SWAP
-    #error "A move or swap expression is required."
-#endif
-#if !POTTERY_COMPARE_CAN_ORDER
-    #error "An ordering comparison expression is required."
-#endif
-
 
 
 /*

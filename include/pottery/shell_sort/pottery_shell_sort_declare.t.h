@@ -25,7 +25,7 @@
 #define POTTERY_SHELL_SORT_IMPL
 
 #include "pottery/shell_sort/impl/pottery_shell_sort_macros.t.h"
-#include "pottery/shell_sort/impl/pottery_shell_sort_types.t.h"
+#include "pottery/shell_sort/impl/pottery_shell_sort_forward.t.h"
 
 #include "pottery/shell_sort/impl/pottery_shell_sort_config_insertion_sort.t.h"
 #include "pottery/insertion_sort/pottery_insertion_sort_declare.t.h"

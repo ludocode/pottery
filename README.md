@@ -14,7 +14,7 @@ It's called "Pottery" because it doesn't exactly give you containers you can use
 
 ### String Sort
 
-Suppose you want to sort an array of strings. You could use `qsort()` but it's not ideal: it uses ugly void pointers; you have to write a special compare function for it; it has to call `memcpy()` to move elements; and it performs comparisons through a function pointer. This makes it slow and awkward to use.
+Suppose you want to sort an array of strings. You could use `qsort()` but it's not ideal: it uses void pointers; it has to `memcpy()` elements around; and you have to write a special compare function which it calls through a function pointer. This makes it slow and awkward to use.
 
 Instead we can instantiate a strongly-typed sort algorithm with Pottery:
 
@@ -44,9 +44,9 @@ for (size_t i = 0; i < count; ++i)
 
 The template instantiation preprocesses into a full implementation of [introsort](https://en.wikipedia.org/wiki/Introsort). It takes `const char**` as argument, moves `const char*` values around with operator `=`, and calls `strcmp()` directly rather than through a function pointer. The performance (and code size!) is comparable to a typical implementation of C++ `std::sort<>()`.
 
-The [intro_sort](include/intro_sort/) template uses several other Pottery templates which themselves use other templates: [quick_sort](include/quick_sort/), [insertion_sort](include/insertion_sort/), [heap_sort](include/heap_sort/) which uses [heap](include/heap/), and most of which use [lifecycle](include/lifecycle/) and [compare](include/compare/). Pottery's templates are composable and its algorithms and containers are split up into small independent components.
+The [intro_sort](include/pottery/intro_sort/) template uses several other Pottery templates which themselves use other templates: [quick_sort](include/pottery/quick_sort/), [insertion_sort](include/pottery/insertion_sort/), [heap_sort](include/pottery/heap_sort/) which uses [heap](include/pottery/heap/), and the [lifecycle](include/pottery/lifecycle/) and [compare](include/pottery/compare/) helpers. Pottery's templates are composable and its algorithms and containers are split up into small independent components.
 
-We've defined `MOVE_BY_VALUE` to 1 above because `const char*` can be moved by value. You could instead provide a custom move or swap function if the type is not bitwise-movable. You could provide a boolean `LESS` expression or others instead of a `THREE_WAY` comparison. You could provide a custom context and accessor function to access the i'th element in case the array is not contiguous in memory (so you could sort a [deque](include/deque/) for example.) You could even sort over an abstract reference type, so you could query a database, pull elements off a tape drive, make network requests, etc.
+We've defined `MOVE_BY_VALUE` to 1 above because `const char*` can be moved by value. You could instead provide a custom move or swap function if the type is not bitwise-movable. You could provide a boolean `LESS` expression or others instead of a `THREE_WAY` comparison. You could provide a custom context and accessor function to access the i'th element in case the array is not contiguous in memory (so you could sort a [deque](include/pottery/deque/) for example.) You could even sort over an abstract reference type, so you could query a database, pull elements off a tape drive, make network requests, etc.
 
 ### Int Vector
 

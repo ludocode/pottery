@@ -27,13 +27,12 @@
     #include "pottery_fatal" // TODO sweep out pottery_fatal
 #endif
 
-#ifdef TEST_POTTERY_FUZZ_MAIN
-    #include <stdio.h>
-#else
+#include <stdio.h>
+#include "pottery/fuzz/test_fuzz_common.h"
+
+#ifndef TEST_POTTERY_FUZZ_MAIN
     #include "pottery/unit/test_pottery_framework.h"
 #endif
-
-#include "pottery/fuzz/test_fuzz_common.h"
 
 #ifndef FUZZ_SORT_UFO_COUNT_LIMIT
     #ifdef TEST_POTTERY_FUZZ_MAIN

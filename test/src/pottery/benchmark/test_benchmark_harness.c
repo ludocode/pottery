@@ -23,6 +23,7 @@
  */
 
 #include <time.h>
+#include <stdio.h>
 
 // c
 void pottery_benchmark_insertion_sort_wrapper(int* ints, size_t count);

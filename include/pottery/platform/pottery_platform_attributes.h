@@ -278,7 +278,7 @@
     // may cause problems when linked together if they disagree on whether
     // they should use extended alignment allocation.
     #elif defined(__TINYC__)
-        #define pottery_alignmax pottery_alignof(union {long long a; long double b;})
+        #define pottery_alignmax _Alignof(union {long long a; long double b;})
 
     // MSVC hardcoded values
     // See "fundamental alignment" here:

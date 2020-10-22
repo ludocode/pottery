@@ -75,6 +75,9 @@
     #ifdef POTTERY_HEAP_SORT_ACCESS
         #define POTTERY_HEAP_ACCESS POTTERY_HEAP_SORT_ACCESS
     #endif
+
+    // TODO this is obsolete, it's been renamed to LIFECYCLE_BY_VALUE. probably
+    // this template shouldn't be used anymore, e.g. intro_sort doesn't use it
     #ifdef POTTERY_HEAP_SORT_BY_VALUE
         #define POTTERY_HEAP_BY_VALUE POTTERY_HEAP_SORT_BY_VALUE
     #endif

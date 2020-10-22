@@ -25,6 +25,8 @@
 #ifndef POTTERY_FUZZ_TEST_FUZZ_COMMON_H
 #define POTTERY_FUZZ_TEST_FUZZ_COMMON_H
 
+#include "pottery/common/test_pottery_ufo.h"
+
 #define FUZZ_UFO_NAME_MAX_LENGTH 7
 
 typedef struct fuzz_input_t {

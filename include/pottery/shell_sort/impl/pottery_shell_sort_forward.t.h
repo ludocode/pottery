@@ -46,7 +46,6 @@ typedef struct pottery_shell_sort_state_t {
 } pottery_shell_sort_state_t;
 
 #if POTTERY_FORWARD_DECLARATIONS
-// not actually a type, but it's needed for insertion_sort
 POTTERY_SHELL_SORT_EXTERN
 pottery_shell_sort_ref_t pottery_shell_sort_access(
         pottery_shell_sort_state_t state, size_t index);
