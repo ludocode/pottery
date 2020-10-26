@@ -23,14 +23,13 @@
  */
 
 //!!! END_LICENSE
-// Renames insertion_sort identifiers with prefix "{PREFIX}"
-// using macro {MACRO}()
-#define {PREFIX}_ref_t {MACRO}(_ref_t)
-#define {PREFIX}_value_t {MACRO}(_value_t)
-#define {PREFIX}_context_t {MACRO}(_context_t)
-#define {PREFIX}_state_t {MACRO}(_state_t)
+// Renames insertion_sort identifiers from {SRC} to {DEST}
 
-#define {PREFIX} {MACRO}()
-#define {PREFIX}_access {MACRO}(_access)
-#define {PREFIX}_by_move {MACRO}(_by_move)
-#define {PREFIX}_by_swap {MACRO}(_by_swap)
+#define {SRC}_ref_t POTTERY_CONCAT({DEST}, _ref_t)
+#define {SRC}_value_t POTTERY_CONCAT({DEST}, _value_t)
+#define {SRC}_context_t POTTERY_CONCAT({DEST}, _context_t)
+#define {SRC}_state_t POTTERY_CONCAT({DEST}, _state_t)
+
+#define {SRC} POTTERY_CONCAT({DEST}, )
+#define {SRC}_access POTTERY_CONCAT({DEST}, _access)
+#define {SRC}_impl POTTERY_CONCAT({DEST}, _impl)

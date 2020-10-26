@@ -62,7 +62,6 @@ void qsort_swap(qsort_context_t context, void* vleft, void* vright) {
     memcpy(right, buffer, remaining);
 }
 
-#if 1
 #define POTTERY_INTRO_SORT_PREFIX qsort_run
 #define POTTERY_INTRO_SORT_REF_TYPE void*
 #define POTTERY_INTRO_SORT_CONTEXT_TYPE qsort_context_t
@@ -70,39 +69,6 @@ void qsort_swap(qsort_context_t context, void* vleft, void* vright) {
 #define POTTERY_INTRO_SORT_COMPARE_THREE_WAY qsort_compare
 #define POTTERY_INTRO_SORT_LIFECYCLE_SWAP qsort_swap
 #include "pottery/intro_sort/pottery_intro_sort_static.t.h"
-#elif 0
-#define POTTERY_QUICK_SORT_PREFIX qsort_run
-#define POTTERY_QUICK_SORT_REF_TYPE void*
-#define POTTERY_QUICK_SORT_CONTEXT_TYPE qsort_context_t
-#define POTTERY_QUICK_SORT_ACCESS qsort_access
-#define POTTERY_QUICK_SORT_COMPARE_THREE_WAY qsort_compare
-#define POTTERY_QUICK_SORT_LIFECYCLE_SWAP qsort_swap
-#include "pottery/quick_sort/pottery_quick_sort_static.t.h"
-#elif 0
-#define POTTERY_INSERTION_SORT_PREFIX qsort_run
-#define POTTERY_INSERTION_SORT_REF_TYPE void*
-#define POTTERY_INSERTION_SORT_CONTEXT_TYPE qsort_context_t
-#define POTTERY_INSERTION_SORT_ACCESS qsort_access
-#define POTTERY_INSERTION_SORT_COMPARE_THREE_WAY qsort_compare
-#define POTTERY_INSERTION_SORT_LIFECYCLE_SWAP qsort_swap
-#include "pottery/insertion_sort/pottery_insertion_sort_static.t.h"
-#elif 0
-#define POTTERY_SHELL_SORT_PREFIX qsort_run
-#define POTTERY_SHELL_SORT_REF_TYPE void*
-#define POTTERY_SHELL_SORT_CONTEXT_TYPE qsort_context_t
-#define POTTERY_SHELL_SORT_ACCESS qsort_access
-#define POTTERY_SHELL_SORT_COMPARE_THREE_WAY qsort_compare
-#define POTTERY_SHELL_SORT_LIFECYCLE_SWAP qsort_swap
-#include "pottery/shell_sort/pottery_shell_sort_static.t.h"
-#else
-#define POTTERY_HEAP_SORT_PREFIX qsort_run
-#define POTTERY_HEAP_SORT_REF_TYPE void*
-#define POTTERY_HEAP_SORT_CONTEXT_TYPE qsort_context_t
-#define POTTERY_HEAP_SORT_ACCESS qsort_access
-#define POTTERY_HEAP_SORT_COMPARE_THREE_WAY qsort_compare
-#define POTTERY_HEAP_SORT_LIFECYCLE_SWAP qsort_swap
-#include "pottery/heap_sort/pottery_heap_sort_static.t.h"
-#endif
 
 void pottery_qsort_simple(void* first, size_t count, size_t element_size,
             int (*compare)(const void* left, const void* right))

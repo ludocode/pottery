@@ -30,13 +30,14 @@ print:
 	@echo
 	@echo "Pass a fuzzer as an argument to test/fuzz.sh:"
 	@echo
-	@echo "    $(shell echo $(EXES)|sed 's/ /\r    /')"
+	@echo $(EXES)|sed -E -e 's/ /\n    /g' -e 's/^/    /g'
 	@echo
 	@echo "You'll probably want to do these first:"
 	@echo
 	@echo "    echo core | sudo tee /proc/sys/kernel/core_pattern"
 	@echo "    echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor"
-	@echo '    (undo this last one with "ondemand" instead of "performance")'
+	@echo
+	@echo '(undo that last one with "ondemand" instead of "performance")'
 
 .PHONY: all
 all: $(EXES)

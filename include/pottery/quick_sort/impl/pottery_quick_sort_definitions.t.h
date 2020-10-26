@@ -45,8 +45,10 @@ pottery_quick_sort_ref_t pottery_quick_sort_access(pottery_quick_sort_state_t st
     #ifndef POTTERY_QUICK_SORT_ACCESS
         // With no defined access expression, it's a simple array.
         return state.first + index;
+    #elif defined(POTTERY_QUICK_SORT_CONTEXT_TYPE)
+        return POTTERY_QUICK_SORT_ACCESS(state.context, state.first, index);
     #else
-        return POTTERY_QUICK_SORT_ACCESS(POTTERY_QUICK_SORT_CONTEXT_VAL(state) state.first, index);
+        return POTTERY_QUICK_SORT_ACCESS(state.first, index);
     #endif
 }
 
@@ -59,28 +61,34 @@ pottery_quick_sort_ref_t pottery_quick_sort_access(pottery_quick_sort_state_t st
 // that way we can compare it by reference without having to copy it to a
 // temporary or track its position changes.
 
-// Chooses a pivot and puts it at the start of the array, returning its index.
-static
+// Chooses a pivot and swaps it with the element at the start of the array.
+static inline
 void pottery_quicksort_prepare_pivot(pottery_state_t state, size_t start_index, size_t end_index) {
     if (end_index - start_index < 2) {
-        // there are less than three elements, so it doesn't matter which one
-        // is the pivot.
+        // there are less than three elements so it doesn't matter which one
+        // is the pivot. just use the first.
+        #if 0
+        // TODO clean up all these printfs
+        printf("\nChose degenerate pivot: %i\n", *pottery_access(state, start_index));
+        #endif
         return;
     }
 
     // choose elements for the median
-    // (slightly awkward average here to avoid overflow
-    size_t middle_index = start_index + (end_index - start_index) / 2;
+    size_t middle_index = start_index + (end_index - start_index) / 2; // avoid overflow
     pottery_quick_sort_ref_t start = pottery_access(state, start_index);
     pottery_quick_sort_ref_t middle = pottery_access(state, middle_index);
     pottery_quick_sort_ref_t end = pottery_access(state, end_index);
 
-    // if there are at most some arbitrary threshold of elements, use median
+    // if there is at most some arbitrary threshold of elements, use median
     if (end_index - start_index + 1 <= 128) {
         pottery_quick_sort_ref_t median = pottery_quick_sort_compare_median(
                 POTTERY_QUICK_SORT_CONTEXT_VAL(state) start, middle, end);
         if (median != start)
             pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL(state) start, median);
+        #if 0
+        printf("\nChose pivot by median: %i\n", *start);
+        #endif
         return;
     }
 
@@ -102,9 +110,133 @@ void pottery_quicksort_prepare_pivot(pottery_state_t state, size_t start_index, 
 
     if (median != start)
         pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL(state) start, median);
+    #if 0
+    printf("\nChose pivot by ninther: %i\n", *start);
+    #endif
 }
 
-static
+// There are two implementations of partitioning here, one that moves through a
+// temporary and one that swaps. Moving through a temporary is faster, but we
+// need a move function and a value type to be able to declare a temporary.
+//
+// (Moving through a temporary results in roughly one third as many moves. This
+// is only a marginal improvement when sorting small stuff like ints and
+// pointers but can be huge when sorting large objects, especially ones that
+// aren't bitwise movable.
+
+#ifndef POTTERY_QUICK_SORT_USE_MOVE
+    #if POTTERY_LIFECYCLE_CAN_MOVE && defined(POTTERY_QUICK_SORT_VALUE_TYPE)
+        #define POTTERY_QUICK_SORT_USE_MOVE 1
+    #else
+        #define POTTERY_QUICK_SORT_USE_MOVE 0
+    #endif
+#endif
+
+// TODO rename start/end to first/last
+
+#if POTTERY_QUICK_SORT_USE_MOVE
+static inline
+size_t pottery_quicksort_partition(pottery_state_t state, size_t start_index, size_t end_index) {
+    #if 0
+    printf("starting partition at %zi-%zi:", start_index, end_index);
+    for (size_t i = start_index; i != end_index + 1; ++i)
+        printf(" %i", *pottery_access(state, i));
+    printf("\n");
+    #endif
+
+    pottery_assert(end_index - start_index >= 1);
+    pottery_quick_sort_ref_t pivot = pottery_access(state, start_index);
+
+    size_t low_index = start_index;
+    size_t high_index = end_index;
+    pottery_quick_sort_ref_t high = pottery_access(state, high_index);
+
+    // Start by finding an element from the right that belongs on the left (or
+    // is equal to the pivot. It's critical that we don't skip equal elements.)
+    while (low_index < high_index && pottery_quick_sort_compare_less(
+                POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, high)) {
+        high = pottery_access(state, --high_index);
+    }
+
+    // If we've found none, the pivot goes at the start. (Either this partition
+    // is really short or we've chosen an unfortunate pivot.)
+    if (low_index == high_index) {
+        #if 0
+        printf("Found none larger!\n");
+        #endif
+        return start_index;
+    }
+    #if 0
+    printf("Found from right at %zi %i, is now hole\n", high_index, *pottery_access(state, high_index));
+    #endif
+
+    // Move the element out into a temporary, leaving a hole on the right at
+    // this location
+    size_t hole_index = high_index;
+    pottery_quick_sort_ref_t hole = high;
+    pottery_quick_sort_value_t temp;
+    pottery_quick_sort_lifecycle_move(POTTERY_QUICK_SORT_CONTEXT_VAL(state) &temp, hole);
+
+    // Now we alternate between low_index and high_index, finding elements on the wrong
+    // side and moving them into the hole
+    pottery_quick_sort_ref_t low;
+    while (true) {
+
+        // Scan from the left
+        do {
+            low = pottery_access(state, ++low_index);
+        } while (low_index < high_index && pottery_quick_sort_compare_greater(
+                    POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, low));
+
+        if (low_index == high_index) {
+            #if 0
+            printf("Converged on hole from left\n");
+            #endif
+            break;
+        }
+
+        // Put this element in the hole; the hole is now on the left.
+        #if 0
+        printf("Found from left at %zi %i, is now hole\n", low_index, *pottery_access(state, low_index));
+        #endif
+        pottery_quick_sort_lifecycle_move(POTTERY_QUICK_SORT_CONTEXT_VAL(state) hole, low);
+        hole_index = low_index;
+        hole = low;
+
+        // Scan from the right
+        do {
+            high = pottery_access(state, --high_index);
+        } while (low_index < high_index && pottery_quick_sort_compare_less(
+                    POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, high));
+
+        if (low_index == high_index) {
+            #if 0
+            printf("Converged on hole from right\n");
+            #endif
+            break;
+        }
+
+        // Put this element in the hole; the hole is now on the right.
+        #if 0
+        printf("Found from right at %zi %i, is now hole\n", high_index, *pottery_access(state, high_index));
+        #endif
+        pottery_quick_sort_lifecycle_move(POTTERY_QUICK_SORT_CONTEXT_VAL(state) hole, high);
+        hole_index = high_index;
+        hole = high;
+    }
+
+    // We've converged on the hole, and the temporary belongs on the left of
+    // it. The pivot goes here and the temporary goes where the pivot was.
+    (void)hole_index;
+    pottery_assert(hole_index == high_index);
+    pottery_quick_sort_lifecycle_move(POTTERY_QUICK_SORT_CONTEXT_VAL(state) hole, pivot);
+    pottery_quick_sort_lifecycle_move(POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, &temp);
+    return high_index;
+}
+#endif
+
+#if !POTTERY_QUICK_SORT_USE_MOVE
+static inline
 size_t pottery_quicksort_partition(pottery_state_t state, size_t start_index, size_t end_index) {
     #if 0
     printf("starting partition at %zi-%zi:", start_index, end_index);
@@ -115,7 +247,6 @@ size_t pottery_quicksort_partition(pottery_state_t state, size_t start_index, si
 
     pottery_assert(end_index - start_index >= 1);
 
-    pottery_quicksort_prepare_pivot(state, start_index, end_index);
     pottery_quick_sort_ref_t pivot = pottery_access(state, start_index);
 
     #if 0
@@ -135,8 +266,8 @@ size_t pottery_quicksort_partition(pottery_state_t state, size_t start_index, si
         // wouldn't meet in the middle when all elements are equal.
         do {
             ++low;
-        } while (low < high && pottery_quick_sort_compare_less(
-                    POTTERY_QUICK_SORT_CONTEXT_VAL(state) pottery_access(state, low), pivot));
+        } while (low < high && pottery_quick_sort_compare_greater(
+                    POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, pottery_access(state, low)));
         do {
             --high;
         } while (low < high && pottery_quick_sort_compare_less(
@@ -150,7 +281,8 @@ size_t pottery_quicksort_partition(pottery_state_t state, size_t start_index, si
                 *pottery_access(state, low), high, *pottery_access(state, high));
         #endif
 
-        pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL(state) pottery_access(state, low), pottery_access(state, high));
+        pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL(state)
+                pottery_access(state, low), pottery_access(state, high));
     }
 
     // It's possible that the above algorithm stopped on an element that was
@@ -159,7 +291,8 @@ size_t pottery_quicksort_partition(pottery_state_t state, size_t start_index, si
     #if 0
     printf("finished loop, resulting low: %zi\n", low);
     #endif
-    if (low > end_index || pottery_quick_sort_compare_less(POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, pottery_access(state, low)))
+    if (low > end_index || pottery_quick_sort_compare_less(POTTERY_QUICK_SORT_CONTEXT_VAL(state)
+                pivot, pottery_access(state, low)))
         --low;
 
     // Unlike in normal Hoare partitioning, we now know where the pivot element
@@ -168,7 +301,8 @@ size_t pottery_quicksort_partition(pottery_state_t state, size_t start_index, si
         #if 0
         printf("swapping pivot %zi with %zi\n", start_index, high);
         #endif
-        pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, pottery_access(state, low));
+        pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL(state)
+                pivot, pottery_access(state, low));
     }
 
     #if 0
@@ -180,93 +314,212 @@ size_t pottery_quicksort_partition(pottery_state_t state, size_t start_index, si
 
     return low;
 }
+#endif
 
-static
-void pottery_quicksort_impl(pottery_state_t state, size_t start, size_t end, size_t depth_limit) {
-    pottery_assert(end > start);
-    size_t count = end - start + 1;
+#ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
+// We noinline the depth fallback to keep it out of the main implementation
+// since it should be rarely used.
+pottery_noinline static
+void pottery_quick_sort_depth_fallback(pottery_state_t state, size_t first, size_t count) {
+    POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK(
+            POTTERY_QUICK_SORT_CONTEXT_VAL(state)
+            pottery_quick_sort_access(state, first),
+            count);
+}
+#endif
+
+static inline
+bool pottery_quick_sort_fallback(pottery_state_t state, size_t first, size_t count
+        #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
+        , size_t depth, size_t depth_limit
+        #endif
+) {
+    (void)state;
+    (void)first;
     (void)count;
 
     // Switch to the count limit fallback if we don't have enough elements
     #ifdef POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK
-
     #ifdef POTTERY_QUICK_SORT_VALUE_TYPE
     // The limit can apparently be quite high for small elements (e.g. ints).
     // We assume large elements take more effort to compare and swap, so if we
     // know the element size, we make the limit dependent on it (within a sane
     // range) so that we avoid big numbers for big elements.
-    size_t count_limit = pottery_clamp_s(4 * 64 / sizeof(pottery_quick_sort_value_t), 8, 64);
+    size_t count_limit = pottery_clamp_s(64 * 4 / sizeof(pottery_quick_sort_value_t), 8, 64);
     #else
     // If we don't know the element size, we estimate conservatively.
     size_t count_limit = 8;
     #endif
-
     if (count <= count_limit) {
         POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK(
                 POTTERY_QUICK_SORT_CONTEXT_VAL(state)
-                pottery_quick_sort_access(state, start),
-                count
-                );
-        return;
+                pottery_quick_sort_access(state, first),
+                count);
+        return true;
     }
     #endif
 
     // Switch to the depth limit fallback if we're too deep
     #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
-    if (depth_limit == 0) {
-        POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK(
-                POTTERY_QUICK_SORT_CONTEXT_VAL(state)
-                pottery_quick_sort_access(state, start),
-                count
-                );
-        return;
+    if (pottery_unlikely(depth == depth_limit)) {
+        pottery_quick_sort_depth_fallback(state, first, count);
+        return true;
     }
     #endif
 
-    size_t pivot = pottery_quicksort_partition(state, start, end);
-
-    // Note that we are using a variant of the Hoare partitioning scheme where
-    // we place the pivot in its correct position afterwards, so we can exclude
-    // it from recursion.
-
-    --depth_limit;
-
-    if (start + 1 < pivot)
-        pottery_quicksort_impl(state, start, pivot - 1, depth_limit);
-    if (pivot + 1 < end)
-        pottery_quicksort_impl(state, pivot + 1, end, depth_limit);
+    return false;
 }
-
-/*
- * External functions
- */
 
 POTTERY_QUICK_SORT_EXTERN
 void pottery_quick_sort(
         #ifdef POTTERY_QUICK_SORT_CONTEXT_TYPE
         pottery_quick_sort_context_t context,
         #endif
-        pottery_quick_sort_ref_t first,
-        size_t count
+        pottery_quick_sort_ref_t ref,
+        size_t total_count
 ) {
     pottery_quick_sort_state_t state = {
         #ifdef POTTERY_QUICK_SORT_CONTEXT_TYPE
         context,
         #endif
-        first,
+        ref,
     };
+    //printf("=========================\n");
+    //printf("starting quicksort count %zi\n", total_count);
 
-    if (count <= 1)
+    if (total_count <= 1)
         return;
 
+    // set up the stack
+    // we push the small partition which is less than half the size of its
+    // parent so it's not possible to use more than sizeof(size_t)*8 entries.
+    struct {
+        size_t first;
+        size_t last;
+        #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
+        size_t depth;
+        #endif
+    } stack[sizeof(size_t) * 8];
+    size_t pos = 0;
+    stack[0].first = 0;
+    stack[0].last = total_count - 1;
+    #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
+    stack[0].depth = 0;
+    #endif
+
+    // set up depth limit for switching to fallback
+    #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
     size_t n = 1;
     size_t depth_limit = 2;
-    while (n < count) {
+    while (n < total_count) {
         n *= 2;
         depth_limit += 2;
     }
+    #endif
 
-    pottery_quicksort_impl(state, 0, count - 1, depth_limit);
+    while (true) {
+        size_t first = stack[pos].first;
+        size_t last = stack[pos].last;
+        pottery_assert(last > first);
+        size_t count = last - first + 1;
+        //printf("pos %zi first %zi last %zi count %zi\n", pos, first, last, count);
+
+        // see if we should use any fallbacks
+        if (pottery_quick_sort_fallback(state, first, count
+                #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
+                , stack[pos].depth, depth_limit
+                #endif
+                )) {
+            if (pos == 0)
+                break;
+            --pos;
+            continue;
+        }
+
+        // choose a pivot, swapping it with the start index
+        pottery_quicksort_prepare_pivot(state, first, last);
+
+        // do the partition. note that this places the pivot in its correct
+        // final position so we exclude it from the resulting partitions.
+        size_t pivot = pottery_quicksort_partition(state, first, last);
+        size_t left_count = pivot - first;
+        size_t right_count = last - pivot;
+        //printf("pivot %zi left_count %zi right_count %zi\n", pivot, left_count, right_count);
+
+        #if 0
+        printf("done partition");
+        for (size_t i = first; i != last + 1; ++i) {
+            putchar(' ');
+            if (i == pivot)
+                printf("-->");
+            printf("%i", *pottery_access(state, i));
+            if (i == pivot)
+                printf("<--");
+        }
+        printf("\n");
+        fflush(stdout);
+        #endif
+
+        #if 0
+        size_t check;
+        for (check = first; check <= pivot; ++check)
+            pottery_assert(pottery_quick_sort_compare_less_or_equal(
+                POTTERY_QUICK_SORT_CONTEXT_VAL(state) pottery_access(state, check), pottery_access(state, pivot)));
+        for (check = pivot; check <= last; ++check)
+            pottery_assert(pottery_quick_sort_compare_less_or_equal(
+                POTTERY_QUICK_SORT_CONTEXT_VAL(state) pottery_access(state, pivot), pottery_access(state, check)));
+        #endif
+
+        // if both sides are degenerate, pop
+        if (left_count <= 1 && right_count <= 1) {
+            if (pos == 0)
+                break;
+            --pos;
+            continue;
+        }
+
+        // push the short side (if needed), loop around to the long side
+        #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
+        size_t depth = stack[pos].depth + 1;
+        #endif
+        if (pivot - first < last - pivot) {
+            //printf("right partition is bigger\n");
+            if (left_count > 1) {
+                //printf("pushing left\n");
+                stack[pos].first = first;
+                stack[pos].last = pivot - 1;
+                #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
+                stack[pos].depth = depth;
+                #endif
+                ++pos;
+                pottery_assert(pos != pottery_array_count(stack)); // not possible!
+            }
+            //printf("iterating on right\n");
+            stack[pos].first = pivot + 1;
+            stack[pos].last = last;
+            #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
+            stack[pos].depth = depth;
+            #endif
+        } else {
+            //printf("left partition is bigger\n");
+            if (right_count > 1) {
+                //printf("pushing right\n");
+                stack[pos].first = pivot + 1;
+                stack[pos].last = last;
+                #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
+                stack[pos].depth = depth;
+                #endif
+                ++pos;
+                pottery_assert(pos != pottery_array_count(stack)); // not possible!
+            }
+            //printf("iterating on left\n");
+            stack[pos].first = first;
+            stack[pos].last = pivot - 1;
+            #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
+            stack[pos].depth = depth;
+            #endif
+        }
+    }
 
     #if 0
     printf("done! result:");

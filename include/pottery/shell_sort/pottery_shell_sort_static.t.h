@@ -37,8 +37,8 @@
 #include "pottery/shell_sort/impl/pottery_shell_sort_config_compare.t.h"
 #include "pottery/compare/pottery_compare_static.t.h"
 
-// cleanup before insertion_sort since we need insertion_sort to define its own
-// compare and lifecycle functions that wrap ours
+// Cleanup before insertion_sort since we need insertion_sort to define its own
+// compare and lifecycle functions that wrap our context
 #include "pottery/compare/pottery_compare_cleanup.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
 

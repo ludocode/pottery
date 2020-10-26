@@ -25,6 +25,12 @@
 #include "pottery/common/test_pottery_ufo.h"
 #include "pottery/unit/test_pottery_framework.h"
 
+// workarounds for MSVC C++/CLR not allowing different structs in different
+// translation units with the same name
+#ifdef __CLR_VER
+#define sort_ints_state_t quick_sort_ints_state_t
+#endif
+
 // Instantiate quick_sort on an int array
 #define POTTERY_QUICK_SORT_PREFIX sort_ints
 #define POTTERY_QUICK_SORT_VALUE_TYPE int

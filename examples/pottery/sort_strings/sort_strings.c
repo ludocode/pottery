@@ -7,12 +7,18 @@
 #define POTTERY_INTRO_SORT_LIFECYCLE_MOVE_BY_VALUE 1
 #define POTTERY_INTRO_SORT_COMPARE_THREE_WAY(x, y) strcmp(*x, *y)
 #include "pottery/intro_sort/pottery_intro_sort_static.t.h"
-#elif 1
+#elif 0
 #define POTTERY_SHELL_SORT_PREFIX sort_strings
 #define POTTERY_SHELL_SORT_VALUE_TYPE const char*
 #define POTTERY_SHELL_SORT_LIFECYCLE_MOVE_BY_VALUE 1
 #define POTTERY_SHELL_SORT_COMPARE_THREE_WAY(x, y) strcmp(*x, *y)
 #include "pottery/shell_sort/pottery_shell_sort_static.t.h"
+#elif 1
+#define POTTERY_QUICK_SORT_PREFIX sort_strings
+#define POTTERY_QUICK_SORT_VALUE_TYPE const char*
+#define POTTERY_QUICK_SORT_LIFECYCLE_MOVE_BY_VALUE 1
+#define POTTERY_QUICK_SORT_COMPARE_THREE_WAY(x, y) strcmp(*x, *y)
+#include "pottery/quick_sort/pottery_quick_sort_static.t.h"
 #else
 #define POTTERY_INSERTION_SORT_PREFIX sort_strings
 #define POTTERY_INSERTION_SORT_VALUE_TYPE const char*
@@ -23,7 +29,7 @@
 
 int main(void) {
     const char* players[] = {
-        "fred", "quincy", "alice", "eve", "zack", "ned", "paul", "bob", "gary",
+        "fred", "quincy", "alice", "zack", "ned", "eve", "paul", "bob", "gary",
         "ursula", "yves", "carl", "olivia", "steve", "rob", "mike", "wade", "dave",
         "jake", "helen", "xavier", "karen", "tammy", "laura", "isaac", "vick",
     };

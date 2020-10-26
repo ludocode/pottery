@@ -24,6 +24,13 @@
 
 #include "pottery/common/test_pottery_ufo.h"
 
+// workarounds for MSVC C++/CLR not allowing different structs in different
+// translation units with the same name
+#ifdef __CLR_VER
+#define sort_ufos_by_string_state_t shell_sort_ufos_by_string_state_t
+#define sort_ufos_by_string_insertion_sort_state_t shell_sort_ufos_by_string_insertion_sort_state_t
+#endif
+
 #define POTTERY_SHELL_SORT_PREFIX sort_ufos_by_string
 #define POTTERY_SHELL_SORT_VALUE_TYPE ufo_t
 #define POTTERY_SHELL_SORT_LIFECYCLE_MOVE ufo_move

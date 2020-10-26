@@ -33,7 +33,7 @@ def generate(line, outLines):
 
 
 def parse(path, clean):
-    # print a parsing message, helps with debugging
+    # print an erasable parsing message, helps with debugging
     parsingMessage = 'Parsing ' + path + "   "
     print(parsingMessage, end='', flush=True)
 
@@ -86,7 +86,7 @@ def parse(path, clean):
     # write the new file
     print("Meta-templates changed: " + path)
     temp = path + ".temp"
-    with open(temp, "w") as outFile:
+    with open(temp, "w", newline='\n') as outFile:
         outFile.writelines(outLines)
     os.replace(temp, path)
     return True

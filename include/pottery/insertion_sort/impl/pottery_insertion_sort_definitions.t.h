@@ -36,8 +36,10 @@ pottery_insertion_sort_ref_t pottery_insertion_sort_access(pottery_insertion_sor
     #ifndef POTTERY_INSERTION_SORT_ACCESS
         // With no defined access expression, it's a simple array.
         return state.first + index;
-    #else
+    #elif defined(POTTERY_INSERTION_SORT_CONTEXT_TYPE)
         return POTTERY_INSERTION_SORT_ACCESS(state.context, state.first, index);
+    #else
+        return POTTERY_INSERTION_SORT_ACCESS(state.first, index);
     #endif
 }
 
@@ -50,9 +52,17 @@ pottery_insertion_sort_ref_t pottery_insertion_sort_access(pottery_insertion_sor
 // There are actually two implementations of insertion sort here, one that
 // moves through a temporary and one that swaps.
 
+#ifndef POTTERY_INSERTION_SORT_USE_MOVE
+    #if POTTERY_LIFECYCLE_CAN_MOVE && defined(POTTERY_INSERTION_SORT_VALUE_TYPE)
+        #define POTTERY_INSERTION_SORT_USE_MOVE 1
+    #else
+        #define POTTERY_INSERTION_SORT_USE_MOVE 0
+    #endif
+#endif
+
 #if POTTERY_INSERTION_SORT_USE_MOVE
 static inline
-void pottery_insertion_sort_by_move(pottery_insertion_sort_state_t state, size_t count) {
+void pottery_insertion_sort_impl(pottery_insertion_sort_state_t state, size_t count) {
     POTTERY_DECLARE_UNCONSTRUCTED(pottery_insertion_sort_value_t, temp);
 
     size_t i;
@@ -83,7 +93,7 @@ void pottery_insertion_sort_by_move(pottery_insertion_sort_state_t state, size_t
 
 #if !POTTERY_INSERTION_SORT_USE_MOVE
 static inline
-void pottery_insertion_sort_by_swap(pottery_insertion_sort_state_t state, size_t count) {
+void pottery_insertion_sort_impl(pottery_insertion_sort_state_t state, size_t count) {
     size_t i;
     for (i = 1; i < count; ++i) {
         pottery_insertion_sort_ref_t current = pottery_insertion_sort_access(state, i);
@@ -119,9 +129,5 @@ void pottery_insertion_sort(
         first,
     };
 
-    #if POTTERY_INSERTION_SORT_USE_MOVE
-    pottery_insertion_sort_by_move(state, count);
-    #else
-    pottery_insertion_sort_by_swap(state, count);
-    #endif
+    pottery_insertion_sort_impl(state, count);
 }

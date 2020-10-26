@@ -7,6 +7,7 @@ Given a minimal set of configured comparison expressions, the compare template g
 - `equal()`
 - `not_equal()`
 - `less()`
+- `less_or_equal()`
 - `greater()`
 - `greater_or_equal()`
 - `three_way()` -- a [three-way comparison](https://en.wikipedia.org/wiki/Three-way_comparison)
@@ -24,13 +25,13 @@ The compare template operates on an abstract reference type with an optional con
 
 This template does not distinguish between "weak" and "strong" ordering. Whether "equal" implies equivalence or equality is specific to the configured comparison expressions and the context in which they are used.
 
-This template currently does not support partial ordering. This means you cannot use it for example to sort an array of floats where some are NaN. Functions will be implemented with their opposites where necessary under the assumption of total ordering. For example if you define only LESS, you'll get both `less()` and its simple negation `greater_or_equal()`.
+This template currently does not support partial ordering. This means you cannot use it for example to sort an array of floats where some are NaN. Functions will be implemented with their opposites where necessary under the assumptions of symmetry and total ordering. For example if you define only LESS, you'll get `less()`, its simple negation `greater_or_equal()`,  its symmetric equivalent `greater()` with swapped arguments, etc.
 
 
 
 ## Example
 
-The Compare template is meant as a helper for other Pottery templates. This template allows you to configure any Pottery templates with any one ordering expression (like `LESS`, `LESS_OR_EQUAL`, `THREE_WAY`, etc.) and it gives all comparison functions that templates may need, so they don't have to worry about negating the expression, swapping arguments, etc. Similarly the [Quicksort template](../quicksort) needs a `median()` function; this implements it given any ordering expression.
+The Compare template is meant as a helper for other Pottery templates. This template allows you to configure any Pottery templates with any one ordering expression (like `LESS`, `LESS_OR_EQUAL`, `THREE_WAY`, etc.) and it gives all comparison functions that templates may need, so they don't have to worry about negating the expression, swapping arguments, etc. Similarly the [`quick_sort` template](../quicksort) needs a `median()` function; this implements it given any ordering expression.
 
 There isn't much point in using this directly. Still, it could potentially be useful on its own. Here's how you might use it to wrap `strcmp()`:
 
@@ -41,7 +42,7 @@ There isn't much point in using this directly. Still, it could potentially be us
 #include "pottery/compare/pottery_compare_static.t.h"
 ```
 
-This generates `string_equal()`, `string_less()`, `string_greater_or_equal()`, `string_compare()`, `string_min()`, `string_max()`, `string_median()`, etc. all as wrappers to `strcmp()`.
+This generates `string_equal()`, `string_less()`, `string_greater()`, `string_less_or_equal()`, `string_compare()`, `string_min()`, `string_max()`, `string_median()`, etc. all as wrappers to `strcmp()`.
 
 ```c
 string_median("carrot", "apple", "banana"); // returns "banana"
@@ -75,7 +76,7 @@ An optional comparison context type. If configured, the context type is passed a
 
 - `BY_VALUE`, a flag
 
-If 1, the comparison template will use value comparisons on `VALUE_TYPE`, i.e. the operators `<`, `<=`, `==`, `!=`, `>=` and `>` to compare the value directly. `VALUE_TYPE` must be defined and must support these operators. (For C++ types this will work with custom-defined operators.)
+If 1, the comparison template will use value comparisons on `VALUE_TYPE`, i.e. the operators `<`, `<=`, `==`, `!=`, `>=` and `>` to compare the value directly. `VALUE_TYPE` must be defined and must support these operators. (For C++ types this will work with custom overloaded operators.)
 
 ### Relational Expressions
 
@@ -131,11 +132,11 @@ Returns true if left is greater than right, false otherwise.
 
 Returns true if left is greater than or equal to right, false otherwise.
 
-- `bool three_way(CONTEXT_TYPE context, REF_TYPE left, REF_TYPE right)`
+- `int three_way(CONTEXT_TYPE context, REF_TYPE left, REF_TYPE right)`
 
 Performs a [three-way comparison](https://en.wikipedia.org/wiki/Three-way_comparison).
 
-Returns less than 0 if left is less than right, greater than 0 if left is greater than right, and 0 if they are equal.
+Returns an integer less than 0 if left is less than right, an integer greater than 0 if left is greater than right, and 0 if they are equal.
 
 - `REF_TYPE min(CONTEXT_TYPE context, REF_TYPE left, REF_TYPE right)`
 

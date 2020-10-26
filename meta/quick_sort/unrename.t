@@ -24,6 +24,7 @@
 
 //!!! END_LICENSE
 // Un-renames quick_sort identifiers with prefix "{PREFIX}"
+
 #undef {PREFIX}_ref_t
 #undef {PREFIX}_const_ref_t
 #undef {PREFIX}_value_t
@@ -34,4 +35,5 @@
 #undef {PREFIX}_access
 #undef {PREFIX}_prepare_pivot
 #undef {PREFIX}_partition
-#undef {PREFIX}_impl
+#undef {PREFIX}_fallback
+#undef {PREFIX}_depth_fallback

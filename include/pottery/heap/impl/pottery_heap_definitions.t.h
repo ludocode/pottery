@@ -35,8 +35,10 @@ pottery_heap_ref_t pottery_access(pottery_state_t state, size_t index) {
     #ifndef POTTERY_HEAP_ACCESS
         // With no defined access expression, it's a simple array.
         return state.first + index;
-    #else
+    #elif defined(POTTERY_HEAP_CONTEXT_TYPE)
         return POTTERY_HEAP_ACCESS(state.context, state.first, index);
+    #else
+        return POTTERY_HEAP_ACCESS(state.first, index);
     #endif
 }
 

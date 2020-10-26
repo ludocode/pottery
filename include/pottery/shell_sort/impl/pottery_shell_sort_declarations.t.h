@@ -46,7 +46,9 @@ pottery_shell_sort_ref_t pottery_shell_sort_access(pottery_shell_sort_state_t st
     #ifndef POTTERY_SHELL_SORT_ACCESS
         // With no defined access expression, it's a simple array.
         return first + real_index;
+    #elif defined(POTTERY_SHELL_SORT_CONTEXT_TYPE)
+        return POTTERY_SHELL_SORT_ACCESS(state.context, state.first, index);
     #else
-        return POTTERY_SHELL_SORT_ACCESS(state.context, first, real_index);
+        return POTTERY_SHELL_SORT_ACCESS(state.first, index);
     #endif
 }

@@ -39,9 +39,11 @@ typedef POTTERY_LIFECYCLE_VALUE_TYPE pottery_lifecycle_value_t;
 #endif
 
 #ifdef POTTERY_LIFECYCLE_REF_TYPE
+#define POTTERY_LIFECYCLE_RESTRICT /*nothing*/
 typedef POTTERY_LIFECYCLE_REF_TYPE pottery_lifecycle_ref_t;
 typedef POTTERY_LIFECYCLE_REF_TYPE pottery_lifecycle_const_ref_t;
 #else
+#define POTTERY_LIFECYCLE_RESTRICT pottery_restrict
 typedef pottery_lifecycle_value_t* pottery_lifecycle_ref_t;
 typedef const pottery_lifecycle_value_t* pottery_lifecycle_const_ref_t;
 #endif
@@ -240,8 +242,8 @@ pottery_error_t pottery_lifecycle_init_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
         #else
             // init_copy by simple assignment
             *to = *from;
+            return POTTERY_OK;
         #endif
-        return POTTERY_OK;
 
     #elif POTTERY_LIFECYCLE_CAN_INIT && defined(POTTERY_LIFECYCLE_COPY)
         // synthesize init_copy by init then copy
@@ -437,8 +439,8 @@ pottery_error_t pottery_lifecycle_init_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
         #else
             // init_steal by simple assignment
             *to = *from;
+            return POTTERY_OK;
         #endif
-        return POTTERY_OK;
 
     #elif POTTERY_LIFECYCLE_CAN_INIT && \
             POTTERY_LIFECYCLE_CAN_SWAP // <-- note not defined() here
@@ -619,11 +621,11 @@ pottery_error_t pottery_lifecycle_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
 
 
 
-#if POTTERY_LIFECYCLE_CAN_MOVE
+#if POTTERY_LIFECYCLE_CAN_MOVE && defined(POTTERY_LIFECYCLE_VALUE_TYPE)
 static inline
 void pottery_lifecycle_move_bulk_restrict(POTTERY_LIFECYCLE_CONTEXT_ARG
-        pottery_lifecycle_ref_t pottery_restrict to,
-        pottery_lifecycle_ref_t pottery_restrict from,
+        pottery_lifecycle_ref_t POTTERY_LIFECYCLE_RESTRICT to,
+        pottery_lifecycle_ref_t POTTERY_LIFECYCLE_RESTRICT from,
         size_t count) pottery_noexcept
 {
     pottery_assert((size_t)(from - to) >= count);

@@ -25,26 +25,40 @@
 #include <time.h>
 #include <stdio.h>
 
-// c
+#include "pottery/benchmark/test_benchmark_sort_common.h"
+
+// pottery
 void pottery_benchmark_shell_sort_wrapper(int* ints, size_t count);
 void pottery_benchmark_quick_sort_wrapper(int* ints, size_t count);
 void pottery_benchmark_intro_sort_wrapper(int* ints, size_t count);
 void pottery_benchmark_heap_sort_wrapper(int* ints, size_t count);
-void stb_sort_wrapper(int* ints, size_t count);
-void qsort_wrapper(int* ints, size_t count);
 void pottery_qsort_simple_wrapper(int* ints, size_t count);
-void pqsort_wrapper(int* ints, size_t count);
-void justinow_introsort_c_wrapper(int* ints, size_t count);
-void swenson_timsort_wrapper(int* ints, size_t count);
-void swenson_quicksort_wrapper(int* ints, size_t count);
+void pottery_qsort_wrapper(int* ints, size_t count);
+void pottery_gnu_qsort_r_wrapper(int* ints, size_t count);
 
-// c++
+// c, c++
 void std_sort_wrapper(int* ints, size_t count);
+void qsort_wrapper(int* ints, size_t count);
+#if defined(__GLIBC__) || defined(__UCLIBC__)
+void gnu_qsort_r_wrapper(int* ints, size_t count);
+#endif
+#if defined(__FreeBSD__) || defined(__APPLE__)
+void bsd_qsort_r_wrapper(int* ints, size_t count);
+#endif
+
+// boost
 #if __has_include(<boost/sort/sort.hpp>)
 void boost_pdqsort_wrapper(int* ints, size_t count);
 void boost_spinsort_wrapper(int* ints, size_t count);
 void boost_flat_stable_sort_wrapper(int* ints, size_t count);
 #endif
+
+// miscellaneous
+void stb_sort_wrapper(int* ints, size_t count);
+void pqsort_wrapper(int* ints, size_t count);
+void swenson_timsort_wrapper(int* ints, size_t count);
+void swenson_quicksort_wrapper(int* ints, size_t count);
+//void justinow_introsort_c_wrapper(int* ints, size_t count);
 
 typedef struct result_t {
     double duration;
@@ -120,23 +134,41 @@ static void benchmark_sorts() {
     //benchmark_sort(ints, count, justinow_introsort_c_wrapper, "justinow/introsort-c");
 
     // run benchmarks
+
+    // pottery
+    benchmark_sort(ints, count, pottery_benchmark_quick_sort_wrapper, "pottery_quick_sort");
+    benchmark_sort(ints, count, pottery_benchmark_intro_sort_wrapper, "pottery_intro_sort");
+    benchmark_sort(ints, count, pottery_qsort_wrapper, "pottery_qsort");
+    #if 1
+    benchmark_sort(ints, count, pottery_qsort_simple_wrapper, "pottery_qsort_simple");
+    benchmark_sort(ints, count, pottery_gnu_qsort_r_wrapper, "pottery_gnu_qsort_r");
+    benchmark_sort(ints, count, pottery_benchmark_shell_sort_wrapper, "pottery_shell_sort");
+    benchmark_sort(ints, count, pottery_benchmark_heap_sort_wrapper, "pottery_heap_sort");
+    #endif
+
+    // c, c++
+    benchmark_sort(ints, count, std_sort_wrapper, "std::sort");
+    benchmark_sort(ints, count, qsort_wrapper, "qsort");
+    #if defined(__GLIBC__) || defined(__UCLIBC__)
+    benchmark_sort(ints, count, gnu_qsort_r_wrapper, "qsort_r (GNU-style)");
+    #endif
+    #if defined(__FreeBSD__) || defined(__APPLE__)
+    benchmark_sort(ints, count, bsd_qsort_r_wrapper, "qsort_r (BSD-style)");
+    #endif
+
+    // boost
     #if 1&&__has_include(<boost/sort/sort.hpp>)
     benchmark_sort(ints, count, boost_pdqsort_wrapper, "boost::pdqsort");
     benchmark_sort(ints, count, boost_spinsort_wrapper, "boost::spinsort");
     benchmark_sort(ints, count, boost_flat_stable_sort_wrapper, "boost::flat_stable_sort");
     #endif
-    benchmark_sort(ints, count, pottery_benchmark_quick_sort_wrapper, "pottery_quick_sort");
-    benchmark_sort(ints, count, pottery_benchmark_intro_sort_wrapper, "pottery_intro_sort");
-    benchmark_sort(ints, count, pottery_qsort_simple_wrapper, "pottery_qsort_simple");
-    benchmark_sort(ints, count, stb_sort_wrapper, "nothings/stb quicksort");
-    benchmark_sort(ints, count, qsort_wrapper, "qsort");
-    benchmark_sort(ints, count, std_sort_wrapper, "std::sort");
+
+    // miscellaneous
     #if 1
-    benchmark_sort(ints, count, pottery_benchmark_shell_sort_wrapper, "pottery_shell_sort");
-    benchmark_sort(ints, count, pottery_benchmark_heap_sort_wrapper, "pottery_heap_sort");
     benchmark_sort(ints, count, pqsort_wrapper, "Freaky/pqsort");
     benchmark_sort(ints, count, swenson_quicksort_wrapper, "swenson/sort quicksort");
     benchmark_sort(ints, count, swenson_timsort_wrapper, "swenson/sort timsort");
+    benchmark_sort(ints, count, stb_sort_wrapper, "nothings/stb quicksort");
     #endif
 
     // sort results
@@ -158,4 +190,6 @@ static void benchmark_sorts() {
 
 int main(void) {
     benchmark_sorts();
+
+    // so far we only have a simple benchmark for sorting algorithms. :(
 }

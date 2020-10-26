@@ -22,32 +22,16 @@
  * SOFTWARE.
  */
 
-#include <algorithm>
+// enable qsort_r()
+#define _GNU_SOURCE
 
-// std::sort
+#include "pottery/benchmark/test_benchmark_sort_common.h"
 
-extern "C"
-void std_sort_wrapper(int* ints, size_t count) {
-    std::sort(ints, ints + count);
+#if defined(__GLIBC__) || defined(__UCLIBC__)
+
+#include <stdlib.h>
+
+void gnu_qsort_r_wrapper(int* ints, size_t count) {
+    qsort_r(ints, count, sizeof(int), int_compare_pointers_gnu_r, NULL);
 }
-
-
-#if __has_include(<boost/sort/sort.hpp>)
-#include <boost/sort/sort.hpp>
-
-extern "C"
-void boost_pdqsort_wrapper(int* ints, size_t count) {
-    boost::sort::pdqsort(ints, ints + count);
-}
-
-extern "C"
-void boost_spinsort_wrapper(int* ints, size_t count) {
-    boost::sort::spinsort(ints, ints + count);
-}
-
-extern "C"
-void boost_flat_stable_sort_wrapper(int* ints, size_t count) {
-    boost::sort::flat_stable_sort(ints, ints + count);
-}
-
 #endif

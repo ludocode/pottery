@@ -27,6 +27,11 @@
 
 #include <stddef.h>
 
+/**
+ * Sorts an array.
+ *
+ * (This is the standard qsort() function implemented with Pottery.)
+ */
 void pottery_qsort_simple(void* first, size_t count, size_t element_size,
             int (*compare)(const void* left, const void* right));
 

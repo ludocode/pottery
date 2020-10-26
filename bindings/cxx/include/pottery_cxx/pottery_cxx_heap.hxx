@@ -26,9 +26,6 @@
 #define POTTERY_CXX_ALGORITHMS_HEAP_HXX 1
 
 #include "pottery_cxx/pottery_cxx_dependencies.hxx"
-#include "pottery/pottery-dependencies.h"
-
-#define POTTERY_INTERNAL
 
 namespace pottery {
 
@@ -39,12 +36,10 @@ namespace impl {
 
 template <typename Accessor, typename Less>
 struct Heap {
-    typedef typename std::iterator_traits<Accessor>::value_type value_type;
-
     #define POTTERY_HEAP_EXTERN static
     #define POTTERY_HEAP_DECLARE_INTERNALS
     #define POTTERY_HEAP_PREFIX heap
-    #define POTTERY_HEAP_VALUE_TYPE value_type
+    #define POTTERY_HEAP_VALUE_TYPE typename std::iterator_traits<Accessor>::value_type
     #define POTTERY_HEAP_LIFECYCLE_BY_VALUE 1
     #define POTTERY_HEAP_COMPARE_CONTEXT_TYPE Less
     #define POTTERY_HEAP_COMPARE_LESS(less, x, y) less(*x, *y)

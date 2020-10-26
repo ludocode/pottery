@@ -23,21 +23,21 @@
  */
 
 //!!! END_LICENSE
-// Renames compare identifiers with prefix "{PREFIX}"
-// using macro {MACRO}()
-#define {PREFIX}_ref_t {MACRO}(_ref_t)
-#define {PREFIX}_value_t {MACRO}(_value_t)
-#define {PREFIX}_context_t {MACRO}(_context_t)
+// Renames compare identifiers from {SRC} to {DEST}
 
-#define {PREFIX}_three_way {MACRO}(_three_way)
-#define {PREFIX}_equal {MACRO}(_equal)
-#define {PREFIX}_not_equal {MACRO}(_not_equal)
-#define {PREFIX}_less {MACRO}(_less)
-#define {PREFIX}_less_or_equal {MACRO}(_less_or_equal)
-#define {PREFIX}_greater {MACRO}(_greater)
-#define {PREFIX}_greater_or_equal {MACRO}(_greater_or_equal)
+#define {SRC}_ref_t POTTERY_CONCAT({DEST}, _ref_t)
+#define {SRC}_value_t POTTERY_CONCAT({DEST}, _value_t)
+#define {SRC}_context_t POTTERY_CONCAT({DEST}, _context_t)
 
-#define {PREFIX}_min {MACRO}(_min)
-#define {PREFIX}_max {MACRO}(_max)
-#define {PREFIX}_clamp {MACRO}(_clamp)
-#define {PREFIX}_median {MACRO}(_median)
+#define {SRC}_three_way POTTERY_CONCAT({DEST}, _three_way)
+#define {SRC}_equal POTTERY_CONCAT({DEST}, _equal)
+#define {SRC}_not_equal POTTERY_CONCAT({DEST}, _not_equal)
+#define {SRC}_less POTTERY_CONCAT({DEST}, _less)
+#define {SRC}_less_or_equal POTTERY_CONCAT({DEST}, _less_or_equal)
+#define {SRC}_greater POTTERY_CONCAT({DEST}, _greater)
+#define {SRC}_greater_or_equal POTTERY_CONCAT({DEST}, _greater_or_equal)
+
+#define {SRC}_min POTTERY_CONCAT({DEST}, _min)
+#define {SRC}_max POTTERY_CONCAT({DEST}, _max)
+#define {SRC}_clamp POTTERY_CONCAT({DEST}, _clamp)
+#define {SRC}_median POTTERY_CONCAT({DEST}, _median)

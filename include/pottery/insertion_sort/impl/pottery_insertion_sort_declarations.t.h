@@ -33,24 +33,6 @@
     #error "An ordering comparison expression is required."
 #endif
 
-// TODO this can't go here, needs to be available in decls
-#ifndef POTTERY_INSERTION_SORT_USE_MOVE
-    // Decide whether to use move or swap. We need a move expression to move
-    // and a value type to define a temporary to move to.
-    //
-    // We prefer to move rather than swap if possible since this should result
-    // in fewer moves. This could in theory be slower than swap if you have
-    // some major optimization in swap, like if most of the contents of your
-    // objects are identical and don't need to be swapped. If you don't want
-    // insertion_sort to use move, define POTTERY_INSERTION_SORT_USE_MOVE to 0,
-    // or just don't give it a move expression.
-    #if POTTERY_LIFECYCLE_CAN_MOVE && defined(POTTERY_INSERTION_SORT_VALUE_TYPE)
-        #define POTTERY_INSERTION_SORT_USE_MOVE 1
-    #else
-        #define POTTERY_INSERTION_SORT_USE_MOVE 0
-    #endif
-#endif
-
 #if POTTERY_FORWARD_DECLARATIONS
 POTTERY_INSERTION_SORT_EXTERN
 void pottery_insertion_sort(

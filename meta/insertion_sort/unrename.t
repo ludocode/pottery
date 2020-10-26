@@ -24,6 +24,7 @@
 
 //!!! END_LICENSE
 // Un-renames insertion_sort identifiers with prefix "{PREFIX}"
+
 #undef {PREFIX}_ref_t
 #undef {PREFIX}_value_t
 #undef {PREFIX}_context_t
@@ -31,5 +32,4 @@
 
 #undef {PREFIX}
 #undef {PREFIX}_access
-#undef {PREFIX}_by_move
-#undef {PREFIX}_by_swap
+#undef {PREFIX}_impl

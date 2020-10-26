@@ -23,25 +23,24 @@
  */
 
 //!!! END_LICENSE
-// Renames alloc identifiers with prefix "{PREFIX}"
-// using macro {MACRO}()
+// Renames alloc identifiers from {SRC} to {DEST}
 
-#define {PREFIX}_free {MACRO}(_free)
-#define {PREFIX}_impl_free_ea {MACRO}(_impl_free_ea)
-#define {PREFIX}_impl_free_fa {MACRO}(_impl_free_fa)
+#define {SRC}_free POTTERY_CONCAT({DEST}, _free)
+#define {SRC}_impl_free_ea POTTERY_CONCAT({DEST}, _impl_free_ea)
+#define {SRC}_impl_free_fa POTTERY_CONCAT({DEST}, _impl_free_fa)
 
-#define {PREFIX}_malloc {MACRO}(_malloc)
-#define {PREFIX}_impl_malloc_ea {MACRO}(_impl_malloc_ea)
-#define {PREFIX}_impl_malloc_fa {MACRO}(_impl_malloc_fa)
+#define {SRC}_malloc POTTERY_CONCAT({DEST}, _malloc)
+#define {SRC}_impl_malloc_ea POTTERY_CONCAT({DEST}, _impl_malloc_ea)
+#define {SRC}_impl_malloc_fa POTTERY_CONCAT({DEST}, _impl_malloc_fa)
 
-#define {PREFIX}_malloc_zero {MACRO}(_malloc_zero)
-#define {PREFIX}_impl_malloc_zero_ea {MACRO}(_impl_malloc_zero_ea)
-#define {PREFIX}_impl_malloc_zero_fa {MACRO}(_impl_malloc_zero_fa)
-#define {PREFIX}_impl_malloc_zero_fa_wrap {MACRO}(_impl_malloc_zero_fa_wrap)
+#define {SRC}_malloc_zero POTTERY_CONCAT({DEST}, _malloc_zero)
+#define {SRC}_impl_malloc_zero_ea POTTERY_CONCAT({DEST}, _impl_malloc_zero_ea)
+#define {SRC}_impl_malloc_zero_fa POTTERY_CONCAT({DEST}, _impl_malloc_zero_fa)
+#define {SRC}_impl_malloc_zero_fa_wrap POTTERY_CONCAT({DEST}, _impl_malloc_zero_fa_wrap)
 
-#define {PREFIX}_malloc_array_at_least {MACRO}(_malloc_array_at_least)
-#define {PREFIX}_impl_malloc_array_at_least_ea {MACRO}(_impl_malloc_array_at_least_ea)
-#define {PREFIX}_impl_malloc_array_at_least_fa {MACRO}(_impl_malloc_array_at_least_fa)
+#define {SRC}_malloc_array_at_least POTTERY_CONCAT({DEST}, _malloc_array_at_least)
+#define {SRC}_impl_malloc_array_at_least_ea POTTERY_CONCAT({DEST}, _impl_malloc_array_at_least_ea)
+#define {SRC}_impl_malloc_array_at_least_fa POTTERY_CONCAT({DEST}, _impl_malloc_array_at_least_fa)
 
-#define {PREFIX}_malloc_array {MACRO}(_malloc_array)
-#define {PREFIX}_malloc_array_zero {MACRO}(_malloc_array_zero)
+#define {SRC}_malloc_array POTTERY_CONCAT({DEST}, _malloc_array)
+#define {SRC}_malloc_array_zero POTTERY_CONCAT({DEST}, _malloc_array_zero)

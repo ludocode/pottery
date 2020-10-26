@@ -5,10 +5,14 @@ RUNNER := $(BUILD)/runner
 all: $(RUNNER)
 
 CFLAGS :=
-CPPFLAGS := -O3 -flto
-#CPPFLAGS := -Og -DDEBUG -g
+CPPFLAGS :=
 CXXFLAGS :=
 
+# We put each benchmark in its own translation unit and don't build with -flto.
+# With LTO, GCC figures out that it can inline the comparison function in our
+# qsort() implementation.
+CPPFLAGS += -O3
+#CPPFLAGS += -Og -DDEBUG -g
 CPPFLAGS += -Wall -Wextra -Wpedantic -Werror -Wfatal-errors
 CPPFLAGS += -Iinclude -Itest/src -Itest/build/lib -Iexamples
 CPPFLAGS += -MMD -MP
@@ -29,8 +33,11 @@ CPPFLAGS += -MMD -MP
 CPPFLAGS += -DSAFE_THREE_WAY_COMPARE=1
 
 SRC=test/src/pottery/benchmark
-C_SRCS := $(shell find $(SRC) -type f -name '*.c')
+C_SRCS := $(shell find $(SRC) -type f -name '*.c') \
+	examples/pottery/qsort/pottery_qsort.c \
+	examples/pottery/qsort_simple/pottery_qsort_simple.c
 CXX_SRCS := $(shell find $(SRC) -type f -name '*.cxx')
+
 C_OBJS := $(patsubst %, $(BUILD)/%.o, $(C_SRCS))
 CXX_OBJS := $(patsubst %, $(BUILD)/%.o, $(CXX_SRCS))
 ALL_OBJS := $(C_OBJS) $(CXX_OBJS)

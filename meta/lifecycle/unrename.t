@@ -21,8 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-//!!! END_LICENSE
 
+//!!! END_LICENSE
 // Un-renames lifecycle identifiers with prefix "{PREFIX}"
 
 // types
