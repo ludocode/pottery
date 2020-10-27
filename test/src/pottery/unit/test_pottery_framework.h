@@ -136,7 +136,7 @@ void pottery_unit_test_register(pottery_test_case_t* test_case);
     static pottery_test_case_t pottery_unit_test_case_##name = { \
         #name, \
         &pottery_unit_test_##name, \
-        NULL, \
+        pottery_null, \
         false, \
     };
 
@@ -284,6 +284,7 @@ void pottery_register_unit_tests(void);
 
 // While unit testing, assert() is disabled in both Pottery code and unit tests
 #if defined(__GNUC__) && !defined(POTTERY_TEST_EXAMPLE)
+#undef assert
 #pragma GCC poison assert
 #endif
 

@@ -44,7 +44,7 @@ static inline void pottery_abort() {
     abort();
 }
 
-#ifdef POTTERY_UNIT_TEST
+#if POTTERY_DEBUG || defined(POTTERY_UNIT_TEST)
 #define pottery_assert(x) (!(x) ? pottery_abort() : ((void)0))
 #else
 #define pottery_assert(x) /*nothing*/
@@ -104,7 +104,8 @@ static inline bool pottery_mul_overflow_s(size_t a, size_t b, size_t* out) {
  * Memory operations
  */
 
-// typed null
+// Typed null
+// (Used for -Wzero-as-null-pointer-constant under Clang C++)
 
 #ifdef __cplusplus
     #define pottery_null nullptr
@@ -289,7 +290,7 @@ static inline bool pottery_mul_overflow_s(size_t a, size_t b, size_t* out) {
         #if _POSIX_VERSION >= 200112L
             static pottery_always_inline
             void* pottery_aligned_malloc(size_t alignment, size_t size) {
-                void* p = NULL;
+                void* p = pottery_null;
                 posix_memalign(&p, alignment, size);
                 return p;
             }

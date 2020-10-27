@@ -30,11 +30,11 @@
 #include <gnu/libc-version.h>
 #endif
 
-static pottery_test_case_t* test_case_first = NULL;
+static pottery_test_case_t* test_case_first = pottery_null;
 
 #ifndef POTTERY_CUSTOM_TEST
 static void seed_random(void) {
-    unsigned int seed = pottery_cast(unsigned int, time(NULL));
+    unsigned int seed = pottery_cast(unsigned int, time(pottery_null));
     printf("Random seed: %u", seed);
     #ifdef __GLIBC__
     printf(" for glibc %s", gnu_get_libc_version());
@@ -56,7 +56,7 @@ int main(void) {
     printf("Running unit tests\n");
 
     pottery_test_case_t* test_case = test_case_first;
-    for (; test_case != NULL; test_case = test_case->next) {
+    for (; test_case != pottery_null; test_case = test_case->next) {
         ++count;
 
         // print the test being run (and flush in case it crashes)

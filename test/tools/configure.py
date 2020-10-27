@@ -126,8 +126,8 @@ with open(flagtest_src, "w") as out:
     out.write("""
 // disable C++ on versions of GCC < 5 since they don't have full C++11 support
 // (e.g. std::is_trivially_copyable<>).
-#ifdef __GNUC__
-    #if __GNUC__ < 6
+#if defined(__GNUC__) && !defined(__clang__) && defined(__cplusplus)
+    #if __GNUC__ < 5
         #error
     #endif
 #endif
@@ -150,7 +150,7 @@ def checkFlags(flags):
     sys.stdout.flush()
 
     if compiler == "MSVC":
-        cmd = [cc, "/W4", "/WX"] + flags + [flagtest_src, "/Fe" + flagtest_exe]
+        cmd = [cc, "/W4", "/WX"] + flags + [flagtest_src, "/Fe" + flagtest_exe, "/Fo" + flagtest_src + ".obj"]
     else:
         cmd = [cc, "-Wall", "-Wextra", "-Wpedantic", "-Werror"] + flags + [flagtest_src, "-o", flagtest_exe]
     #print(" ".join(cmd))
@@ -198,14 +198,11 @@ defaultCPPFlags = []
 defaultLDFlags = []
 
 if compiler == "MSVC":
-    pdb = path.join(globalbuild, "pottery_unit.pdb")
     defaultCPPFlags += [
         "/W4", "/WX",
         # debug to PDB with synchronous writes since we're doing parallel builds
-        # TODO currently not working properly, linker doesn't support this
-        # option so it tries to read while it's still being written in parallel
-        # builds and throws "PDB not found" warnings
-        "/Zi", "/FS", "/Fd" + pdb
+        # (we specify a per-build PDB path during build generation below)
+        "/Zi", "/FS"
     ]
     defaultLDFlags += [
         "/DEBUG"
@@ -519,6 +516,11 @@ with open(ninja, "w") as out:
         cxxflags = build.cxxflags
         ldflags = build.ldflags
         objs = []
+
+        if compiler == "MSVC":
+            # Specify a per-build PDB path so that we don't try to link at the
+            # same time a PDB file is being written
+            cppflags.append("/Fd" + buildfolder)
 
         for src in srcs:
             if src.endswith(".cxx"):
