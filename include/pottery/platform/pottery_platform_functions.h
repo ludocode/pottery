@@ -25,6 +25,10 @@
 #ifndef POTTERY_PLATFORM_FUNCTIONS_H
 #define POTTERY_PLATFORM_FUNCTIONS_H 1
 
+#ifndef POTTERY_PLATFORM_IMPL
+#error "This is header internal to Pottery. Do not include it."
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -45,7 +49,7 @@ static inline void pottery_abort() {
 }
 
 #if POTTERY_DEBUG || defined(POTTERY_UNIT_TEST)
-#define pottery_assert(x) (!(x) ? pottery_abort() : ((void)0))
+#define pottery_assert(x) (pottery_unlikely(!(x)) ? pottery_abort() : ((void)0))
 #else
 #define pottery_assert(x) /*nothing*/
 #endif
@@ -205,21 +209,24 @@ static inline bool pottery_mul_overflow_s(size_t a, size_t b, size_t* out) {
 #ifndef POTTERY_MALLOC_EXPAND
     // void POTTERY_MALLOC_EXPAND(void** ptr, size_t* size)
     #if POTTERY_JEMALLOC
-        // this isn't actually used since we have MALLOC_GOOD_SIZE but this is
+        // This isn't actually used since we have MALLOC_GOOD_SIZE but this is
         // how it should be implemented.
         #define POTTERY_MALLOC_EXPAND(ptr, size) *size = xallocx(*ptr, *size, 0, 0)
-    #else
-        // we assign ptr to let Pottery assert that it did not change.
-        #define POTTERY_MALLOC_EXPAND(ptr, size) *ptr = realloc(*ptr, *size)
+    #elif defined(_WIN32)
+        // On Win32 we can expand but we don't have an equivalent of
+        // malloc_usable_size() so this doesn't get used either :( Currently
+        // the allocate-then-expand code is pretty much useless.
+        #define POTTERY_MALLOC_EXPAND(ptr, size) *ptr = _expand(*ptr, *size)
     #endif
-#endif
-
-#ifndef POTTERY_MALLOC_GOOD_SIZE
-    #if POTTERY_JEMALLOC
-        #define POTTERY_MALLOC_GOOD_SIZE(size) nallocx(size, 0)
-    #elif defined(__APPLE__)
-        #define POTTERY_MALLOC_GOOD_SIZE malloc_good_size
-    #endif
+    // Note that we don't use realloc() since it can move even if we're
+    // resizing to malloc_usable_size(). e.g. under glibc, try:
+    //     void* p = malloc(188856);
+    //     void* q = realloc(p, malloc_usable_size(p));
+    // You end up with q != p, the allocation moved! We also can't just do
+    // nothing and use the extra space because it doesn't get moved on a
+    // realloc(). So, malloc_usable_size() is basically useless under glibc (as
+    // you might expect, since the documentation says it's just for debugging.
+    // This is really unfortunate.)
 #endif
 
 #ifndef POTTERY_MALLOC_USABLE_SIZE
@@ -232,8 +239,10 @@ static inline bool pottery_mul_overflow_s(size_t a, size_t b, size_t* out) {
 
     // We assume this is true on Linux. Both glibc and musl support
     // malloc_usable_size(). Other libc may not; in this case we can detect
-    // them here. Jemalloc also supports this although the alloc template will
-    // use nallocx() instead.
+    // them here. Jemalloc (and therefore FreeBSD) also supports this although
+    // the alloc template will prefer nallocx() via MALLOC_GOOD_SIZE instead.
+    // This is pretty much useless though without a way to expand in-place; see
+    // EXPAND above.
     #if defined(__linux__) || POTTERY_JEMALLOC
         #define POTTERY_MALLOC_USABLE_SIZE malloc_usable_size
 
@@ -251,6 +260,60 @@ static inline bool pottery_mul_overflow_s(size_t a, size_t b, size_t* out) {
 
     // Other BSDs as far as we know don't support something like
     // malloc_usable_size(), and we know nothing about other platforms.
+#endif
+
+// On platforms where we don't have an equivalent of malloc_good_size() and we
+// can't expand in-place to a usable size, we make up our own good size. This
+// will hopefully waste less memory than just allocating directly. (This needs
+// a lot more testing to see how effective it is in practice.)
+static inline size_t pottery_malloc_estimate_good_size(size_t size) {
+
+    // for very small allocations, we round up to 24. this appears to be the
+    // smallest block ptmalloc* can give us. better allocators like jemalloc
+    // support as little as 2 bytes, but they also support a proper
+    // malloc_good_size() equivalent so (as long as we're aware of them) this
+    // won't be called.
+    const size_t min_size = 24;
+    if (size < min_size) {
+        return min_size;
+    }
+
+    // threshold between small and large allocations
+    const size_t page_size = 4096;
+    const size_t threshold = page_size * 4;
+
+    // for relatively small allocations, round up to a multiple of the
+    // alignment. this is usually the alignment requirement for malloc on all
+    // platforms.
+    const size_t alignment = 16;
+    if (size <= threshold) {
+        return (size + alignment - 1) & ~pottery_cast(size_t, (alignment - 1));
+    }
+
+    // this is the potential overhead for allocators that store metadata along
+    // with the allocation (e.g. ptmalloc*). we subtract it from the final size
+    // after rounding up to the page size to make sure the allocator doesn't
+    // waste an entire page just to store its metadata. for better allocators
+    // that store metadata separately, a malloc_good_size() equivalent should
+    // be defined.
+    const size_t overhead = 24;
+
+    // round up to the page size checking for overflow
+    size_t padded = size + page_size + overhead - 1;
+    if (pottery_unlikely(padded < size)) {
+        return size;
+    }
+    return (padded / page_size) * page_size - overhead;
+}
+
+#ifndef POTTERY_MALLOC_GOOD_SIZE
+    #if POTTERY_JEMALLOC
+        #define POTTERY_MALLOC_GOOD_SIZE(size) nallocx(size, 0)
+    #elif defined(__APPLE__)
+        #define POTTERY_MALLOC_GOOD_SIZE malloc_good_size
+    #elif !defined(POTTERY_MALLOC_USABLE_SIZE) || !defined(POTTERY_MALLOC_EXPAND)
+        #define POTTERY_MALLOC_GOOD_SIZE pottery_malloc_estimate_good_size
+    #endif
 #endif
 
 #ifndef POTTERY_ALIGNED_FREE
@@ -319,18 +382,15 @@ static inline bool pottery_mul_overflow_s(size_t a, size_t b, size_t* out) {
         // This isn't actually used since we have ALIGNED_MALLOC_GOOD_SIZE but
         // this is how it should be implemented.
         #define POTTERY_ALIGNED_MALLOC_EXPAND(ptr, alignment, size) *size = xallocx(*ptr, *size, 0, MALLOCX_ALIGN(alignment))
-    #elif !defined(_WIN32)
-        // We assume malloc_usable_size() can also be used on aligned
-        // allocations and that realloc() can resize them in-place to the
-        // usable size. If we discover platforms where this does not work we
-        // must disable them. Pottery will abort() if the pointer changed.
-        #define POTTERY_ALIGNED_MALLOC_EXPAND(ptr, alignment, size) *ptr = realloc(*ptr, *size)
     #endif
+    // as above, we cannot rely on realloc() to not move the pointer.
 #endif
 
 #ifndef POTTERY_ALIGNED_MALLOC_GOOD_SIZE
     #if POTTERY_JEMALLOC
         #define POTTERY_ALIGNED_MALLOC_GOOD_SIZE(alignment, size) nallocx(size, MALLOCX_ALIGN(alignment))
+    #elif !defined(POTTERY_ALIGNED_MALLOC_USABLE_SIZE) || !defined(POTTERY_ALIGNED_MALLOC_EXPAND)
+        #define POTTERY_ALIGNED_MALLOC_GOOD_SIZE pottery_malloc_estimate_good_size
     #endif
 #endif
 

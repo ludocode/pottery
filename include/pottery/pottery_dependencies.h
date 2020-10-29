@@ -35,7 +35,7 @@
  * include this dependencies header at file scope.
  */
 
-
+#define POTTERY_PLATFORM_IMPL
 
 #include "pottery/platform/pottery_platform_headers.h"
 
@@ -47,5 +47,6 @@
 #include "pottery/platform/pottery_platform_cxx.hxx"
 #endif
 
+#undef POTTERY_PLATFORM_IMPL
 
 #endif

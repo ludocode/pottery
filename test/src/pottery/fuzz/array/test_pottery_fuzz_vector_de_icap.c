@@ -22,15 +22,22 @@
  * SOFTWARE.
  */
 
-typedef int unused;
+#include "pottery/common/test_pottery_ufo.h"
 
-#if __has_include(<boost/sort/sort.hpp>)
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#include <boost/sort/sort.hpp>
-
-extern "C"
-void boost_flat_stable_sort_wrapper(int* ints, size_t count) {
-    boost::sort::flat_stable_sort(ints, ints + count);
-}
-
+// workarounds for MSVC C++/CLR not allowing different structs in different
+// translation units with the same name
+#ifdef __CLR_VER
+#define array_ufo_t pottery_vector_de_icap_fuzz_ufo_t
 #endif
+
+#define POTTERY_VECTOR_PREFIX array_ufo
+#define POTTERY_VECTOR_DOUBLE_ENDED 1
+#define POTTERY_VECTOR_INTERNAL_CAPACITY 37
+#define POTTERY_VECTOR_ELEMENT_TYPE ufo_t
+#define POTTERY_VECTOR_LIFECYCLE_INIT_COPY ufo_init_copy
+#define POTTERY_VECTOR_LIFECYCLE_MOVE ufo_move
+#define POTTERY_VECTOR_LIFECYCLE_DESTROY ufo_destroy
+#include "pottery/vector/pottery_vector_static.t.h"
+
+#define TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX pottery_vector_de_icap_fuzz_ufo
+#include "pottery/fuzz/array/test_pottery_fuzz_array_ufo.t.h"

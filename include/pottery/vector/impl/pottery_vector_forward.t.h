@@ -38,22 +38,29 @@ typedef POTTERY_VECTOR_CONTEXT_TYPE pottery_vector_context_t;
 #endif
 
 typedef struct pottery_vector_t {
-    pottery_vector_element_t* values;
+    pottery_vector_element_t* storage;
+    #if POTTERY_VECTOR_DOUBLE_ENDED
+        pottery_vector_element_t* begin;
+    #endif
     size_t count;
 
     union {
         size_t capacity;
         #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
-        pottery_vector_element_t internal[POTTERY_VECTOR_INTERNAL_CAPACITY];
+            pottery_vector_element_t internal[POTTERY_VECTOR_INTERNAL_CAPACITY];
         #endif
     } u;
 
-    #ifdef POTTERY_DEBUG
-    struct pottery_vector_t* self_check;
-    void* leak_check;
+    #if POTTERY_DEBUG
+        #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
+            struct pottery_vector_t* self_check; // internal capacity makes this not bitwise movable
+        #endif
+        #if POTTERY_LEAK_CHECK
+            void* leak_check;
+        #endif
     #endif
 
     #ifdef POTTERY_VECTOR_CONTEXT_TYPE
-    pottery_vector_context_t context;
+        pottery_vector_context_t context;
     #endif
 } pottery_vector_t;

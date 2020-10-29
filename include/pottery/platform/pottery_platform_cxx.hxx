@@ -25,8 +25,12 @@
 #ifndef POTTERY_PLATFORM_CXX_HXX
 #define POTTERY_PLATFORM_CXX_HXX
 
+#ifndef POTTERY_PLATFORM_IMPL
+#error "This is header internal to Pottery. Do not include it."
+#endif
+
 #ifndef __cplusplus
-#error
+#error "This header should only be included in C++."
 #endif
 
 #ifndef POTTERY_GENERATE_CODE

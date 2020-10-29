@@ -25,6 +25,10 @@
 #ifndef POTTERY_PLATFORM_FEATURES_H
 #define POTTERY_PLATFORM_FEATURES_H 1
 
+#ifndef POTTERY_PLATFORM_IMPL
+#error "This is header internal to Pottery. Do not include it."
+#endif
+
 
 
 /*
@@ -40,11 +44,11 @@
  *
  * - You may have attempted an out-of-bounds array access;
  *
- * - You may have attemped to dereference a non-existent entry;
+ * - You may have attemped to dereference a non-existent entry/ref;
  *
  * - You may have corrupted a map element by changing its key;
  *
- * - Your comparison function may be intransitive;
+ * - Your comparison function may be intransitive or otherwise buggy;
  *
  * - Your hash or comparison function may have changed its results based on
  *   some external context without rebuilding the data structure that uses it.
@@ -52,12 +56,43 @@
  * If you are hitting an assertion and you are sure you are using Pottery
  * correctly, please file a bug!
  */
-#if !defined(POTTERY_DEBUG)
+#ifndef POTTERY_DEBUG
     #if defined(DEBUG) || defined(_DEBUG)
         #define POTTERY_DEBUG 1
     #else
         #define POTTERY_DEBUG 0
     #endif
+#endif
+
+/*
+ * POTTERY_LEAK_CHECK additionally enables extra leak check allocations for
+ * objects that require explicit destruction. This can be useful to detect when
+ * you've forgotten to destroy objects that might not otherwise cause an
+ * external leak detector to notice.
+ *
+ * For example if you forget to destroy a vector that was only using internal
+ * space, you didn't technically leak memory so a leak detector like ASAN or
+ * Valgrind won't detect it, but it'll start leaking as soon as you put enough
+ * stuff in it to make it allocate.
+ *
+ * This is off by default because it requires ordinary malloc() and free()
+ * (since we need it before we've set up alloc contexts), it can be annoying
+ * (seeing tons of 1 byte allocations in your memory tools), and it can slow
+ * down debug builds too much.
+ *
+ * A better way might be to instrument the code to inform your tool directly
+ * when Pottery's objects are created and destroyed. We don't really want to
+ * instrument Pottery with every tool under the sun, but it might make sense
+ * for some (and it would be nice if it detected more stuff, e.g. out-of-bounds
+ * accesses for unused capacity in a vector.) In the meantime this is a bit of
+ * a blunt hammer that can detect mismatched init/destroy with any memory
+ * checker.
+ */
+#ifndef POTTERY_LEAK_CHECK
+    #define POTTERY_LEAK_CHECK 0
+#endif
+#if POTTERY_LEAK_CHECK && !POTTERY_DEBUG
+    #error "POTTERY_LEAK_CHECK requires POTTERY_DEBUG."
 #endif
 
 

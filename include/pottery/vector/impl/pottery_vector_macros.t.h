@@ -29,6 +29,12 @@
 #include "pottery/pottery_dependencies.h"
 #include "pottery/platform/pottery_platform_pragma_push.t.h"
 
+
+
+/*
+ * Configuration
+ */
+
 #ifndef POTTERY_VECTOR_PREFIX
 #error "POTTERY_VECTOR_PREFIX is not defined."
 #endif
@@ -48,6 +54,10 @@
     #define POTTERY_VECTOR_CONTEXT_VAL(vector) /*nothing*/
 #endif
 
+#ifndef POTTERY_VECTOR_DOUBLE_ENDED
+    #define POTTERY_VECTOR_DOUBLE_ENDED 0
+#endif
+
 
 
 /*
@@ -63,7 +73,8 @@
 #define pottery_vector_minimum_capacity POTTERY_VECTOR_NAME(_minimum_capacity)
 
 #define pottery_vector_insert_vector POTTERY_VECTOR_NAME(_insert_vector)
-#define pottery_vector_insert_last_vector POTTERY_VECTOR_NAME(_insert_last_vector) // TODO rename to insert_last
+#define pottery_vector_insert_last_vector POTTERY_VECTOR_NAME(_insert_last_vector)
+#define pottery_vector_insert_first_vector POTTERY_VECTOR_NAME(_insert_first_vector)
 
 #define pottery_vector_alloc_context POTTERY_VECTOR_NAME(_alloc_context)
 #define pottery_vector_set_alloc_context POTTERY_VECTOR_NAME(_set_alloc_context)
@@ -73,8 +84,9 @@
 #define pottery_vector_impl_create_space POTTERY_VECTOR_NAME(_impl_create_space)
 #define pottery_vector_impl_remove_space POTTERY_VECTOR_NAME(_impl_remove_space)
 #define pottery_vector_impl_clear POTTERY_VECTOR_NAME(_impl_clear)
-#define pottery_vector_impl_destroy_destruct_all POTTERY_VECTOR_NAME(_impl_destroy_destruct_all)
+#define pottery_vector_impl_destroy_all POTTERY_VECTOR_NAME(_impl_destroy_all)
 #define pottery_vector_impl_copy POTTERY_VECTOR_NAME(_impl_copy)
+#define pottery_vector_impl_reset POTTERY_VECTOR_NAME(_impl_reset)
 
 
 

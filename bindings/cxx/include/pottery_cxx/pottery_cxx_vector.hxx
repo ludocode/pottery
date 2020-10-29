@@ -42,7 +42,7 @@ struct vector_wrapper {
     // Note that we use `BY_VALUE` even if the type isn't copyable or
     // default-constructible. C++ doesn't instantiate functions that aren't
     // used so it doesn't matter if they don't compile.
-    #define POTTERY_VECTOR_ELEMENT_BY_VALUE 1
+    #define POTTERY_VECTOR_LIFECYCLE_BY_VALUE 1
     #include "pottery/vector/pottery_vector_static.t.h"
 };
 

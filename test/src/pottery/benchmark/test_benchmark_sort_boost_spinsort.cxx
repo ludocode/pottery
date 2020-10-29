@@ -25,6 +25,7 @@
 typedef int unused;
 
 #if __has_include(<boost/sort/sort.hpp>)
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <boost/sort/sort.hpp>
 
 extern "C"

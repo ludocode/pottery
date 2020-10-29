@@ -31,7 +31,7 @@
 # vsvarsall.bat for some version of the Visual Studio Build Tools.
 # ninja build file to build the unit test suite in a variety of configurations.
 
-import shutil, os, sys, subprocess
+import shutil, os, sys, subprocess, json
 from os import path
 
 globalbuild = path.join("test", "build")
@@ -113,12 +113,35 @@ ccache = shutil.which("ccache") and os.getenv("CCACHE_DISABLE") != "true" and os
 
 
 ###################################################
-# Compiler Probing
+# Load Cached Configuration
 ###################################################
 
-config = {
-    "flags": {},
-}
+config = None
+
+configFile = path.join(globalbuild, "config.json")
+if path.exists(configFile):
+    try:
+        with open(configFile) as infile:
+            print("Loading cached configuration")
+            config = json.load(infile)
+        if config["cc"] != cc:
+            print("Compiler is different. Discarding cached configuration.")
+            config = None
+    except:
+        print("Error loading cached configuration. Discarding.")
+        pass
+
+if config is None:
+    config = {
+        "cc": cc,
+        "flags": {},
+    }
+
+
+
+###################################################
+# Compiler Probing
+###################################################
 
 flagtest_src = path.join(globalbuild, "flagtest.c")
 flagtest_exe = path.join(globalbuild, "flagtest" + exe_extension)
@@ -177,17 +200,19 @@ def flagsIfSupported(flags):
 # sometimes improve warnings, and things run a lot faster especially under
 # Valgrind, but Clang stupidly maps it to -O1 which has some optimizations
 # that break debugging!
-hasOg = False
-print("Testing flag(s): -Og ... ", end="")
-sys.stdout.flush()
-if compiler == "MSVC":
-    print("Not supported.")
-elif compiler == "GCC":
-    hasOg = True
-    print("Supported.")
-else:
-    print("May be supported but we won't use it.")
-
+if "-Og" not in config["flags"]:
+    print("Testing flag(s): -Og ... ", end="")
+    sys.stdout.flush()
+    if compiler == "MSVC":
+        print("Not supported.")
+        config["flags"]["-Og"] = False
+    elif compiler == "GCC":
+        print("Supported.")
+        config["flags"]["-Og"] = True
+    else:
+        print("May be supported but we won't use it.")
+        config["flags"]["-Og"] = False
+hasOg = config["flags"]["-Og"]
 
 
 ###################################################
@@ -592,3 +617,6 @@ with open(path.join(globalbuild, "help"), "w") as out:
     for build in sorted(builds.keys()):
         out.write("    run-" + build + "\n")
     out.close()
+
+with open(configFile, "w") as out:
+    json.dump(config, out, indent=4)

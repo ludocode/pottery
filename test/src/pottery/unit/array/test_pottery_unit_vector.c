@@ -28,7 +28,7 @@
 // Instantiate a vector of int
 #define POTTERY_VECTOR_PREFIX int_array
 #define POTTERY_VECTOR_ELEMENT_TYPE int
-#define POTTERY_VECTOR_ELEMENT_BY_VALUE 1
+#define POTTERY_VECTOR_LIFECYCLE_BY_VALUE 1
 #include "pottery/vector/pottery_vector_static.t.h"
 
 // Instantiate int_array tests on our int vector
@@ -40,9 +40,9 @@
 #define POTTERY_VECTOR_PREFIX ufo_array
 #define POTTERY_VECTOR_INTERNAL_CAPACITY 1
 #define POTTERY_VECTOR_ELEMENT_TYPE ufo_t
-#define POTTERY_VECTOR_ELEMENT_INIT_COPY ufo_init_copy
-#define POTTERY_VECTOR_ELEMENT_MOVE ufo_move
-#define POTTERY_VECTOR_ELEMENT_DESTROY ufo_destroy
+#define POTTERY_VECTOR_LIFECYCLE_INIT_COPY ufo_init_copy
+#define POTTERY_VECTOR_LIFECYCLE_MOVE ufo_move
+#define POTTERY_VECTOR_LIFECYCLE_DESTROY ufo_destroy
 #include "pottery/vector/pottery_vector_static.t.h"
 
 // Instantiate ufo_array tests on our ufo vector

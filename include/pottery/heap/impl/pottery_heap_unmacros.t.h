@@ -134,7 +134,6 @@
 
     // Undefines (forwardable/forwarded) lifecycle configuration on POTTERY_HEAP_LIFECYCLE
 
-    #undef POTTERY_HEAP_LIFECYCLE_TYPE
     #undef POTTERY_HEAP_LIFECYCLE_BY_VALUE
     #undef POTTERY_HEAP_LIFECYCLE_DESTROY
     #undef POTTERY_HEAP_LIFECYCLE_DESTROY_BY_VALUE

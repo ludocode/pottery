@@ -126,7 +126,7 @@ static void fuzz_emplace_at(array_ufo_t* array, fuzz_input_t* input, shadow_t* s
 static void fuzz_remove_at(array_ufo_t* array, fuzz_input_t* input, shadow_t* shadow) {
     if (array_ufo_is_empty(array)) {
         pottery_test_assert(shadow->count == 0);
-        //printf("array is empty, not destroying\n");
+        //printf("array is empty, not removing\n");
         return;
     }
 

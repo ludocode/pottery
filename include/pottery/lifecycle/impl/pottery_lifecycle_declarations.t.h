@@ -628,8 +628,8 @@ void pottery_lifecycle_move_bulk_restrict(POTTERY_LIFECYCLE_CONTEXT_ARG
         pottery_lifecycle_ref_t POTTERY_LIFECYCLE_RESTRICT from,
         size_t count) pottery_noexcept
 {
-    pottery_assert((size_t)(from - to) >= count);
-    pottery_assert((size_t)(to - from) >= count);
+    pottery_assert(pottery_cast(size_t, from - to) >= count);
+    pottery_assert(pottery_cast(size_t, to - from) >= count);
 
     #if POTTERY_LIFECYCLE_MOVE_BY_VALUE
     size_t bytes;
@@ -658,7 +658,7 @@ static inline
 void pottery_lifecycle_move_bulk_down(POTTERY_LIFECYCLE_CONTEXT_ARG
         pottery_lifecycle_ref_t to, pottery_lifecycle_ref_t from, size_t count) pottery_noexcept
 {
-    pottery_assert((uintptr_t)to <= (uintptr_t)from);
+    pottery_assert(to < from);
 
     #if POTTERY_LIFECYCLE_MOVE_BY_VALUE
     size_t bytes;
@@ -687,7 +687,7 @@ static inline
 void pottery_lifecycle_move_bulk_up(POTTERY_LIFECYCLE_CONTEXT_ARG
         pottery_lifecycle_ref_t to, pottery_lifecycle_ref_t from, size_t count) pottery_noexcept
 {
-    pottery_assert((uintptr_t)to >= (uintptr_t)from);
+    pottery_assert(to > from);
 
     #if POTTERY_LIFECYCLE_MOVE_BY_VALUE
     size_t bytes;
@@ -714,6 +714,10 @@ void pottery_lifecycle_move_bulk_up(POTTERY_LIFECYCLE_CONTEXT_ARG
     }
 }
 
+/**
+ * Moves an array of values automatically. The arrays may or may not overlap,
+ * and may have the same address (in which case nothing happens.)
+ */
 static inline
 void pottery_lifecycle_move_bulk(POTTERY_LIFECYCLE_CONTEXT_ARG
         pottery_lifecycle_ref_t to, pottery_lifecycle_ref_t from, size_t count) pottery_noexcept
@@ -741,13 +745,10 @@ void pottery_lifecycle_move_bulk(POTTERY_LIFECYCLE_CONTEXT_ARG
     }
     #endif
 
-    uintptr_t uto = (uintptr_t)to;
-    uintptr_t ufrom = (uintptr_t)from;
-
-    if (uto - ufrom >= count && ufrom - uto >= count)
+    if (pottery_cast(size_t, to - from) >= count && pottery_cast(size_t, from - to) >= count)
         pottery_lifecycle_move_bulk_restrict(POTTERY_LIFECYCLE_CONTEXT_VAL
                 to, from, count);
-    else if (uto > ufrom)
+    else if (to > from)
         pottery_lifecycle_move_bulk_up(POTTERY_LIFECYCLE_CONTEXT_VAL
                 to, from, count);
     else

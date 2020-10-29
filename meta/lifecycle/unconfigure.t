@@ -25,7 +25,6 @@
 
 // Undefines (forwardable/forwarded) lifecycle configuration on {PREFIX}
 
-#undef {PREFIX}_TYPE
 #undef {PREFIX}_BY_VALUE
 #undef {PREFIX}_DESTROY
 #undef {PREFIX}_DESTROY_BY_VALUE

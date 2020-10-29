@@ -41,7 +41,7 @@ struct Heap {
     #define POTTERY_HEAP_PREFIX heap
     #define POTTERY_HEAP_VALUE_TYPE typename std::iterator_traits<Accessor>::value_type
     #define POTTERY_HEAP_LIFECYCLE_BY_VALUE 1
-    #define POTTERY_HEAP_COMPARE_CONTEXT_TYPE Less
+    #define POTTERY_HEAP_CONTEXT_TYPE Less
     #define POTTERY_HEAP_COMPARE_LESS(less, x, y) less(*x, *y)
     #include "pottery/heap/pottery_heap_static.t.h"
 };
@@ -58,7 +58,7 @@ struct Heap {
 template <class RandomAccessIterator, class Less>
 void make_heap(RandomAccessIterator first, RandomAccessIterator last, Less less) {
     size_t count = pottery_cast(size_t, last - first);
-    pottery::impl::Heap<RandomAccessIterator, Less>::heap_build(first, count, less);
+    pottery::impl::Heap<RandomAccessIterator, Less>::heap_build(less, first, count);
 }
 
 template <class RandomAccessIterator>
@@ -81,7 +81,7 @@ void push_heap(RandomAccessIterator first, RandomAccessIterator last, Less less)
     if (count == 0)
         pottery_abort();
 
-    pottery::impl::Heap<RandomAccessIterator, Less>::heap_push(first, count - 1, 1, less);
+    pottery::impl::Heap<RandomAccessIterator, Less>::heap_push(less, first, count - 1, 1);
 }
 
 template <class RandomAccessIterator>
@@ -104,7 +104,7 @@ void pop_heap(RandomAccessIterator first, RandomAccessIterator last, Less less) 
     if (count == 0)
         abort();
 
-    pottery::impl::Heap<RandomAccessIterator, Less>::heap_pop(first, count, 1, less);
+    pottery::impl::Heap<RandomAccessIterator, Less>::heap_pop(less, first, count, 1);
 }
 
 template <class RandomAccessIterator>
@@ -127,7 +127,7 @@ void sort_heap(RandomAccessIterator first, RandomAccessIterator last, Less less)
     if (count == 0)
         abort();
 
-    pottery::impl::Heap<RandomAccessIterator, Less>::heap_pop(first, count, count, less);
+    pottery::impl::Heap<RandomAccessIterator, Less>::heap_pop(less, first, count, count);
 }
 
 template <class RandomAccessIterator>
@@ -144,7 +144,7 @@ void sort_heap(RandomAccessIterator first, RandomAccessIterator last) {
 template <class RandomAccessIterator, class Less>
 bool is_heap(RandomAccessIterator first, RandomAccessIterator last, Less less) {
     size_t count = pottery_cast(size_t, last - first);
-    return pottery::impl::Heap<RandomAccessIterator, Less>::heap_valid(first, count, less);
+    return pottery::impl::Heap<RandomAccessIterator, Less>::heap_valid(less, first, count);
 }
 
 template <class RandomAccessIterator>
@@ -161,7 +161,7 @@ bool is_heap(RandomAccessIterator first, RandomAccessIterator last) {
 template <class RandomAccessIterator, class Less>
 RandomAccessIterator is_heap_until(RandomAccessIterator first, RandomAccessIterator last, Less less) {
     size_t count = pottery_cast(size_t, last - first);
-    size_t valid_count = pottery::impl::Heap<RandomAccessIterator, Less>::heap_valid_count(first, count, less);
+    size_t valid_count = pottery::impl::Heap<RandomAccessIterator, Less>::heap_valid_count(less, first, count);
     return first + valid_count;
 }
 

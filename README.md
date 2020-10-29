@@ -55,7 +55,7 @@ Suppose you want a dynamically growable array of integers. Let's call it `int_ve
 ```c
 #define POTTERY_VECTOR_PREFIX int_vector
 #define POTTERY_VECTOR_ELEMENT_TYPE int
-#define POTTERY_VECTOR_ELEMENT_BY_VALUE 1
+#define POTTERY_VECTOR_LIFECYCLE_BY_VALUE 1
 #include "pottery/vector/pottery_vector_static.t.h"
 ```
 
@@ -80,4 +80,4 @@ These are all real functions. You can set a breakpoint on `int_vector_insert_at(
 
 We've defined `ELEMENT_BY_VALUE` to 1 above because `int` is trivially copyable and destroyable. You could instead provide a destroy expression for the vector to call on your elements to clean them up (for example if it contained pointers, you could tell it to destroy them with `free()`.) You could provide a move expression in case your type is not bitwise-movable. You could give it a copy initialization expression for your type to allow whole vector copies. Pottery calls all of these expressions directly, not through function pointers. Pottery's dynamic containers can fully manage the lifecycles of the elements they contain.
 
-You could also provide the vector with a custom allocator and context. You could configure it to provide some internal space for a small number of elements to avoid small allocations. You could configure it as a double-ended vector or circular buffer. You can even instantiate separate header and source files to use it in multiple translation units without each having a copy of the implementation. Pottery's templates are highly configurable.
+You could also provide the vector with a custom allocator and context. You could configure it to provide some internal space for a small number of elements to avoid small allocations. You could configure it as a double-ended vector. You can even instantiate separate header and source files to use it in multiple translation units without each having a copy of the implementation. Pottery's templates are highly configurable.

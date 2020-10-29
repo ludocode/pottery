@@ -25,6 +25,10 @@
 #ifndef POTTERY_PLATFORM_ATTRIBUTES_H
 #define POTTERY_PLATFORM_ATTRIBUTES_H 1
 
+#ifndef POTTERY_PLATFORM_IMPL
+#error "This is header internal to Pottery. Do not include it."
+#endif
+
 
 
 /*
@@ -354,6 +358,15 @@
 #endif
 #ifndef pottery_bless
     #define pottery_bless(T, p) pottery_reinterpret_cast(T*, p)
+#endif
+
+/*
+ * Wrap an expression in std::move() if C++
+ */
+#ifdef __cplusplus
+    #define pottery_move_if_cxx(x) (std::move(x))
+#else
+    #define pottery_move_if_cxx(x) (x)
 #endif
 
 /*

@@ -25,6 +25,10 @@
 #ifndef POTTERY_PLATFORM_HEADERS_H
 #define POTTERY_PLATFORM_HEADERS_H 1
 
+#ifndef POTTERY_PLATFORM_IMPL
+#error "This is header internal to Pottery. Do not include it."
+#endif
+
 // In C++ we verify here that the dependencies were correctly included at file
 // scope, outside of any namespace or extern "C" block. The below system
 // includes cannot be included outside of file scope.

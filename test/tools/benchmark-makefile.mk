@@ -4,9 +4,9 @@ RUNNER := $(BUILD)/runner
 .PHONY: all
 all: $(RUNNER)
 
-CFLAGS :=
+CFLAGS := -std=gnu11
 CPPFLAGS :=
-CXXFLAGS :=
+CXXFLAGS := -std=gnu++17
 
 # We put each benchmark in its own translation unit and don't build with -flto.
 # With LTO, GCC figures out that it can inline the comparison function in our
@@ -24,10 +24,10 @@ CPPFLAGS += -MMD -MP
 # Ironically, when the comparison function is inlined, the safe comparison is
 # marginally faster than the unsafe comparison (like swenson/sort quicksort).
 # However the unsafe comparison is faster on algorithms that cannot inline it
-# (like qsort().)
+# (like qsort() and pottery_qsort().)
 #
 # This does not affect algorithms that do not need to use three-way comparisons
-# (like Pottery.)
+# (like Pottery templates.)
 #
 # Change this to see the difference in results.
 CPPFLAGS += -DSAFE_THREE_WAY_COMPARE=1

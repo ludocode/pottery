@@ -46,7 +46,6 @@
 
     // Undefines (forwardable/forwarded) lifecycle configuration on POTTERY_LIFECYCLE
 
-    #undef POTTERY_LIFECYCLE_TYPE
     #undef POTTERY_LIFECYCLE_BY_VALUE
     #undef POTTERY_LIFECYCLE_DESTROY
     #undef POTTERY_LIFECYCLE_DESTROY_BY_VALUE

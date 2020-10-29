@@ -111,7 +111,7 @@ void* pottery_alloc_impl_malloc_array_at_least_ea(POTTERY_ALLOC_CONTEXT_ARG
             #endif
             pottery_assert(new_size >= size);
             *count = new_size / element_size;
-            return pottery_alloc_impl_malloc_ea(POTTERY_ALLOC_CONTEXT_VAL alignment, *size);
+            return pottery_alloc_impl_malloc_ea(POTTERY_ALLOC_CONTEXT_VAL alignment, new_size);
 
         #elif defined(POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE) && defined(POTTERY_ALLOC_ALIGNED_MALLOC_EXPAND)
             // Allocate, then expand to fill the space.

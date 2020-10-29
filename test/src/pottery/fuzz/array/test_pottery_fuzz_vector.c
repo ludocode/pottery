@@ -26,9 +26,9 @@
 
 #define POTTERY_VECTOR_PREFIX array_ufo
 #define POTTERY_VECTOR_ELEMENT_TYPE ufo_t
-#define POTTERY_VECTOR_ELEMENT_INIT_COPY ufo_init_copy
-#define POTTERY_VECTOR_ELEMENT_MOVE ufo_move
-#define POTTERY_VECTOR_ELEMENT_DESTROY ufo_destroy
+#define POTTERY_VECTOR_LIFECYCLE_INIT_COPY ufo_init_copy
+#define POTTERY_VECTOR_LIFECYCLE_MOVE ufo_move
+#define POTTERY_VECTOR_LIFECYCLE_DESTROY ufo_destroy
 #include "pottery/vector/pottery_vector_static.t.h"
 
 #define TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX pottery_vector_fuzz_ufo

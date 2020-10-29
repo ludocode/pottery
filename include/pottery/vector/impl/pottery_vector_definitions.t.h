@@ -64,6 +64,15 @@ POTTERY_VECTOR_EXTERN
 pottery_error_t pottery_vector_reserve(pottery_vector_t* vector, size_t count) {
     // We create space at the end of the vector for the additional elements
     // then drop the count back down so we keep the space without resizing.
+
+    // NOTE: We create the space at the end even if the vector is double-ended
+    // under the assumption that you're about to append this many elements.
+    // This means that a double-ended vector can be very unbalanced after a
+    // reserve. This is probably a good thing, because otherwise if you reserve
+    // a large number of elements and then append that same number, it would
+    // have to shift them down part way through, and the whole point of reserve
+    // is to avoid having to do that.
+
     size_t old_count = vector->count;
     if (count < old_count)
         return POTTERY_OK;
@@ -75,39 +84,59 @@ pottery_error_t pottery_vector_reserve(pottery_vector_t* vector, size_t count) {
 }
 
 #if POTTERY_LIFECYCLE_CAN_DESTROY
-// Destroys and destructs all elements in the vector.
-// TODO get rid of this, just call destroy_bulk from lifecycle
-static void pottery_vector_impl_destroy_destruct_all(pottery_vector_t* vector) {
-    size_t i;
-    for (i = 0; i < vector->count; ++i) {
-        pottery_vector_element_t* element = pottery_vector_at(vector, i);
-        pottery_vector_lifecycle_destroy(POTTERY_VECTOR_CONTEXT_VAL(vector) element);
-        //pottery_vector_element_destruct(element);
-    }
+static void pottery_vector_impl_destroy_all(pottery_vector_t* vector) {
+    pottery_vector_lifecycle_destroy_bulk(POTTERY_VECTOR_CONTEXT_VAL(vector)
+            pottery_vector_begin(vector), pottery_vector_count(vector));
 }
 #endif
 
-// Clears the vector after all its elements have been destroyed and destructed.
-static void pottery_vector_impl_clear(pottery_vector_t* vector) {
+POTTERY_VECTOR_EXTERN
+void pottery_vector_impl_reset(pottery_vector_t* vector) {
     vector->count = 0;
+
+    #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
+        vector->storage = vector->u.internal;
+    #else
+        vector->storage = pottery_null;
+        vector->u.capacity = 0;
+    #endif
+
+    #if POTTERY_VECTOR_DOUBLE_ENDED
+    // We set the start offset to the start of the allocation. If you append
+    // right away, we expect you to append more, so it's probably better to be
+    // at the start. If you're prepending, the second prepend will recenter
+    // so it'll only have to move one value.
+    vector->begin = vector->storage;
+    #endif
+}
+
+// Clears the vector after all its elements have been destroyed.
+static void pottery_vector_impl_clear(pottery_vector_t* vector) {
+    #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
+    if (vector->storage == vector->u.internal) {
+        pottery_vector_impl_reset(vector);
+        return;
+    }
+    #endif
 
     // We only free the vector if we're using more than double the minimum
     // space. This will prevent us from continually allocating and freeing if
     // the vector is alternating between empty and a small number of elements.
     // This is another parameter that should eventually be tunable.
-    if (
-            #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
-            vector->values != vector->u.internal &&
-            #endif
-            vector->u.capacity > 2 * pottery_vector_minimum_capacity()
-    ) {
-        pottery_vector_impl_free(vector, vector->values);
 
-        #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
-        vector->values = vector->u.internal;
-        #else
-        vector->values = pottery_null;
-        vector->u.capacity = 0;
+    if (vector->u.capacity > 2 * pottery_vector_minimum_capacity()) {
+        pottery_vector_impl_free(vector, vector->storage);
+        pottery_vector_impl_reset(vector);
+    } else {
+        vector->count = 0;
+
+        #if POTTERY_VECTOR_DOUBLE_ENDED
+        // Since we're keeping a non-trivial amount of space, we set the start
+        // offset a quarter of the way through. If you only append, we won't
+        // waste too much space before growing. If you only prepend, we'll
+        // recenter without having to grow and before filling too much of the
+        // vector.
+        vector->begin = vector->storage + vector->u.capacity / 4;
         #endif
     }
 }
@@ -126,7 +155,7 @@ void pottery_vector_displace_all(pottery_vector_t* vector) {
 #if POTTERY_LIFECYCLE_CAN_DESTROY
 POTTERY_VECTOR_EXTERN
 void pottery_vector_remove_all(pottery_vector_t* vector) {
-    pottery_vector_impl_destroy_destruct_all(vector);
+    pottery_vector_impl_destroy_all(vector);
     pottery_vector_impl_clear(vector);
 }
 #endif
@@ -134,29 +163,40 @@ void pottery_vector_remove_all(pottery_vector_t* vector) {
 POTTERY_VECTOR_EXTERN
 void pottery_vector_destroy(pottery_vector_t* vector) {
     // make sure the container is not already destroyed or otherwise invalid
-    pottery_assert(vector->values != (pottery_vector_element_t*)(-1));
+    pottery_assert(vector->storage != (pottery_vector_element_t*)(-1));
+
+    // Clean up the checks
+    #if POTTERY_DEBUG
+        #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
+            pottery_assert(vector->self_check == vector);
+        #endif
+        #if POTTERY_LEAK_CHECK
+            pottery_assert(vector->leak_check != pottery_null);
+            free(vector->leak_check);
+        #endif
+    #endif
 
     #if POTTERY_LIFECYCLE_CAN_DESTROY
-    pottery_vector_impl_destroy_destruct_all(vector);
+    pottery_vector_impl_destroy_all(vector);
     #else
     // If we don't know how to destroy our values, it is an error to destroy a
     // non-empty container. The vector contents must be properly disposed of.
     pottery_assert(vector->count == 0);
     #endif
 
-    if (vector->values != pottery_null
+    if (vector->storage != pottery_null
             #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
-            && vector->values != vector->u.internal
+            && vector->storage != vector->u.internal
             #endif
     ) {
-        pottery_vector_impl_free(vector, vector->values);
+        pottery_vector_impl_free(vector, vector->storage);
     } else {
         #if POTTERY_DEBUG
         // If values is null or internal, assign it to garbage to detect
         // double-destroy. (If it was allocated, we expect you have some other
-        // means of detecting double-free in debug builds, so we leave it
+        // means of detecting double-free in debug builds so we leave it
         // as-is.)
-        vector->values = (pottery_vector_element_t*)(-1);
+        vector->storage = (pottery_vector_element_t*)(-1);
         #endif
     }
 }
@@ -164,21 +204,27 @@ void pottery_vector_destroy(pottery_vector_t* vector) {
 POTTERY_VECTOR_EXTERN
 void pottery_vector_move(pottery_vector_t* to, pottery_vector_t* from) {
     #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
-    if (from->values == from->u.internal) {
+    if (from->storage == from->u.internal) {
 
         // initialize the vector, which gives us sufficient internal space
         pottery_vector_init(to);
-        pottery_assert(to->values == to->u.internal);
+        pottery_assert(to->storage == to->u.internal);
         pottery_assert(pottery_vector_capacity(to) >= from->count);
 
-        // move the elements
+        // take the opportunity to recenter
         to->count = from->count;
-        pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(from) to->values, from->values, to->count);
+        #if POTTERY_VECTOR_DOUBLE_ENDED
+        to->begin = to->storage + (pottery_vector_capacity(to) - to->count) / 2;
+        #endif
+
+        // move the elements
+        pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(from)
+                pottery_vector_begin(to), pottery_vector_begin(from), to->count);
         from->count = 0;
 
         // move the context
         #ifdef POTTERY_VECTOR_CONTEXT_TYPE
-        to->context = from->context;
+        to->context = pottery_move_if_cxx(from->context);
         #endif
 
         // destroy the source vector
@@ -186,76 +232,48 @@ void pottery_vector_move(pottery_vector_t* to, pottery_vector_t* from) {
     } else
     #endif
     {
-        // steal the values without init/destroy
-        to->values = from->values;
+        // steal the storage without init/destroy
+        to->storage = from->storage;
+        #if POTTERY_VECTOR_DOUBLE_ENDED
+        to->begin = from->begin;
+        #endif
         to->count = from->count;
         to->u.capacity = from->u.capacity;
 
         // also steal debug stuff
-        #ifdef POTTERY_DEBUG
-        to->self_check = from->self_check;
-        to->leak_check = from->leak_check;
+        #if POTTERY_DEBUG
+            #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
+                to->self_check = from->self_check;
+                from->self_check = pottery_reinterpret_cast(pottery_vector_t*, -1);
+            #endif
+            #if POTTERY_LEAK_CHECK
+                to->leak_check = from->leak_check;
+                from->leak_check = pottery_reinterpret_cast(void*, -1);
+            #endif
         #endif
 
         // steal the context
         #if defined(POTTERY_VECTOR_ALLOC_CONTEXT_TYPE) && !defined(POTTERY_VECTOR_ALLOC_CONTEXT)
-        to->alloc_context = from->alloc_context;
+        to->alloc_context = pottery_move_if_cxx(from->alloc_context);
+        #endif
+
+        // As in destroy(), help detect double-destroy.
+        #if POTTERY_DEBUG
+        if (from->storage == pottery_null
+                #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
+                || from->storage == from->u.internal
+                #endif
+                )
+            from->storage = pottery_reinterpret_cast(pottery_vector_element_t*, -1);
         #endif
     }
-
-    #if POTTERY_DEBUG
-    from->self_check = (pottery_vector_t*)(-1);
-    from->leak_check = (pottery_vector_t*)(-1);
-
-    // As above, help detect double destroy.
-    if (from->values == pottery_null
-            #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
-            || from->values == from->u.internal
-            #endif
-            )
-        from->values = (pottery_vector_element_t*)(-1);
-    #endif
-}
-
-POTTERY_VECTOR_EXTERN
-pottery_error_t pottery_vector_emplace_at(pottery_vector_t* vector, size_t index, pottery_vector_entry_t* entry) {
-    pottery_error_t error = pottery_vector_impl_create_space(vector, index, 1, entry);
-    #if 0
-    if (error == POTTERY_OK) {
-        error = pottery_vector_element_construct(entry);
-        if (error != POTTERY_OK)
-            pottery_vector_impl_remove_space(vector, index, 1);
-    }
-    #endif
-    return error;
-}
-
-POTTERY_VECTOR_EXTERN
-pottery_error_t pottery_vector_emplace_at_bulk(pottery_vector_t* vector, size_t index, size_t count, pottery_vector_entry_t* entry) {
-    pottery_error_t error = pottery_vector_impl_create_space(vector, index, count, entry);
-    if (error != POTTERY_OK)
-        return error;
-
-    #if 0
-    size_t i;
-    for (i = index; i < count; ++i) {
-        pottery_vector_element_t* element = pottery_bless(pottery_vector_element_t, *entry + i);
-        error = pottery_vector_element_construct(&element);
-        if (error != POTTERY_OK) {
-            pottery_vector_element_destruct_bulk(*entry, i);
-            pottery_vector_impl_remove_space(vector, index, count);
-            return error;
-        }
-    }
-    #endif
-
-    return POTTERY_OK;
 }
 
 #if POTTERY_LIFECYCLE_CAN_DESTROY
 POTTERY_VECTOR_EXTERN
 void pottery_vector_remove_at(pottery_vector_t* vector, size_t index) {
-    pottery_vector_lifecycle_destroy(POTTERY_VECTOR_CONTEXT_VAL(vector) pottery_vector_at(vector, index));
+    pottery_vector_lifecycle_destroy(POTTERY_VECTOR_CONTEXT_VAL(vector)
+            pottery_vector_at(vector, index));
     pottery_vector_displace_at(vector, index);
 }
 #endif
@@ -273,7 +291,7 @@ pottery_error_t pottery_vector_impl_create_space(pottery_vector_t* vector,
 
     // Make sure the arguments are valid.
     if (count == 0) {
-        // we shouldn't need to set the pointer here because it shouldn't be
+        // We shouldn't need to set the pointer here because it shouldn't be
         // accessed but certain static analyzers (e.g. MSVC in LTO mode) think
         // it's accessed without being set.
         *elements = pottery_reinterpret_cast(pottery_vector_element_t*, -1);
@@ -281,23 +299,96 @@ pottery_error_t pottery_vector_impl_create_space(pottery_vector_t* vector,
     }
     if (vector->count + count < vector->count)
         return POTTERY_ERROR_OVERFLOW;
-    size_t old_count = vector->count;
-    size_t new_count = old_count + count;
-    pottery_assert(index <= old_count);
 
-    // see if we have enough space.
-    if (new_count <= pottery_vector_capacity(vector)) {
-        pottery_vector_lifecycle_move_bulk_up(POTTERY_VECTOR_CONTEXT_VAL(vector) vector->values + index + count,
-                vector->values + index, vector->count - index);
+    size_t old_count = vector->count;
+    pottery_assert(index <= old_count);
+    size_t new_count = old_count + count;
+    size_t old_capacity = pottery_vector_capacity(vector);
+
+    // When moving a double-ended vector, we only move one side of the elements
+    // in-place if we would have to move less than half of them. If we have to
+    // move more than half, we either recenter or grow.
+
+    // See if we have enough space to move the after elements up
+    bool can_move_up = new_count <= old_capacity
+            #if POTTERY_VECTOR_DOUBLE_ENDED
+            - pottery_cast(size_t, (vector->begin - vector->storage))
+            && index > vector->count / 2
+            #endif
+            ;
+#if 0&&POTTERY_VECTOR_DOUBLE_ENDED
+printf("old_count %zi capacity %zi begin %zi\n",old_count,
+    old_capacity,pottery_cast(size_t, (vector->begin - vector->storage)));
+#endif
+
+    // For a double-ended vector, see if we have enough space to move the
+    // before elements down, and do it if it will move less elements than up
+    #if POTTERY_VECTOR_DOUBLE_ENDED
+    if (count <= pottery_cast(size_t, (vector->begin - vector->storage)) &&
+            index < vector->count / 2 &&
+            (!can_move_up || index < vector->count - index))
+    {
+        pottery_vector_element_t* new_begin = vector->begin - count;
+        //printf("moving %zi elements down\n", index);
+        pottery_vector_lifecycle_move_bulk_down(POTTERY_VECTOR_CONTEXT_VAL(vector)
+                new_begin, vector->begin, index);
+        vector->begin = new_begin;
         vector->count += count;
-        *elements = vector->values + index;
+        *elements = vector->begin + index;
+        return POTTERY_OK;
+    }
+    #endif
+
+    // Move after elements up
+    if (can_move_up) {
+        //printf("moving %zi elements up\n", vector->count - index);
+        pottery_vector_lifecycle_move_bulk_up(POTTERY_VECTOR_CONTEXT_VAL(vector)
+                pottery_vector_begin(vector) + index + count,
+                pottery_vector_begin(vector) + index,
+                vector->count - index);
+        vector->count += count;
+        *elements = pottery_vector_begin(vector) + index;
         return POTTERY_OK;
     }
 
+    #if POTTERY_VECTOR_DOUBLE_ENDED
+    // Recenter. We only recenter if the vector is at most half full.
+    if (new_count <= old_capacity && old_count < old_capacity / 2) {
+        pottery_vector_element_t* new_begin = vector->storage + (old_capacity - new_count) / 2;
+
+        if (new_begin == vector->begin) {
+            // Only move after elements up
+            pottery_vector_lifecycle_move_bulk_up(POTTERY_VECTOR_CONTEXT_VAL(vector)
+                    new_begin + index + count, vector->begin + index, vector->count - index);
+
+        } else if (new_begin < vector->begin) {
+            // Move start down, move end up or down
+            pottery_vector_lifecycle_move_bulk_down(POTTERY_VECTOR_CONTEXT_VAL(vector)
+                    new_begin, vector->begin, index);
+            pottery_vector_lifecycle_move_bulk(POTTERY_VECTOR_CONTEXT_VAL(vector)
+                    new_begin + index + count, vector->begin + index, vector->count - index);
+
+        } else {
+            // Move start and end up
+            pottery_vector_lifecycle_move_bulk_up(POTTERY_VECTOR_CONTEXT_VAL(vector)
+                    new_begin + index + count, vector->begin + index, vector->count - index);
+            pottery_vector_lifecycle_move_bulk_up(POTTERY_VECTOR_CONTEXT_VAL(vector)
+                    new_begin, vector->begin, index);
+        }
+
+        vector->begin = new_begin;
+        vector->count += count;
+        *elements = vector->begin + index;
+        return POTTERY_OK;
+    }
+    #endif
+
+    // All attempts at moving in place failed, so we grow.
+
     // Calculate new capacity.
     // We grow by a factor of 1.5. This is apparently best practice now. It
-    // would be nice to actually benchmark this.
-    size_t old_capacity = pottery_vector_capacity(vector);
+    // would be nice to actually benchmark this (especially in the case of a
+    // double-ended vector.)
     size_t new_capacity = ((old_capacity / 2) + 1) * 3; // add 1 to avoid rounding down to zero
     if (new_capacity < old_capacity)
         return POTTERY_ERROR_OVERFLOW;
@@ -310,28 +401,43 @@ pottery_error_t pottery_vector_impl_create_space(pottery_vector_t* vector,
     if (pottery_mul_overflow_s(sizeof(pottery_vector_element_t), new_capacity, &alloc_size))
         return POTTERY_ERROR_OVERFLOW;
 
-    // TODO if can move by value, use realloc_at_least
-    pottery_vector_element_t* new_values = pottery_vector_impl_alloc(vector, &new_capacity);
-    if (new_values == pottery_null)
+    // TODO if moves by value and not double-ended, use realloc_at_least
+
+    pottery_vector_element_t* new_storage = pottery_vector_impl_alloc(vector, &new_capacity);
+    if (new_storage == pottery_null)
         return POTTERY_ERROR_ALLOC;
 
-    if (vector->values != pottery_null) {
-        pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(vector) new_values, vector->values, index);
-        pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(vector) new_values + index + count,
-                vector->values + index, old_count - index);
-        if (true
-                #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
-                && vector->values != vector->u.internal
-                #endif
-        ) {
-            pottery_vector_impl_free(vector, vector->values);
+    // Center in the new storage if double-ended
+    pottery_vector_element_t* new_begin = new_storage;
+    #if POTTERY_VECTOR_DOUBLE_ENDED
+    new_begin += (new_capacity - new_count) / 2;
+    #endif
+
+    if (vector->storage != pottery_null) {
+        pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(vector)
+                new_begin,
+                pottery_vector_begin(vector),
+                index);
+        pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(vector)
+                new_begin + index + count,
+                pottery_vector_begin(vector) + index,
+                old_count - index);
+
+        #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
+        if (vector->storage != vector->u.internal)
+        #endif
+        {
+            pottery_vector_impl_free(vector, vector->storage);
         }
     }
 
-    vector->values = new_values;
+    vector->storage = new_storage;
+    #if POTTERY_VECTOR_DOUBLE_ENDED
+    vector->begin = new_begin;
+    #endif
     vector->u.capacity = new_capacity;
     vector->count = new_count;
-    *elements = pottery_bless(pottery_vector_element_t, vector->values + index);
+    *elements = pottery_bless(pottery_vector_element_t, new_begin + index);
     return POTTERY_OK;
 }
 
@@ -386,7 +492,7 @@ void pottery_vector_impl_remove_space(pottery_vector_t* vector, size_t index, si
 
     // Don't shrink if we're on internal space
     #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
-    should_shrink &= vector->values != vector->u.internal;
+    should_shrink &= vector->storage != vector->u.internal;
     #endif
 
     // Don't shrink if we're still using more than a quarter of our capacity
@@ -414,29 +520,33 @@ void pottery_vector_impl_remove_space(pottery_vector_t* vector, size_t index, si
     if (should_shrink) {
         pottery_assert(new_capacity < old_capacity);
 
-        pottery_vector_element_t* new_values;
-
-        #if POTTERY_VECTOR_INTERNAL_CAPACITY == 0
+        // If we have no elements, shrink to nothing.
         if (new_count == 0) {
-            pottery_vector_impl_free(vector, vector->values);
-            vector->values = pottery_null;
-            vector->u.capacity = 0;
+            pottery_vector_impl_free(vector, vector->storage);
+            pottery_vector_impl_reset(vector);
             return;
         }
-        #endif
 
-        // TODO if moves by value, use realloc_at_least
+        pottery_vector_element_t* new_storage;
+        pottery_vector_element_t* new_begin;
+
+        // TODO if moves by value and not double-ended, use realloc_at_least
 
         #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
         if (new_capacity <= POTTERY_VECTOR_INTERNAL_CAPACITY) {
             // switch back to internal space
-            new_values = vector->u.internal;
+            new_storage = vector->u.internal;
+
+            // For a double-ended vector, as with reset, we start at the start
+            // of the internal space. (For single-ended it's always at the
+            // start)
+            new_begin = new_storage;
         } else
         #endif
         {
             // allocate new smaller space
             size_t expanded_capacity = new_capacity;
-            new_values = pottery_vector_impl_alloc(vector, &expanded_capacity);
+            new_storage = pottery_vector_impl_alloc(vector, &expanded_capacity);
 
             if (expanded_capacity >= old_capacity) {
                 // If expanding the capacity gave us a buffer that isn't
@@ -452,44 +562,67 @@ void pottery_vector_impl_remove_space(pottery_vector_t* vector, size_t index, si
             } else {
                 new_capacity = expanded_capacity;
             }
+
+            #if POTTERY_VECTOR_DOUBLE_ENDED
+            // Center ourselves in the new storage
+            new_begin = new_storage + (new_capacity - new_count) / 2;
+            #else
+            new_begin = new_storage;
+            #endif
         }
 
-        if (new_values != pottery_null) {
+        if (new_storage != pottery_null) {
             // move values into new space
-            pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(vector) new_values, vector->values, index);
-            pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(vector) new_values + index,
-                    vector->values + index + count, new_count - index);
-            pottery_vector_impl_free(vector, vector->values);
+            pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(vector)
+                    new_begin,
+                    pottery_vector_begin(vector),
+                    index);
+            pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(vector)
+                    new_begin + index,
+                    pottery_vector_begin(vector) + index + count,
+                    new_count - index);
 
-            vector->values = new_values;
+            pottery_vector_impl_free(vector, vector->storage);
+            vector->storage = new_storage;
+
+            #if POTTERY_VECTOR_DOUBLE_ENDED
+            vector->begin = new_begin;
+            #endif
 
             #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
-            if (new_values != vector->u.internal)
+            if (new_storage != vector->u.internal)
             #endif
+            {
                 vector->u.capacity = new_capacity;
+            }
 
             return;
         }
 
-        // if for whatever reason allocation of a smaller buffer failed, we
+        // If for whatever reason allocation of a smaller buffer failed, we
         // don't report error from remove/displace; we just keep the larger
         // buffer.
     }
 
-    // no shrink. move elements down in-place.
-    pottery_vector_lifecycle_move_bulk_down(POTTERY_VECTOR_CONTEXT_VAL(vector) vector->values + index,
-            vector->values + index + count, new_count - index);
-}
+    // No shrink. Move in-place.
 
-POTTERY_VECTOR_EXTERN
-void pottery_vector_displace_at_bulk(pottery_vector_t* vector, size_t index, size_t count) {
-    #if 0
-    size_t i;
-    for (i = index; i < index + count; ++i) {
-        pottery_vector_element_destruct(pottery_vector_at(vector, i));
+    // If we have less elements before the removed elements than after them,
+    // move elements up in-place
+    #if POTTERY_VECTOR_DOUBLE_ENDED
+    if (index < new_count / 2) {
+        pottery_vector_element_t* new_begin = vector->begin + count;
+        pottery_vector_lifecycle_move_bulk_up(POTTERY_VECTOR_CONTEXT_VAL(vector)
+                new_begin, vector->begin, index);
+        vector->begin = new_begin;
+        return;
     }
     #endif
-    pottery_vector_impl_remove_space(vector, index, count);
+
+    // Move elements down in-place
+    pottery_vector_lifecycle_move_bulk_down(POTTERY_VECTOR_CONTEXT_VAL(vector)
+            pottery_vector_begin(vector) + index,
+            pottery_vector_begin(vector) + index + count,
+            new_count - index);
 }
 
 #if POTTERY_LIFECYCLE_CAN_DESTROY
@@ -497,8 +630,8 @@ POTTERY_VECTOR_EXTERN
 void pottery_vector_remove_at_bulk(pottery_vector_t* vector, size_t index, size_t count) {
     size_t i;
     for (i = index; i < index + count; ++i) {
-        pottery_vector_lifecycle_destroy(POTTERY_VECTOR_CONTEXT_VAL(vector) pottery_vector_at(vector, i));
-        //pottery_vector_element_destruct(pottery_vector_at(vector, i));
+        pottery_vector_lifecycle_destroy(POTTERY_VECTOR_CONTEXT_VAL(vector)
+                pottery_vector_at(vector, i));
     }
     pottery_vector_impl_remove_space(vector, index, count);
 }
@@ -507,7 +640,7 @@ void pottery_vector_remove_at_bulk(pottery_vector_t* vector, size_t index, size_
 POTTERY_VECTOR_EXTERN
 void pottery_vector_swap(pottery_vector_t* left, pottery_vector_t* right) {
     #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
-    if (left->values == left->u.internal || right->values == right->u.internal) {
+    if (left->storage == left->u.internal || right->storage == right->u.internal) {
         // If either vector is internal, we defer swap to move which will handle
         // it for us.
         POTTERY_DECLARE_UNCONSTRUCTED(pottery_vector_t, temp);
@@ -518,11 +651,10 @@ void pottery_vector_swap(pottery_vector_t* left, pottery_vector_t* right) {
     }
     #endif
 
-    // Move by value. (This will call C++ copy constructor and copy assignment
-    // for non-trivial contexts.)
-    pottery_vector_t temp = *left;
-    *left = *right;
-    *right = temp;
+    // Move bitwise. (For C++ we use std::move in case the context is non-trivial.)
+    pottery_vector_t temp = pottery_move_if_cxx(*left);
+    *left = pottery_move_if_cxx(*right);
+    *right = pottery_move_if_cxx(temp);
 }
 
 #if POTTERY_LIFECYCLE_CAN_INIT_COPY
@@ -532,7 +664,7 @@ pottery_error_t pottery_vector_impl_copy(pottery_vector_t* vector, const pottery
     pottery_assert(pottery_vector_is_empty(vector));
     size_t count = pottery_vector_count(other);
 
-    pottery_vector_element_t* src = other->values;
+    pottery_vector_element_t* src = pottery_vector_begin(other);
     pottery_vector_element_t* dest;
     pottery_error_t error = pottery_vector_impl_create_space(vector, 0, count, &dest);
     if (error != POTTERY_OK)
@@ -550,7 +682,7 @@ pottery_error_t pottery_vector_impl_copy(pottery_vector_t* vector, const pottery
     }
 
     #if defined(POTTERY_VECTOR_ALLOC_CONTEXT_TYPE) && !defined(POTTERY_VECTOR_ALLOC_CONTEXT)
-    vector->alloc_context = other->alloc_context;
+    vector->alloc_context = pottery_move_if_cxx(other->alloc_context);
     #endif
 
     return POTTERY_OK;
@@ -597,6 +729,9 @@ pottery_error_t pottery_vector_copy(pottery_vector_t* vector, const pottery_vect
 
 POTTERY_VECTOR_EXTERN
 void pottery_vector_init_steal(pottery_vector_t* vector, pottery_vector_t* other) {
+    // TODO this could be implemented somewhat more efficiently, especially in
+    // the case of internal storage since we don't need to move our values
+    // back. This can be done later.
     pottery_vector_init(vector);
     pottery_vector_swap(vector, other);
 }

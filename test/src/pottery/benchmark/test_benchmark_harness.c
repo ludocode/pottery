@@ -67,7 +67,7 @@ typedef struct result_t {
 
 #define POTTERY_VECTOR_PREFIX results
 #define POTTERY_VECTOR_ELEMENT_TYPE result_t
-#define POTTERY_VECTOR_ELEMENT_BY_VALUE 1
+#define POTTERY_VECTOR_LIFECYCLE_BY_VALUE 1
 #include "pottery/vector/pottery_vector_static.t.h"
 
 #define POTTERY_INSERTION_SORT_PREFIX sort_results
