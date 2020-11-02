@@ -22,34 +22,24 @@
  * SOFTWARE.
  */
 
-#define POTTERY_HEAP_IMPL
+#include <stdlib.h>
+#include <stdio.h>
 
-#ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
-    #include "pottery/heap/impl/pottery_heap_config_lifecycle.t.h"
-    #include "pottery/lifecycle/pottery_lifecycle_static.t.h"
-#endif
+#include "string_set.h"
 
-#ifndef POTTERY_HEAP_EXTERNAL_COMPARE
-    #include "pottery/heap/impl/pottery_heap_config_compare.t.h"
-    #include "pottery/compare/pottery_compare_static.t.h"
-#endif
+int main(void) {
+    string_set_t* string_set = string_set_new();
 
-#ifndef POTTERY_HEAP_EXTERN
-    #define POTTERY_HEAP_EXTERN pottery_maybe_unused static
-#endif
+    string_set_add(string_set, "alice");
+    string_set_add(string_set, "bob");
 
-#include "pottery/heap/impl/pottery_heap_macros.t.h"
-#include "pottery/heap/impl/pottery_heap_declarations.t.h"
-#include "pottery/heap/impl/pottery_heap_definitions.t.h"
+    string_set_add(string_set, "eve");
+    string_set_remove(string_set, "eve");
 
-#ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
-    #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
-#endif
+    printf("%s: %s\n", "alice", string_set_query(string_set, "alice") ? "exists" : "does not exist");
+    printf("%s: %s\n", "bob",   string_set_query(string_set, "bob")   ? "exists" : "does not exist");
+    printf("%s: %s\n", "eve",   string_set_query(string_set, "eve")   ? "exists" : "does not exist");
 
-#ifndef POTTERY_HEAP_EXTERNAL_COMPARE
-    #include "pottery/compare/pottery_compare_cleanup.t.h"
-#endif
-
-#include "pottery/heap/impl/pottery_heap_unmacros.t.h"
-
-#undef POTTERY_HEAP_IMPL
+    string_set_delete(string_set);
+    return EXIT_SUCCESS;
+}

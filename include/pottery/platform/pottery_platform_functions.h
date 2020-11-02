@@ -105,6 +105,69 @@ static inline bool pottery_mul_overflow_s(size_t a, size_t b, size_t* out) {
 
 
 /*
+ * Hashing
+ */
+
+/**
+ * Performs a Knuth multiplicative hash and range reduction on the given 32-bit
+ * value, returning the given number of most-significant bits.
+ *
+ * @see pottery_knuth_hash_u64
+ */
+static inline uint32_t pottery_knuth_hash_u32(uint32_t value, size_t bits) {
+    pottery_assert(bits > 0);
+    pottery_assert(bits <= 32);
+
+    // The original Knuth hash. This is the largest prime less than the
+    // quotient of UINT32_MAX by the golden ratio.
+    //     https://www.wolframalpha.com/input/?i=largest+prime+less+than+floor%28%282%5E32-1%29%2F%28%281%2Bsqrt%285%29%29%2F2%29%29
+    uint32_t prime = UINT32_C(2654435761);
+    return (value * prime) >> (32 - bits);
+}
+
+/**
+ * Performs a Knuth multiplicative hash and range reduction on the given 64-bit
+ * value, returning the given number of most-significant bits.
+ *
+ * This is a trivial hash function to reduce a 64-bit hash value to a power
+ * of two, ensuring only that all bits of the input are used. It provides a
+ * basic pseudo-random distribution even for sequential values, making it
+ * not entirely terrible for non-cryptographic hashing of keys (such as in a
+ * hash table.)
+ */
+static inline uint64_t pottery_knuth_hash_u64(uint64_t value, size_t bits) {
+    pottery_assert(bits > 0);
+    pottery_assert(bits <= 64);
+
+    // This number is defined for 64-bit the same way as the prime in Knuth's
+    // 32-bit multiplicative hash: it is the largest prime that is less than
+    // the quotient of UINT64_MAX by the golden ratio.
+    //     https://www.wolframalpha.com/input/?i=largest+prime+less+than+floor%28%282%5E64-1%29%2F%28%281%2Bsqrt%285%29%29%2F2%29%29
+    uint64_t prime = UINT64_C(11400714819323198393);
+    return (value * prime) >> (64 - bits);
+}
+
+/**
+ * Performs a Knuth multiplicative hash and range reduction on the given
+ * `size_t` value, returning the given number of most-significant bits.
+ *
+ * The return value is architecture-dependent; it is different on different
+ * machines.
+ *
+ * @see pottery_knuth_hash_u64
+ */
+pottery_always_inline
+static size_t pottery_knuth_hash_s(size_t value, size_t bits) {
+    pottery_assert(bits <= (8 * sizeof(size_t)));
+    if (sizeof(size_t) <= 4)
+        return pottery_cast(size_t, pottery_knuth_hash_u32(pottery_cast(uint32_t, value), bits));
+    pottery_assert(sizeof(size_t) <= sizeof(uint64_t));
+    return pottery_cast(size_t, pottery_knuth_hash_u64(pottery_cast(uint64_t, value), bits));
+}
+
+
+
+/*
  * Memory operations
  */
 

@@ -50,6 +50,8 @@
     #pragma GCC diagnostic ignored "-Wunused-parameter"
     #ifdef __cplusplus
         #pragma GCC diagnostic ignored "-Wold-style-cast"
+    #else
+        #pragma GCC diagnostic ignored "-Wmissing-prototypes"
     #endif
 #endif
 
@@ -71,7 +73,7 @@
     \
     static int POTTERY_EXAMPLE_TEST_WRAPPER(void); \
     \
-    POTTERY_TEST(POTTERY_EXAMPLE_TEST_NAME) { \
+    POTTERY_TEST(POTTERY_EXAMPLE_NAME) { \
         (void)POTTERY_EXAMPLE_TEST_UNUSED; \
         int ret = POTTERY_EXAMPLE_TEST_WRAPPER(); \
         pottery_assert(ret == 0); \
@@ -79,19 +81,24 @@
     \
     static int POTTERY_EXAMPLE_TEST_WRAPPER
 
-#define POTTERY_EXAMPLE_TEST_NAME POTTERY_CONCAT(pottery, POTTERY_UNIT_TEST_FILENAME) // TODO this line is probably no longer necessary since we're moving into examples/pottery/ folder
-#define POTTERY_EXAMPLE_TEST_WRAPPER POTTERY_CONCAT(POTTERY_EXAMPLE_TEST_NAME, impl) // TODO rename POTTERY_UNIT_TEST_FILENAME to POTTERY_EXAMPLE_NAME after above fix
-#define POTTERY_EXAMPLE_TEST_UNUSED POTTERY_CONCAT(POTTERY_EXAMPLE_TEST_NAME, unused)
+#define POTTERY_EXAMPLE_TEST_WRAPPER POTTERY_CONCAT(POTTERY_EXAMPLE_NAME, _impl)
+#define POTTERY_EXAMPLE_TEST_UNUSED POTTERY_CONCAT(POTTERY_EXAMPLE_NAME, _unused)
 
 
 
 /*
  * The examples print lots of stuff. We don't want them to.
  */
+
 static inline int pottery_example_disable_printf(const char *format, ...) {
-    return strlen(format); // close enough
+    return (int)strlen(format); // close enough
 }
 #define printf pottery_example_disable_printf
+
+static inline int pottery_example_disable_puts(const char* s) {
+    return 1;
+}
+#define puts pottery_example_disable_puts
 
 
 

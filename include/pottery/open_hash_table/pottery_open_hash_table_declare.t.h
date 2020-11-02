@@ -22,34 +22,20 @@
  * SOFTWARE.
  */
 
-#define POTTERY_HEAP_IMPL
+#define POTTERY_OPEN_HASH_TABLE_IMPL
 
-#ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
-    #include "pottery/heap/impl/pottery_heap_config_lifecycle.t.h"
-    #include "pottery/lifecycle/pottery_lifecycle_static.t.h"
+#ifndef POTTERY_OPEN_HASH_TABLE_EXTERNAL_LIFECYCLE
+    #include "pottery/open_hash_table/impl/pottery_open_hash_table_config_lifecycle.t.h"
+    #include "pottery/lifecycle/pottery_lifecycle_declare.t.h"
 #endif
 
-#ifndef POTTERY_HEAP_EXTERNAL_COMPARE
-    #include "pottery/heap/impl/pottery_heap_config_compare.t.h"
-    #include "pottery/compare/pottery_compare_static.t.h"
-#endif
+#include "pottery/open_hash_table/impl/pottery_open_hash_table_macros.t.h"
+#include "pottery/open_hash_table/impl/pottery_open_hash_table_declarations.t.h"
 
-#ifndef POTTERY_HEAP_EXTERN
-    #define POTTERY_HEAP_EXTERN pottery_maybe_unused static
-#endif
-
-#include "pottery/heap/impl/pottery_heap_macros.t.h"
-#include "pottery/heap/impl/pottery_heap_declarations.t.h"
-#include "pottery/heap/impl/pottery_heap_definitions.t.h"
-
-#ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
+#ifndef POTTERY_OPEN_HASH_TABLE_EXTERNAL_LIFECYCLE
     #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
 #endif
 
-#ifndef POTTERY_HEAP_EXTERNAL_COMPARE
-    #include "pottery/compare/pottery_compare_cleanup.t.h"
-#endif
+#include "pottery/open_hash_table/impl/pottery_open_hash_table_unmacros.t.h"
 
-#include "pottery/heap/impl/pottery_heap_unmacros.t.h"
-
-#undef POTTERY_HEAP_IMPL
+#undef POTTERY_OPEN_HASH_TABLE_IMPL

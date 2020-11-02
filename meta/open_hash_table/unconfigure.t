@@ -21,35 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+//!!! END_LICENSE
 
-#define POTTERY_HEAP_IMPL
+// Undefines (forwardable/forwarded) lifecycle configuration on {PREFIX}
 
-#ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
-    #include "pottery/heap/impl/pottery_heap_config_lifecycle.t.h"
-    #include "pottery/lifecycle/pottery_lifecycle_static.t.h"
-#endif
+#undef {PREFIX}_VALUE_TYPE
+#undef {PREFIX}_REF_TYPE
+#undef {PREFIX}_KEY_TYPE
 
-#ifndef POTTERY_HEAP_EXTERNAL_COMPARE
-    #include "pottery/heap/impl/pottery_heap_config_compare.t.h"
-    #include "pottery/compare/pottery_compare_static.t.h"
-#endif
+#undef {PREFIX}_KEY_HASH
 
-#ifndef POTTERY_HEAP_EXTERN
-    #define POTTERY_HEAP_EXTERN pottery_maybe_unused static
-#endif
+#undef {PREFIX}_IS_EMPTY
+#undef {PREFIX}_SET_EMPTY
 
-#include "pottery/heap/impl/pottery_heap_macros.t.h"
-#include "pottery/heap/impl/pottery_heap_declarations.t.h"
-#include "pottery/heap/impl/pottery_heap_definitions.t.h"
+#undef {PREFIX}_IS_TOMBSTONE
+#undef {PREFIX}_SET_TOMBSTONE
 
-#ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
-    #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
-#endif
+#undef {PREFIX}_IS_ELEMENT
 
-#ifndef POTTERY_HEAP_EXTERNAL_COMPARE
-    #include "pottery/compare/pottery_compare_cleanup.t.h"
-#endif
-
-#include "pottery/heap/impl/pottery_heap_unmacros.t.h"
-
-#undef POTTERY_HEAP_IMPL
+#undef {PREFIX}_LINEAR_PROBING
+#undef {PREFIX}_QUADRATIC_PROBING
+#undef {PREFIX}_DOUBLE_HASHING

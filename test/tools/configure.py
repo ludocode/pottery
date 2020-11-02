@@ -31,7 +31,7 @@
 # vsvarsall.bat for some version of the Visual Studio Build Tools.
 # ninja build file to build the unit test suite in a variety of configurations.
 
-import shutil, os, sys, subprocess, json
+import shutil, os, sys, subprocess, json, itertools
 from os import path
 
 globalbuild = path.join("test", "build")
@@ -480,7 +480,7 @@ if compiler != "TinyCC" and compiler != "cproc" and compiler != "MSVC":
 
 srcs = []
 
-for root, dirs, files in os.walk("test/src"):
+for root, dirs, files in itertools.chain(os.walk("test/src"), os.walk("examples")):
     for name in files:
         # skip any benchmark files
         if "benchmark" in name:
@@ -556,6 +556,12 @@ with open(ninja, "w") as out:
             else:
                 flags = cppflags + cflags
                 objname = src[:-2]
+
+            if src.startswith("examples/"):
+                flags += [
+                    "-DPOTTERY_EXAMPLE_NAME=" + src.replace("/", "_").split(".")[0],
+                    "-include pottery/unit/test_pottery_example.h"
+                ]
 
             obj = path.join(buildfolder, "objs", objname + obj_extension)
             objs.append(obj)

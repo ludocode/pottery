@@ -22,34 +22,21 @@
  * SOFTWARE.
  */
 
-#define POTTERY_HEAP_IMPL
+#ifndef STRINGSET_H
+#define STRINGSET_H
 
-#ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
-    #include "pottery/heap/impl/pottery_heap_config_lifecycle.t.h"
-    #include "pottery/lifecycle/pottery_lifecycle_static.t.h"
+#include <stdbool.h>
+
+/**
+ * A set of strings.
+ */
+typedef struct string_set_t string_set_t;
+
+string_set_t* string_set_new(void);
+void string_set_delete(string_set_t*);
+
+bool string_set_add(string_set_t*, const char*);
+bool string_set_query(string_set_t*, const char*);
+bool string_set_remove(string_set_t*, const char*);
+
 #endif
-
-#ifndef POTTERY_HEAP_EXTERNAL_COMPARE
-    #include "pottery/heap/impl/pottery_heap_config_compare.t.h"
-    #include "pottery/compare/pottery_compare_static.t.h"
-#endif
-
-#ifndef POTTERY_HEAP_EXTERN
-    #define POTTERY_HEAP_EXTERN pottery_maybe_unused static
-#endif
-
-#include "pottery/heap/impl/pottery_heap_macros.t.h"
-#include "pottery/heap/impl/pottery_heap_declarations.t.h"
-#include "pottery/heap/impl/pottery_heap_definitions.t.h"
-
-#ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
-    #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
-#endif
-
-#ifndef POTTERY_HEAP_EXTERNAL_COMPARE
-    #include "pottery/compare/pottery_compare_cleanup.t.h"
-#endif
-
-#include "pottery/heap/impl/pottery_heap_unmacros.t.h"
-
-#undef POTTERY_HEAP_IMPL

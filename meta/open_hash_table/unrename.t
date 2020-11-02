@@ -22,34 +22,42 @@
  * SOFTWARE.
  */
 
-#define POTTERY_HEAP_IMPL
+//!!! END_LICENSE
+// Un-renames open_hash_table identifiers with prefix "{PREFIX}"
 
-#ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
-    #include "pottery/heap/impl/pottery_heap_config_lifecycle.t.h"
-    #include "pottery/lifecycle/pottery_lifecycle_static.t.h"
-#endif
+#undef {PREFIX}_ref_t
+#undef {PREFIX}_value_t
+#undef {PREFIX}_key_t
+#undef {PREFIX}_context_t
+#undef {PREFIX}_t
 
-#ifndef POTTERY_HEAP_EXTERNAL_COMPARE
-    #include "pottery/heap/impl/pottery_heap_config_compare.t.h"
-    #include "pottery/compare/pottery_compare_static.t.h"
-#endif
+#undef {PREFIX}_configure
+#undef {PREFIX}_count
+#undef {PREFIX}_emplace
+#undef {PREFIX}_find
+#undef {PREFIX}_displace
+#undef {PREFIX}_remove
+#undef {PREFIX}_remove_key
 
-#ifndef POTTERY_HEAP_EXTERN
-    #define POTTERY_HEAP_EXTERN pottery_maybe_unused static
-#endif
+#undef {PREFIX}_begin
+#undef {PREFIX}_end
+#undef {PREFIX}_first
+#undef {PREFIX}_last
+#undef {PREFIX}_next
+#undef {PREFIX}_previous
 
-#include "pottery/heap/impl/pottery_heap_macros.t.h"
-#include "pottery/heap/impl/pottery_heap_declarations.t.h"
-#include "pottery/heap/impl/pottery_heap_definitions.t.h"
+#undef {PREFIX}_key
+#undef {PREFIX}_access_at
+#undef {PREFIX}_access_index
+#undef {PREFIX}_key_hash
+#undef {PREFIX}_key_equal
+#undef {PREFIX}_double_hash_interval
+#undef {PREFIX}_is_tombstone
+#undef {PREFIX}_set_tombstone
+#undef {PREFIX}_is_empty
+#undef {PREFIX}_set_empty
+#undef {PREFIX}_entry_in_use
 
-#ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
-    #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
-#endif
-
-#ifndef POTTERY_HEAP_EXTERNAL_COMPARE
-    #include "pottery/compare/pottery_compare_cleanup.t.h"
-#endif
-
-#include "pottery/heap/impl/pottery_heap_unmacros.t.h"
-
-#undef POTTERY_HEAP_IMPL
+#undef {PREFIX}_bucket_for_hash
+#undef {PREFIX}_next_probe
+#undef {PREFIX}_probe

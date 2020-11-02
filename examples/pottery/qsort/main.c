@@ -7,12 +7,16 @@
 
 static int strcmp_wrapper(const void* left, const void* right) {
 //printf("compare %p %p %p %p\n",left,right, *(const char**)left, *(const char**)right);
-    return strcmp(*(const char**)left, *(const char**)right);
+    return strcmp(*(const char* const*)left, *(const char* const*)right);
 }
 
-static int strcmp_wrapper_first(void* context, const void* left, const void* right, void* user_context) {
+static int strcmp_wrapper_gnu(const void* left, const void* right, void* context) {
     bool reverse = (bool)context;
-    return (reverse ? -1 : 1) * strcmp(*(const char**)left, *(const char**)right);
+    return (reverse ? -1 : 1) * strcmp(*(const char* const*)left, *(const char* const*)right);
+}
+
+static int strcmp_wrapper_bsd(void* context, const void* left, const void* right) {
+    return strcmp_wrapper_gnu(left, right, context);
 }
 
 static void test_in_order(bool reverse, const char** strings, size_t count) {
@@ -47,5 +51,7 @@ int main(void) {
 //for (size_t i = 0; i < COUNT; ++i)puts(fruits.array[i]);
     test_in_order(false, fruits.array, COUNT);
 
-    (void)strcmp_wrapper_first;
+    (void)strcmp_wrapper_gnu;
+    (void)strcmp_wrapper_bsd;
+    return EXIT_SUCCESS;
 }

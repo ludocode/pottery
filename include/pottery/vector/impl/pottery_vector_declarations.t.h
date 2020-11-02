@@ -465,8 +465,8 @@ pottery_error_t pottery_vector_insert_last_vector(pottery_vector_t* vector, pott
  */
 
 /**
- * Returns a pointer to the start of the vector (the first element if it has
- * any elements, or the end of the vector otherwise.)
+ * Returns an entry representing the start of the vector (the first element if
+ * it has any elements, or the end of the vector otherwise.)
  *
  * If the vector is empty, the returned entry does not exist, and is equal to
  * pottery_vector_end().
@@ -481,11 +481,10 @@ pottery_vector_entry_t pottery_vector_begin(const pottery_vector_t* vector) {
 }
 
 /**
- * Returns a pointer to the end of the vector (one past the last element in the
- * vector.)
+ * Returns a non-existent entry representing the end of the vector (one past
+ * the last element in the vector.)
  *
- * If the vector is empty, the returned entry does not exist, and is equal to
- * pottery_vector_end().
+ * @see pottery_vector_entry_exists()
  */
 static inline
 pottery_vector_entry_t pottery_vector_end(pottery_vector_t* vector) {

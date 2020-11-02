@@ -32,6 +32,7 @@
 
 static pottery_always_inline
 pottery_heap_ref_t pottery_access(pottery_state_t state, size_t index) {
+    // TODO rename to ACCESS_AT
     #ifndef POTTERY_HEAP_ACCESS
         // With no defined access expression, it's a simple array.
         return state.first + index;

@@ -18,4 +18,5 @@ int main(void) {
         printf("%i\n", *int_vector_at(&vector, i));
 
     int_vector_destroy(&vector);
+    return EXIT_SUCCESS;
 }

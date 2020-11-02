@@ -21,35 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+//!!! END_LICENSE
 
-#define POTTERY_HEAP_IMPL
+// Forwards open_hash_table configuration from {SRC} to {DEST}
 
-#ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
-    #include "pottery/heap/impl/pottery_heap_config_lifecycle.t.h"
-    #include "pottery/lifecycle/pottery_lifecycle_static.t.h"
+#ifdef {SRC}_VALUE_TYPE
+    #define {DEST}_VALUE_TYPE {SRC}_VALUE_TYPE
+#endif
+#ifdef {SRC}_KEY_TYPE
+    #define {DEST}_KEY_TYPE {SRC}_KEY_TYPE
 #endif
 
-#ifndef POTTERY_HEAP_EXTERNAL_COMPARE
-    #include "pottery/heap/impl/pottery_heap_config_compare.t.h"
-    #include "pottery/compare/pottery_compare_static.t.h"
+#ifdef {SRC}_KEY_HASH
+    #define {DEST}_KEY_HASH {SRC}_KEY_HASH
+#endif
+#ifdef {SRC}_KEY_FOR_VALUE
+    #define {DEST}_KEY_FOR_VALUE {SRC}_KEY_FOR_VALUE
+#endif
+#ifdef {SRC}_KEY_EQUAL
+    #define {DEST}_KEY_EQUAL {SRC}_KEY_EQUAL
 #endif
 
-#ifndef POTTERY_HEAP_EXTERN
-    #define POTTERY_HEAP_EXTERN pottery_maybe_unused static
+#ifdef {SRC}_IS_EMPTY
+    #define {DEST}_IS_EMPTY {SRC}_IS_EMPTY
+#endif
+#ifdef {SRC}_SET_EMPTY
+    #define {DEST}_SET_EMPTY {SRC}_SET_EMPTY
 #endif
 
-#include "pottery/heap/impl/pottery_heap_macros.t.h"
-#include "pottery/heap/impl/pottery_heap_declarations.t.h"
-#include "pottery/heap/impl/pottery_heap_definitions.t.h"
-
-#ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
-    #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
+#ifdef {SRC}_IS_TOMBSTONE
+    #define {DEST}_IS_TOMBSTONE {SRC}_IS_TOMBSTONE
+#endif
+#ifdef {SRC}_SET_TOMBSTONE
+    #define {DEST}_SET_TOMBSTONE {SRC}_SET_TOMBSTONE
 #endif
 
-#ifndef POTTERY_HEAP_EXTERNAL_COMPARE
-    #include "pottery/compare/pottery_compare_cleanup.t.h"
+#ifdef {SRC}_IS_ELEMENT
+    #define {DEST}_IS_ELEMENT {SRC}_IS_ELEMENT
 #endif
 
-#include "pottery/heap/impl/pottery_heap_unmacros.t.h"
-
-#undef POTTERY_HEAP_IMPL
+#ifdef {SRC}_LINEAR_PROBING
+    #define {DEST}_LINEAR_PROBING {SRC}_LINEAR_PROBING
+#endif
+#ifdef {SRC}_QUADRATIC_PROBING
+    #define {DEST}_QUADRATIC_PROBING {SRC}_QUADRATIC_PROBING
+#endif
+#ifdef {SRC}_DOUBLE_HASHING
+    #define {DEST}_DOUBLE_HASHING {SRC}_DOUBLE_HASHING
+#endif
