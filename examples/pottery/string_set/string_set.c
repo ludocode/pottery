@@ -40,11 +40,13 @@ static inline size_t fnv1a(const char* p) {
 #define POTTERY_OPEN_HASH_MAP_PREFIX string_set_map
 #define POTTERY_OPEN_HASH_MAP_VALUE_TYPE char*
 #define POTTERY_OPEN_HASH_MAP_KEY_TYPE const char*
-#define POTTERY_OPEN_HASH_MAP_KEY_FOR_VALUE(x) *x
+#define POTTERY_OPEN_HASH_MAP_KEY_FOR_VALUE(x) *x // TODO rename to key_for_ref or ref_key or something
 #define POTTERY_OPEN_HASH_MAP_KEY_HASH fnv1a
 #define POTTERY_OPEN_HASH_MAP_KEY_EQUAL 0 == strcmp
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE_BY_VALUE 1
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY(x) free(*x)
+// These last two aren't strictly required, but they make it more efficient
+// because we can use an in-band value to mark empty buckets.
 #define POTTERY_OPEN_HASH_MAP_IS_EMPTY(x) *x == NULL
 #define POTTERY_OPEN_HASH_MAP_SET_EMPTY(x) *x = NULL
 #include "pottery/open_hash_map/pottery_open_hash_map_static.t.h"

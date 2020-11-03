@@ -16,22 +16,22 @@ The functions are only defined if it is possible to generate them, so for exampl
 
 The template also defines additional comparison helpers, available if any single ordering expression is configured:
 
-- `min()` -- the lesser of two values
-- `max()` -- the greater of two values
-- `clamp()` -- the given value limited by min and max values
-- `median()` -- the median of three values
+- `min()` -- the lesser of two references
+- `max()` -- the greater of two references
+- `clamp()` -- the given reference limited by min and max references
+- `median()` -- the median of three references
 
 The compare template operates on an abstract reference type with an optional context. In the simplest case, the reference type is simply a pointer to an element in memory, and the comparison expressions need no context to compare them. In more advanced usage, the context could contain for example a database connection, and the reference type could be the key type for rows to be compared.
 
 This template does not distinguish between "weak" and "strong" ordering. Whether "equal" implies equivalence or equality is specific to the configured comparison expressions and the context in which they are used.
 
-This template currently does not support partial ordering. This means you cannot use it for example to sort an array of floats where some are NaN. Functions will be implemented with their opposites where necessary under the assumptions of symmetry and total ordering. For example if you define only LESS, you'll get `less()`, its simple negation `greater_or_equal()`,  its symmetric equivalent `greater()` with swapped arguments, etc.
+This template currently does not support partial ordering. This means you cannot use it for example to sort an array of floats where some are NaN. Functions will be implemented with their opposites where necessary under the assumptions of symmetry and total ordering. For example if you configure only `LESS`, you'll get `less()`, its simple negation `greater_or_equal()`,  its symmetric equivalent `greater()` with swapped arguments, etc.
 
 
 
 ## Example
 
-The Compare template is meant as a helper for other Pottery templates. This template allows you to configure any Pottery templates with any one ordering expression (like `LESS`, `LESS_OR_EQUAL`, `THREE_WAY`, etc.) and it gives all comparison functions that templates may need, so they don't have to worry about negating the expression, swapping arguments, etc. Similarly the [`quick_sort` template](../quicksort) needs a `median()` function; this implements it given any ordering expression.
+The Compare template is meant as a helper for other Pottery templates. This template allows you to configure any Pottery templates with any one ordering expression (like `LESS`, `LESS_OR_EQUAL`, `THREE_WAY`, etc.) and it defines all comparison functions that templates may need, so they don't have to worry about negating the expression, swapping arguments, etc. Similarly the [`quick_sort` template](../quicksort) needs a `median()` function; this implements it given any ordering expression.
 
 There isn't much point in using this directly. Still, it could potentially be useful on its own. Here's how you might use it to wrap `strcmp()`:
 
@@ -54,6 +54,8 @@ string_median("carrot", "apple", "banana"); // returns "banana"
 
 ### Types
 
+#### `REF_TYPE`
+
 - `REF_TYPE`, a type
 
 This is the abstract reference type for the type to be compared. Two values of this type are passed to all configured comparison expressions (after the optional context.)
@@ -64,9 +66,13 @@ This is usually either:
 
 - An identifier to be used with the context to identify it. For example the context may be a database connection and the type may be the key for a row: in this case the compare expressions would pull the given rows from the database and compare them.
 
+#### `VALUE_TYPE`
+
 - `VALUE_TYPE`, a type
 
 This is a concrete value type for comparing objects in memory. If this is defined, `REF_TYPE` is defined as a pointer to this.
+
+#### `CONTEXT_TYPE`
 
 - `CONTEXT_TYPE`, a type
 
@@ -74,35 +80,51 @@ An optional comparison context type. If configured, the context type is passed a
 
 ### Automatic By Value
 
+#### `BY_VALUE`
+
 - `BY_VALUE`, a flag
 
 If 1, the comparison template will use value comparisons on `VALUE_TYPE`, i.e. the operators `<`, `<=`, `==`, `!=`, `>=` and `>` to compare the value directly. `VALUE_TYPE` must be defined and must support these operators. (For C++ types this will work with custom overloaded operators.)
 
 ### Relational Expressions
 
+#### `EQUAL`
+
 - `EQUAL`, expression matching `bool(CONTEXT_TYPE context, REF_TYPE left, REF_TYPE right)`
 
 An expression that evaluates to true if the given values are equal, false otherwise.
+
+#### `NOT_EQUAL`
 
 - `NOT_EQUAL`, expression matching `bool(CONTEXT_TYPE context, REF_TYPE left, REF_TYPE right)`
 
 An expression that evaluates to true if the given values are not equal, false otherwise.
 
+#### `LESS`
+
 - `LESS`, expression matching `bool(CONTEXT_TYPE context, REF_TYPE left, REF_TYPE right)`
 
 An expression that evaluates to true if left is less than right, false otherwise.
+
+#### `GREATER`
 
 - `GREATER`, expression matching `bool(CONTEXT_TYPE context, REF_TYPE left, REF_TYPE right)`
 
 An expression that evaluates to true if left is greater than right, false otherwise.
 
+#### `LESS_OR_EQUAL`
+
 - `LESS_OR_EQUAL`, expression matching `bool(CONTEXT_TYPE context, REF_TYPE left, REF_TYPE right)`
 
 An expression that evaluates to true if left is less than or equal to right, false otherwise.
 
+#### `GREATER_OR_EQUAL`
+
 - `GREATER_OR_EQUAL`, expression matching `bool(CONTEXT_TYPE context, REF_TYPE left, REF_TYPE right)`
 
 An expression that evaluates to true if left is greater than or equal to right, false otherwise.
+
+#### `THREE_WAY`
 
 - `THREE_WAY`, expression matching `int(CONTEXT_TYPE context, REF_TYPE left, REF_TYPE right)`
 

@@ -25,6 +25,26 @@
 #ifndef POTTERY_CXX_ALGORITHMS_HEAP_HXX
 #define POTTERY_CXX_ALGORITHMS_HEAP_HXX 1
 
+/*
+ * Wraps Pottery's heap functions in C++ templates.
+ *
+ * These function as drop-in replacements for the C++ heap functions in
+ * <algorithm> with one caveat:
+ *
+ * - Throwing move and throwing swap are not supported. If a move constructor
+ *   or swap throws, the program aborts. It is strongly recommended that your
+ *   move constructor be marked noexcept.
+ *
+ * https://en.cppreference.com/w/cpp/algorithm
+ *
+ * - make_heap()
+ * - push_heap()
+ * - pop_heap()
+ * - sort_heap()
+ * - is_heap()
+ * - is_heap_until()
+ */
+
 #include "pottery_cxx/pottery_cxx_dependencies.hxx"
 
 namespace pottery {
@@ -79,7 +99,7 @@ void push_heap(RandomAccessIterator first, RandomAccessIterator last, Less less)
     // Invalid arguments are undefined behavior. We'll check anyway and abort()
     // to prevent an overflow on count below.
     if (count == 0)
-        pottery_abort();
+        pottery_terminate();
 
     pottery::impl::Heap<RandomAccessIterator, Less>::heap_push(less, first, count - 1, 1);
 }
@@ -102,7 +122,7 @@ void pop_heap(RandomAccessIterator first, RandomAccessIterator last, Less less) 
     // cppreference doesn't say what we do if first and last are equal. We'll
     // take the aggressive route and abort.
     if (count == 0)
-        abort();
+        pottery_terminate();
 
     pottery::impl::Heap<RandomAccessIterator, Less>::heap_pop(less, first, count, 1);
 }
@@ -125,7 +145,7 @@ void sort_heap(RandomAccessIterator first, RandomAccessIterator last, Less less)
     // cppreference doesn't say what we do if first and last are equal. We'll
     // take the conservative route and abort.
     if (count == 0)
-        abort();
+        pottery_terminate();
 
     pottery::impl::Heap<RandomAccessIterator, Less>::heap_pop(less, first, count, count);
 }

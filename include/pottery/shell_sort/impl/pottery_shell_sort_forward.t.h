@@ -49,16 +49,6 @@ typedef struct pottery_shell_sort_state_t {
 } pottery_shell_sort_state_t;
 
 #if POTTERY_FORWARD_DECLARATIONS
-#if 0 //TODO remove?
-// We forward-declare insertion sort here because we need to instantiate it
-// after us with its own lifecycle functions.
-POTTERY_SHELL_SORT_EXTERN
-void pottery_shell_sort_insertion_sort(
-        pottery_shell_sort_state_t state,
-        pottery_shell_sort_ref_t first,
-        size_t count);
-#endif
-
 static inline
 pottery_shell_sort_ref_t pottery_shell_sort_access(pottery_shell_sort_state_t state,
         pottery_shell_sort_ref_t first, size_t index);

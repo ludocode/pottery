@@ -56,7 +56,7 @@ pottery_oht_ref_t pottery_oht_access_previous(pottery_oht_t* oht, pottery_oht_re
 }
 
 static inline
-size_t pottery_oht_key_hash(pottery_oht_key_t key) {
+size_t pottery_oht_key_hash(pottery_oht_t* oht, pottery_oht_key_t key) {
     #if defined(POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE)
         return POTTERY_OPEN_HASH_TABLE_KEY_HASH(oht->context, key);
     #else
@@ -96,7 +96,7 @@ size_t pottery_oht_key_double_hash_interval(pottery_oht_key_t key) {
 
 #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
 static inline
-bool pottery_oht_is_tombstone(pottery_oht_t* oht, pottery_oht_ref_t ref) {
+bool pottery_oht_ref_is_tombstone(pottery_oht_t* oht, pottery_oht_ref_t ref) {
     (void)oht;
     #if defined(POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE)
         return POTTERY_OPEN_HASH_TABLE_IS_TOMBSTONE(oht->context, ref);
@@ -106,7 +106,7 @@ bool pottery_oht_is_tombstone(pottery_oht_t* oht, pottery_oht_ref_t ref) {
 }
 
 static inline
-void pottery_oht_set_tombstone(pottery_oht_t* oht, pottery_oht_ref_t ref) {
+void pottery_oht_ref_set_tombstone(pottery_oht_t* oht, pottery_oht_ref_t ref) {
     (void)oht;
     #if defined(POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE)
         POTTERY_OPEN_HASH_TABLE_SET_TOMBSTONE(oht->context, ref);
@@ -139,7 +139,7 @@ bool pottery_oht_ref_is_element(pottery_oht_t* oht, pottery_oht_ref_t ref) {
 
     #else
         #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
-        if (pottery_oht_is_tombstone(oht, ref))
+        if (pottery_oht_ref_is_tombstone(oht, ref))
             return false;
         #endif
 
@@ -206,7 +206,7 @@ static
 pottery_oht_ref_t pottery_oht_probe(pottery_oht_t* oht, pottery_oht_key_t key,
         bool* /*nullable*/ empty_or_tombstone)
 {
-    size_t hash = pottery_oht_key_hash(key);
+    size_t hash = pottery_oht_key_hash(oht, key);
     size_t bucket = pottery_oht_bucket_for_hash(oht, hash);
     size_t probe = 1;
     #if POTTERY_OPEN_HASH_TABLE_DOUBLE_HASHING
@@ -287,7 +287,7 @@ void pottery_oht_displace(pottery_oht_t* oht, pottery_oht_ref_t ref) {
     size_t previous = (index + mask) & mask;
     if (!pottery_oht_ref_is_empty(oht, pottery_oht_access_at(oht, previous))) {
         ++oht->tombstones;
-        pottery_oht_set_tombstone(oht, ref);
+        pottery_oht_ref_set_tombstone(oht, ref);
         return;
     }
 
@@ -296,7 +296,7 @@ void pottery_oht_displace(pottery_oht_t* oht, pottery_oht_ref_t ref) {
         pottery_oht_ref_set_empty(oht, ref);
         index = (index + 1) & mask;
         ref = pottery_oht_access_at(oht, index);
-        if (!pottery_oht_is_tombstone(oht, ref))
+        if (!pottery_oht_ref_is_tombstone(oht, ref))
             break;
         --oht->tombstones;
     }
@@ -356,7 +356,7 @@ void pottery_oht_displace(pottery_oht_t* oht, pottery_oht_ref_t ref) {
     // With non-linear probing modes there's no way to remove without adding a
     // tombstone because we don't know in what collision sequences we may be
     // taking part.
-    pottery_oht_set_tombstone(oht, ref);
+    pottery_oht_ref_set_tombstone(oht, ref);
     --oht->count;
     ++oht->tombstones;
 

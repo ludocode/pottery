@@ -279,8 +279,14 @@ defaultCXXFlags += ["-Ibindings/cxx/include"]
 ###################################################
 
 # Always stop on the first error, since it's usually large and usually causes a
-# wall of text of other errors
-defaultCPPFlags += flagsIfSupported("-Wfatal-errors")
+# wall of text of other errors. (This is also recommended in your own code that
+# uses Pottery.)
+if compiler == "GCC":
+    # -Wfatal-errors doesn't work properly on GCC:
+    #     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97687
+    defaultCPPFlags.append("-fmax-errors=1")
+else:
+    defaultCPPFlags += flagsIfSupported("-Wfatal-errors")
 
 compilerSupportsCXX = False
 

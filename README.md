@@ -1,12 +1,41 @@
-# Pottery - Container Algorithm Templates for C
+# Pottery
 
-Pottery is a header-only container and algorithm template library in C.
+A header-only container and algorithm template library in C.
+
+
+
+## Introduction
+
+Pottery is a collection of templates for instantiating strongly typed containers and container algorithms in C.
+
+It's called "Pottery" because it doesn't exactly give you containers you can use out-of-the-box. It gives you the tools and the materials to build them but you still need to assemble them yourself. This can mean simply configuring and instantiating a template, but often you'll want to wrap one or more templates with your own code to build a practical data structure.
 
 Pottery is modern C code written in the ultra-portable intersection of C11, gnu89 and C++11 with no mandatory dependencies (not even libc.) Pottery supports many compilers including GCC, Clang, MSVC, TinyCC and various others. It supports (or intends to support) any modern C platform from microcontrollers to OS kernels to WebAssembly.
 
-Pottery does not use void pointer casts, function pointers, code block macros, compiler-dependent hacks, or any other inefficiencies or messyness of typical C containers. Pottery's templates are clean, composable, fast, strongly typed, and highly configurable. Most importantly, the implementation code looks like idiomatic C.
+Pottery does not use void pointer casts, function pointers, code block macros, compiler-dependent hacks, or any other inefficiencies or messyness of typical C containers. Pottery's templates are clean, composable, fast, strongly typed, and highly configurable.
 
-It's called "Pottery" because it doesn't exactly give you containers you can use out-of-the-box. It gives you the tools, the materials, the algorithms to build them, but you still need to assemble them yourself. In some cases this just involves configuring and instantiating a template, but often you'll want to wrap one or more templates with your own code to build a practical data structure.
+Pottery is not just an experiment to push the boundaries of meta-programming in C. It's a real library for writing real programs, and it's used throughout [HomeFort](https://homefort.app). I expect that most people who dig into this will decide it is some kind of deranged insanity. For those that don't, I hope you find it not just a curiosity but actually useful.
+
+### Alpha
+
+This is early stage alpha-quality software under development. It is incomplete, poorly documented and full of bugs, it has had very little testing and benchmarking, and APIs are likely to change. There are currently not a lot of algorithms and data structures here but the templating system is pretty solid so I hope to implement many more in the future.
+
+(There are a few more already written actually, including a deque, priority queue and weight-balanced binary tree. They're just not clean enough to be released yet.)
+
+Mostly I am releasing this now because I am out of money and need to go get a real job again. If you would like to pay me to write code (for this or anything else) please get in touch because I really need to feed [my daughter](https://ludocode.com/assets/celeste-kraft-dinner.jpg).
+
+
+
+## Documentation
+
+- [Features](docs/features.md)
+- [How It Works](docs/how_it_works.md)
+- [Examples](examples/)
+- [Core Concepts](docs/concepts.md)
+- [Template Listing](include/)
+- [Meta-templates](meta/)
+- [Testing](test/)
+- [FAQ](docs/faq.md)
 
 
 
@@ -46,7 +75,9 @@ The template instantiation preprocesses into a full implementation of [introsort
 
 The [intro_sort](include/pottery/intro_sort/) template uses several other Pottery templates which themselves use other templates: [quick_sort](include/pottery/quick_sort/), [insertion_sort](include/pottery/insertion_sort/), [heap_sort](include/pottery/heap_sort/) which uses [heap](include/pottery/heap/), and the [lifecycle](include/pottery/lifecycle/) and [compare](include/pottery/compare/) helpers. Pottery's templates are composable and its algorithms and containers are split up into small independent components.
 
-We've defined `MOVE_BY_VALUE` to 1 above because `const char*` can be moved by value. You could instead provide a custom move or swap function if the type is not bitwise-movable. You could provide a boolean `LESS` expression or others instead of a `THREE_WAY` comparison. You could provide a custom context and accessor function to access the i'th element in case the array is not contiguous in memory (so you could sort a [deque](include/pottery/deque/) for example.) You could even sort over an abstract reference type, so you could query a database, pull elements off a tape drive, make network requests, etc.
+We've defined `MOVE_BY_VALUE` to 1 above because `const char*` can be moved by value. You could instead provide a custom move or swap expression if the type is not bitwise-movable. You could provide a boolean `LESS` expression or others instead of a three-way comparison. You could provide a custom context and accessor to access the i'th element in case the array is not contiguous in memory (so you could sort a [deque](include/pottery/deque/) for example.) You could even sort over an abstract reference type, so you could query a database, pull elements off a tape drive, make network requests, etc.
+
+See the full example [here](examples/pottery/sort_strings/).
 
 ### Int Vector
 
@@ -76,8 +107,10 @@ for (size_t i = 0; i < int_vector_count(&vector); ++i)
 int_vector_destroy(&vector);
 ```
 
-These are all real functions. You can set a breakpoint on `int_vector_insert_at()` and step through it, bringing you into the [implementation code](include/pottery/vector/impl/pottery_vector_definitions.t.h) of `pottery_vector_impl_create_space()` and so on. You can get nice stack traces if something goes wrong. You'll even get somewhat legible compiler errors (`-Wfatal-errors` helps.)
+These are all real functions. You can set a breakpoint on `int_vector_insert_at()` and step through it, bringing you into the [vector implementation code](include/pottery/vector/impl/pottery_vector_definitions.t.h). You can get nice stack traces if something goes wrong. You'll even get somewhat legible compiler errors (`-fmax-errors=1` in GCC or `-Wfatal-errors` in Clang can help.)
 
-We've defined `ELEMENT_BY_VALUE` to 1 above because `int` is trivially copyable and destroyable. You could instead provide a destroy expression for the vector to call on your elements to clean them up (for example if it contained pointers, you could tell it to destroy them with `free()`.) You could provide a move expression in case your type is not bitwise-movable. You could give it a copy initialization expression for your type to allow whole vector copies. Pottery calls all of these expressions directly, not through function pointers. Pottery's dynamic containers can fully manage the lifecycles of the elements they contain.
+We've defined `LIFECYCLE_BY_VALUE` to 1 above because `int` is trivially copyable and destroyable. You could instead provide a destroy expression for the vector to call on your elements to clean them up (for example if it contained pointers, you could tell it to destroy them with `free()`.) You could provide a move expression in case your type is not bitwise-movable. You could give it a copy initialization expression for your type to allow whole vector copies. Pottery calls all of these expressions directly, not through function pointers. Pottery's dynamic containers can fully manage the lifecycles of the elements they contain.
 
-You could also provide the vector with a custom allocator and context. You could configure it to provide some internal space for a small number of elements to avoid small allocations. You could configure it as a double-ended vector. You can even instantiate separate header and source files to use it in multiple translation units without each having a copy of the implementation. Pottery's templates are highly configurable.
+You could also provide the vector with a custom allocator and context. You could configure it to provide some internal space for a small number of elements to avoid small allocations. You could configure it as a double-ended vector. You can even instantiate separate header and source files to use it in multiple translation units without each having a copy of the implementation.
+
+See the full example [here](examples/pottery/int_vector/).

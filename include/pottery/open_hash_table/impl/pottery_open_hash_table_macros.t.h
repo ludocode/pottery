@@ -38,9 +38,6 @@
 #ifndef POTTERY_OPEN_HASH_TABLE_PREFIX
     #error "POTTERY_OPEN_HASH_TABLE_PREFIX is not defined."
 #endif
-#if !POTTERY_LIFECYCLE_CAN_SWAP
-    #error "A move or swap expression is required."
-#endif
 
 #ifndef POTTERY_OPEN_HASH_TABLE_EXTERN
     #define POTTERY_OPEN_HASH_TABLE_EXTERN /*nothing*/
@@ -71,14 +68,29 @@
     #endif
 #endif
 
+// Empty
+#if !defined(POTTERY_OPEN_HASH_TABLE_IS_EMPTY)
+    #error "You must define IS_EMPTY."
+#endif
+#if !defined(POTTERY_OPEN_HASH_TABLE_SET_EMPTY)
+    #error "You must define SET_EMPTY."
+#endif
+
 // Tombstones
 #if defined(POTTERY_OPEN_HASH_TABLE_SET_TOMBSTONE) || defined(POTTERY_OPEN_HASH_TABLE_IS_TOMBSTONE)
     #if !defined(POTTERY_OPEN_HASH_TABLE_SET_TOMBSTONE) || !defined(POTTERY_OPEN_HASH_TABLE_IS_TOMBSTONE)
-        #error "You must define either both or neither SET_TOMBSTONE and IS_TOMBSTONE."
+        #error "You must define both or neither of SET_TOMBSTONE and IS_TOMBSTONE."
     #endif
     #define POTTERY_OPEN_HASH_TABLE_TOMBSTONES 1
 #else
+    #if !POTTERY_OPEN_HASH_TABLE_LINEAR_PROBING
+        #error "Non-linear probing requires tombstones."
+    #endif
     #define POTTERY_OPEN_HASH_TABLE_TOMBSTONES 0
+#endif
+
+#if !POTTERY_LIFECYCLE_CAN_MOVE && !POTTERY_OPEN_HASH_TABLE_TOMBSTONES
+    #error "Either a move expression or tombstones are required."
 #endif
 
 

@@ -40,8 +40,8 @@
  *   or swap throws, the program aborts. It is strongly recommended that your
  *   move constructor be marked noexcept.
  *
- * This may be useful for small to medium size arrays where you want small code
- * size and guaranteed time bounds.
+ * This may be useful for small to medium size arrays where you want consistent
+ * performance and guaranteed time bounds.
  */
 
 #include "pottery_cxx/pottery_cxx_dependencies.hxx"
