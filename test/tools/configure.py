@@ -89,15 +89,19 @@ else:
             compiler = "cparser"
         elif "clang" in ret.stdout:
             compiler = "Clang"
-        elif "(GCC)" in ret.stdout:
-            compiler = "GCC"
-    else:
+
+    if compiler == "unknown":
         # try -v
         ret = subprocess.run([cc, "-v"], universal_newlines=True,
                 capture_output=True)
         if ret.returncode == 0:
-            if ret.stdout.startswith("tcc "):
-                compiler = "TinyCC"
+            for line in (ret.stdout + "\n" + ret.stderr).splitlines():
+                if line.startswith("tcc "):
+                    compiler = "TinyCC"
+                    break
+                elif line.startswith("gcc "):
+                    compiler = "GCC"
+                    break
 
 print("Using " + compiler + " compiler with executable: " + cc)
 
@@ -247,7 +251,6 @@ else:
 defaultCPPFlags += [
     "-Iinclude", "-Iexamples", "-Itest/src",
     "-DPOTTERY_UNIT_TEST",
-    "-D_FORTIFY_SOURCE",
 ]
 
 # optimization
@@ -259,6 +262,14 @@ else:
     releaseFlags = ["-O2"]
 debugFlags.append("-DDEBUG")
 releaseFlags.append("-DNDEBUG")
+
+# We add _FORTIFY_SOURCE only if it works. (-D_FORTIFY_SOURCE=1 throws warnings
+# under GCC 9.3.0 on Ubuntu 20.04, apparently because it defines
+# _FORTIFY_SOURCE=2 as a built-in when compiling with -O2.)
+if checkFlags(debugFlags + ["-D_FORTIFY_SOURCE=2"]):
+    debugFlags.append("-D_FORTIFY_SOURCE=2")
+if checkFlags(releaseFlags + ["-D_FORTIFY_SOURCE=1"]):
+    releaseFlags.append("-D_FORTIFY_SOURCE=1")
 
 # flags for specifying source language
 if compiler == "MSVC":
@@ -537,7 +548,7 @@ with open(ninja, "w") as out:
         out.write(" rspfile = $out.rsp\n")
         out.write(" rspfile_content = $flags $in\n")
     else:
-        out.write(" command = " + cc + " $flags $in -o $out\n")
+        out.write(" command = " + cc + " -Wl,--start-group $flags $in -Wl,--end-group -o $out\n")
     out.write("\n")
 
     for buildname in sorted(builds.keys()):
