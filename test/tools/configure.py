@@ -247,6 +247,7 @@ else:
 defaultCPPFlags += [
     "-Iinclude", "-Iexamples", "-Itest/src",
     "-DPOTTERY_UNIT_TEST",
+    "-D_FORTIFY_SOURCE",
 ]
 
 # optimization

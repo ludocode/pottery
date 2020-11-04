@@ -421,7 +421,13 @@ static inline size_t pottery_malloc_estimate_good_size(size_t size) {
             static pottery_always_inline
             void* pottery_aligned_malloc(size_t alignment, size_t size) {
                 void* p = pottery_null;
-                posix_memalign(&p, alignment, size);
+                // posix_memalign() doesn't modify the given pointer on failure
+                // (always on Linux, elsewhere as of POSIX.1-2008) so we
+                // shouldn't need to check the return value, except that glibc
+                // declares the return value warn_unused_result under
+                // _FORTIFY_SOURCE.
+                if (pottery_unlikely(0 != posix_memalign(&p, alignment, size)))
+                    return pottery_null;
                 return p;
             }
             #define POTTERY_ALIGNED_MALLOC pottery_aligned_malloc
