@@ -15,9 +15,10 @@ int main(void) {
     };
     size_t count = sizeof(players) / sizeof(*players);
 
-    pottery_qsort_simple(players, count, sizeof(players[0]), strcmp_wrapper);
+    pottery_qsort_simple((void*)players, count, sizeof(players[0]), strcmp_wrapper);
 
-    for (size_t i = 0; i < count; ++i)
+    size_t i;
+    for (i = 0; i < count; ++i)
         puts(players[i]);
 
     return EXIT_SUCCESS;

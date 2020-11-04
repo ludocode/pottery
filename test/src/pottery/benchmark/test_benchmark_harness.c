@@ -109,12 +109,11 @@ static void benchmark_sort(int* ref_ints, size_t count,
     free(ints);
 }
 
-static void benchmark_sorts() {
+static void benchmark_sorts(size_t count) {
     results_init(&results);
 
     // generate some random ints with a fixed seed for reproducibility
     srand(0);
-    size_t count = 10*1000*1000;
     int* ints = pottery_cast(int*, malloc(sizeof(int) * count));
     size_t i;
     for (i = 0; i < count; ++i) {
@@ -184,12 +183,20 @@ static void benchmark_sorts() {
     results_destroy(&results);
 }
 
+static void benchmark_all_sorts(void) {
+    size_t count = 100*1000;
+    benchmark_sorts(count);
+    count *= 10;
+    benchmark_sorts(count);
+    count *= 10;
+    benchmark_sorts(count);
+}
 
 
 // all benchmarks
 
 int main(void) {
-    benchmark_sorts();
+    benchmark_all_sorts();
 
     // so far we only have a simple benchmark for sorting algorithms. :(
 }

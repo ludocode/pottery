@@ -29,6 +29,10 @@
 #error "This is header internal to Pottery. Do not include it."
 #endif
 
+// We need to push our pragmas to disable warnings within this file. (MSVC
+// warns about things like constant expressions in if statements, etc.)
+#include "pottery/platform/pottery_platform_pragma_push.t.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -477,6 +481,6 @@ static inline size_t pottery_malloc_estimate_good_size(size_t size) {
 }
 #endif
 
-
+#include "pottery/platform/pottery_platform_pragma_pop.t.h"
 
 #endif

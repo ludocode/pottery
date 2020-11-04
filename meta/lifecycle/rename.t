@@ -50,7 +50,3 @@
 #define {SRC}_move_bulk_up_impl POTTERY_CONCAT({DEST}, _move_bulk_up_impl)
 #define {SRC}_move_bulk_down POTTERY_CONCAT({DEST}, _move_bulk_down)
 #define {SRC}_move_bulk_down_impl POTTERY_CONCAT({DEST}, _move_bulk_down_impl)
-
-// C++
-#define {SRC}_construct POTTERY_CONCAT({DEST}, _construct)
-#define {SRC}_assign POTTERY_CONCAT({DEST}, _assign)

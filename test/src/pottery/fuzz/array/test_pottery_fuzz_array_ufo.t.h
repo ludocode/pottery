@@ -83,6 +83,9 @@ typedef enum command_t {
     command_emplace_at,
     command_remove_at,
 
+    command_shrink,
+    command_reserve,
+
     #if 0
     command_emplace_first,
     command_emplace_last,
@@ -97,6 +100,18 @@ typedef enum command_t {
 
     command_count,
 } command_t;
+
+static void fuzz_shrink(array_ufo_t* array) {
+    array_ufo_shrink(array);
+}
+
+static void fuzz_reserve(array_ufo_t* array, fuzz_input_t* input) {
+    // Reserve any number between 256 and (roughly) four times what the array
+    // currently holds. Often we'll be reserving less (which should do
+    // nothing), but usually we'll be reserving more, sometimes much more.
+    size_t count = fuzz_load_u24(input) % (256 + 4 * array_ufo_count(array));
+    array_ufo_reserve(array, count);
+}
 
 static void fuzz_emplace_at(array_ufo_t* array, fuzz_input_t* input, shadow_t* shadow) {
     if (shadow->count == FUZZ_ARRAY_UFO_COUNT_LIMIT)
@@ -164,6 +179,14 @@ static void fuzz(fuzz_input_t* input) {
 
             case command_remove_at:
                 fuzz_remove_at(&array, input, &shadow);
+                break;
+
+            case command_shrink:
+                fuzz_shrink(&array);
+                break;
+
+            case command_reserve:
+                fuzz_reserve(&array, input);
                 break;
 
             default:

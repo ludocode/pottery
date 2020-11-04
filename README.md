@@ -18,9 +18,7 @@ Pottery is not just an experiment to push the boundaries of meta-programming in 
 
 ### Alpha
 
-This is early stage alpha-quality software under development. It is incomplete, poorly documented and full of bugs, it has had very little testing and benchmarking, and APIs are likely to change. There are currently not a lot of algorithms and data structures here but the templating system is pretty solid so I hope to implement many more in the future.
-
-(There are a few more already written actually, including a deque, priority queue and weight-balanced binary tree. They're just not clean enough to be released yet.)
+This is early stage alpha-quality software under development. It is incomplete, poorly documented and full of bugs, it has had very little testing and benchmarking, and APIs are likely to change. There are currently not a lot of algorithms and data structures here but the templating system is pretty solid so I hope to implement many more in the future. (In fact several more are written already but they are not clean enough to be released yet.)
 
 Mostly I am releasing this now because I am out of money and need to go get a real job again. If you would like to pay me to write code (for this or anything else) please get in touch because I really need to feed [my daughter](https://ludocode.com/assets/celeste-kraft-dinner.jpg).
 
@@ -30,9 +28,10 @@ Mostly I am releasing this now because I am out of money and need to go get a re
 
 - [Features](docs/features.md)
 - [How It Works](docs/how_it_works.md)
-- [Examples](examples/)
+- [Examples](examples/pottery/)
+- [Integration](docs/integration.md)
 - [Core Concepts](docs/concepts.md)
-- [Template Listing](include/)
+- [Template Listing](include/pottery/)
 - [Meta-templates](meta/)
 - [Testing](test/)
 - [FAQ](docs/faq.md)

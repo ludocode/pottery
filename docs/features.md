@@ -10,11 +10,15 @@ Pottery's macros are quite tame in comparison. The implementation code tends to 
 
 ### Strongly Typed
 
-An instantiated Pottery template provides real functions that operate on concrete types. You do not cast anything, nor do you pass types around in function-like macros to use Pottery. With real typed functions, the compiler can alert you on type or argument mismatches and you get optimal performance. Pottery brings strong static typing to an otherwise weakly typed language.
+An instantiated Pottery template provides real functions that operate on concrete types. You do not cast anything, nor do you pass types around in function-like macros to use Pottery.
+
+With real typed functions, the compiler can alert you on type or argument mismatches and you get optimal performance. Pottery brings strong static typing to an otherwise weakly typed language.
+
+Pottery will even respect extended alignment requirements for your types. For example if you put a type with extended alignment in a vector, the vector will detect this and call `aligned_alloc()` instead of `malloc()` to allocate its storage.
 
 ### Composable
 
-Pottery's templates can themselves instantiate other templates in their implementations in order to share code. For example, both the `red_black_tree` and the `weight_balanced_tree` use the `binary_tree` template to implement their tree traversal and rotations. Most dynamic container templates use shared helper templates to manage element lifecycles and allocate memory.
+Pottery's templates can themselves instantiate other templates in their implementations in order to share code. Most dynamic container templates use shared helper templates to manage element lifecycles and allocate memory.
 
 ### Nestable
 
@@ -24,11 +28,13 @@ Want to make a vector of maps, or a priority queue of linked lists? No problem. 
 
 Pottery templates can be extensively configured. For example all of the array algorithms like [`heap`](../include/pottery/heap/) or [`intro_sort`](../include/pottery/intro_sort/) operate on a generalized array. This means you can configure arbitrary expressions to access the i'th element and to swap and compare elements. These expressions can do whatever you like: index a non-contigous array, access a database, pull elements off a tape drive, make network requests, or simply manipulate a normal array in memory.
 
-Dynamic containers are highly configurable as well. For example [`vector`](../include/pottery/heap/) can be configured as a double-ended vector, and can be configured with some internal capacity to avoid allocations.
+The behaviour of dynamic containers is highly configurable as well. For example [`vector`](../include/pottery/heap/) can be configured as a double-ended vector, can be configured with some internal capacity to avoid allocations, and can be configured to disable its auto-shrink behaviour.
 
 ### Documented
 
-Pottery is heavily documentated. Take a look at the [documentation index in the README](../README.md#documentation) to start.
+Pottery is heavily documented. Take a look at the [documentation index](../README.md#documentation) in the project README to start.
+
+Documentation for individual templates is inline in the [`include/`](../include/pottery/) folder. Click any template folder to see its documentation.
 
 ### Consistent
 
@@ -71,12 +77,16 @@ These are not in an enum so that you can use your own codes for custom errors, f
 
 Pottery goes to extreme lengths to maintain compatiblity with C++.
 
-You can put C++ types in Pottery containers and declare that they are value types, and Pottery will properly run constructors and destructors, move by move construction and move assignment, copy by copy construction and copy assignment, swap with a swap function found by argument-dependent lookup, etc.
+All Pottery code should build cleanly as C++ with no warnings on any compiler. Pottery even supports C++ warning flags that are hostile to C code such as `-Wold-style-cast`.
 
-Pottery provides the strong exception guarantee even for C++ objects with throwing copy constructors. In Pottery's usual C functions, Pottery will catch any exceptions thrown, unwind whatever mutation operation was in progress, and convert them to error codes. Unrecognized exceptions are converted to `POTTERY_ERROR_CXX_EXCEPTION`.
+You can put C++ types in Pottery containers and simply declare that they are value types. Pottery will properly run constructors and destructors, move and copy by constructors and assignment operators, swap with a swap function found by argument-dependent lookup, etc.
 
-Pottery also provides additional functions in C++. For example, you can `construct()` an object in-place in a dynamic container. This is equivalent to the `emplace()` operation in C++ STL containers. (Pottery uses the term "emplace" for getting an uninitialized but constructed pointer to a newly inserted element.)
+Pottery provides the strong exception guarantee even for C++ objects with throwing copy constructors. Pottery will catch any exceptions thrown, convert them to error codes, and unwind whatever mutation operation was in progress. Unrecognized exceptions are converted to `POTTERY_ERROR_CXX_EXCEPTION`.
 
-There are some limitations. In particular, Pottery does support exceptions from move constructors or from `std::swap()`. You are allowed to use a move constructor that throws as long as you are OK with the program aborting if it actually does throw. If the only possible exception is an out-of-memory error, it's fine to ignore this on platforms that don't gracefully handle out-of-memory situations (e.g. modern desktop operating systems.)
+Pottery provides additional functions in C++. For example you configure dynamic containers to support `construct()`ing an object in-place in a dynamic container. This uses perfect forwarding though a C++ variadic template. This is equivalent to the `emplace()` operation in C++ STL containers. (Pottery uses the term "emplace" for getting an uninitialized pointer to a newly inserted element.) Pottery also provides r-value reference overloads for `insert()` and friends.
 
-Pottery's templates are instantiated into C++ templates under [`bindings/cxx`](bindings/cxx). Yes you really can just instantiate the C algorithms into C++ class templates and they "just work". This makes it possible to use Pottery's algorithms in C++, and it also makes it easy to benchmark Pottery against C++ container libraries.
+Pottery can optimize the moving of "[trivially relocatable](https://quuxplusone.github.io/blog/code/object-relocation-in-terms-of-move-plus-destroy-draft-7.html)" C++ values using `memcpy()`. It detects this automatically based on `std::is_trivially_copyable`, but you can specialize type traits (`pottery::is_bitwise_movable` and `pottery::is_bitwise_copyable`) to declare to Pottery that your C++ type can be moved or copied bitwise. This can make it faster than standard C++ STL containers.
+
+There are some limitations. In particular, Pottery does not support exceptions from move constructors or from `std::swap()`. You are allowed to use a move constructor that may throw, but the program will abort if it actually does throw. If the only possible exception is an out-of-memory error, it's fine to ignore this on platforms that don't gracefully handle out-of-memory situations (e.g. modern desktop operating systems.)
+
+Pottery's templates are instantiated into C++ templates under [`bindings/cxx`](bindings/cxx). These can serve as drop-in replacements for the STL. Yes, you really can just instantiate the C algorithms into C++ class templates and they "just work". This makes it possible to use Pottery's algorithms in C++, and it will hopefully make it easy to benchmark Pottery against C++ container libraries.

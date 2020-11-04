@@ -10,13 +10,13 @@
 //     size -A -d out.o
 
 #if 1
-#define POTTERY_SHELL_SORT_PREFIX sort_strings
+#define POTTERY_SHELL_SORT_PREFIX sort_strings_code_size
 #define POTTERY_SHELL_SORT_VALUE_TYPE const char*
 #define POTTERY_SHELL_SORT_LIFECYCLE_MOVE_BY_VALUE 1
 #define POTTERY_SHELL_SORT_COMPARE_THREE_WAY(x, y) strcmp(*x, *y)
 #include "pottery/shell_sort/pottery_shell_sort_static.t.h"
 #elif 0
-#define POTTERY_INSERTION_SORT_PREFIX sort_strings
+#define POTTERY_INSERTION_SORT_PREFIX sort_strings_code_size
 #define POTTERY_INSERTION_SORT_VALUE_TYPE const char*
 #define POTTERY_INSERTION_SORT_LIFECYCLE_MOVE_BY_VALUE 1
 #define POTTERY_INSERTION_SORT_COMPARE_THREE_WAY(x, y) strcmp(*x, *y)
@@ -24,7 +24,7 @@
 #else
 #include <algorithm>
 pottery_maybe_unused
-static void sort_strings(const char** strings, size_t count) {
+static void sort_strings_code_size(const char** strings, size_t count) {
     std::sort(strings, strings + count, strcmp);
 }
 #endif
@@ -34,7 +34,7 @@ int main(int argc, const char* argv[]) {
     // sort command-line arguments
     ++argv;
     --argc;
-    sort_strings(argv, argc);
+    sort_strings_code_size(argv, argc);
     for (int i = 0; i < argc; ++i)
         puts(argv[i]);
     return EXIT_SUCCESS;

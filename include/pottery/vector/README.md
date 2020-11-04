@@ -51,3 +51,14 @@ An integer indicating the amount of internal space available for values. The vec
 The default is 0. If 0, the vector has no internal capacity, so it needs to allocate as soon as the first element is inserted. A vector is bitwise-movable if and only if its internal capacity is 0. A non-zero internal capacity adds some additional complexity and code size.
 
 For some value types it's possible for this to be non-zero without making the vector itself larger. The internal capacity is shared with a `size_t` value for the allocated capacity, so you can fit as many values as fit in a `size_t`. In particular, for a vector of pointers, you can make the internal capacity 1 without increasing the size of each vector.
+
+#### `CXX`
+
+A flag (1 or 0). If 1, the vector will instantiate additional C++ functions when compiled as C++.
+
+This is 0 by default so that the vector can be instantiated in an `extern "C"` block. Set this to 1 to get the additional functions.
+
+These functions include:
+
+- `construct_*()` -- construct an element in-place in the vector
+- `insert_*()` overloads for various reference types allowing more efficient insertion

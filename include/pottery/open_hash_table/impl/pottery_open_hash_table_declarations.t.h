@@ -178,11 +178,14 @@ pottery_oht_ref_t pottery_oht_emplace(pottery_oht_t* oht,
 /**
  * Inserts a value.
  */
+static inline
 pottery_oht_ref_t pottery_oht_insert(pottery_oht_t* oht, pottery_oht_value_t value) {
     bool created;
     pottery_oht_ref_t ref = pottery_oht_emplace(oht, pottery_oht_key(oht, &value), &created);
-    if (!created)
+    if (!created) {
+        // TODO this isn't right, this will run the C++ destructor
         pottery_oht_lifecycle_destroy(ref);
+    }
     *ref = value;
     return ref;
 }
@@ -224,7 +227,7 @@ bool pottery_oht_remove_key(pottery_oht_t* oht, pottery_oht_key_t key);
  */
 static inline
 pottery_oht_ref_t pottery_oht_end(pottery_oht_t* oht) {
-    return pottery_oht_access_at(oht, 1 << oht->log_2_size);
+    return pottery_oht_access_at(oht, pottery_cast(size_t, 1) << oht->log_2_size);
 }
 
 static inline

@@ -171,11 +171,13 @@ bool pottery_ohm_ref_is_value(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
 
 static inline
 void pottery_ohm_ref_move(pottery_ohm_t* map, pottery_ohm_ref_t to, pottery_ohm_ref_t from) {
+    (void)map;
     pottery_ohm_lifecycle_move(/*TODO context arg*/ to, from);
     // TODO clear metadata
 }
 
 static inline
 void pottery_ohm_ref_destroy(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
+    (void)map;
     pottery_ohm_lifecycle_destroy(/*TODO context arg*/ ref);
 }

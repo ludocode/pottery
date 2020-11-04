@@ -95,7 +95,7 @@ static inline bool fuzz_ufo_init(ufo_t* ufo, fuzz_input_t* input) {
 
     // generate a random string
     char string[FUZZ_UFO_NAME_MAX_LENGTH + 1];
-    size_t len = *(input->pos++) % (FUZZ_UFO_NAME_MAX_LENGTH - 3) + 3;
+    size_t len = pottery_cast(size_t, *(input->pos++)) % (FUZZ_UFO_NAME_MAX_LENGTH - 3) + 3;
     size_t i;
     for (i = 0; i < len; ++i) {
         if (input->end == input->pos)

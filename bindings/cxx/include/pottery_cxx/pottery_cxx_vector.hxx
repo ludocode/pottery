@@ -36,13 +36,22 @@ namespace detail {
 
 template <typename T>
 struct vector_wrapper {
-    // TODO need configuration option to disable automatic shrink
     #define POTTERY_VECTOR_PREFIX cvector
     #define POTTERY_VECTOR_ELEMENT_TYPE T
+
+    // C++ std::vector requires that erase() and pop_back() don't invalidate
+    // iterators to elements before the element being removed. In order to be
+    // compatible with it we can't automatically shrink.
+    #define POTTERY_VECTOR_AUTO_SHRINK 0
+
     // Note that we use `BY_VALUE` even if the type isn't copyable or
     // default-constructible. C++ doesn't instantiate functions that aren't
     // used so it doesn't matter if they don't compile.
     #define POTTERY_VECTOR_LIFECYCLE_BY_VALUE 1
+
+    // We want to enable construct_*(), insert() overloads, etc.
+    #define POTTERY_VECTOR_CXX 1
+
     #include "pottery/vector/pottery_vector_static.t.h"
 };
 

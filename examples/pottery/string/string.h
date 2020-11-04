@@ -86,7 +86,7 @@ static inline const char* string_cstr(const string_t* string) {
 
 bool string_equal(const string_t* left, const string_t* right);
 
-bool string_compare(const string_t* left, const string_t* right);
+int string_compare(const string_t* left, const string_t* right);
 
 /*
  * Mutation functions

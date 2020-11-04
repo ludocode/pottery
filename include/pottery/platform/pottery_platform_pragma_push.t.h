@@ -41,9 +41,13 @@
     #endif
 #endif
 
-// MSVC warns on constant expressions in if statements, e.g.
+// MSVC warns on constant expressions in if statements. e.g.
 //
-//     if (std::is_trivial<T>::value) { /*something*/ }
+//     if (sizeof(size_t) == 4)
+//
+// or
+//
+//     if (std::is_trivial<T>::value)
 //
 // We could potentially fix this with "if constexpr" but I haven't bothered
 // yet. Like above it would only work in C++17 anyway.

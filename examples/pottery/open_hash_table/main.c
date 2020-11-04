@@ -49,7 +49,8 @@ int main(void) {
     foo_t* foo = foo_table_find(&table, "second");
     foo_table_displace(&table, foo);
 
-    for (size_t i = 0; i < pottery_array_count(foo_table_array); ++i) {
+    size_t i;
+    for (i = 0; i < pottery_array_count(foo_table_array); ++i) {
         if (foo_table_array[i].key != NULL)
             printf("%zi/%i %s\n",i,1<<FOO_TABLE_SIZE_BITS, foo_table_array[i].key);
     }

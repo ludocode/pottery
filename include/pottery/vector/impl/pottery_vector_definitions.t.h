@@ -479,6 +479,7 @@ void pottery_vector_impl_remove_space(pottery_vector_t* vector, size_t index, si
     size_t new_count = old_count - count;
     vector->count = new_count;
 
+    #if POTTERY_VECTOR_AUTO_SHRINK
     // See if we should shrink based on various factors. The below factors
     // certainly need some tweaking; right now they're mostly just guesses.
 
@@ -564,11 +565,10 @@ void pottery_vector_impl_remove_space(pottery_vector_t* vector, size_t index, si
                 new_capacity = expanded_capacity;
             }
 
-            #if POTTERY_VECTOR_DOUBLE_ENDED
-            // Center ourselves in the new storage
-            new_begin = new_storage + (new_capacity - new_count) / 2;
-            #else
             new_begin = new_storage;
+            #if POTTERY_VECTOR_DOUBLE_ENDED
+            // Center our data in the new storage
+            new_begin += (new_capacity - new_count) / 2;
             #endif
         }
 
@@ -604,6 +604,7 @@ void pottery_vector_impl_remove_space(pottery_vector_t* vector, size_t index, si
         // don't report error from remove/displace; we just keep the larger
         // buffer.
     }
+    #endif
 
     // No shrink. Move in-place.
 
@@ -624,6 +625,85 @@ void pottery_vector_impl_remove_space(pottery_vector_t* vector, size_t index, si
             pottery_vector_begin(vector) + index,
             pottery_vector_begin(vector) + index + count,
             new_count - index);
+}
+
+POTTERY_VECTOR_EXTERN
+pottery_error_t pottery_vector_shrink(pottery_vector_t* vector) {
+    #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
+    if (vector->storage == vector->u.internal) {
+        // We're already on internal capacity. Nothing to do.
+        return POTTERY_OK;
+    }
+    #endif
+
+    size_t count = pottery_vector_count(vector);
+    if (count == 0) {
+        // The vector is empty. Free any allocated buffer and reset (to either
+        // null or internal capacity.)
+        if (vector->storage != pottery_null
+                #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
+                && vector->storage != vector->u.internal
+                #endif
+        ) {
+            pottery_vector_impl_free(vector, vector->storage);
+        }
+        pottery_vector_impl_reset(vector);
+        return POTTERY_OK;
+    }
+
+    size_t old_capacity = pottery_vector_capacity(vector);
+    size_t new_capacity = count;
+    pottery_vector_element_t* new_storage;
+
+    #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
+    if (new_capacity <= POTTERY_VECTOR_INTERNAL_CAPACITY) {
+        // Switch to internal capacity
+        new_storage = vector->u.internal;
+        new_capacity = POTTERY_VECTOR_INTERNAL_CAPACITY;
+    } else
+    #endif
+    {
+        // Round new capacity up to a multiple of 16 to avoid trying to shrink
+        // something the allocator would just round up. (We expect our alloc
+        // helpers to do something similar anyway via MALLOC_GOOD_SIZE. Maybe
+        // the alloc helpers should expose this function so we can use it
+        // here.)
+        size_t mask = 15;
+        new_capacity = (new_capacity + mask) & ~mask;
+
+        // We don't bother shrinking if we're already taking up some threshold of
+        // the capacity. This factor could be tweaked.
+        if (new_capacity >= old_capacity - old_capacity / 8) {
+            // We're already at capacity, or close enough to it. Nothing to do.
+            return POTTERY_OK;
+        }
+
+        // Allocate a buffer at least this big
+        new_storage = pottery_vector_impl_alloc(vector, &new_capacity);
+        if (new_storage == pottery_null)
+            return POTTERY_ERROR_ALLOC;
+        if (new_capacity >= old_capacity) {
+            // The new allocation wasn't any smaller than our current allocation.
+            pottery_vector_impl_free(vector, new_storage);
+            return POTTERY_OK;
+        }
+        vector->u.capacity = new_capacity;
+    }
+
+    pottery_vector_element_t* new_begin = new_storage;
+    #if POTTERY_VECTOR_DOUBLE_ENDED
+    // Center our data in the new storage
+    new_begin += (new_capacity - count) / 2;
+    #endif
+
+    pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(vector)
+            new_begin, pottery_vector_begin(vector), count);
+    pottery_vector_impl_free(vector, vector->storage);
+    vector->storage = new_storage;
+    #if POTTERY_VECTOR_DOUBLE_ENDED
+    vector->begin = new_begin;
+    #endif
+    return POTTERY_OK;
 }
 
 #if POTTERY_LIFECYCLE_CAN_DESTROY
@@ -660,7 +740,7 @@ void pottery_vector_swap(pottery_vector_t* left, pottery_vector_t* right) {
 
 #if POTTERY_LIFECYCLE_CAN_INIT_COPY
 // Copies the contents of other into this where this is empty.
-POTTERY_VECTOR_EXTERN
+static
 pottery_error_t pottery_vector_impl_copy(pottery_vector_t* vector, const pottery_vector_t* other) {
     pottery_assert(pottery_vector_is_empty(vector));
     size_t count = pottery_vector_count(other);

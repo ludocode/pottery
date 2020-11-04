@@ -47,8 +47,10 @@
 #include <type_traits>
 #endif
 
+namespace pottery {
+
 pottery_noreturn static pottery_always_inline
-void pottery_terminate(void) {
+void terminate(void) {
     #if POTTERY_CXX_EXCEPTIONS
     std::terminate();
     #else
@@ -60,8 +62,8 @@ void pottery_terminate(void) {
 }
 
 static pottery_always_inline
-void pottery_error_to_exception(pottery_error_t error) {
-    if (error == POTTERY_OK)
+void error_to_exception(pottery_error_t error) {
+    if (pottery_likely(error == POTTERY_OK))
         return;
 
     #if POTTERY_CXX_EXCEPTIONS
@@ -69,11 +71,68 @@ void pottery_error_to_exception(pottery_error_t error) {
         throw std::bad_alloc();
     throw std::exception();
     #else
-    pottery_terminate();
+    pottery::terminate();
     #endif
 }
 
-namespace pottery {
+/**
+ * construct()
+ *
+ * This is used in C++ to run the constructor of an object in arbitrary
+ * (properly typed) storage and convert exceptions to error codes.
+ *
+ * This can take arbitrary arguments in C++ so it can run default/copy/move
+ * constructors or any user-defined constructors to allow C++-style
+ * object emplacement in Pottery's dynamic containers.
+ *
+ * This catches exceptions and converts them to Pottery error codes. If
+ * anything other than POTTERY_OK is returned, the object was not constructed.
+ */
+template<class Value, class... ConstructArgs>
+pottery_nodiscard
+pottery_always_inline static
+pottery_error_t construct(Value* element,
+        ConstructArgs&&... args) pottery_noexcept
+{
+    #if POTTERY_CXX_EXCEPTIONS
+    try {
+    #endif
+        new (element) Value(std::forward<ConstructArgs>(args)...);
+    #if POTTERY_CXX_EXCEPTIONS
+    } catch (const std::bad_alloc&) {
+        return POTTERY_ERROR_ALLOC;
+    } catch (...) {
+        return POTTERY_ERROR_CXX_EXCEPTION;
+    }
+    #endif
+    return POTTERY_OK;
+}
+
+/**
+ * assign()
+ *
+ * This is used in C++ to assign to an object (to run copy-assignment or
+ * move-assignment operators) and convert exceptions to error codes.
+ */
+template<class Value, class AssignSource>
+pottery_nodiscard
+pottery_always_inline static
+pottery_error_t assign(Value* element,
+        AssignSource&& source) pottery_noexcept
+{
+    #if POTTERY_CXX_EXCEPTIONS
+    try {
+    #endif
+        *element = std::forward<AssignSource>(source);
+    #if POTTERY_CXX_EXCEPTIONS
+    } catch (const std::bad_alloc&) {
+        return POTTERY_ERROR_ALLOC;
+    } catch (...) {
+        return POTTERY_ERROR_CXX_EXCEPTION;
+    }
+    #endif
+    return POTTERY_OK;
+}
 
 /**
  * True if it is safe to use memcpy() to move (or "relocate" in C++ terms) a
@@ -106,5 +165,9 @@ template<typename T>
 struct is_bitwise_copyable : std::is_trivially_copyable<T> {};
 
 } // namespace pottery
+
+// TODO backward compatibility
+constexpr auto pottery_terminate = pottery::terminate;
+constexpr auto pottery_error_to_exception = pottery::error_to_exception;
 
 #endif

@@ -58,3 +58,11 @@ test/fuzz.sh test/build/afl/test_pottery_fuzz_vector
 The test script prints out the afl command it uses so you can run it yourself if you want to configure it more (for example if you want to parallelize it.)
 
 It can take days to sufficiently test a data structure so only do this if you really want to double check it (or if you just want to help me out in testing.) If you find anything please file a bug report!
+
+### Benchmarks
+
+Pottery includes a very simple benchmark harness for comparing the performance of algorithms and containers. The benchmarks only run on Linux.
+
+Run the benchmarks with `test/benchmark.sh` . It will download a handful of competing libraries online, build them into a benchmark suite and run it.
+
+Currently only a handful of sorting algorithms are supported, and it only sorts random ints, not any interesting patterns. The benchmark prints the time taken for each algorithm; lower is better.

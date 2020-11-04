@@ -53,7 +53,7 @@ POTTERY_OPEN_HASH_MAP_EXTERN
 pottery_error_t pottery_ohm_init(pottery_ohm_t* ohm) {
     // default to 16 buckets
     size_t log_2_size = 4;
-    size_t size = pottery_cast(size_t, 1 << log_2_size);
+    size_t size = pottery_cast(size_t, 1) << log_2_size;
     pottery_ohm_value_t* values = pottery_ohm_impl_alloc(ohm, size);
     if (values == pottery_null)
         return POTTERY_ERROR_ALLOC;
@@ -62,7 +62,8 @@ pottery_error_t pottery_ohm_init(pottery_ohm_t* ohm) {
             , 0
             #endif
             );
-    for (size_t i = 0; i < size; ++i)
+    size_t i;
+    for (i = 0; i < size; ++i)
         pottery_ohm_table_ref_set_empty(&ohm->table, ohm->table.first + i);
     return POTTERY_OK;
 }
@@ -87,7 +88,7 @@ void pottery_ohm_destroy(pottery_ohm_t* ohm) {
 static
 pottery_error_t pottery_ohm_grow_if_needed(pottery_ohm_t* ohm) {
     size_t count = pottery_ohm_table_count(&ohm->table);
-    size_t old_size = pottery_cast(size_t, 1 << ohm->table.log_2_size);
+    size_t old_size = pottery_cast(size_t, 1) << ohm->table.log_2_size;
 
     // We grow at a load factor of 2/3. Figure out a good load factor later.
     if (count < old_size - old_size / 3) {
@@ -97,7 +98,7 @@ pottery_error_t pottery_ohm_grow_if_needed(pottery_ohm_t* ohm) {
 
     // allocate a new table with double the size
     size_t new_log_2_size = ohm->table.log_2_size + 1;
-    size_t new_size = pottery_cast(size_t, 1 << new_log_2_size);
+    size_t new_size = pottery_cast(size_t, 1) << new_log_2_size;
     pottery_ohm_value_t* new_values = pottery_ohm_impl_alloc(ohm, new_size);
     if (new_values == pottery_null)
         return POTTERY_ERROR_ALLOC;
@@ -112,7 +113,8 @@ pottery_error_t pottery_ohm_grow_if_needed(pottery_ohm_t* ohm) {
             );
 
     // clear the new values
-    for (size_t i = 0; i < new_size; ++i)
+    size_t i;
+    for (i = 0; i < new_size; ++i)
         pottery_ohm_table_ref_set_empty(&ohm->table, new_values + i);
 
     // re-insert all values from old table into new one
@@ -127,7 +129,8 @@ pottery_error_t pottery_ohm_grow_if_needed(pottery_ohm_t* ohm) {
 }
 
 static
-void pottery_ohm_shrink_if_needed(pottery_ohm_t* ohm) {
+void pottery_ohm_shrink_if_needed(pottery_ohm_t* map) {
+    (void)map;
     // TODO
 }
 

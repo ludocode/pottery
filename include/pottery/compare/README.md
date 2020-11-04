@@ -21,7 +21,7 @@ The template also defines additional comparison helpers, available if any single
 - `clamp()` -- the given reference limited by min and max references
 - `median()` -- the median of three references
 
-The compare template operates on an abstract reference type with an optional context. In the simplest case, the reference type is simply a pointer to an element in memory, and the comparison expressions need no context to compare them. In more advanced usage, the context could contain for example a database connection, and the reference type could be the key type for rows to be compared.
+The compare template operates on an abstract reference type with an optional context. In the simplest case, the reference type is just a pointer to an element in memory, and the comparison expressions need no context to compare them. In more advanced usage, the context could contain for example a database connection, and the reference type could be the key type for rows to be compared.
 
 This template does not distinguish between "weak" and "strong" ordering. Whether "equal" implies equivalence or equality is specific to the configured comparison expressions and the context in which they are used.
 

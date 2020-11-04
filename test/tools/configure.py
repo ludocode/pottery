@@ -563,11 +563,17 @@ with open(ninja, "w") as out:
                 flags = cppflags + cflags
                 objname = src[:-2]
 
-            if src.startswith("examples/"):
-                flags += [
-                    "-DPOTTERY_EXAMPLE_NAME=" + src.replace("/", "_").split(".")[0],
-                    "-include pottery/unit/test_pottery_example.h"
-                ]
+            if src.startswith("examples"):
+                if compiler == "MSVC":
+                    flags += [
+                        "-DPOTTERY_EXAMPLE_NAME=" + src.replace("\\", "_").split(".")[0],
+                        "/FIpottery\\unit\\test_pottery_example.h"
+                    ]
+                else:
+                    flags += [
+                        "-DPOTTERY_EXAMPLE_NAME=" + src.replace("/", "_").split(".")[0],
+                        "-include pottery/unit/test_pottery_example.h"
+                    ]
 
             obj = path.join(buildfolder, "objs", objname + obj_extension)
             objs.append(obj)

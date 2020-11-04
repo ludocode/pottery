@@ -37,6 +37,11 @@
 
 #define POTTERY_TEST_EXAMPLE
 
+// We want strdup() and other POSIX/GNU extensions available in example code
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+
 // We're going to replace printf() so we need to include stdio first.
 #include <stdio.h>
 
@@ -49,6 +54,7 @@
 #ifdef __GNUC__
     #pragma GCC diagnostic ignored "-Wunused-parameter"
     #ifdef __cplusplus
+        #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
         #pragma GCC diagnostic ignored "-Wold-style-cast"
     #else
         #pragma GCC diagnostic ignored "-Wmissing-prototypes"
@@ -69,12 +75,13 @@
  * command-line arguments.)
  */
 #define main \
-    POTTERY_EXAMPLE_TEST_UNUSED(void) {return 0;} \
+    POTTERY_EXAMPLE_TEST_UNUSED(void); \
+    int POTTERY_EXAMPLE_TEST_UNUSED(void) {return 0;} \
     \
     static int POTTERY_EXAMPLE_TEST_WRAPPER(void); \
     \
     POTTERY_TEST(POTTERY_EXAMPLE_NAME) { \
-        (void)POTTERY_EXAMPLE_TEST_UNUSED; \
+        (void)&POTTERY_EXAMPLE_TEST_UNUSED; \
         int ret = POTTERY_EXAMPLE_TEST_WRAPPER(); \
         pottery_assert(ret == 0); \
     } \
@@ -90,15 +97,23 @@
  * The examples print lots of stuff. We don't want them to.
  */
 
+#if 1
+#ifdef __CLR_VER
+// C++/CLR doesn't support varargs functions but we can do this hack instead.
+#define printf(...) ( __VA_ARGS__ , (void)0)
+#else
 static inline int pottery_example_disable_printf(const char *format, ...) {
     return (int)strlen(format); // close enough
 }
 #define printf pottery_example_disable_printf
+#endif
 
 static inline int pottery_example_disable_puts(const char* s) {
+    (void)s;
     return 1;
 }
 #define puts pottery_example_disable_puts
+#endif
 
 
 
@@ -106,8 +121,19 @@ static inline int pottery_example_disable_puts(const char* s) {
  * We also want the examples to avoid normal assert and abort, instead calling
  * into Pottery so that the unit test harness can catch them.
  */
+#undef assert
 #define assert pottery_assert
+#undef abort
 #define abort pottery_abort
+
+
+
+/*
+ * MSVC workarounds
+ */
+#ifdef _MSC_VER
+#define strdup _strdup
+#endif
 
 
 

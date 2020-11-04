@@ -37,7 +37,8 @@ int main(void) {
 
     sort_strings(players, count);
 
-    for (size_t i = 0; i < count; ++i)
+    size_t i;
+    for (i = 0; i < count; ++i)
         puts(players[i]);
 
     return EXIT_SUCCESS;

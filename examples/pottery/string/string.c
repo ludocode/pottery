@@ -81,7 +81,7 @@ bool string_equal(const string_t* left, const string_t* right) {
     return 0 == memcmp(string_bytes(left), string_bytes(right), left_length);
 }
 
-bool string_compare(const string_t* left, const string_t* right) {
+int string_compare(const string_t* left, const string_t* right) {
     if (left == right)
         return 0;
 

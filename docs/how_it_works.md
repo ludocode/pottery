@@ -30,7 +30,11 @@ A template instantiation here is performed by [`pottery_compare_static.t.h`](../
 
 The compare template is simple because all of its functions are `static inline`. Larger Pottery functions are not inline. Instead, Pottery templates with large functions have a separate `definitions` header.
 
-Take a look at the [`alloc` template](../include/pottery/alloc/) template for an example. This has two separate implementation headers: [`impl/pottery_alloc_declarations.t.h`](../include/pottery/alloc/impl/pottery_alloc_declarations.t.h) and [`impl/pottery_alloc_definitions.t.h`](../include/pottery/alloc/impl/pottery_alloc_definitions.t.h). These two files correspond more or less to the header and source files of normal C code. They are separate files so that the declarations can be instantiated into a normal C header file with external linkage, and the definitions can be instantiated into a single translation unit.
+Take a look at the [`alloc` template](../include/pottery/alloc/) template for an example. This has two separate implementation headers: [`impl/pottery_alloc_declarations.t.h`](../include/pottery/alloc/impl/pottery_alloc_declarations.t.h) and [`impl/pottery_alloc_definitions.t.h`](../include/pottery/alloc/impl/pottery_alloc_definitions.t.h).
+
+These two files correspond more or less to the header and source files of normal C code. The `declarations` file should be included in a normal header, while the `definitions` file should be included in a source file. This way the non-inline definitions exist only in one translation unit.
+
+This does mean that the configuration of the template must be repeated. If you want to avoid duplicating it, you can put your configuration in your own `.t.h` file.
 
 
 

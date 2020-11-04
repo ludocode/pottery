@@ -50,7 +50,3 @@
 #undef {PREFIX}_move_bulk_down
 #undef {PREFIX}_move_bulk_down_impl
 #undef {PREFIX}_destroy_bulk
-
-// C++
-#undef {PREFIX}_construct
-#undef {PREFIX}_assign

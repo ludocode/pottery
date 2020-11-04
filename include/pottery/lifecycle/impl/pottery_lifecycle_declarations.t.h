@@ -72,67 +72,6 @@ void pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_ARG
 
 #endif
 
-#if defined(__cplusplus) && defined(POTTERY_LIFECYCLE_VALUE_TYPE)
-/*
- * construct()
- *
- * This is used in C++ to run the constructor of an object in arbitrary
- * (properly typed) storage and convert exceptions to error codes.
- *
- * This can take arbitrary arguments in C++ so it can run default/copy/move
- * constructors or any user-defined constructors to allow C++-style
- * object emplacement in Pottery's dynamic containers.
- *
- * This catches exceptions and converts them to Pottery error codes. If
- * anything other than POTTERY_OK is returned, the object was not constructed.
- */
-template<class... PotteryConstructArgs>
-pottery_nodiscard
-pottery_always_inline static
-pottery_error_t pottery_lifecycle_construct(pottery_lifecycle_value_t* element,
-        PotteryConstructArgs&&... args) pottery_noexcept
-{
-    #if POTTERY_CXX_EXCEPTIONS
-    try {
-    #endif
-        new (element) pottery_lifecycle_value_t(std::forward<PotteryConstructArgs>(args)...);
-    #if POTTERY_CXX_EXCEPTIONS
-    } catch (const std::bad_alloc&) {
-        return POTTERY_ERROR_ALLOC;
-    } catch (...) {
-        return POTTERY_ERROR_CXX_EXCEPTION;
-    }
-    #endif
-    return POTTERY_OK;
-}
-
-/**
- * assign()
- *
- * This is used in C++ to assign to an object (to run copy-assignment or
- * move-assignment operators) and convert exceptions to error codes.
- */
-template<class PotteryAssignSource>
-pottery_nodiscard
-pottery_always_inline static
-pottery_error_t pottery_lifecycle_assign(pottery_lifecycle_value_t* element,
-        PotteryAssignSource&& source) pottery_noexcept
-{
-    #if POTTERY_CXX_EXCEPTIONS
-    try {
-    #endif
-        *element = std::forward<PotteryAssignSource>(source);
-    #if POTTERY_CXX_EXCEPTIONS
-    } catch (const std::bad_alloc&) {
-        return POTTERY_ERROR_ALLOC;
-    } catch (...) {
-        return POTTERY_ERROR_CXX_EXCEPTION;
-    }
-    #endif
-    return POTTERY_OK;
-}
-#endif
-
 /*
  * external (user-callable) non-bulk functions
  */
@@ -203,7 +142,7 @@ pottery_error_t pottery_lifecycle_init(POTTERY_LIFECYCLE_CONTEXT_ARG
     #elif POTTERY_LIFECYCLE_INIT_BY_VALUE
         #ifdef __cplusplus
             // run default constructor
-            return pottery_lifecycle_construct(element);
+            return pottery::construct(element);
         #else
             // nothing to do!
             (void)element;
@@ -238,7 +177,7 @@ pottery_error_t pottery_lifecycle_init_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
     #elif POTTERY_LIFECYCLE_INIT_COPY_BY_VALUE
         #ifdef __cplusplus
             // init_copy by copy construction
-            return pottery_lifecycle_construct(to, *from);
+            return pottery::construct(to, *from);
         #else
             // init_copy by simple assignment
             *to = *from;
@@ -435,7 +374,7 @@ pottery_error_t pottery_lifecycle_init_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
     #elif POTTERY_LIFECYCLE_INIT_STEAL_BY_VALUE
         #if defined(__cplusplus)
             // init_steal by move assignment
-            return pottery_lifecycle_construct(to, std::move(*from));
+            return pottery::construct(to, std::move(*from));
         #else
             // init_steal by simple assignment
             *to = *from;
@@ -543,7 +482,7 @@ pottery_error_t pottery_lifecycle_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
         #if defined(__cplusplus)
             if (!pottery::is_bitwise_copyable<pottery_lifecycle_value_t>::value) {
                 // copy by copy assignment
-                return pottery_lifecycle_assign(to, *from);
+                return pottery::assign(to, *from);
             }
 
             // copy bitwise
@@ -591,7 +530,7 @@ pottery_error_t pottery_lifecycle_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
         #if defined(__cplusplus)
             if (!pottery::is_bitwise_movable<pottery_lifecycle_value_t>::value) {
                 // steal by move assignment
-                return pottery_lifecycle_assign(to, std::move(*from));
+                return pottery::assign(to, std::move(*from));
             }
 
             // steal bitwise

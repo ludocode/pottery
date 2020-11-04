@@ -11,7 +11,7 @@ static int strcmp_wrapper(const void* left, const void* right) {
 }
 
 static int strcmp_wrapper_gnu(const void* left, const void* right, void* context) {
-    bool reverse = (bool)context;
+    bool reverse = (bool)(intptr_t)context;
     return (reverse ? -1 : 1) * strcmp(*(const char* const*)left, *(const char* const*)right);
 }
 
@@ -22,6 +22,7 @@ static int strcmp_wrapper_bsd(void* context, const void* left, const void* right
 static void test_in_order(bool reverse, const char** strings, size_t count) {
     size_t i;
     for (i = 1; i < count; ++i) {
+        //printf("comparing %s to %s\n",strings[i - 1], strings[i]);
         if (0 < (reverse ? -1 : 1) * strcmp(strings[i - 1], strings[i])) {
             fflush(stdout);
             fprintf(stderr, "Strings out of order!\n");
@@ -46,12 +47,13 @@ int main(void) {
 
     printf("Sorting with qsort()\n");
     fruits_t fruits = fruits_original;
-//for (size_t i = 0; i < COUNT; ++i)printf("%zi %s %p\n", i, fruits.array[i], fruits.array[i]);
-    pottery_qsort(fruits.array, COUNT, sizeof(*fruits.array), strcmp_wrapper);
+//for (size_t i = 0; i < COUNT; ++i)printf("%zi %s %p\n", i, fruits.array[i], (const void*)fruits.array[i]);
+    pottery_qsort((void*)fruits.array, COUNT, sizeof(*fruits.array), strcmp_wrapper);
 //for (size_t i = 0; i < COUNT; ++i)puts(fruits.array[i]);
     test_in_order(false, fruits.array, COUNT);
 
-    (void)strcmp_wrapper_gnu;
-    (void)strcmp_wrapper_bsd;
+    // TODO test these as well
+    (void)&strcmp_wrapper_gnu;
+    (void)&strcmp_wrapper_bsd;
     return EXIT_SUCCESS;
 }

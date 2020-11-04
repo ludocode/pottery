@@ -45,18 +45,21 @@ size_t pottery_oht_access_index(pottery_oht_t* oht, pottery_oht_ref_t ref) {
 
 static pottery_always_inline
 pottery_oht_ref_t pottery_oht_access_next(pottery_oht_t* oht, pottery_oht_ref_t ref) {
+    (void)oht;
     // TODO configurable access
     return ref + 1;
 }
 
 static pottery_always_inline
 pottery_oht_ref_t pottery_oht_access_previous(pottery_oht_t* oht, pottery_oht_ref_t ref) {
+    (void)oht;
     // TODO configurable access
     return ref - 1;
 }
 
 static inline
 size_t pottery_oht_key_hash(pottery_oht_t* oht, pottery_oht_key_t key) {
+    (void)oht;
     #if defined(POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE)
         return POTTERY_OPEN_HASH_TABLE_KEY_HASH(oht->context, key);
     #else
@@ -375,8 +378,9 @@ void pottery_oht_next(pottery_oht_t* oht, pottery_oht_ref_t* ref) {
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_previous(pottery_oht_t* oht, pottery_oht_ref_t* ref) {
-    // TODO
-    pottery_abort();
+    (void)oht;
+// TODO
+(void)ref; pottery_abort();
 }
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
