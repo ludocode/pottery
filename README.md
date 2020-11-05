@@ -16,7 +16,7 @@ Pottery does not use void pointer casts, function pointers, code block macros, c
 
 Pottery is not just an experiment to push the boundaries of meta-programming in C. It's a real library for writing real programs, and it's used throughout [HomeFort](https://homefort.app). I expect that most people who dig into this will decide it is some kind of deranged insanity. For those that don't, I hope you find it not just a curiosity but actually useful.
 
-### Alpha
+#### Alpha Quality
 
 This is early stage alpha-quality software under development. It is incomplete, poorly documented and full of bugs, it has had very little testing and benchmarking, and APIs are likely to change. There are currently not a lot of algorithms and data structures here but the templating system is pretty solid so I hope to implement many more in the future. (In fact several more are written already but they are not clean enough to be released yet.)
 

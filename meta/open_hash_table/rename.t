@@ -33,6 +33,8 @@
 
 #define {SRC}_configure POTTERY_CONCAT({DEST}, _configure)
 #define {SRC}_count POTTERY_CONCAT({DEST}, _count)
+#define {SRC}_capacity POTTERY_CONCAT({DEST}, _capacity)
+#define {SRC}_is_empty POTTERY_CONCAT({DEST}, _is_empty)
 #define {SRC}_emplace POTTERY_CONCAT({DEST}, _emplace)
 #define {SRC}_find POTTERY_CONCAT({DEST}, _find)
 #define {SRC}_displace POTTERY_CONCAT({DEST}, _displace)

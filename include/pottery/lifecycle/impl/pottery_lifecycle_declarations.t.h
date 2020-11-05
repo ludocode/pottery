@@ -26,10 +26,6 @@
 #error "This is an internal header. Do not include it."
 #endif
 
-// TODO TEMPORARILY IGNORING THIS
-#undef pottery_nodiscard
-#define pottery_nodiscard
-
 /*
  * types
  */
@@ -52,28 +48,10 @@ typedef const pottery_lifecycle_value_t* pottery_lifecycle_const_ref_t;
 typedef POTTERY_LIFECYCLE_CONTEXT_TYPE pottery_lifecycle_context_t;
 #endif
 
-/*
- * functions
- */
 
-#if POTTERY_FORWARD_DECLARATIONS
-
-#if POTTERY_LIFECYCLE_CAN_INIT_STEAL
-static inline
-pottery_error_t pottery_lifecycle_init_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
-        pottery_lifecycle_ref_t to, pottery_lifecycle_ref_t from) pottery_noexcept;
-#endif
-
-#if POTTERY_LIFECYCLE_CAN_MOVE
-static inline
-void pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_ARG
-        pottery_lifecycle_ref_t to, pottery_lifecycle_ref_t from) pottery_noexcept;
-#endif
-
-#endif
 
 /*
- * external (user-callable) non-bulk functions
+ * fundamental lifecycle operations
  */
 
 /*
@@ -107,304 +85,18 @@ void pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_ARG
         #error "Lifecycle template bug! No destroy() implementation but CAN_DESTROY is 1"
     #endif
 }
-
-#if defined(POTTERY_LIFECYCLE_VALUE_TYPE)
-static inline
-void pottery_lifecycle_destroy_bulk(POTTERY_LIFECYCLE_CONTEXT_ARG
-        pottery_lifecycle_value_t* element, size_t count) pottery_noexcept
-{
-    size_t i;
-    for (i = 0; i < count; ++i)
-        pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_VAL element + i);
-}
-#endif
-#endif
-
-/*
- * init()
- */
-#if POTTERY_LIFECYCLE_CAN_INIT
-pottery_nodiscard
-static inline
-pottery_error_t pottery_lifecycle_init(POTTERY_LIFECYCLE_CONTEXT_ARG
-        pottery_lifecycle_ref_t element) pottery_noexcept
-{
-    POTTERY_LIFECYCLE_CONTEXT_MAYBE_UNUSED;
-
-    #if defined(POTTERY_LIFECYCLE_INIT)
-        // init by given expression
-        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
-            return (POTTERY_LIFECYCLE_INIT((context), (element)));
-        #else
-            return (POTTERY_LIFECYCLE_INIT((element)));
-        #endif
-
-    #elif POTTERY_LIFECYCLE_INIT_BY_VALUE
-        #ifdef __cplusplus
-            // run default constructor
-            return pottery::construct(element);
-        #else
-            // nothing to do!
-            (void)element;
-            return POTTERY_OK;
-        #endif
-
-    #else
-        #error "Lifecycle template bug! No init() implementation but CAN_INIT is 1"
-    #endif
-}
-#endif
-
-/**
- * init_copy()
- */
-#if POTTERY_LIFECYCLE_CAN_INIT_COPY
-pottery_nodiscard
-static inline
-pottery_error_t pottery_lifecycle_init_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
-        pottery_lifecycle_ref_t to, pottery_lifecycle_const_ref_t from) pottery_noexcept
-{
-    POTTERY_LIFECYCLE_CONTEXT_MAYBE_UNUSED;
-
-    #if defined(POTTERY_LIFECYCLE_INIT_COPY)
-        // init_copy by given expression
-        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
-            return (POTTERY_LIFECYCLE_INIT_COPY((context), (to), (from)));
-        #else
-            return (POTTERY_LIFECYCLE_INIT_COPY((to), (from)));
-        #endif
-
-    #elif POTTERY_LIFECYCLE_INIT_COPY_BY_VALUE
-        #ifdef __cplusplus
-            // init_copy by copy construction
-            return pottery::construct(to, *from);
-        #else
-            // init_copy by simple assignment
-            *to = *from;
-            return POTTERY_OK;
-        #endif
-
-    #elif POTTERY_LIFECYCLE_CAN_INIT && defined(POTTERY_LIFECYCLE_COPY)
-        // synthesize init_copy by init then copy
-        pottery_error_t error = pottery_lifecycle_init(POTTERY_LIFECYCLE_CONTEXT_VAL to);
-        if (error != POTTERY_OK)
-            return error;
-        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
-            return (POTTERY_LIFECYCLE_COPY((context), (to), (from)));
-        #else
-            return (POTTERY_LIFECYCLE_COPY((to), (from));
-        #endif
-
-    #else
-        #error "Lifecycle template bug! No init_copy() implementation but CAN_INIT_COPY is 1"
-    #endif
-}
-#endif
-
-/*
- * swap()
- */
-#if POTTERY_LIFECYCLE_CAN_SWAP
-pottery_always_inline static
-void pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_ARG
-        pottery_lifecycle_ref_t left, pottery_lifecycle_ref_t right) pottery_noexcept
-{
-    POTTERY_LIFECYCLE_CONTEXT_MAYBE_UNUSED;
-
-    #ifdef POTTERY_LIFECYCLE_SWAP
-
-        // swap by given expression
-        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
-            (POTTERY_LIFECYCLE_SWAP((context), (left), (right)));
-        #else
-            (POTTERY_LIFECYCLE_SWAP((left), (right));
-        #endif
-
-    #elif POTTERY_LIFECYCLE_SWAP_BY_VALUE
-
-        #if defined(__cplusplus)
-        if (!pottery::is_bitwise_movable<pottery_lifecycle_value_t>::value) {
-            // swap by ADL-swap() or std::swap()
-            // We use using here to default to std::swap, but we call it undecorated to
-            // allow another swap to be found by ADL. This means you can define a swap
-            // function for your class in your own namespace and it will be used here.
-            using std::swap;
-            swap(*left, *right);
-            return;
-        }
-        #endif
-
-        // swap bitwise through a temporary buffer
-        // cast to void* to prevent -Wclass-memaccess warnings
-        POTTERY_DECLARE_UNCONSTRUCTED(pottery_lifecycle_value_t, temp);
-        pottery_memcpy(pottery_cast(void*, temp), pottery_cast(const void*, left),
-                sizeof(pottery_lifecycle_value_t));
-        pottery_memcpy(pottery_cast(void*, left), pottery_cast(const void*, right),
-                sizeof(pottery_lifecycle_value_t));
-        pottery_memcpy(pottery_cast(void*, right), pottery_cast(const void*, temp),
-                sizeof(pottery_lifecycle_value_t));
-
-    #elif (defined(POTTERY_LIFECYCLE_MOVE) || POTTERY_LIFECYCLE_MOVE_BY_VALUE) && \
-            defined(POTTERY_LIFECYCLE_VALUE_TYPE)
-
-        // swap by move through a temporary buffer
-        POTTERY_DECLARE_UNCONSTRUCTED(pottery_lifecycle_value_t, temp);
-        pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_VAL temp, left);
-        pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_VAL left, right);
-        pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_VAL right, temp);
-
-    // TODO get rid of this,  init_steal can fail
-    // TODO clean up the rest of this file later, stop using things that can fail to implement things that can't
-    #elif defined(POTTERY_LIFECYCLE_INIT_STEAL) && POTTERY_LIFECYCLE_CAN_DESTROY
-
-        // TODO this should be using pottery_launder()
-
-        // swap by init_steal (and possibly steal) through a temporary
-        POTTERY_DECLARE_UNCONSTRUCTED(pottery_lifecycle_value_t, temp);
-        pottery_lifecycle_init_steal(POTTERY_LIFECYCLE_CONTEXT_VAL temp, left);
-        #if defined(POTTERY_LIFECYCLE_STEAL)
-            #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
-                (POTTERY_LIFECYCLE_STEAL((context), (left), (right));
-                (POTTERY_LIFECYCLE_STEAL((context), (right), (temp));
-            #else
-                (POTTERY_LIFECYCLE_STEAL(left, right);
-                (POTTERY_LIFECYCLE_STEAL(right, temp);
-            #endif
-        #else
-            pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_VAL left);
-            pottery_lifecycle_init_steal(POTTERY_LIFECYCLE_CONTEXT_VAL left, right);
-            pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_VAL right);
-            pottery_lifecycle_init_steal(POTTERY_LIFECYCLE_CONTEXT_VAL right, temp);
-        #endif
-        pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_VAL temp);
-
-    #elif POTTERY_LIFECYCLE_CAN_INIT && \
-            POTTERY_LIFECYCLE_CAN_DESTROY && \
-            POTTERY_LIFECYCLE_STEAL
-
-        // swap by init then steal through a temporary
-        POTTERY_DECLARE_UNCONSTRUCTED(pottery_lifecycle_value_t, temp);
-        pottery_lifecycle_init(POTTERY_LIFECYCLE_CONTEXT_VAL temp);
-        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
-            (POTTERY_LIFECYCLE_STEAL((context), (temp), (left)));
-            (POTTERY_LIFECYCLE_STEAL((context), (left), (right)));
-            (POTTERY_LIFECYCLE_STEAL((context), (right), (temp)));
-        #else
-            (POTTERY_LIFECYCLE_STEAL((temp), (left)));
-            (POTTERY_LIFECYCLE_STEAL((left), (right)));
-            (POTTERY_LIFECYCLE_STEAL((right), (temp)));
-        #endif
-        pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_VAL temp);
-
-    #elif defined(POTTERY_LIFECYCLE_INIT_COPY) && \
-            POTTERY_LIFECYCLE_CAN_DESTROY
-
-        // swap by init_copy (and possibly steal or copy) through a temporary
-        POTTERY_DECLARE_UNCONSTRUCTED(pottery_lifecycle_value_t, temp);
-        pottery_lifecycle_init_copy(POTTERY_LIFECYCLE_CONTEXT_VAL temp, left);
-        #if defined(POTTERY_LIFECYCLE_STEAL)
-            #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
-                (POTTERY_LIFECYCLE_STEAL((context), (left), (right)));
-                (POTTERY_LIFECYCLE_STEAL((context), (right), (temp)));
-            #else
-                (POTTERY_LIFECYCLE_STEAL((left), (right)));
-                (POTTERY_LIFECYCLE_STEAL((right), (temp)));
-            #endif
-        #elif defined(POTTERY_LIFECYCLE_COPY)
-            #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
-                (POTTERY_LIFECYCLE_COPY((context), (left), (right)));
-                (POTTERY_LIFECYCLE_COPY((context), (right), (temp)));
-            #else
-                (POTTERY_LIFECYCLE_COPY((left), (right)));
-                (POTTERY_LIFECYCLE_COPY((right), (temp)));
-            #endif
-        #else
-            pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_VAL left);
-            pottery_lifecycle_init_copy(POTTERY_LIFECYCLE_CONTEXT_VAL left, right);
-            pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_VAL right);
-            pottery_lifecycle_init_copy(POTTERY_LIFECYCLE_CONTEXT_VAL right, temp);
-        #endif
-        pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_VAL temp);
-
-    #elif POTTERY_LIFECYCLE_CAN_INIT && \
-            POTTERY_LIFECYCLE_CAN_DESTROY && \
-            POTTERY_LIFECYCLE_COPY
-
-        // swap by init then copy through a temporary
-        POTTERY_DECLARE_UNCONSTRUCTED(pottery_lifecycle_value_t, temp);
-        pottery_lifecycle_init(POTTERY_LIFECYCLE_CONTEXT_VAL temp);
-        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
-            (POTTERY_LIFECYCLE_COPY((context), (temp), (left));
-            (POTTERY_LIFECYCLE_COPY((context), (left), (right));
-            (POTTERY_LIFECYCLE_COPY((context), (right), (temp));
-        #else
-            (POTTERY_LIFECYCLE_COPY((temp), (left));
-            (POTTERY_LIFECYCLE_COPY((left), (right));
-            (POTTERY_LIFECYCLE_COPY((right), (temp));
-        #endif
-        pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_VAL temp);
-
-    #else
-        #error "Lifecycle template bug! No swap() implementation but CAN_SWAP is 1"
-    #endif
-}
-#endif
-
-/**
- * init_steal()
- */
-#if POTTERY_LIFECYCLE_CAN_INIT_STEAL
-pottery_nodiscard
-static inline
-pottery_error_t pottery_lifecycle_init_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
-        pottery_lifecycle_ref_t to, pottery_lifecycle_ref_t from) pottery_noexcept
-{
-    POTTERY_LIFECYCLE_CONTEXT_MAYBE_UNUSED;
-
-    #if defined(POTTERY_LIFECYCLE_INIT_STEAL)
-
-        // init_steal by given expression
-        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
-            (POTTERY_LIFECYCLE_INIT_STEAL((context), (to), (from)));
-        #else
-            (POTTERY_LIFECYCLE_INIT_STEAL((to), (from)));
-        #endif
-        return POTTERY_OK;
-
-    #elif POTTERY_LIFECYCLE_INIT_STEAL_BY_VALUE
-        #if defined(__cplusplus)
-            // init_steal by move assignment
-            return pottery::construct(to, std::move(*from));
-        #else
-            // init_steal by simple assignment
-            *to = *from;
-            return POTTERY_OK;
-        #endif
-
-    #elif POTTERY_LIFECYCLE_CAN_INIT && \
-            POTTERY_LIFECYCLE_CAN_SWAP // <-- note not defined() here
-        // synthesize init_steal by init then swap
-        pottery_error_t error = pottery_lifecycle_init(POTTERY_LIFECYCLE_CONTEXT_VAL to);
-        if (error == POTTERY_OK)
-            pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_VAL to, from);
-        return error;
-
-    #elif POTTERY_LIFECYCLE_CAN_INIT_COPY
-        return pottery_lifecycle_init_copy(POTTERY_LIFECYCLE_CONTEXT_VAL to, from);
-
-    #else
-        #error "Lifecycle template bug! No init_steal() implementation but CAN_INIT_STEAL is 1"
-    #endif
-}
 #endif
 
 #if POTTERY_LIFECYCLE_CAN_MOVE
 /*
+ * move()
+ *
  * Moves a value to a different storage location.
  *
  * In C++, this performs a reconstructing move (also called a non-trivial
  * relocation): it constructs a new value in the unconstructed destination
- * space by move construction from the source, then destructs the source.
+ * space by move construction from the source (terminating if any exception is
+ * thrown), then destructs the source.
  */
 static inline
 void pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_ARG
@@ -445,16 +137,149 @@ void pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_ARG
             *to = *from;
         #endif
 
-    #elif POTTERY_LIFECYCLE_CAN_INIT_STEAL && \
-            POTTERY_LIFECYCLE_CAN_DESTROY
-        // synthesize move by init_steal then destroy
-        // TODO can't do this (unless init_steal can't fail either?)
-        pottery_error_t error = pottery_lifecycle_init_steal(POTTERY_LIFECYCLE_CONTEXT_VAL to, from);
-        (void)error;//TODO
-        pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_VAL from);
-
     #else
         #error "Lifecycle template bug! No move() implementation but CAN_MOVE is 1"
+    #endif
+}
+#endif
+
+/*
+ * swap()
+ */
+#if POTTERY_LIFECYCLE_CAN_SWAP
+static inline
+void pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_ARG
+        pottery_lifecycle_ref_t left, pottery_lifecycle_ref_t right) pottery_noexcept
+{
+    POTTERY_LIFECYCLE_CONTEXT_MAYBE_UNUSED;
+
+    #ifdef POTTERY_LIFECYCLE_SWAP
+
+        // swap by given expression
+        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
+            (POTTERY_LIFECYCLE_SWAP((context), (left), (right)));
+        #else
+            (POTTERY_LIFECYCLE_SWAP((left), (right));
+        #endif
+
+    #elif POTTERY_LIFECYCLE_SWAP_BY_VALUE
+
+        #if defined(__cplusplus)
+        if (!pottery::is_bitwise_movable<pottery_lifecycle_value_t>::value) {
+            // swap by ADL-swap() or std::swap()
+            // We use using here to default to std::swap, but we call it undecorated to
+            // allow another swap to be found by ADL. This means you can define a swap
+            // function for your class in your own namespace and it will be used here.
+            // If swap() throws we terminate (since we're noexcept.)
+            using std::swap;
+            swap(*left, *right);
+            return;
+        }
+        #endif
+
+        // swap bitwise through a temporary buffer
+        // cast to void* to prevent -Wclass-memaccess warnings
+        POTTERY_DECLARE_UNCONSTRUCTED(pottery_lifecycle_value_t, temp);
+        pottery_memcpy(pottery_cast(void*, temp), pottery_cast(const void*, left),
+                sizeof(pottery_lifecycle_value_t));
+        pottery_memcpy(pottery_cast(void*, left), pottery_cast(const void*, right),
+                sizeof(pottery_lifecycle_value_t));
+        pottery_memcpy(pottery_cast(void*, right), pottery_cast(const void*, temp),
+                sizeof(pottery_lifecycle_value_t));
+
+    #elif (defined(POTTERY_LIFECYCLE_MOVE) || POTTERY_LIFECYCLE_MOVE_BY_VALUE) && \
+            defined(POTTERY_LIFECYCLE_VALUE_TYPE)
+
+        // swap by move through a temporary buffer
+        POTTERY_DECLARE_UNCONSTRUCTED(pottery_lifecycle_value_t, temp);
+        pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_VAL temp, left);
+        pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_VAL left, right);
+        pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_VAL right, temp);
+
+    #else
+        #error "Lifecycle template bug! No swap() implementation but CAN_SWAP is 1"
+    #endif
+}
+#endif
+
+/*
+ * steal()
+ */
+#if POTTERY_LIFECYCLE_CAN_STEAL
+static inline
+void pottery_lifecycle_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
+        pottery_lifecycle_ref_t to, pottery_lifecycle_ref_t from) pottery_noexcept
+{
+    POTTERY_LIFECYCLE_CONTEXT_MAYBE_UNUSED;
+
+    #if defined(POTTERY_LIFECYCLE_STEAL)
+        // steal by given expression
+        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
+            (POTTERY_LIFECYCLE_STEAL((context), (to), (from)));
+        #else
+            (POTTERY_LIFECYCLE_STEAL((to), (from)));
+        #endif
+
+    #elif POTTERY_LIFECYCLE_STEAL_BY_VALUE
+        #if defined(__cplusplus)
+            if (!pottery::is_bitwise_movable<pottery_lifecycle_value_t>::value) {
+                // steal by move assignment
+                // Note that we don't use pottery::assign() here because we
+                // don't want to catch any exceptions. steal() can't fail; if
+                // this throws we terminate since we're noexcept.
+                *to = std::move(*from);
+                return;
+            }
+
+            // steal bitwise
+            // cast to void* to prevent -Wclass-memaccess warnings
+            pottery_memcpy(pottery_cast(void*, to), pottery_cast(const void*, from), sizeof(*to));
+        #else
+            // steal by simple assignment
+            *to = *from;
+        #endif
+
+    #elif POTTERY_LIFECYCLE_CAN_SWAP
+        // synthesize steal by swap
+        pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_VAL to, from);
+
+    #else
+        #error "Lifecycle template bug! No steal() implementation but CAN_STEAL is 1"
+    #endif
+}
+#endif
+
+/*
+ * init()
+ */
+#if POTTERY_LIFECYCLE_CAN_INIT
+pottery_nodiscard
+static inline
+pottery_error_t pottery_lifecycle_init(POTTERY_LIFECYCLE_CONTEXT_ARG
+        pottery_lifecycle_ref_t element) pottery_noexcept
+{
+    POTTERY_LIFECYCLE_CONTEXT_MAYBE_UNUSED;
+
+    #if defined(POTTERY_LIFECYCLE_INIT)
+        // init by given expression
+        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
+            return (POTTERY_LIFECYCLE_INIT((context), (element)));
+        #else
+            return (POTTERY_LIFECYCLE_INIT((element)));
+        #endif
+
+    #elif POTTERY_LIFECYCLE_INIT_BY_VALUE
+        #ifdef __cplusplus
+            // run default constructor
+            return pottery::construct(element);
+        #else
+            // nothing to do!
+            (void)element;
+            return POTTERY_OK;
+        #endif
+
+    #else
+        #error "Lifecycle template bug! No init() implementation but CAN_INIT is 1"
     #endif
 }
 #endif
@@ -494,71 +319,110 @@ pottery_error_t pottery_lifecycle_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
         #endif
         return POTTERY_OK;
 
-    #elif POTTERY_LIFECYCLE_CAN_INIT_STEAL && \
-            POTTERY_LIFECYCLE_CAN_DESTROY
-        // synthesize copy by destroy then init_copy
-        // TODO this can't work, if an error occurs to is destroyed
-        pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_VAL to);
-        return pottery_lifecycle_init_copy(POTTERY_LIFECYCLE_CONTEXT_VAL to, from);
-
     #else
         #error "Lifecycle template bug! No copy() implementation but CAN_COPY is 1"
     #endif
 }
 #endif
 
-/*
- * steal()
+/**
+ * init_copy()
  */
-#if POTTERY_LIFECYCLE_CAN_STEAL
+#if POTTERY_LIFECYCLE_CAN_INIT_COPY
 pottery_nodiscard
 static inline
-pottery_error_t pottery_lifecycle_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
+pottery_error_t pottery_lifecycle_init_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
+        pottery_lifecycle_ref_t to, pottery_lifecycle_const_ref_t from) pottery_noexcept
+{
+    POTTERY_LIFECYCLE_CONTEXT_MAYBE_UNUSED;
+
+    #if defined(POTTERY_LIFECYCLE_INIT_COPY)
+        // init_copy by given expression
+        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
+            return (POTTERY_LIFECYCLE_INIT_COPY((context), (to), (from)));
+        #else
+            return (POTTERY_LIFECYCLE_INIT_COPY((to), (from)));
+        #endif
+
+    #elif POTTERY_LIFECYCLE_INIT_COPY_BY_VALUE
+        #ifdef __cplusplus
+            // init_copy by copy construction
+            return pottery::construct(to, *from);
+        #else
+            // init_copy by simple assignment
+            *to = *from;
+            return POTTERY_OK;
+        #endif
+
+    #elif POTTERY_LIFECYCLE_CAN_INIT && POTTERY_LIFECYCLE_CAN_COPY
+        // synthesize init_copy by init then copy
+        pottery_error_t error = pottery_lifecycle_init(POTTERY_LIFECYCLE_CONTEXT_VAL to);
+        if (error != POTTERY_OK)
+            return error;
+        error = pottery_lifecycle_copy(POTTERY_LIFECYCLE_CONTEXT_VAL to, from);
+        if (error != POTTERY_OK)
+            pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_VAL to);
+        return error;
+
+    #else
+        #error "Lifecycle template bug! No init_copy() implementation but CAN_INIT_COPY is 1"
+    #endif
+}
+#endif
+
+/**
+ * init_steal()
+ */
+#if POTTERY_LIFECYCLE_CAN_INIT_STEAL
+pottery_nodiscard
+static inline
+pottery_error_t pottery_lifecycle_init_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
         pottery_lifecycle_ref_t to, pottery_lifecycle_ref_t from) pottery_noexcept
 {
     POTTERY_LIFECYCLE_CONTEXT_MAYBE_UNUSED;
 
-    #if defined(POTTERY_LIFECYCLE_STEAL)
-        // steal by given expression
+    #if defined(POTTERY_LIFECYCLE_INIT_STEAL)
+
+        // init_steal by given expression
         #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
-            return (POTTERY_LIFECYCLE_STEAL((context), (to), (from)));
+            return (POTTERY_LIFECYCLE_INIT_STEAL((context), (to), (from)));
         #else
-            return (POTTERY_LIFECYCLE_STEAL((to), (from)));
-        #endif
-
-    #elif POTTERY_LIFECYCLE_STEAL_BY_VALUE
-        #if defined(__cplusplus)
-            if (!pottery::is_bitwise_movable<pottery_lifecycle_value_t>::value) {
-                // steal by move assignment
-                return pottery::assign(to, std::move(*from));
-            }
-
-            // steal bitwise
-            // cast to void* to prevent -Wclass-memaccess warnings
-            pottery_memcpy(pottery_cast(void*, to), pottery_cast(const void*, from), sizeof(*to));
-        #else
-            // steal by simple assignment
-            *to = *from;
+            return (POTTERY_LIFECYCLE_INIT_STEAL((to), (from)));
         #endif
         return POTTERY_OK;
 
-    #elif POTTERY_LIFECYCLE_CAN_DESTROY && \
-            POTTERY_LIFECYCLE_CAN_INIT_STEAL
-        // synthesize steal by destroy then init_steal (or init_copy, since
-        // init_steal will be implemented with it if necessary)
-        pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_VAL to);
-        pottery_lifecycle_init_steal(POTTERY_LIFECYCLE_CONTEXT_VAL to, from);
+    #elif POTTERY_LIFECYCLE_INIT_STEAL_BY_VALUE
+        #if defined(__cplusplus)
+            // init_steal by move assignment
+            return pottery::construct(to, std::move(*from));
+        #else
+            // init_steal by simple assignment
+            *to = *from;
+            return POTTERY_OK;
+        #endif
+
+    #elif POTTERY_LIFECYCLE_CAN_INIT && POTTERY_LIFECYCLE_CAN_SWAP
+        // synthesize init_steal by init then swap
+        pottery_error_t error = pottery_lifecycle_init(POTTERY_LIFECYCLE_CONTEXT_VAL to);
+        if (error == POTTERY_OK)
+            pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_VAL to, from);
+        return error;
+
+    #elif POTTERY_LIFECYCLE_CAN_INIT_COPY
+        // synthesize init_steal by init_copy
+        return pottery_lifecycle_init_copy(POTTERY_LIFECYCLE_CONTEXT_VAL to, from);
 
     #else
-        #error "Lifecycle template bug! No steal() implementation but CAN_STEAL is 1"
+        #error "Lifecycle template bug! No init_steal() implementation but CAN_INIT_STEAL is 1"
     #endif
-
-    // TODO
-    return POTTERY_OK;
 }
 #endif
 
 
+
+/*
+ * bulk functions
+ */
 
 #if POTTERY_LIFECYCLE_CAN_MOVE && defined(POTTERY_LIFECYCLE_VALUE_TYPE)
 static inline
@@ -684,14 +548,25 @@ void pottery_lifecycle_move_bulk(POTTERY_LIFECYCLE_CONTEXT_ARG
     }
     #endif
 
-    if (pottery_cast(size_t, to - from) >= count && pottery_cast(size_t, from - to) >= count)
-        pottery_lifecycle_move_bulk_restrict(POTTERY_LIFECYCLE_CONTEXT_VAL
-                to, from, count);
-    else if (to > from)
+    // there's no point in calling pottery_lifecycle_move_bulk_restrict() for
+    // non-overlapping arrays here because it would do the same check as above
+    // and the fallback is identical to move_bulk_down().
+    if (to > from)
         pottery_lifecycle_move_bulk_up(POTTERY_LIFECYCLE_CONTEXT_VAL
                 to, from, count);
     else
         pottery_lifecycle_move_bulk_down(POTTERY_LIFECYCLE_CONTEXT_VAL
                 to, from, count);
+}
+#endif
+
+#if POTTERY_LIFECYCLE_CAN_DESTROY && defined(POTTERY_LIFECYCLE_VALUE_TYPE)
+static inline
+void pottery_lifecycle_destroy_bulk(POTTERY_LIFECYCLE_CONTEXT_ARG
+        pottery_lifecycle_value_t* element, size_t count) pottery_noexcept
+{
+    size_t i;
+    for (i = 0; i < count; ++i)
+        pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_VAL element + i);
 }
 #endif

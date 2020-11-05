@@ -91,13 +91,13 @@ void error_to_exception(pottery_error_t error) {
 template<class Value, class... ConstructArgs>
 pottery_nodiscard
 pottery_always_inline static
-pottery_error_t construct(Value* element,
+pottery_error_t construct(Value* target,
         ConstructArgs&&... args) pottery_noexcept
 {
     #if POTTERY_CXX_EXCEPTIONS
     try {
     #endif
-        new (element) Value(std::forward<ConstructArgs>(args)...);
+        new (target) Value(std::forward<ConstructArgs>(args)...);
     #if POTTERY_CXX_EXCEPTIONS
     } catch (const std::bad_alloc&) {
         return POTTERY_ERROR_ALLOC;
@@ -117,13 +117,13 @@ pottery_error_t construct(Value* element,
 template<class Value, class AssignSource>
 pottery_nodiscard
 pottery_always_inline static
-pottery_error_t assign(Value* element,
+pottery_error_t assign(Value* target,
         AssignSource&& source) pottery_noexcept
 {
     #if POTTERY_CXX_EXCEPTIONS
     try {
     #endif
-        *element = std::forward<AssignSource>(source);
+        *target = std::forward<AssignSource>(source);
     #if POTTERY_CXX_EXCEPTIONS
     } catch (const std::bad_alloc&) {
         return POTTERY_ERROR_ALLOC;
@@ -133,6 +133,26 @@ pottery_error_t assign(Value* element,
     #endif
     return POTTERY_OK;
 }
+
+// workaround for GCC <5 not supporting std::is_trivially_copyable
+#if defined(__GNUC__) && !defined(__clang__) && defined(__cplusplus)
+    #if __GNUC__ < 5
+        #define POTTERY_IS_BITWISE_COPYABLE_DEFINED
+        template<typename T>
+        struct is_bitwise_copyable : std::is_trivial<T> {};
+    #endif
+#endif
+
+#ifndef POTTERY_IS_BITWISE_COPYABLE_DEFINED
+/**
+ * True if it is safe to use memcpy() to copy construct or copy assign a C++
+ * object of type T.
+ *
+ * You can specialize this to enable bitwise copy for a non-trivial C++ type.
+ */
+template<typename T>
+struct is_bitwise_copyable : std::is_trivially_copyable<T> {};
+#endif
 
 /**
  * True if it is safe to use memcpy() to move (or "relocate" in C++ terms) a
@@ -153,16 +173,7 @@ pottery_error_t assign(Value* element,
  *     http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p1144r0.html
  */
 template<typename T>
-struct is_bitwise_movable : std::is_trivially_copyable<T> {};
-
-/**
- * True if it is safe to use memcpy() to copy construct or copy assign a C++
- * object of type T.
- *
- * You can specialize this to enable bitwise copy for a non-trivial C++ type.
- */
-template<typename T>
-struct is_bitwise_copyable : std::is_trivially_copyable<T> {};
+struct is_bitwise_movable : pottery::is_bitwise_copyable<T> {};
 
 } // namespace pottery
 

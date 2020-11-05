@@ -151,12 +151,13 @@ flagtest_src = path.join(globalbuild, "flagtest.c")
 flagtest_exe = path.join(globalbuild, "flagtest" + exe_extension)
 with open(flagtest_src, "w") as out:
     out.write("""
-// disable C++ on versions of GCC < 5 since they don't have full C++11 support
-// (e.g. std::is_trivially_copyable<>).
-#if defined(__GNUC__) && !defined(__clang__) && defined(__cplusplus)
-    #if __GNUC__ < 5
-        #error
+// include features.h to test _FORTIFY_SOURCE properly
+#ifdef __has_include
+    #if __has_include(<features.h>)
+        #include <features.h>
     #endif
+#elif defined(__TINYC__)
+    #include <features.h>
 #endif
 
 int main(int argc, char** argv) {
@@ -548,7 +549,7 @@ with open(ninja, "w") as out:
         out.write(" rspfile = $out.rsp\n")
         out.write(" rspfile_content = $flags $in\n")
     else:
-        out.write(" command = " + cc + " -Wl,--start-group $flags $in -Wl,--end-group -o $out\n")
+        out.write(" command = " + cc + " $in $flags -o $out\n")
     out.write("\n")
 
     for buildname in sorted(builds.keys()):

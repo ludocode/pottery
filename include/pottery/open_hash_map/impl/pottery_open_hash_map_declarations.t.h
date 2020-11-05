@@ -41,11 +41,35 @@ void pottery_ohm_destroy(pottery_ohm_t* ohm);
 
 /**
  *
- * Returns a non-existent ref in case of error.
  */
 POTTERY_OPEN_HASH_MAP_EXTERN
-pottery_ohm_ref_t pottery_ohm_emplace(pottery_ohm_t* ohm,
-        pottery_ohm_key_t key, bool* /*nullable*/ created);
+pottery_error_t pottery_ohm_emplace(pottery_ohm_t* ohm, pottery_ohm_key_t key,
+        pottery_ohm_ref_t* ref, bool* /*nullable*/ created);
+
+static inline
+size_t pottery_ohm_count(pottery_ohm_t* ohm) {
+    return pottery_ohm_table_count(&ohm->table);
+}
+
+/**
+ * Returns the current capacity of the map, i.e. the bucket count times the
+ * load factor.
+ */
+static inline
+size_t pottery_ohm_capacity(pottery_ohm_t* ohm) {
+    size_t size = pottery_cast(size_t, 1) << ohm->table.log_2_size;
+
+    // Currently the max load factor is 4/7 (~57%). This should be
+    // configurable, and we should benchmark this to choose a reasonable
+    // default.
+    size_t divisor = 7;
+    return size - (divisor / 2) * (size / divisor);
+}
+
+static inline
+bool pottery_ohm_is_empty(pottery_ohm_t* ohm) {
+    return pottery_ohm_table_is_empty(&ohm->table);
+}
 
 static inline
 pottery_ohm_ref_t pottery_ohm_find(pottery_ohm_t* ohm, pottery_ohm_key_t key) {
@@ -180,4 +204,34 @@ static inline
 void pottery_ohm_ref_destroy(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
     (void)map;
     pottery_ohm_lifecycle_destroy(/*TODO context arg*/ ref);
+}
+
+static inline
+pottery_ohm_ref_t pottery_ohm_begin(pottery_ohm_t* ohm) {
+    return pottery_ohm_table_begin(&ohm->table);
+}
+
+static inline
+pottery_ohm_ref_t pottery_ohm_end(pottery_ohm_t* ohm) {
+    return pottery_ohm_table_end(&ohm->table);
+}
+
+static inline
+pottery_ohm_ref_t pottery_ohm_first(pottery_ohm_t* ohm) {
+    return pottery_ohm_table_first(&ohm->table);
+}
+
+static inline
+pottery_ohm_ref_t pottery_ohm_last(pottery_ohm_t* ohm) {
+    return pottery_ohm_table_last(&ohm->table);
+}
+
+static inline
+void pottery_ohm_next(pottery_ohm_t* ohm, pottery_ohm_ref_t* ref) {
+    pottery_ohm_table_next(&ohm->table, ref);
+}
+
+static inline
+void pottery_ohm_previous(pottery_ohm_t* ohm, pottery_ohm_ref_t* ref) {
+    pottery_ohm_table_previous(&ohm->table, ref);
 }

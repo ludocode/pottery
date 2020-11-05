@@ -115,19 +115,36 @@
     POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_PREFIX, name)
 
 #define pottery_ohm_t POTTERY_OPEN_HASH_MAP_NAME(_t)
+#define pottery_ohm_ref_t POTTERY_OPEN_HASH_MAP_NAME(_ref_t)
+#define pottery_ohm_value_t POTTERY_OPEN_HASH_MAP_NAME(value_t)
+#define pottery_ohm_key_t POTTERY_OPEN_HASH_MAP_NAME(_key_t)
+#define pottery_ohm_context_t POTTERY_OPEN_HASH_MAP_NAME(_context_t)
 
 #define pottery_ohm_init POTTERY_OPEN_HASH_MAP_NAME(_init)
 #define pottery_ohm_destroy POTTERY_OPEN_HASH_MAP_NAME(_destroy)
+#define pottery_ohm_count POTTERY_OPEN_HASH_MAP_NAME(_count)
+#define pottery_ohm_capacity POTTERY_OPEN_HASH_MAP_NAME(_capacity)
+#define pottery_ohm_is_empty POTTERY_OPEN_HASH_MAP_NAME(_is_empty)
 #define pottery_ohm_emplace POTTERY_OPEN_HASH_MAP_NAME(_emplace)
 #define pottery_ohm_find POTTERY_OPEN_HASH_MAP_NAME(_find)
 #define pottery_ohm_displace POTTERY_OPEN_HASH_MAP_NAME(_displace)
 #define pottery_ohm_remove POTTERY_OPEN_HASH_MAP_NAME(_remove)
 #define pottery_ohm_remove_key POTTERY_OPEN_HASH_MAP_NAME(_remove_key)
 
+#define pottery_ohm_begin POTTERY_OPEN_HASH_MAP_NAME(_begin)
+#define pottery_ohm_end POTTERY_OPEN_HASH_MAP_NAME(_end)
+#define pottery_ohm_first POTTERY_OPEN_HASH_MAP_NAME(_first)
+#define pottery_ohm_last POTTERY_OPEN_HASH_MAP_NAME(_last)
+#define pottery_ohm_next POTTERY_OPEN_HASH_MAP_NAME(_next)
+#define pottery_ohm_previous POTTERY_OPEN_HASH_MAP_NAME(_previous)
+
 #define pottery_ohm_ref_exists POTTERY_OPEN_HASH_MAP_NAME(_ref_exists)
 
 #define pottery_ohm_impl_alloc POTTERY_OPEN_HASH_MAP_NAME(_impl_alloc)
 #define pottery_ohm_impl_free POTTERY_OPEN_HASH_MAP_NAME(_impl_free)
+#define pottery_ohm_grow_if_needed POTTERY_OPEN_HASH_MAP_NAME(_grow_if_needed)
+#define pottery_ohm_shrink_if_needed POTTERY_OPEN_HASH_MAP_NAME(_shrink_if_needed)
+#define pottery_ohm_resize POTTERY_OPEN_HASH_MAP_NAME(_resize)
 
 
 
@@ -145,6 +162,8 @@
 
     #define pottery_ohm_table_configure POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _configure)
     #define pottery_ohm_table_count POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _count)
+    #define pottery_ohm_table_capacity POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _capacity)
+    #define pottery_ohm_table_is_empty POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _is_empty)
     #define pottery_ohm_table_emplace POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _emplace)
     #define pottery_ohm_table_find POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _find)
     #define pottery_ohm_table_displace POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _displace)

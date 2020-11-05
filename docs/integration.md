@@ -14,12 +14,14 @@ Here's a simpler way. On Linux or macOS, make a shell script called `fetch-libs.
 
 ```sh
 #!/bin/sh
+set -e
 fetch_lib() {
     echo "Fetching $1 from $2"
-    (mkdir $1 && cd $1 && curl -Lo- "$2" | tar -xzf- --strip-components=1)
+    curl -Lo $1.tar.gz "$2"
+    (mkdir $1 && cd $1 && tar -xzf ../$1.tar.gz --strip-components=1)
 }
 rm -rf lib && mkdir lib && cd lib
-. ../fetch-libs-common.ps1
+. ../fetch-libs.common
 ```
 
 And/or on Windows, make a PowerShell script called `fetch-libs.ps1` containing this:
@@ -27,6 +29,7 @@ And/or on Windows, make a PowerShell script called `fetch-libs.ps1` containing t
 ```powershell
 $ErrorActionPreference = "Stop"
 function fetch_lib($name, $url) {
+    echo "Fetching $name from $url"
     Invoke-WebRequest -Uri "$url" -OutFile "$name.tar.gz"
     md $name | Out-Null ; cd $name
     tar -xzf ../$name.tar.gz --strip-components=1
@@ -34,13 +37,13 @@ function fetch_lib($name, $url) {
 }
 if (Test-Path lib) {rm lib -R -Force}
 md lib -ea 0 | Out-Null ; cd lib
-. ../fetch-libs-common.ps1
+Invoke-Expression ((Get-Content ../fetch-libs.common) | Out-String)
 cd ..
 ```
 
-Now make a text file called `fetch-libs.common.ps1` (without carriage returns) and list your libraries:
+Now make a text file called `fetch-libs.common` and list your libraries:
 
-```
+```sh
 fetch_lib pottery https://github.com/ludocode/pottery/archive/master.tar.gz
 ```
 
@@ -50,13 +53,13 @@ Now just add `-Ilib/pottery/include -DPOTTERY_AVAILABLE=1` to your compiler flag
 
 Try adding a few more libraries. If you don't want to live at head, use the URL for a release tarball or a specific commit:
 
-```
+```sh
 fetch_lib stb https://github.com/nothings/stb/archive/master.tar.gz
 fetch_lib rapidjson https://github.com/Tencent/rapidjson/archive/v1.1.0.tar.gz
 fetch_lib blake2 https://github.com/BLAKE2/BLAKE2/archive/b52178a376ca85a8ffe50492263c2a5bc0fa4f46.tar.gz
 ```
 
-Instead of `lib/` you could call the folder `contrib/` or `third_party/` or `external/` or whatever else you want. You can also extend your script to cache downloaded files, to support more archive types (like zip), to add authentication for private repos, etc. It's hardly necessary though; you'd be surprised how far you can go with such a simple dependency fetcher.
+Instead of `lib/` you could call the folder `contrib/` or `third_party/` or whatever you want. You can also extend your script to cache or backup downloaded files, to support more archive types (like zip), to add authentication for private repos, etc. It's hardly necessary though. You'd be surprised how far you can go with such a simple dependency fetcher.
 
 
 
@@ -82,7 +85,7 @@ _"But I desperately want to install Pottery into my system headers!"_
 
 If you insist. It's not rocket science:
 
-```
+```sh
 sudo rsync -r --delete --mkpath --exclude '*.md' \
     include/pottery bindings/cxx/include/pottery_cxx /usr/local/include
 ```

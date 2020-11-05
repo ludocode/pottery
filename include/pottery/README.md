@@ -6,7 +6,7 @@ Here's a more hierarchical index:
 
 - Sorting Algorithms
     - [Insertion Sort](insertion_sort/), a very small algorithm that is efficient for short arrays
-    - [Shell Sort](shell_sort/), a modified insertion sort that work well on large arrays
+    - [Shell Sort](shell_sort/), a modified insertion sort that work wells on large arrays
     - [Heap Sort](heap_sort/), in-place sort based on binary heap with optimal worst case behaviour
     - [Quick Sort](quick_sort/), a simple and very fast in-place partition sort
     - [Intro Sort](intro_sort/), quick sort with speed and safety fallbacks
@@ -20,6 +20,6 @@ Here's a more hierarchical index:
     - [Open Hash Table](open_hash_table/), open-addressed hash table algorithms on an external array
 
 - Helper templates used mainly for implementing other Pottery templates
-    - [Lifecycle](include/lifecycle/), a wrapper and generator for lifecycle functions
-    - [Alloc](include/alloc/), an allocator wrapper to zero, align, expand, relocate, check for overflow
-    - [Compare](include/compare/), a generator for comparison functions
+    - [Lifecycle](lifecycle/), a wrapper and generator for lifecycle functions
+    - [Alloc](alloc/), an allocator wrapper to zero, align, expand, relocate, check for overflow
+    - [Compare](compare/), a generator for comparison functions

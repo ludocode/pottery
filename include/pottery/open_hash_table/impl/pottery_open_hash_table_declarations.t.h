@@ -147,6 +147,11 @@ size_t pottery_oht_count(pottery_oht_t* oht) {
     return oht->count;
 }
 
+static inline
+size_t pottery_oht_is_empty(pottery_oht_t* oht) {
+    return oht->count == 0;
+}
+
 #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
 static inline
 size_t pottery_oht_tombstones(pottery_oht_t* oht) {

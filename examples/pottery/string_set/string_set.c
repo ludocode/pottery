@@ -68,7 +68,9 @@ void string_set_delete(string_set_t* set) {
 
 bool string_set_add(string_set_t* set, const char* str) {
     bool created;
-    char** entry = string_set_map_emplace(&set->map, str, &created);
+    char** entry;
+    if (POTTERY_OK != string_set_map_emplace(&set->map, str, &entry, &created))
+        abort();
     if (created)
         *entry = strdup(str);
     return created;

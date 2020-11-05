@@ -104,24 +104,39 @@
  * Renaming
  */
 
-#undef pottery_open_hash_map_data
-#undef pottery_open_hash_map_const_data
-#undef pottery_open_hash_map_capacity
-#undef pottery_open_hash_map_minimum_capacity
+#undef POTTERY_OPEN_HASH_MAP_NAME
 
-#undef pottery_open_hash_map_insert_open_hash_map
-#undef pottery_open_hash_map_insert_last_open_hash_map
-#undef pottery_open_hash_map_insert_first_open_hash_map
+#undef pottery_ohm_t
+#undef pottery_ohm_ref_t
+#undef pottery_ohm_value_t
+#undef pottery_ohm_key_t
+#undef pottery_ohm_context_t
 
-#undef pottery_open_hash_map_impl_alloc
-#undef pottery_open_hash_map_impl_alloc
-#undef pottery_open_hash_map_impl_free
-#undef pottery_open_hash_map_impl_create_space
-#undef pottery_open_hash_map_impl_remove_space
-#undef pottery_open_hash_map_impl_clear
-#undef pottery_open_hash_map_impl_destroy_all
-#undef pottery_open_hash_map_impl_copy
-#undef pottery_open_hash_map_impl_reset
+#undef pottery_ohm_init
+#undef pottery_ohm_destroy
+#undef pottery_ohm_count
+#undef pottery_ohm_capacity
+#undef pottery_ohm_is_empty
+#undef pottery_ohm_emplace
+#undef pottery_ohm_find
+#undef pottery_ohm_displace
+#undef pottery_ohm_remove
+#undef pottery_ohm_remove_key
+
+#undef pottery_ohm_begin
+#undef pottery_ohm_end
+#undef pottery_ohm_first
+#undef pottery_ohm_last
+#undef pottery_ohm_next
+#undef pottery_ohm_previous
+
+#undef pottery_ohm_ref_exists
+
+#undef pottery_ohm_impl_alloc
+#undef pottery_ohm_impl_free
+#undef pottery_ohm_grow_if_needed
+#undef pottery_ohm_shrink_if_needed
+#undef pottery_ohm_resize
 
 
 

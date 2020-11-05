@@ -38,30 +38,35 @@ Alignment must always be a power of two.
 
 Although this is mostly intended as a helper for other Pottery templates, it can be useful on its own to serve as a portable allocator wrapper that can zero, align, expand, relocate, multiply with overflow checks, etc. even where such features are not provided by the underlying allocator. You can instantiate it with no configuration other than `PREFIX` to use the default allocator of the platform.
 
-For example:
+For example, in a header file:
 
 ```c
-// In a header file
 #define POTTERY_ALLOC_PREFIX my_project
 #include "pottery/alloc/pottery_alloc_declare.t.h"
+```
 
-// In one translation unit
+In one translation unit:
+
+```c
 #define POTTERY_ALLOC_PREFIX my_project
 #include "pottery/alloc/pottery_alloc_define.t.h"
+```
 
-// Allocate a foo_t, zeroing it and respecting whatever its alignment
-// requirements may be. This will optimize directly to calloc() if it is not
-// over-aligned
+Allocate a `foo_t`, zeroing it and respecting whatever its alignment requirements may be. This will optimize directly to calloc() if it is not over-aligned:
+
+```c
 foo_t* foo = (foo_t*) my_project_malloc_zero(alignof(foo_t), sizeof(foo_t));
 /* use foo */
 my_project_free(foo, alignof(foo_t));
+```
 
-// Allocate an array of at least ten ints along an L1 cache line, expanding to
-// fill the usable space of the allocation
+Allocate an array of at least ten ints along an L1 cache line, expanding to fill the usable space of the allocation:
+
+```c
 #define L1_CACHE_LINE_SIZE 64
 size_t count = 10;
 int* ints = (int*) my_project_malloc_at_least(L1_CACHE_LINE_SIZE, &count, sizeof(int));
-/* use up to count ints */
+/* count may have increased; use up to count ints */
 my_project_free(ints, L1_CACHE_LINE_SIZE);
 ```
 

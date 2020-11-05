@@ -253,6 +253,7 @@ POTTERY_OPEN_HASH_TABLE_EXTERN
 pottery_oht_ref_t pottery_oht_emplace(pottery_oht_t* oht,
         pottery_oht_key_t key, bool* /*nullable*/ created)
 {
+    ++oht->count;
     return pottery_oht_probe(oht, key, created);
 }
 
@@ -378,16 +379,20 @@ void pottery_oht_next(pottery_oht_t* oht, pottery_oht_ref_t* ref) {
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_previous(pottery_oht_t* oht, pottery_oht_ref_t* ref) {
-    (void)oht;
-// TODO
-(void)ref; pottery_abort();
+    do {
+        if (*ref == oht->first) {
+            *ref = pottery_oht_end(oht);
+            return;
+        }
+        *ref = pottery_oht_access_previous(oht, *ref);
+    } while (!pottery_oht_ref_is_element(oht, *ref));
 }
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 pottery_oht_ref_t pottery_oht_begin(pottery_oht_t* oht) {
     pottery_oht_ref_t end = pottery_oht_end(oht);
     pottery_oht_ref_t begin = oht->first;
-    while (!pottery_oht_ref_is_element(oht, begin) && end != begin)
+    while (end != begin && !pottery_oht_ref_is_element(oht, begin))
         begin = pottery_oht_access_next(oht, begin);
     return begin;
 }

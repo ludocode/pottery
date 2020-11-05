@@ -137,7 +137,7 @@
 // implement them.
 //
 // the order they're defined in is important: later functions depend on earlier
-// ones, with a circular dependency between swap() and init_steal().
+// ones.
 
 /*
  * destroy()
@@ -151,6 +151,54 @@
 #else
     // no destroy
     #define POTTERY_LIFECYCLE_CAN_DESTROY 0
+#endif
+
+/*
+ * move()
+ */
+#if defined(POTTERY_LIFECYCLE_MOVE)
+    // move by given expression
+    #define POTTERY_LIFECYCLE_CAN_MOVE 1
+#elif POTTERY_LIFECYCLE_MOVE_BY_VALUE || \
+        POTTERY_LIFECYCLE_COPY_BY_VALUE
+    // move bitwise or by copy construction or simple assignment then destroy
+    #define POTTERY_LIFECYCLE_CAN_MOVE 1
+#else
+    // no move
+    #define POTTERY_LIFECYCLE_CAN_MOVE 0
+#endif
+
+/*
+ * swap()
+ */
+#if defined(POTTERY_LIFECYCLE_SWAP)
+    // swap by given expression
+    #define POTTERY_LIFECYCLE_CAN_SWAP 1
+#elif POTTERY_LIFECYCLE_SWAP_BY_VALUE
+    // swap bitwise or by ADL-swap() or std::swap()
+    #define POTTERY_LIFECYCLE_CAN_SWAP 1
+#elif POTTERY_LIFECYCLE_CAN_MOVE && defined(POTTERY_LIFECYCLE_VALUE_TYPE)
+    // swap by move through a temporary
+    #define POTTERY_LIFECYCLE_CAN_SWAP 1
+#else
+    #define POTTERY_LIFECYCLE_CAN_SWAP 0
+#endif
+
+/*
+ * steal()
+ */
+#if defined(POTTERY_LIFECYCLE_STEAL)
+    // steal by given expression
+    #define POTTERY_LIFECYCLE_CAN_STEAL 1
+#elif POTTERY_LIFECYCLE_STEAL_BY_VALUE
+    // steal bitwise or by move assignment or simple assignment
+    #define POTTERY_LIFECYCLE_CAN_STEAL 1
+#elif POTTERY_LIFECYCLE_CAN_SWAP
+    // synthesize steal by swap
+    #define POTTERY_LIFECYCLE_CAN_STEAL 1
+#else
+    // no steal
+    #define POTTERY_LIFECYCLE_CAN_STEAL 0
 #endif
 
 /*
@@ -168,6 +216,20 @@
 #endif
 
 /*
+ * copy()
+ */
+#if defined(POTTERY_LIFECYCLE_COPY)
+    // copy by given expression
+    #define POTTERY_LIFECYCLE_CAN_COPY 1
+#elif POTTERY_LIFECYCLE_COPY_BY_VALUE
+    // copy bitwise or by copy assignment or simple assignment
+    #define POTTERY_LIFECYCLE_CAN_COPY 1
+#else
+    // no copy
+    #define POTTERY_LIFECYCLE_CAN_COPY 0
+#endif
+
+/*
  * init_copy()
  */
 #if defined(POTTERY_LIFECYCLE_INIT_COPY)
@@ -176,32 +238,12 @@
 #elif POTTERY_LIFECYCLE_INIT_COPY_BY_VALUE
     // init_copy by copy construction or simple assignment
     #define POTTERY_LIFECYCLE_CAN_INIT_COPY 1
-#elif POTTERY_LIFECYCLE_CAN_INIT && defined(POTTERY_LIFECYCLE_COPY)
+#elif POTTERY_LIFECYCLE_CAN_INIT && POTTERY_LIFECYCLE_CAN_COPY
     // synthesize init_copy by init then copy
     #define POTTERY_LIFECYCLE_CAN_INIT_COPY 1
 #else
     // no init_copy
     #define POTTERY_LIFECYCLE_CAN_INIT_COPY 0
-#endif
-
-// swap() and init_steal() can be implemented in terms of each other. swap() is
-// by far the most complicated function so we break it up here into 2 parts. we
-// try to define swap(), then init_steal(), then check for more ways to do
-// swap().
-
-/*
- * swap() part 1
- */
-#if defined(POTTERY_LIFECYCLE_SWAP)
-    // swap by given expression
-    #define POTTERY_LIFECYCLE_CAN_SWAP 1
-#elif POTTERY_LIFECYCLE_SWAP_BY_VALUE
-    // swap bitwise or by ADL-swap() or std::swap()
-    #define POTTERY_LIFECYCLE_CAN_SWAP 1
-#elif (defined(POTTERY_LIFECYCLE_MOVE) || POTTERY_LIFECYCLE_MOVE_BY_VALUE) && \
-        defined(POTTERY_LIFECYCLE_VALUE_TYPE)
-    // swap by move through a temporary
-    #define POTTERY_LIFECYCLE_CAN_SWAP 1
 #endif
 
 /*
@@ -213,8 +255,7 @@
 #elif POTTERY_LIFECYCLE_INIT_STEAL_BY_VALUE
     // init_steal by move construction or simple assignment
     #define POTTERY_LIFECYCLE_CAN_INIT_STEAL 1
-#elif POTTERY_LIFECYCLE_CAN_INIT && \
-        defined(POTTERY_LIFECYCLE_CAN_SWAP) // <-- note we need defined() here
+#elif POTTERY_LIFECYCLE_CAN_INIT && POTTERY_LIFECYCLE_CAN_SWAP
     // synthesize init_steal by init then swap
     #define POTTERY_LIFECYCLE_CAN_INIT_STEAL 1
 #elif POTTERY_LIFECYCLE_CAN_INIT_COPY
@@ -226,90 +267,8 @@
 #endif
 
 /*
- * swap() part 2
- */
-#if defined(POTTERY_LIFECYCLE_CAN_SWAP)
-    // nothing, swap already available
-#elif POTTERY_LIFECYCLE_CAN_INIT_STEAL && POTTERY_LIFECYCLE_CAN_DESTROY
-    // swap by init_steal (and possibly steal) through a temporary
-    #define POTTERY_LIFECYCLE_CAN_SWAP 1
-#elif POTTERY_LIFECYCLE_CAN_INIT && \
-        POTTERY_LIFECYCLE_CAN_DESTROY && \
-        POTTERY_LIFECYCLE_STEAL
-    // swap by init then steal through a temporary
-    #define POTTERY_LIFECYCLE_CAN_SWAP 1
-#elif defined(POTTERY_LIFECYCLE_INIT_COPY) && \
-        POTTERY_LIFECYCLE_CAN_DESTROY
-    // swap by init_copy (and possibly steal or copy) through a temporary
-    #define POTTERY_LIFECYCLE_CAN_SWAP 1
-#elif POTTERY_LIFECYCLE_CAN_INIT && \
-        POTTERY_LIFECYCLE_CAN_DESTROY && \
-        POTTERY_LIFECYCLE_COPY
-    // swap by init then steal through a temporary
-#else
-    // no swap
-    #define POTTERY_LIFECYCLE_CAN_SWAP 0
-#endif
-
-// the rest are simpler.
-
-/*
- * move()
- */
-#if defined(POTTERY_LIFECYCLE_MOVE)
-    // move by given expression
-    #define POTTERY_LIFECYCLE_CAN_MOVE 1
-#elif POTTERY_LIFECYCLE_MOVE_BY_VALUE || \
-        POTTERY_LIFECYCLE_COPY_BY_VALUE
-    // move bitwise or by copy construction or simple assignment then destroy
-    #define POTTERY_LIFECYCLE_CAN_MOVE 1
-#elif POTTERY_LIFECYCLE_CAN_INIT_STEAL && \
-        POTTERY_LIFECYCLE_CAN_DESTROY
-    // synthesize move by init_steal then destroy
-    #define POTTERY_LIFECYCLE_CAN_MOVE 1
-#else
-    // no move
-    #define POTTERY_LIFECYCLE_CAN_MOVE 0
-#endif
-
-/*
- * copy()
- */
-#if defined(POTTERY_LIFECYCLE_COPY)
-    // copy by given expression
-    #define POTTERY_LIFECYCLE_CAN_COPY 1
-#elif POTTERY_LIFECYCLE_COPY_BY_VALUE
-    // copy bitwise or by copy assignment or simple assignment
-    #define POTTERY_LIFECYCLE_CAN_COPY 1
-#elif POTTERY_LIFECYCLE_CAN_DESTROY && \
-        POTTERY_LIFECYCLE_CAN_INIT_COPY
-    // synthesize copy by destroy then init_copy
-    #define POTTERY_LIFECYCLE_CAN_COPY 1
-#else
-    // no copy
-    #define POTTERY_LIFECYCLE_CAN_COPY 0
-#endif
-
-/*
- * steal()
- */
-#if defined(POTTERY_LIFECYCLE_STEAL)
-    // steal by given expression
-    #define POTTERY_LIFECYCLE_CAN_STEAL 1
-#elif POTTERY_LIFECYCLE_STEAL_BY_VALUE
-    // steal bitwise or by move assignment or simple assignment
-    #define POTTERY_LIFECYCLE_CAN_STEAL 1
-#elif POTTERY_LIFECYCLE_CAN_DESTROY && \
-        POTTERY_LIFECYCLE_CAN_INIT_STEAL
-    // synthesize steal by destroy then init_steal
-    #define POTTERY_LIFECYCLE_CAN_STEAL 1
-#else
-    // no copy
-    #define POTTERY_LIFECYCLE_CAN_STEAL 0
-#endif
-
-/*
  * copy by passing by value (e.g. as argument of insert() or return value of extract())
+ * TODO should actually be move by value?
  */
 #if POTTERY_LIFECYCLE_INIT_COPY_BY_VALUE && POTTERY_LIFECYCLE_CAN_DESTROY
     #define POTTERY_LIFECYCLE_CAN_PASS 1

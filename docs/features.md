@@ -26,7 +26,7 @@ Want to make a vector of maps, or a priority queue of linked lists? No problem. 
 
 ### Configurable
 
-Pottery templates can be extensively configured. For example all of the array algorithms like [`heap`](../include/pottery/heap/) or [`intro_sort`](../include/pottery/intro_sort/) operate on a generalized array. This means you can configure arbitrary expressions to access the i'th element and to swap and compare elements. These expressions can do whatever you like: index a non-contigous array, access a database, pull elements off a tape drive, make network requests, or simply manipulate a normal array in memory.
+Pottery templates can be extensively configured. For example all of the array algorithms like [`heap`](../include/pottery/heap/) or [`intro_sort`](../include/pottery/intro_sort/) operate on a generalized array. This means you can configure arbitrary expressions to access the i'th element and to swap and compare elements. These expressions can do whatever you like: access a database, pull elements off a tape drive, make network requests, or simply manipulate a normal array in memory.
 
 The behaviour of dynamic containers is highly configurable as well. For example [`vector`](../include/pottery/heap/) can be configured as a double-ended vector, can be configured with some internal capacity to avoid allocations, and can be configured to disable its auto-shrink behaviour.
 

@@ -111,6 +111,8 @@
 
     #define pottery_oht_configure POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _configure)
     #define pottery_oht_count POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _count)
+    #define pottery_oht_capacity POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _capacity)
+    #define pottery_oht_is_empty POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _is_empty)
     #define pottery_oht_emplace POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _emplace)
     #define pottery_oht_find POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _find)
     #define pottery_oht_displace POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _displace)

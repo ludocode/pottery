@@ -188,6 +188,8 @@ Indicates that the type is automatically destroyable. This is implied by `BY_VAL
 
 In C, this means `destroy()` does nothing. In C++ it runs the destructor.
 
+In C++, if your destructor throws, Pottery aborts.
+
 
 
 ## Initialize
@@ -284,6 +286,8 @@ Moves the contents of an existing element into another existing value, replacing
 
 Indicates that the type is stealable by value (bitwise for C types or by move assignment for C++ types, as with `operator=(&&)`.) This is implied by `BY_VALUE`.
 
+In C++, if your move assignment operator throws, Pottery aborts.
+
 
 
 ## Swap
@@ -308,7 +312,7 @@ Indicates that the type is swappable by value.
 
 In C, this means `swap()` will happen by simple assignment or by `memcpy()` or equivalent.
 
-For bitwise-movable C++ types, `swap()` is done with `memcpy()` or equivalent. For non-bitwise-movable C++ types, `swap()` will wrap your own `swap()` function found by argument-dependent lookup or `std::swap()`.
+For bitwise-movable C++ types, `swap()` is done with `memcpy()` or equivalent. For non-bitwise-movable C++ types, `swap()` will wrap your own `swap()` function found by argument-dependent lookup or `std::swap()`. If your `swap()` throws, Pottery aborts.
 
 
 

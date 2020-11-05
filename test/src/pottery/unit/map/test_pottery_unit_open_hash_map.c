@@ -22,8 +22,30 @@
  * SOFTWARE.
  */
 
-#ifndef POTTERY_LIFECYCLE_INTERNAL
-#error "This is an internal header. Do not include it."
-#endif
+#include "pottery/common/test_pottery_ufo.h"
+#include "pottery/unit/test_pottery_framework.h"
 
-// Nothing! Some larger bulk functions may end up here later.
+static inline size_t fnv1a(const char* p) {
+    uint32_t hash = 2166136261;
+    for (; *p != 0; ++p)
+        hash = (hash ^ (uint8_t)*p) * 16777619;
+    return hash;
+}
+
+// Instantiate a map of const char* to ufo_t
+#define POTTERY_OPEN_HASH_MAP_PREFIX ufo_map
+#define POTTERY_OPEN_HASH_MAP_VALUE_TYPE ufo_t
+#define POTTERY_OPEN_HASH_MAP_KEY_TYPE const char*
+#define POTTERY_OPEN_HASH_MAP_KEY_FOR_VALUE(x) x->string
+#define POTTERY_OPEN_HASH_MAP_KEY_HASH fnv1a
+#define POTTERY_OPEN_HASH_MAP_KEY_EQUAL 0 == strcmp
+#define POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE ufo_move
+#define POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY ufo_destroy
+#define POTTERY_OPEN_HASH_MAP_IS_EMPTY(x) x->string == NULL
+#define POTTERY_OPEN_HASH_MAP_SET_EMPTY(x) x->string = NULL
+#include "pottery/open_hash_map/pottery_open_hash_map_static.t.h"
+
+// Instantiate ufo_map tests on our ufo map
+#define POTTERY_TEST_MAP_UFO_PREFIX pottery_open_hash_map_ufo
+#define POTTERY_TEST_MAP_UFO_HAS_CAPACITY 1
+#include "pottery/unit/map/test_pottery_unit_map_ufo.t.h"
