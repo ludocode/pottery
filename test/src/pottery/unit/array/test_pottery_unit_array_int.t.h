@@ -242,9 +242,8 @@ POTTERY_TEST_ARRAY_INT(remove_shrink_move) {
         pottery_test_assert(*int_array_at(&array, int_array_count(&array) - 1) == 4);
     }
 
-    // make sure the array shrunk at least once
-    // TODO currently disabled, array doesn't shrink yet!!
-    //pottery_test_assert(int_array_capacity(&array) < 1000);
+    // make sure the array shrank at least once
+    pottery_test_assert(int_array_capacity(&array) < 1000);
 
     int_array_destroy(&array);
 }

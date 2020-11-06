@@ -119,8 +119,8 @@ template <class RandomAccessIterator, class Less>
 void pop_heap(RandomAccessIterator first, RandomAccessIterator last, Less less) {
     size_t count = pottery_cast(size_t, last - first);
 
-    // cppreference doesn't say what we do if first and last are equal. We'll
-    // take the aggressive route and abort.
+    // Invalid arguments are undefined behavior. We'll check anyway and abort()
+    // to prevent trying to pop from an empty array.
     if (count == 0)
         pottery_terminate();
 
@@ -141,12 +141,8 @@ void pop_heap(RandomAccessIterator first, RandomAccessIterator last) {
 template <class RandomAccessIterator, class Less>
 void sort_heap(RandomAccessIterator first, RandomAccessIterator last, Less less) {
     size_t count = pottery_cast(size_t, last - first);
-
-    // cppreference doesn't say what we do if first and last are equal. We'll
-    // take the conservative route and abort.
     if (count == 0)
-        pottery_terminate();
-
+        return;
     pottery::impl::Heap<RandomAccessIterator, Less>::heap_pop(less, first, count, count);
 }
 

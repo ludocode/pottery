@@ -47,13 +47,6 @@
 #define POTTERY_OPEN_HASH_MAP_EXTERN /*nothing*/
 #endif
 
-// Context forwarding
-#ifdef POTTERY_OPEN_HASH_MAP_CONTEXT_TYPE
-    #define POTTERY_OPEN_HASH_MAP_CONTEXT_VAL(ohm) ohm->context,
-#else
-    #define POTTERY_OPEN_HASH_MAP_CONTEXT_VAL(ohm) /*nothing*/
-#endif
-
 #ifndef POTTERY_OPEN_HASH_MAP_DOUBLE_ENDED
     #define POTTERY_OPEN_HASH_MAP_DOUBLE_ENDED 0
 #endif
@@ -82,19 +75,22 @@
 #else
     #define POTTERY_OPEN_HASH_MAP_INTERNAL_EMPTY 0
 #endif
+#ifndef POTTERY_OPEN_HASH_MAP_EMPTY_IS_ZERO
+    #define POTTERY_OPEN_HASH_MAP_EMPTY_IS_ZERO 0
+#endif
 
 // Tombstones
 #if !defined(POTTERY_OPEN_HASH_MAP_IS_TOMBSTONE) && \
         !defined(POTTERY_OPEN_HASH_MAP_SET_TOMBSTONE) && \
         !POTTERY_OPEN_HASH_MAP_LINEAR_PROBING
     #define POTTERY_OPEN_HASH_MAP_TOMBSTONES 1
-    #define POTTERY_OPEN_HASH_MAP_INTERNAL_TOMBSTONES 1
+    #define POTTERY_OPEN_HASH_MAP_INTERNAL_TOMBSTONE 1
 #elif defined(POTTERY_OPEN_HASH_MAP_IS_TOMBSTONE)
     #define POTTERY_OPEN_HASH_MAP_TOMBSTONES 1
-    #define POTTERY_OPEN_HASH_MAP_INTERNAL_TOMBSTONES 0
+    #define POTTERY_OPEN_HASH_MAP_INTERNAL_TOMBSTONE 0
 #else
     #define POTTERY_OPEN_HASH_MAP_TOMBSTONES 0
-    #define POTTERY_OPEN_HASH_MAP_INTERNAL_TOMBSTONES 0
+    #define POTTERY_OPEN_HASH_MAP_INTERNAL_TOMBSTONE 0
 #endif
 
 // Metadata
@@ -103,6 +99,29 @@
     #define POTTERY_OPEN_HASH_MAP_HAS_METADATA 1
 #else
     #define POTTERY_OPEN_HASH_MAP_HAS_METADATA 0
+#endif
+
+// Context forwarding
+
+#ifdef POTTERY_OPEN_HASH_MAP_CONTEXT_TYPE
+    #define POTTERY_OPEN_HASH_MAP_CONTEXT_VAL context,
+#else
+    #define POTTERY_OPEN_HASH_MAP_CONTEXT_VAL /*nothing*/
+#endif
+
+// We pass our map as the context to table functions, but only if necessary
+// (i.e. if we have a user context or metadata.)
+
+#if defined(POTTERY_OPEN_HASH_MAP_CONTEXT_TYPE) || POTTERY_OPEN_HASH_MAP_HAS_METADATA
+    #define POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG pottery_ohm_t* map,
+    #define POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map) map,
+    #define POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_UNUSED (void)map
+    #define POTTERY_OPEN_HASH_MAP_HAS_TABLE_CONTEXT 1
+#else
+    #define POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG /*nothing*/
+    #define POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map) /*nothing*/
+    #define POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_UNUSED /*nothing*/
+    #define POTTERY_OPEN_HASH_MAP_HAS_TABLE_CONTEXT 0
 #endif
 
 
@@ -144,7 +163,7 @@
 #define pottery_ohm_impl_free POTTERY_OPEN_HASH_MAP_NAME(_impl_free)
 #define pottery_ohm_grow_if_needed POTTERY_OPEN_HASH_MAP_NAME(_grow_if_needed)
 #define pottery_ohm_shrink_if_needed POTTERY_OPEN_HASH_MAP_NAME(_shrink_if_needed)
-#define pottery_ohm_resize POTTERY_OPEN_HASH_MAP_NAME(_resize)
+#define pottery_ohm_rehash POTTERY_OPEN_HASH_MAP_NAME(_rehash)
 
 
 
@@ -158,13 +177,9 @@
     #define pottery_ohm_table_value_t POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _value_t)
     #define pottery_ohm_table_key_t POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _key_t)
     #define pottery_ohm_table_context_t POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _context_t)
-    #define pottery_ohm_table_t POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _t)
 
-    #define pottery_ohm_table_configure POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _configure)
-    #define pottery_ohm_table_count POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _count)
-    #define pottery_ohm_table_capacity POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _capacity)
-    #define pottery_ohm_table_is_empty POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _is_empty)
     #define pottery_ohm_table_emplace POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _emplace)
+    #define pottery_ohm_table_insert POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _insert)
     #define pottery_ohm_table_find POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _find)
     #define pottery_ohm_table_displace POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _displace)
     #define pottery_ohm_table_remove POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _remove)
@@ -177,9 +192,12 @@
     #define pottery_ohm_table_next POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _next)
     #define pottery_ohm_table_previous POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _previous)
 
-    #define pottery_ohm_table_key POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _key)
     #define pottery_ohm_table_access_at POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _access_at)
     #define pottery_ohm_table_access_index POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _access_index)
+    #define pottery_ohm_table_access_next POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _access_next)
+    #define pottery_ohm_table_access_previous POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _access_previous)
+
+    #define pottery_ohm_table_key POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _key)
     #define pottery_ohm_table_key_hash POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _key_hash)
     #define pottery_ohm_table_key_equal POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _key_equal)
     #define pottery_ohm_table_double_hash_interval POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _double_hash_interval)
@@ -187,6 +205,7 @@
     #define pottery_ohm_table_ref_set_tombstone POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _ref_set_tombstone)
     #define pottery_ohm_table_ref_is_empty POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _ref_is_empty)
     #define pottery_ohm_table_ref_set_empty POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _ref_set_empty)
+    #define pottery_ohm_table_ref_is_element POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _ref_is_element)
     #define pottery_ohm_table_ref_in_use POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _ref_in_use)
     #define pottery_ohm_table_ref_exists POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _ref_exists)
 

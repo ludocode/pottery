@@ -32,7 +32,7 @@ static inline size_t fnv1a(const char* p) {
     return hash;
 }
 
-// Instantiate a map of const char* to ufo_t with NULL as empty
+// Instantiate a map of const char* to ufo_t
 #define POTTERY_OPEN_HASH_MAP_PREFIX ufo_map
 #define POTTERY_OPEN_HASH_MAP_VALUE_TYPE ufo_t
 #define POTTERY_OPEN_HASH_MAP_KEY_TYPE const char*
@@ -41,7 +41,23 @@ static inline size_t fnv1a(const char* p) {
 #define POTTERY_OPEN_HASH_MAP_KEY_EQUAL 0 == strcmp
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE ufo_move
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY ufo_destroy
-#define POTTERY_OPEN_HASH_MAP_EMPTY_IS_ZERO 1
+
+// Use double hashing. We use the same hash function but it will be used
+// differently by the table, so the likelyhood of different strings ending up
+// with the same initial bucket and probing interval is extremely low.
+// (This is the default behaviour so it would work the same if we didn't
+// specify a double hash function.)
+#define POTTERY_OPEN_HASH_MAP_DOUBLE_HASHING 1
+#define POTTERY_OPEN_HASH_MAP_KEY_DOUBLE_HASH fnv1a
+
+// Configure custom state expressions as non-zero sentinel values for the UFO string
+static char* const ufo_empty = pottery_reinterpret_cast(char*, pottery_cast(intptr_t, -2));
+static char* const ufo_tombstone = pottery_reinterpret_cast(char*, pottery_cast(intptr_t, -3));
+#define POTTERY_OPEN_HASH_MAP_IS_EMPTY(x) x->string == ufo_empty
+#define POTTERY_OPEN_HASH_MAP_SET_EMPTY(x) x->string = ufo_empty
+#define POTTERY_OPEN_HASH_MAP_IS_TOMBSTONE(x) x->string == ufo_tombstone
+#define POTTERY_OPEN_HASH_MAP_SET_TOMBSTONE(x) x->string = ufo_tombstone
+
 #include "pottery/open_hash_map/pottery_open_hash_map_static.t.h"
 
 // Instantiate ufo_map tests on our ufo map

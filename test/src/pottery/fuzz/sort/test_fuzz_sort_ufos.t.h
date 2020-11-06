@@ -195,6 +195,9 @@ static void fuzz(fuzz_input_t* input) {
     // Make sure that it sorted!
     fuzz_check(source.array, source.count);
 
+    size_t i;
+    for (i = 0; i < source.count; ++i)
+        ufo_destroy(source.array + i);
     free(source.array);
 }
 

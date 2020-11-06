@@ -25,7 +25,7 @@
 #include "string_set.h"
 
 #include <stddef.h>
-#include <stdint.h>
+#include <string.h>
 
 static inline size_t fnv1a(const char* p) {
     uint32_t hash = 2166136261;
@@ -40,15 +40,15 @@ static inline size_t fnv1a(const char* p) {
 #define POTTERY_OPEN_HASH_MAP_PREFIX string_set_map
 #define POTTERY_OPEN_HASH_MAP_VALUE_TYPE char*
 #define POTTERY_OPEN_HASH_MAP_KEY_TYPE const char*
-#define POTTERY_OPEN_HASH_MAP_KEY_FOR_VALUE(x) *x // TODO rename to key_for_ref or ref_key or something
+#define POTTERY_OPEN_HASH_MAP_VALUE_KEY(x) *x
 #define POTTERY_OPEN_HASH_MAP_KEY_HASH fnv1a
 #define POTTERY_OPEN_HASH_MAP_KEY_EQUAL 0 == strcmp
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE_BY_VALUE 1
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY(x) free(*x)
-// These last two aren't strictly required, but they make it more efficient
-// because we can use an in-band value to mark empty buckets.
-#define POTTERY_OPEN_HASH_MAP_IS_EMPTY(x) *x == NULL
-#define POTTERY_OPEN_HASH_MAP_SET_EMPTY(x) *x = NULL
+// This isn't strictly required, but it makes the map more efficient: It can
+// use an in-band value to mark empty buckets and can allocate zeroed memory
+// instead to get empty buckets.
+#define POTTERY_OPEN_HASH_MAP_EMPTY_IS_ZERO 1
 #include "pottery/open_hash_map/pottery_open_hash_map_static.t.h"
 
 struct string_set_t {
@@ -62,11 +62,14 @@ string_set_t* string_set_new(void) {
 }
 
 void string_set_delete(string_set_t* set) {
+    // destroy() frees all the strings for us.
     string_set_map_destroy(&set->map);
     free(set);
 }
 
 bool string_set_add(string_set_t* set, const char* str) {
+    // We use emplace() here so that we can detect whether the value was
+    // already in the set, and if it is, we don't do an unnecessary strdup().
     bool created;
     char** entry;
     if (POTTERY_OK != string_set_map_emplace(&set->map, str, &entry, &created))
@@ -77,9 +80,11 @@ bool string_set_add(string_set_t* set, const char* str) {
 }
 
 bool string_set_query(string_set_t* set, const char* str) {
+    // TODO add key_exists()
     return string_set_map_ref_exists(&set->map, string_set_map_find(&set->map, str));
 }
 
 bool string_set_remove(string_set_t* set, const char* str) {
+    // remove_key() frees the string for us.
     return string_set_map_remove_key(&set->map, str);
 }

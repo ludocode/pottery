@@ -2,7 +2,7 @@
 
 A hash table that uses open addressing on an external generalized array.
 
-The `open_hash_table` template is composed of a set of algorithms that operate on an external power-of-two-sized array of buckets (similar to the [`heap`](../heap/) template for example.) It does not require the storage of any persistent state other than the array itself. All functions take an `open_hash_table_t` struct as a parameter, but this struct need not be persistent; you can generate it as an argument to each function call.
+The `open_hash_table` template is composed of a set of algorithms that operate on an external power-of-two-sized array of buckets (similar to the [`heap`](../heap/) template for example.) It does not require the storage of any persistent state other than the external array itself. The hash table stores no state of its own, not even a count of elements or tombstones.
 
 If you want an open hash table that automatically allocates its backing and grows or re-hashes as necessary, see [`open_hash_map`](../open_hash_map/).
 
@@ -23,3 +23,5 @@ The tombstone state is optional for linear probing but required for other probin
 If a tombstone state is not configured, a move expression is required. The hash table will move colliding elements around when an element is removed from the hash table.
 
 If a tombstone state is configured, the hashtable will use tombstones where necessary to replace deleted elements, and elements in the hash table are never moved (so they are "pointer stable".) Tombstones slow down all hash table operations. A hash table may eventually fill up with tombstones, so you may want to have a mechanism for rehashing. This is not necessary without tombstones.
+
+You do not need to store the element count or tombstone count if you do not want to (if you are sure your data is limited to a reasonable load factor of the array size). In case you do, if tombstones are enabled, functions that can change the number of tombstones take a pointer to it as an optional parameter.

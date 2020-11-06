@@ -29,13 +29,9 @@
 #define {SRC}_value_t POTTERY_CONCAT({DEST}, _value_t)
 #define {SRC}_key_t POTTERY_CONCAT({DEST}, _key_t)
 #define {SRC}_context_t POTTERY_CONCAT({DEST}, _context_t)
-#define {SRC}_t POTTERY_CONCAT({DEST}, _t)
 
-#define {SRC}_configure POTTERY_CONCAT({DEST}, _configure)
-#define {SRC}_count POTTERY_CONCAT({DEST}, _count)
-#define {SRC}_capacity POTTERY_CONCAT({DEST}, _capacity)
-#define {SRC}_is_empty POTTERY_CONCAT({DEST}, _is_empty)
 #define {SRC}_emplace POTTERY_CONCAT({DEST}, _emplace)
+#define {SRC}_insert POTTERY_CONCAT({DEST}, _insert)
 #define {SRC}_find POTTERY_CONCAT({DEST}, _find)
 #define {SRC}_displace POTTERY_CONCAT({DEST}, _displace)
 #define {SRC}_remove POTTERY_CONCAT({DEST}, _remove)
@@ -48,9 +44,12 @@
 #define {SRC}_next POTTERY_CONCAT({DEST}, _next)
 #define {SRC}_previous POTTERY_CONCAT({DEST}, _previous)
 
-#define {SRC}_key POTTERY_CONCAT({DEST}, _key)
 #define {SRC}_access_at POTTERY_CONCAT({DEST}, _access_at)
 #define {SRC}_access_index POTTERY_CONCAT({DEST}, _access_index)
+#define {SRC}_access_next POTTERY_CONCAT({DEST}, _access_next)
+#define {SRC}_access_previous POTTERY_CONCAT({DEST}, _access_previous)
+
+#define {SRC}_key POTTERY_CONCAT({DEST}, _key)
 #define {SRC}_key_hash POTTERY_CONCAT({DEST}, _key_hash)
 #define {SRC}_key_equal POTTERY_CONCAT({DEST}, _key_equal)
 #define {SRC}_double_hash_interval POTTERY_CONCAT({DEST}, _double_hash_interval)
@@ -58,6 +57,7 @@
 #define {SRC}_ref_set_tombstone POTTERY_CONCAT({DEST}, _ref_set_tombstone)
 #define {SRC}_ref_is_empty POTTERY_CONCAT({DEST}, _ref_is_empty)
 #define {SRC}_ref_set_empty POTTERY_CONCAT({DEST}, _ref_set_empty)
+#define {SRC}_ref_is_element POTTERY_CONCAT({DEST}, _ref_is_element)
 #define {SRC}_ref_in_use POTTERY_CONCAT({DEST}, _ref_in_use)
 #define {SRC}_ref_exists POTTERY_CONCAT({DEST}, _ref_exists)
 

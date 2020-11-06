@@ -781,7 +781,11 @@ pottery_error_t pottery_vector_copy(pottery_vector_t* vector, const pottery_vect
 
     // If we have enough internal space and we copy by value (without the
     // possibility of an exception), we don't need the temporary because the
-    // copy can't fail.
+    // copy can't fail. This is only in C or in C++ with exceptions disabled.
+    //
+    // (If exceptions are enabled, individual by-value copies could fail, so we
+    // can't do this. We could in theory detect whether the copy constructor is
+    // noexcept but it's not worth doing.)
     #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0 && \
             POTTERY_LIFECYCLE_CAN_PASS && !POTTERY_CXX_EXCEPTIONS
     if (pottery_vector_count(other) <= POTTERY_VECTOR_INTERNAL_CAPACITY) {
@@ -796,7 +800,8 @@ pottery_error_t pottery_vector_copy(pottery_vector_t* vector, const pottery_vect
     }
     #endif
 
-    // Copy to a temporary so that we don't damage the vector if an error occurs
+    // Copy to a temporary so that we don't damage the vector if an error
+    // occurs.
     pottery_vector_t temp;
     pottery_vector_init(&temp);
     pottery_error_t error = pottery_vector_impl_copy(&temp, other);

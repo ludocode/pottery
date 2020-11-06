@@ -28,12 +28,12 @@
 
 #define POTTERY_OPEN_HASH_TABLE_PREFIX POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_PREFIX, _table)
 
-// The context for the internal open_hash_table is our open_hash_map. We give
-// it empty and tombstone accessors for our metadata.
-
 #define POTTERY_OPEN_HASH_TABLE_REF_TYPE pottery_ohm_ref_t
 #define POTTERY_OPEN_HASH_TABLE_KEY_TYPE pottery_ohm_key_t
-#define POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE pottery_ohm_t*
+
+#if POTTERY_OPEN_HASH_MAP_HAS_TABLE_CONTEXT
+    #define POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE pottery_ohm_t*
+#endif
 
 // Note that we don't forward along lifecycle configuration. Instead we give it
 // our wrappers for move and destroy.
@@ -54,8 +54,11 @@
 // that changes the context.
 
 #define POTTERY_OPEN_HASH_TABLE_KEY_HASH pottery_ohm_ref_key_hash
-#define POTTERY_OPEN_HASH_TABLE_KEY_FOR_VALUE pottery_ohm_ref_key
+#define POTTERY_OPEN_HASH_TABLE_VALUE_KEY pottery_ohm_ref_key
 #define POTTERY_OPEN_HASH_TABLE_KEY_EQUAL pottery_ohm_ref_key_equal
+#ifdef POTTERY_OPEN_HASH_TABLE_KEY_DOUBLE_HASH
+    #define POTTERY_OPEN_HASH_TABLE_KEY_DOUBLE_HASH pottery_ohm_ref_key_double_hash
+#endif
 
 #define POTTERY_OPEN_HASH_TABLE_IS_EMPTY pottery_ohm_ref_is_empty
 #define POTTERY_OPEN_HASH_TABLE_SET_EMPTY pottery_ohm_ref_set_empty

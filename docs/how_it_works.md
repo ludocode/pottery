@@ -81,3 +81,5 @@ Since the context is optional, every function involving a context has an optiona
 - `CONTEXT_ARG` evaluates to a context function parameter within a function prototype if a context is defined, such as "`pottery_context_t context,`" (with the comma.) It evaluates to nothing otherwise.
 
 - `CONTEXT_VAL` evaluates to a context value to be passed as a function parameter if a context is defined, such as "`context,`" (with the comma.) It evaluates to nothing otherwise.
+
+- `CONTEXT_UNUSED` evaluates to a cast of the context to void if a context is defined, e.g. `(void)context;`, to silence warnings about unused arguments. It evaluates to nothing otherwise.

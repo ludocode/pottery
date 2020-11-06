@@ -32,7 +32,9 @@ static inline size_t fnv1a(const char* p) {
     return hash;
 }
 
-// Instantiate a map of const char* to ufo_t with NULL as empty
+// Instantiate a map of const char* to ufo_t
+// Use quadratic probing with no empty or tombstone states so the map will
+// store metadata for us.
 #define POTTERY_OPEN_HASH_MAP_PREFIX ufo_map
 #define POTTERY_OPEN_HASH_MAP_VALUE_TYPE ufo_t
 #define POTTERY_OPEN_HASH_MAP_KEY_TYPE const char*
@@ -41,7 +43,7 @@ static inline size_t fnv1a(const char* p) {
 #define POTTERY_OPEN_HASH_MAP_KEY_EQUAL 0 == strcmp
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE ufo_move
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY ufo_destroy
-#define POTTERY_OPEN_HASH_MAP_EMPTY_IS_ZERO 1
+#define POTTERY_OPEN_HASH_MAP_QUADRATIC_PROBING 1
 #include "pottery/open_hash_map/pottery_open_hash_map_static.t.h"
 
 // Instantiate ufo_map tests on our ufo map

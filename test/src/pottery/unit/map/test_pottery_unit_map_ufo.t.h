@@ -132,6 +132,7 @@ POTTERY_TEST_MAP_UFO(grow_and_shrink) {
 
     // Remove elements until the map is empty.
     while (!ufo_map_is_empty(&map)) {
+        //printf("removing %i\n", ufo_map_first(&map)->integer);
         ufo_map_remove(&map, ufo_map_first(&map));
         check_ufo_map(&map);
 

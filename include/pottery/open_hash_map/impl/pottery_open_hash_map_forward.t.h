@@ -33,6 +33,7 @@ typedef POTTERY_OPEN_HASH_MAP_VALUE_TYPE pottery_ohm_value_t;
 
 // The ref is an abstract handle to an element and bucket in the hash table.
 #ifdef POTTERY_OPEN_HASH_MAP_REF_TYPE
+#error "TODO it doesn't make sense to have a custom ref type"
 typedef POTTERY_OPEN_HASH_MAP_REF_TYPE pottery_ohm_ref_t;
 #else
 typedef pottery_ohm_value_t* pottery_ohm_ref_t;
@@ -50,12 +51,18 @@ typedef pottery_ohm_ref_t pottery_ohm_key_t;
 typedef POTTERY_OPEN_HASH_MAP_CONTEXT_TYPE pottery_ohm_context_t;
 #endif
 
-#if !defined(POTTERY_OPEN_HASH_MAP_IS_EMPTY) && !defined(POTTERY_OPEN_HASH_MAP_IS_TOMBSTONE)
+#if POTTERY_OPEN_HASH_MAP_HAS_METADATA
 typedef enum pottery_ohm_bucket_state_t {
+    #if POTTERY_OPEN_HASH_MAP_INTERNAL_EMPTY
     pottery_ohm_bucket_state_empty = 0,
-    pottery_ohm_bucket_state_element,
-    #if !defined(POTTERY_OPEN_HASH_MAP_IS_TOMBSTONE)
-    pottery_ohm_bucket_state_tombstone,
+    #endif
+
+    // This is not necessarily a value since the user might have declared only
+    // in-band tombstones and not in-band empty or vice versa.
+    pottery_ohm_bucket_state_other = 1,
+
+    #if POTTERY_OPEN_HASH_MAP_INTERNAL_TOMBSTONE
+    pottery_ohm_bucket_state_tombstone = 2,
     #endif
 } pottery_ohm_bucket_state_t;
 #endif
@@ -63,33 +70,43 @@ typedef enum pottery_ohm_bucket_state_t {
 typedef struct pottery_ohm_t pottery_ohm_t;
 
 static inline
-void pottery_ohm_ref_move(pottery_ohm_t* map, pottery_ohm_ref_t to, pottery_ohm_ref_t from);
+void pottery_ohm_ref_move(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
+        pottery_ohm_ref_t to, pottery_ohm_ref_t from);
 
 static inline
-void pottery_ohm_ref_destroy(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+void pottery_ohm_ref_destroy(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
+        pottery_ohm_ref_t ref);
 
 static inline
-pottery_ohm_key_t pottery_ohm_ref_key(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+pottery_ohm_key_t pottery_ohm_ref_key(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
+        pottery_ohm_ref_t ref);
 
 static inline
-bool pottery_ohm_ref_key_equal(pottery_ohm_t* map, pottery_ohm_key_t left, pottery_ohm_key_t right);
+bool pottery_ohm_ref_key_equal(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
+        pottery_ohm_key_t left, pottery_ohm_key_t right);
 
 static inline
-size_t pottery_ohm_ref_key_hash(pottery_ohm_t* map, pottery_ohm_key_t key);
+size_t pottery_ohm_ref_key_hash(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
+        pottery_ohm_key_t key);
 
 static inline
-bool pottery_ohm_ref_is_empty(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+bool pottery_ohm_ref_is_empty(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
+        pottery_ohm_ref_t ref);
 
 static inline
-void pottery_ohm_ref_set_empty(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+void pottery_ohm_ref_set_empty(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
+        pottery_ohm_ref_t ref);
 
 #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
 static inline
-bool pottery_ohm_ref_is_tombstone(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+bool pottery_ohm_ref_is_tombstone(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
+        pottery_ohm_ref_t ref);
 
 static inline
-void pottery_ohm_ref_set_tombstone(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+void pottery_ohm_ref_set_tombstone(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
+        pottery_ohm_ref_t ref);
 #endif
 
 static inline
-bool pottery_ohm_ref_is_value(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+bool pottery_ohm_ref_is_value(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
+        pottery_ohm_ref_t ref);

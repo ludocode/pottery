@@ -45,11 +45,13 @@
 
 // Context forwarding
 #ifdef POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE
-    #define POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG(context) pottery_oht_context_t context,
-    #define POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL(oht) oht->context,
+    #define POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG pottery_oht_context_t context,
+    #define POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL context,
+    #define POTTERY_OPEN_HASH_TABLE_CONTEXT_UNUSED (void)context
 #else
-    #define POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG(context) /*nothing*/
-    #define POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL(oht) /*nothing*/
+    #define POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG /*nothing*/
+    #define POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL /*nothing*/
+    #define POTTERY_OPEN_HASH_TABLE_CONTEXT_UNUSED /*nothing*/
 #endif
 
 // Probing sequence
@@ -107,13 +109,9 @@
     #define pottery_oht_value_t POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _value_t)
     #define pottery_oht_key_t POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _key_t)
     #define pottery_oht_context_t POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _context_t)
-    #define pottery_oht_t POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _t)
 
-    #define pottery_oht_configure POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _configure)
-    #define pottery_oht_count POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _count)
-    #define pottery_oht_capacity POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _capacity)
-    #define pottery_oht_is_empty POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _is_empty)
     #define pottery_oht_emplace POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _emplace)
+    #define pottery_oht_insert POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _insert)
     #define pottery_oht_find POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _find)
     #define pottery_oht_displace POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _displace)
     #define pottery_oht_remove POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _remove)
@@ -126,9 +124,12 @@
     #define pottery_oht_next POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _next)
     #define pottery_oht_previous POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _previous)
 
-    #define pottery_oht_key POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _key)
     #define pottery_oht_access_at POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _access_at)
     #define pottery_oht_access_index POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _access_index)
+    #define pottery_oht_access_next POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _access_next)
+    #define pottery_oht_access_previous POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _access_previous)
+
+    #define pottery_oht_key POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _key)
     #define pottery_oht_key_hash POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _key_hash)
     #define pottery_oht_key_equal POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _key_equal)
     #define pottery_oht_double_hash_interval POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _double_hash_interval)
@@ -136,6 +137,7 @@
     #define pottery_oht_ref_set_tombstone POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _ref_set_tombstone)
     #define pottery_oht_ref_is_empty POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _ref_is_empty)
     #define pottery_oht_ref_set_empty POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _ref_set_empty)
+    #define pottery_oht_ref_is_element POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _ref_is_element)
     #define pottery_oht_ref_in_use POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _ref_in_use)
     #define pottery_oht_ref_exists POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _ref_exists)
 

@@ -37,7 +37,7 @@
 #undef POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
 
 #undef POTTERY_OPEN_HASH_TABLE_KEY_TYPE
-#undef POTTERY_OPEN_HASH_TABLE_KEY_FOR_VALUE
+#undef POTTERY_OPEN_HASH_TABLE_VALUE_KEY
 #undef POTTERY_OPEN_HASH_TABLE_KEY_EQUAL
 
 // TODO not sort
@@ -65,11 +65,9 @@
     #undef pottery_oht_value_t
     #undef pottery_oht_key_t
     #undef pottery_oht_context_t
-    #undef pottery_oht_t
 
-    #undef pottery_oht_configure
-    #undef pottery_oht_count
     #undef pottery_oht_emplace
+    #undef pottery_oht_insert
     #undef pottery_oht_find
     #undef pottery_oht_displace
     #undef pottery_oht_remove
@@ -82,9 +80,12 @@
     #undef pottery_oht_next
     #undef pottery_oht_previous
 
-    #undef pottery_oht_key
     #undef pottery_oht_access_at
     #undef pottery_oht_access_index
+    #undef pottery_oht_access_next
+    #undef pottery_oht_access_previous
+
+    #undef pottery_oht_key
     #undef pottery_oht_key_hash
     #undef pottery_oht_key_equal
     #undef pottery_oht_double_hash_interval
@@ -92,7 +93,9 @@
     #undef pottery_oht_set_tombstone
     #undef pottery_oht_is_empty
     #undef pottery_oht_set_empty
-    #undef pottery_oht_entry_in_use
+    #undef pottery_oht_is_element
+    #undef pottery_oht_ref_in_use
+    #undef pottery_oht_ref_exists
 
     #undef pottery_oht_bucket_for_hash
     #undef pottery_oht_next_probe

@@ -29,11 +29,9 @@
 #undef {PREFIX}_value_t
 #undef {PREFIX}_key_t
 #undef {PREFIX}_context_t
-#undef {PREFIX}_t
 
-#undef {PREFIX}_configure
-#undef {PREFIX}_count
 #undef {PREFIX}_emplace
+#undef {PREFIX}_insert
 #undef {PREFIX}_find
 #undef {PREFIX}_displace
 #undef {PREFIX}_remove
@@ -46,9 +44,12 @@
 #undef {PREFIX}_next
 #undef {PREFIX}_previous
 
-#undef {PREFIX}_key
 #undef {PREFIX}_access_at
 #undef {PREFIX}_access_index
+#undef {PREFIX}_access_next
+#undef {PREFIX}_access_previous
+
+#undef {PREFIX}_key
 #undef {PREFIX}_key_hash
 #undef {PREFIX}_key_equal
 #undef {PREFIX}_double_hash_interval
@@ -56,7 +57,9 @@
 #undef {PREFIX}_set_tombstone
 #undef {PREFIX}_is_empty
 #undef {PREFIX}_set_empty
-#undef {PREFIX}_entry_in_use
+#undef {PREFIX}_is_element
+#undef {PREFIX}_ref_in_use
+#undef {PREFIX}_ref_exists
 
 #undef {PREFIX}_bucket_for_hash
 #undef {PREFIX}_next_probe

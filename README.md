@@ -33,6 +33,7 @@ Mostly I am releasing this now because I am out of money and need to go get a re
 - [Core Concepts](docs/concepts.md)
 - [Template Listing](include/pottery/)
 - [Meta-templates](meta/)
+- [C++ Bindings](bindings/cxx)
 - [Testing](test/)
 - [FAQ](docs/faq.md)
 
@@ -40,7 +41,8 @@ Mostly I am releasing this now because I am out of money and need to go get a re
 
 ## Simple Examples
 
-### String Sort
+
+### Sort Strings
 
 Suppose you want to sort an array of strings. You could use `qsort()` but it's not ideal: it uses void pointers; it has to `memcpy()` elements around; and you have to write a special compare function which it calls through a function pointer. This makes it slow and awkward to use.
 
@@ -70,13 +72,16 @@ for (size_t i = 0; i < count; ++i)
     puts(players[i]);
 ```
 
-The template instantiation preprocesses into a full implementation of [introsort](https://en.wikipedia.org/wiki/Introsort). It takes `const char**` as argument, moves `const char*` values around with operator `=`, and calls `strcmp()` directly rather than through a function pointer. The performance (and code size!) is comparable to a typical implementation of C++ `std::sort<>()`.
+The template instantiation preprocesses into a full implementation of [introsort](https://en.wikipedia.org/wiki/Introsort). It takes `const char*[]` as argument, moves `const char*` values around with operator `=`, and calls `strcmp()` directly rather than through a function pointer. The performance (and code size!) is comparable to a typical implementation of C++ `std::sort<>()`.
 
 The [intro_sort](include/pottery/intro_sort/) template uses several other Pottery templates which themselves use other templates: [quick_sort](include/pottery/quick_sort/), [insertion_sort](include/pottery/insertion_sort/), [heap_sort](include/pottery/heap_sort/) which uses [heap](include/pottery/heap/), and the [lifecycle](include/pottery/lifecycle/) and [compare](include/pottery/compare/) helpers. Pottery's templates are composable and its algorithms and containers are split up into small independent components.
 
-We've defined `MOVE_BY_VALUE` to 1 above because `const char*` can be moved by value. You could instead provide a custom move or swap expression if the type is not bitwise-movable. You could provide a boolean `LESS` expression or others instead of a three-way comparison. You could provide a custom context and accessor to access the i'th element in case the array is not contiguous in memory (so you could sort a [deque](include/pottery/deque/) for example.) You could even sort over an abstract reference type, so you could query a database, pull elements off a tape drive, make network requests, etc.
+We've defined `MOVE_BY_VALUE` to 1 above because `const char*` can be moved by simple assignment. You could instead provide a custom move or swap expression if the type is not bitwise-movable. You could provide a boolean `LESS` expression or others instead of a three-way comparison. You could provide a custom context and access expressions in case the array is not contiguous in memory (so you could sort a [deque](include/pottery/deque/) for example.)
+
+You could even sort over an abstract reference type, so you could provide access, compare and swap functions that query a database, pull elements off a tape drive, make network requests, etc. Pottery's algorithms are not limited to operating on plain values in memory.
 
 See the full example [here](examples/pottery/sort_strings/).
+
 
 ### Int Vector
 
@@ -113,3 +118,59 @@ We've defined `LIFECYCLE_BY_VALUE` to 1 above because `int` is trivially copyabl
 You could also provide the vector with a custom allocator and context. You could configure it to provide some internal space for a small number of elements to avoid small allocations. You could configure it as a double-ended vector. You can even instantiate separate header and source files to use it in multiple translation units without each having a copy of the implementation.
 
 See the full example [here](examples/pottery/int_vector/).
+
+
+### String Set
+
+Suppose you want a dynamically growable set of unique strings.
+
+We'll use an [`open_hash_map`](include/pottery/open_hash_map/) for this, so first we define a simple hash function:
+
+```c
+static inline size_t fnv1a(const char* p) {
+    uint32_t hash = 2166136261;
+    for (; *p != 0; ++p)
+        hash = (hash ^ (uint8_t)*p) * 16777619;
+    return hash;
+}
+```
+
+You could of course use a better hash function like MurmurHash or CityHash or whatever the cool kids are using these days.
+
+Next we define our map. We'll use `char*` as the value type and `const char*` as the key type, that way we can search it with const strings. In Pottery, map values contain their own keys, so in our case the key for a value is just the value itself.
+
+```
+#define POTTERY_OPEN_HASH_MAP_PREFIX string_set_map
+#define POTTERY_OPEN_HASH_MAP_VALUE_TYPE char*
+#define POTTERY_OPEN_HASH_MAP_KEY_TYPE const char*
+#define POTTERY_OPEN_HASH_MAP_VALUE_KEY(x) *x
+#define POTTERY_OPEN_HASH_MAP_KEY_HASH fnv1a
+#define POTTERY_OPEN_HASH_MAP_KEY_EQUAL 0 == strcmp
+#define POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE_BY_VALUE 1
+#define POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY(x) free(*x)
+#define POTTERY_OPEN_HASH_MAP_EMPTY_IS_ZERO 1
+#include "pottery/open_hash_map/pottery_open_hash_map_static.t.h"
+```
+
+This gives us a `string_set_map_t`. We can initialize it with `string_set_map_init()`; add allocated strings with `string_set_map_insert()` or `emplace()`; query strings with `string_set_map_find()`; remove strings with `string_set_map_remove()` or `remove_key()`; etc.
+
+We've declared that the map should hash keys with `fnv1a()`, compare keys with `strcmp()`, move values by simple assignment, and destroy values with `free()`. The map will manage our string memory for us.
+
+We've also declared `EMPTY_IS_ZERO`. This means that zero (null) is a sentinel value that can be used to mark an empty bucket, making the map more efficient. We could instead (or also) have provided custom `IS_EMPTY` and `SET_EMPTY` expressions to provide some other means of marking an empty bucket (for example if the map value was a struct, we could use a bit in the struct.) We could also declare nothing about empty buckets, in which case the map will allocate its own metadata bits to store which buckets are empty.
+
+The map uses linear probing by default. We could instead have declared `QUADRATIC_PROBING` or `DOUBLE_HASHING` to change the probing strategy. Alternate probing algorithms require the use of tombstones: we could declare `IS_TOMBSTONE` and `SET_TOMBSTONE` to store those in-band like our empty state, or just let the map store this metadata on its own. Pottery's hash tables can be extensively configured to get the exact behaviour you want.
+
+With this example you can start to see why it's called "Pottery". Pottery doesn't just give you a generic set in the way you might type `Set<String>` in other languages. Instead you use Pottery to build your own containers, exercising a level of control over algorithms and memory layout that you can only dream of in other programming languages. You should wrap this map in a nicer container API, one that hides all of the configurability and verbosity of Pottery. Something like this:
+
+```c
+typedef struct string_set_t string_set_t;
+
+string_set_t* string_set_new(void);
+void string_set_delete(string_set_t*);
+
+bool string_set_add(string_set_t*, const char*);
+bool string_set_query(string_set_t*, const char*);
+bool string_set_remove(string_set_t*, const char*);
+```
+
+It is trivial to implement these functions as wrappers to our `string_set_map`. See the implementation of this in the full example [here](examples/pottery/string_set/).

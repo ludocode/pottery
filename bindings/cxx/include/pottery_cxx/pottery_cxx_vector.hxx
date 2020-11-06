@@ -25,6 +25,20 @@
 #ifndef POTTERY_CXX_ALGORITHMS_VECTOR_HXX
 #define POTTERY_CXX_ALGORITHMS_VECTOR_HXX 1
 
+/*
+ * Wraps Pottery's vector in a C++ template.
+ *
+ * Use pottery::vector as a mostly drop-in replacement for std::vector
+ * with some caveats:
+ *
+ * - Custom allocators, comparison operators, and some newer functions are not
+ *   supported (yet).
+ *
+ * - Throwing move is not supported. If a move constructor throws, the program
+ *   aborts. It is strongly recommended that your move constructor be marked
+ *   noexcept.
+ */
+
 #include "pottery_cxx/pottery_cxx_dependencies.hxx"
 
 namespace pottery {

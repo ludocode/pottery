@@ -1,0 +1,5 @@
+/test/build
+/.ninja_deps
+/.ninja_log
+/core.*
+/vgcore.*
