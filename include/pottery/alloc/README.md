@@ -11,7 +11,7 @@ You can configure it with custom allocation functions and a custom context to pr
 ```c
 // A vector of ints with a custom arena allocator
 #define POTTERY_VECTOR_PREFIX my_arena_vector
-#define POTTERY_VECTOR_ELEMENT_TYPE int
+#define POTTERY_VECTOR_VALUE_TYPE int
 #define POTTERY_VECTOR_LIFECYCLE_BY_VALUE 1
 #define POTTERY_VECTOR_ALLOC_CONTEXT arena_t*
 #define POTTERY_VECTOR_ALLOC_MALLOC(arena, size) arena_malloc(arena, size)

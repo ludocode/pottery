@@ -1,6 +1,6 @@
 # Pottery C++ Templates
 
-This contains C++ template wrappers to Pottery to implement containers and algorithms that closely match the C++ STL. For example [`pottery::vector`](include/pottery_cxx/containers/vector.hxx) functions as a nearly drop-in replacement for [`std::vector`](https://en.cppreference.com/w/cpp/container/vector).
+This contains C++ template wrappers to Pottery to implement containers and algorithms that closely match the C++ STL. For example [`pottery::vector`](include/pottery_cxx/pottery_cxx_vector.hxx) functions as a nearly drop-in replacement for [`std::vector`](https://en.cppreference.com/w/cpp/container/vector).
 
 This mostly exists as a stubborn, perverse sort of proof that the C algorithms and containers in Pottery are every bit as powerful and featureful as their C++ equivalents, aside from the obvious limitation (or benefit, depending on your point of view) of explicit instantiation.
 

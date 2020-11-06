@@ -164,7 +164,7 @@ void pottery_vector_remove_all(pottery_vector_t* vector) {
 POTTERY_VECTOR_EXTERN
 void pottery_vector_destroy(pottery_vector_t* vector) {
     // make sure the container is not already destroyed or otherwise invalid
-    pottery_assert(vector->storage != (pottery_vector_element_t*)(-1));
+    pottery_assert(vector->storage != pottery_reinterpret_cast(pottery_vector_element_t*, -1));
 
     // Clean up the checks
     #if POTTERY_DEBUG
@@ -197,7 +197,7 @@ void pottery_vector_destroy(pottery_vector_t* vector) {
         // double-destroy. (If it was allocated, we expect you have some other
         // means of detecting double-free in debug builds so we leave it
         // as-is.)
-        vector->storage = (pottery_vector_element_t*)(-1);
+        vector->storage = pottery_reinterpret_cast(pottery_vector_element_t*, -1);
         #endif
     }
 }

@@ -1,6 +1,6 @@
 # How It Works
 
-Most of the Pottery source code is in _template headers_. They have the extension `.t.h` and do not have include guards. A Pottery template is configured by macros and then `#include`d to instantiate it. The macros within a template mostly just forward configuration to child templates and rename all of its identifiers to make it unique.
+Most of the Pottery source code is in _template headers_. They have the extension `.t.h` and do not have include guards. A Pottery template is configured by macros and then included to instantiate it. The macros within a template consolidate the configuration, forward it to child templates, and rename all of its identifiers to make it unique.
 
 This document is a work in progress. It needs to be expanded.
 
@@ -23,7 +23,7 @@ A template instantiation here is performed by [`pottery_compare_static.t.h`](../
 
 - Instantiating the code. The code is in [`impl/pottery_compare_declarations.t.h`](../include/pottery/compare/impl/pottery_compare_declarations.t.h). The compare template mostly just wraps the user's configuration so it's not very interesting. However you can see the `min()`, `max()`, `clamp()`  and `median()` functions at the bottom look somewhat like idiomatic C.
 
-- Cleaning up. This is in [`impl/pottery_compare_unmacros.t.h`](../include/pottery/compare/impl/pottery_compare_unmacros.t.h). This undefines all macros used to instantiate the template, including the renaming macros and user's configuration macros. The template can be instantiated again with a different configuration.
+- Cleaning up. This is in [`impl/pottery_compare_unmacros.t.h`](../include/pottery/compare/impl/pottery_compare_unmacros.t.h). This undefines all macros used to instantiate the template, including the renaming macros and user's configuration macros. The template can be instantiated again with a different configuration (after cleanup; see [Exported Configuration](#exported-configuration) below.)
 
 
 ## Separate Header and Source Files
@@ -82,4 +82,4 @@ Since the context is optional, every function involving a context has an optiona
 
 - `CONTEXT_VAL` evaluates to a context value to be passed as a function parameter if a context is defined, such as "`context,`" (with the comma.) It evaluates to nothing otherwise.
 
-- `CONTEXT_UNUSED` evaluates to a cast of the context to void if a context is defined, e.g. `(void)context;`, to silence warnings about unused arguments. It evaluates to nothing otherwise.
+- `CONTEXT_UNUSED` evaluates to a cast of the context to void if a context is defined, e.g. `(void)context`, to silence warnings about unused arguments. It evaluates to nothing otherwise.

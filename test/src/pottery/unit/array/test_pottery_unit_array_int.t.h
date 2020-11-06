@@ -122,7 +122,7 @@ POTTERY_TEST_ARRAY_INT(many_elements) {
     }
 
     for (i = 0; i < 1000; ++i) {
-        pottery_test_assert(*int_array_at(&array, (size_t)i) == i);
+        pottery_test_assert(*int_array_at(&array, pottery_cast(size_t, i)) == i);
     }
 
     for (i = 0; i < 1000; ++i) {

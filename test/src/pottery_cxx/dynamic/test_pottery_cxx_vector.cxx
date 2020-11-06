@@ -38,14 +38,14 @@ POTTERY_TEST(pottery_cxx_vector_ints) {
     vector.insert(vector.begin() + 2, 2);
 
     for (size_t i = 0; i < vector.size(); ++i)
-        pottery_test_assert(vector[i] == (int)i);
+        pottery_test_assert(vector[i] == pottery_cast(int, i));
 
     vector.erase(vector.begin());
     vector.erase(vector.begin() + 1);
     vector.erase(vector.begin() + 2);
 
     for (size_t i = 0; i < vector.size(); ++i)
-        pottery_test_assert(vector[i] == ((int)i * 2) + 1);
+        pottery_test_assert(vector[i] == (pottery_cast(int, i) * 2) + 1);
 }
 
 POTTERY_TEST(pottery_cxx_vector_moveonlystring) {

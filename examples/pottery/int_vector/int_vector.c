@@ -25,7 +25,7 @@
 #include <stdio.h>
 
 #define POTTERY_VECTOR_PREFIX int_vector
-#define POTTERY_VECTOR_ELEMENT_TYPE int
+#define POTTERY_VECTOR_VALUE_TYPE int
 #define POTTERY_VECTOR_LIFECYCLE_BY_VALUE 1
 #include "pottery/vector/pottery_vector_static.t.h"
 

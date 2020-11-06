@@ -51,7 +51,7 @@ namespace detail {
 template <typename T>
 struct vector_wrapper {
     #define POTTERY_VECTOR_PREFIX cvector
-    #define POTTERY_VECTOR_ELEMENT_TYPE T
+    #define POTTERY_VECTOR_VALUE_TYPE T
 
     // C++ std::vector requires that erase() and pop_back() don't invalidate
     // iterators to elements before the element being removed. In order to be

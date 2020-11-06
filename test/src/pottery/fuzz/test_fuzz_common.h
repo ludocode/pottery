@@ -50,9 +50,9 @@ static inline uint32_t fuzz_load_u16(fuzz_input_t* input) {
         return 0;
     }
 
-    uint16_t ret = (uint16_t)(
-            ((uint16_t)input->pos[1] << 8) |
-            ((uint16_t)input->pos[0]));
+    uint16_t ret = pottery_cast(uint16_t,
+            (pottery_cast(uint16_t, input->pos[1]) << 8) |
+            (pottery_cast(uint16_t, input->pos[0])));
 
     input->pos += 2;
     return ret;
@@ -64,10 +64,10 @@ static inline uint32_t fuzz_load_u24(fuzz_input_t* input) {
         return 0;
     }
 
-    uint32_t ret = (uint32_t)(
-            ((uint32_t)input->pos[2] << 16) |
-            ((uint32_t)input->pos[1] << 8) |
-            ((uint32_t)input->pos[0]));
+    uint32_t ret = pottery_cast(uint32_t,
+            (pottery_cast(uint32_t, input->pos[2]) << 16) |
+            (pottery_cast(uint32_t, input->pos[1]) << 8) |
+            (pottery_cast(uint32_t, input->pos[0])));
 
     input->pos += 3;
     return ret;
@@ -79,11 +79,11 @@ static inline uint32_t fuzz_load_u32(fuzz_input_t* input) {
         return 0;
     }
 
-    uint32_t ret = (uint32_t)(
-            ((uint32_t)input->pos[3] << 24) |
-            ((uint32_t)input->pos[2] << 16) |
-            ((uint32_t)input->pos[1] << 8) |
-            ((uint32_t)input->pos[0]));
+    uint32_t ret = pottery_cast(uint32_t,
+            (pottery_cast(uint32_t, input->pos[3]) << 24) |
+            (pottery_cast(uint32_t, input->pos[2]) << 16) |
+            (pottery_cast(uint32_t, input->pos[1]) << 8) |
+            (pottery_cast(uint32_t, input->pos[0])));
 
     input->pos += 4;
     return ret;

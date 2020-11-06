@@ -25,7 +25,7 @@
 #include "string.h"
 
 #define POTTERY_VECTOR_PREFIX string_storage
-#define POTTERY_VECTOR_ELEMENT_TYPE char
+#define POTTERY_VECTOR_VALUE_TYPE char
 #define POTTERY_VECTOR_LIFECYCLE_BY_VALUE 1
 #define POTTERY_VECTOR_INTERNAL_CAPACITY 16
 #include "pottery/vector/pottery_vector_define.t.h"

@@ -30,7 +30,7 @@
     #define POTTERY_VECTOR_INTERNAL_CAPACITY 0
 #endif
 
-typedef POTTERY_VECTOR_ELEMENT_TYPE pottery_vector_element_t;
+typedef POTTERY_VECTOR_VALUE_TYPE pottery_vector_element_t;
 typedef pottery_vector_element_t* pottery_vector_entry_t;
 
 #ifdef POTTERY_VECTOR_CONTEXT_TYPE

@@ -53,6 +53,9 @@ typedef POTTERY_OPEN_HASH_MAP_CONTEXT_TYPE pottery_ohm_context_t;
 
 #if POTTERY_OPEN_HASH_MAP_HAS_METADATA
 typedef enum pottery_ohm_bucket_state_t {
+
+    // We use zero as the empty state so we can zero-allocate our metadata and
+    // not have to clear it.
     #if POTTERY_OPEN_HASH_MAP_INTERNAL_EMPTY
     pottery_ohm_bucket_state_empty = 0,
     #endif

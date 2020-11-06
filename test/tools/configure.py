@@ -285,6 +285,9 @@ else:
 
 defaultCXXFlags += ["-Ibindings/cxx/include"]
 
+if checkFlags(defaultCXXFlags + ["-Wold-style-cast"]):
+    defaultCXXFlags.append("-Wold-style-cast")
+
 
 
 ###################################################

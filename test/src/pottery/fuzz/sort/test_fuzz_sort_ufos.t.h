@@ -85,7 +85,7 @@ static void fuzz_shuffle(fuzz_input_t* input, source_t* source) {
 
     size_t i;
     for (i = 0; i < count; ++i) {
-        size_t j = (size_t)rand() % (count - i);
+        size_t j = pottery_cast(size_t, rand()) % (count - i);
         ufo_swap_strings(source->array + start + i, source->array + start + j);
     }
 }

@@ -39,7 +39,7 @@ Mostly I am releasing this now because I am out of money and need to go get a re
 
 
 
-## Simple Examples
+## Examples
 
 
 ### Sort Strings
@@ -89,7 +89,7 @@ Suppose you want a dynamically growable array of integers. Let's call it `int_ve
 
 ```c
 #define POTTERY_VECTOR_PREFIX int_vector
-#define POTTERY_VECTOR_ELEMENT_TYPE int
+#define POTTERY_VECTOR_VALUE_TYPE int
 #define POTTERY_VECTOR_LIFECYCLE_BY_VALUE 1
 #include "pottery/vector/pottery_vector_static.t.h"
 ```
@@ -124,7 +124,7 @@ See the full example [here](examples/pottery/int_vector/).
 
 Suppose you want a dynamically growable set of unique strings.
 
-We'll use an [`open_hash_map`](include/pottery/open_hash_map/) for this, so first we define a simple hash function:
+We'll use an [`open_hash_map`](include/pottery/open_hash_map/) for this, so first we define a [simple hash function](https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function#FNV-1a_hash):
 
 ```c
 static inline size_t fnv1a(const char* p) {
@@ -139,7 +139,7 @@ You could of course use a better hash function like MurmurHash or CityHash or wh
 
 Next we define our map. We'll use `char*` as the value type and `const char*` as the key type, that way we can search it with const strings. In Pottery, map values contain their own keys, so in our case the key for a value is just the value itself.
 
-```
+```c
 #define POTTERY_OPEN_HASH_MAP_PREFIX string_set_map
 #define POTTERY_OPEN_HASH_MAP_VALUE_TYPE char*
 #define POTTERY_OPEN_HASH_MAP_KEY_TYPE const char*
@@ -174,3 +174,8 @@ bool string_set_remove(string_set_t*, const char*);
 ```
 
 It is trivial to implement these functions as wrappers to our `string_set_map`. See the implementation of this in the full example [here](examples/pottery/string_set/).
+
+
+### Additional Examples
+
+There are more examples in the [`examples/`](examples/pottery/) folder and many more that stll need to be written. Have a look at what's there so far to learn more ways you can use Pottery.

@@ -28,7 +28,7 @@
 static inline size_t fnv1a(const char* p) {
     uint32_t hash = 2166136261;
     for (; *p != 0; ++p)
-        hash = (hash ^ (uint8_t)*p) * 16777619;
+        hash = (hash ^ pottery_cast(uint8_t, *p)) * 16777619;
     return hash;
 }
 

@@ -36,7 +36,7 @@ extern "C" {
 // implementations of std::string. It also makes our string not bitwise
 // movable so you can only move it with string_move()!
 #define POTTERY_VECTOR_PREFIX string_storage
-#define POTTERY_VECTOR_ELEMENT_TYPE char
+#define POTTERY_VECTOR_VALUE_TYPE char
 #define POTTERY_VECTOR_LIFECYCLE_BY_VALUE 1
 #define POTTERY_VECTOR_INTERNAL_CAPACITY 16
 #include "pottery/vector/pottery_vector_declare.t.h"
