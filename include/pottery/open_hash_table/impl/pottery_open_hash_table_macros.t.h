@@ -116,6 +116,7 @@
     #define pottery_oht_displace POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _displace)
     #define pottery_oht_remove POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _remove)
     #define pottery_oht_remove_key POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _remove_key)
+    #define pottery_oht_contains_key POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _contains_key)
 
     #define pottery_oht_begin POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _begin)
     #define pottery_oht_end POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _end)

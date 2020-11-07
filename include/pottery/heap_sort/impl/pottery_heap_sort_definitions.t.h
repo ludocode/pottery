@@ -40,7 +40,7 @@ void pottery_heap_sort(
             #endif
             first,
             count);
-    pottery_heap_sort_heap_pop(
+    pottery_heap_sort_heap_contract_bulk(
             #ifdef POTTERY_HEAP_SORT_CONTEXT_TYPE
             context,
             #endif

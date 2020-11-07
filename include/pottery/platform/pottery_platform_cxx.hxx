@@ -177,8 +177,4 @@ struct is_bitwise_movable : pottery::is_bitwise_copyable<T> {};
 
 } // namespace pottery
 
-// TODO backward compatibility
-constexpr auto pottery_terminate = pottery::terminate;
-constexpr auto pottery_error_to_exception = pottery::error_to_exception;
-
 #endif

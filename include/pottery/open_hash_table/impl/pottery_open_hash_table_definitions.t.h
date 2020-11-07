@@ -53,8 +53,9 @@ pottery_oht_ref_t pottery_oht_access_next(
         pottery_oht_ref_t ref)
 {
     POTTERY_OPEN_HASH_TABLE_CONTEXT_UNUSED;
-    // TODO configurable access
-    return ref + 1;
+    // This will be made properly configurable later when we make an
+    // array_access template. For now we just wrap access_at().
+    return pottery_oht_access_at(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref, 1);
 }
 
 static pottery_always_inline
@@ -63,8 +64,11 @@ pottery_oht_ref_t pottery_oht_access_previous(
         pottery_oht_ref_t ref)
 {
     POTTERY_OPEN_HASH_TABLE_CONTEXT_UNUSED;
-    // TODO configurable access
-    return ref - 1;
+    // This will be made properly configurable later when we make an
+    // array_access template. For now we just wrap access_at().
+    // (This is a bit of a hack since our access function doesn't take a signed
+    // offset yet.)
+    return pottery_oht_access_at(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref, SIZE_MAX - 1);
 }
 
 static inline
@@ -163,11 +167,11 @@ bool pottery_oht_ref_is_element(
         POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
         pottery_oht_ref_t ref)
 {
-    #ifdef POTTERY_OPEN_HASH_TABLE_IS_ELEMENT
+    #ifdef POTTERY_OPEN_HASH_TABLE_IS_VALUE
         #if defined(POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE)
-            return POTTERY_OPEN_HASH_TABLE_IS_ELEMENT(context, ref);
+            return POTTERY_OPEN_HASH_TABLE_IS_VALUE(context, ref);
         #else
-            return POTTERY_OPEN_HASH_TABLE_IS_ELEMENT(ref);
+            return POTTERY_OPEN_HASH_TABLE_IS_VALUE(ref);
         #endif
 
     #else

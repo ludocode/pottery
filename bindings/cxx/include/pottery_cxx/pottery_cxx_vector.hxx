@@ -88,7 +88,7 @@ public:
     }
 
     vector(const vector& other) {
-        pottery_error_to_exception(wrapper::cvector_init_copy(&cvector, &other.cvector));
+        error_to_exception(wrapper::cvector_init_copy(&cvector, &other.cvector));
     }
 
     vector(vector&& other) {
@@ -96,12 +96,12 @@ public:
     }
 
     vector& operator=(const vector& other) {
-        pottery_error_to_exception(wrapper::cvector_copy(&cvector, &other.cvector));
+        error_to_exception(wrapper::cvector_copy(&cvector, &other.cvector));
         return *this;
     }
 
     vector& operator=(vector&& other) {
-        pottery_error_to_exception(wrapper::cvector_steal(&cvector, &other.cvector));
+        error_to_exception(wrapper::cvector_steal(&cvector, &other.cvector));
         return *this;
     }
 
@@ -139,7 +139,7 @@ public:
             #if POTTERY_CXX_EXCEPTIONS
             throw std::out_of_range("");
             #else
-            pottery_terminate();
+            terminate();
             #endif
         }
         return *wrapper::cvector_at(&cvector, index);
@@ -189,14 +189,14 @@ public:
     iterator insert(const_iterator pos, const T& value) {
         size_t index = pottery_cast(size_t, pos - data());
         iterator entry;
-        pottery_error_to_exception(wrapper::cvector_construct_at(&cvector, index, &entry, value));
+        error_to_exception(wrapper::cvector_construct_at(&cvector, index, &entry, value));
         return entry;
     }
 
     iterator insert(const_iterator pos, T&& value) {
         size_t index = pottery_cast(size_t, pos - data());
         iterator entry;
-        pottery_error_to_exception(wrapper::cvector_construct_at(&cvector, index, &entry, std::move(value)));
+        error_to_exception(wrapper::cvector_construct_at(&cvector, index, &entry, std::move(value)));
         return entry;
     }
 
@@ -204,14 +204,14 @@ public:
     iterator emplace(const_iterator pos, Args&&... args) {
         size_t index = pottery_cast(size_t, pos - data());
         iterator entry;
-        pottery_error_to_exception(wrapper::cvector_construct_at(&cvector, index, &entry, std::forward<Args>(args)...));
+        error_to_exception(wrapper::cvector_construct_at(&cvector, index, &entry, std::forward<Args>(args)...));
         return entry;
     }
 
     template<typename... Args>
     iterator emplace_back(Args&&... args) {
         iterator entry;
-        pottery_error_to_exception(wrapper::cvector_construct_last(&cvector, &entry, std::forward<Args>(args)...));
+        error_to_exception(wrapper::cvector_construct_last(&cvector, &entry, std::forward<Args>(args)...));
         return entry;
     }
 
@@ -229,12 +229,12 @@ public:
 
     void push_back(const T& value) {
         iterator entry;
-        pottery_error_to_exception(wrapper::cvector_construct_last(&cvector, &entry, value));
+        error_to_exception(wrapper::cvector_construct_last(&cvector, &entry, value));
     }
 
     void push_back(T&& value) {
         iterator entry;
-        pottery_error_to_exception(wrapper::cvector_construct_last(&cvector, &entry, std::move(value)));
+        error_to_exception(wrapper::cvector_construct_last(&cvector, &entry, std::move(value)));
     }
 
     void pop_back() {

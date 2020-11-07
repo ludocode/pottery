@@ -47,10 +47,6 @@
 #define POTTERY_OPEN_HASH_MAP_EXTERN /*nothing*/
 #endif
 
-#ifndef POTTERY_OPEN_HASH_MAP_DOUBLE_ENDED
-    #define POTTERY_OPEN_HASH_MAP_DOUBLE_ENDED 0
-#endif
-
 // Probing sequence
 // This is mostly duplicated from open_hash_table. We need to figure out the
 // probing sequence to decide whether we'll store tombstones.
@@ -149,6 +145,7 @@
 #define pottery_ohm_displace POTTERY_OPEN_HASH_MAP_NAME(_displace)
 #define pottery_ohm_remove POTTERY_OPEN_HASH_MAP_NAME(_remove)
 #define pottery_ohm_remove_key POTTERY_OPEN_HASH_MAP_NAME(_remove_key)
+#define pottery_ohm_contains_key POTTERY_OPEN_HASH_MAP_NAME(_contains_key)
 
 #define pottery_ohm_begin POTTERY_OPEN_HASH_MAP_NAME(_begin)
 #define pottery_ohm_end POTTERY_OPEN_HASH_MAP_NAME(_end)
@@ -184,6 +181,7 @@
     #define pottery_ohm_table_displace POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _displace)
     #define pottery_ohm_table_remove POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _remove)
     #define pottery_ohm_table_remove_key POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _remove_key)
+    #define pottery_ohm_table_contains_key POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _contains_key)
 
     #define pottery_ohm_table_begin POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _begin)
     #define pottery_ohm_table_end POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _end)

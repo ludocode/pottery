@@ -36,6 +36,7 @@
 #define {SRC}_displace POTTERY_CONCAT({DEST}, _displace)
 #define {SRC}_remove POTTERY_CONCAT({DEST}, _remove)
 #define {SRC}_remove_key POTTERY_CONCAT({DEST}, _remove_key)
+#define {SRC}_contains_key POTTERY_CONCAT({DEST}, _contains_key)
 
 #define {SRC}_begin POTTERY_CONCAT({DEST}, _begin)
 #define {SRC}_end POTTERY_CONCAT({DEST}, _end)

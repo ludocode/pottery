@@ -47,7 +47,7 @@ pottery_noreturn
 static inline void pottery_abort() {
     #if POTTERY_DEBUG && defined(POTTERY_UNIT_TEST)
     // segfault on purpose so that ASAN gives us a stack trace.
-    *((int*)-1)=1;
+    *(pottery_reinterpret_cast(int*, -1))=1;
     #endif
     abort();
 }

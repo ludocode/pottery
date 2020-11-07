@@ -28,4 +28,3 @@
 #undef {PREFIX}_VALUE_TYPE
 #undef {PREFIX}_CONTEXT_TYPE
 #undef {PREFIX}_ACCESS
-#undef {PREFIX}_BY_VALUE

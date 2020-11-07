@@ -4,7 +4,7 @@ A dynamically growable contiguous array of values. This is a close C analogue to
 
 The low-level API for inserting and removing values is `emplace()` and `displace()`. These create or remove space for uninitializes values within the vector. When calling these functions, you must manually initialize and destroy the values.
 
-The pass-by-value API is `insert()` and `extract()`. These require that your value type can be moved by value (e.g. `LIFECYCLE_MOVE_BY_VALUE` or `LIFECYCLE_BY_VALUE`, but not `LIFECYCLE_MOVE`.) The vector takes ownership of a value passed to `insert()` and relinquishes ownership of a value returned by `extract()`.
+The pass-by-value API is `insert()` and `extract()`. These require that your value type can be moved by value (e.g. `LIFECYCLE_MOVE_BY_VALUE` or `LIFECYCLE_BY_VALUE`, but not `LIFECYCLE_MOVE`.) The vector takes ownership of a value passed to `insert()` if successful and relinquishes ownership of a value returned by `extract()`. (The behaviour of these changes if `CXX` is enabled; see the [documentation on `CXX`](#cxx) below.)
 
 The `remove()` functions destroy and remove values. An element destroy expression is required (e.g. `LIFECYCLE_DESTROY`, `LIFECYCLE_DESTROY_BY_VALUE` or `LIFECYCLE_BY_VALUE`)
 
@@ -54,11 +54,12 @@ For some value types it's possible for this to be non-zero without making the ve
 
 #### `CXX`
 
-A flag (1 or 0). If 1, the vector will instantiate additional C++ functions when compiled as C++.
+A flag (1 or 0). If 1, the vector will instantiate additional and alternate C++ functions when compiled as C++.
 
 This is 0 by default so that the vector can be instantiated in an `extern "C"` block. Set this to 1 to get the additional functions.
 
 These functions include:
 
-- `construct_*()` -- construct an element in-place in the vector
-- `insert_*()` overloads for various reference types allowing more efficient insertion
+- `construct_*()` to construct an element in-place in the vector (similar to C++11 `emplace()`)
+
+- `insert_*()` changes behaviour and has overloads for various reference types, allowing more natural and efficient C++-style insertion

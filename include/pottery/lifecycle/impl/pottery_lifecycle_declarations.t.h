@@ -127,8 +127,8 @@ void pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_ARG
                 // try/catch. We don't assert for it though (with e.g.
                 // is_nothrow_move_constructible) since most people don't
                 // bother to mark their move constructors noexcept. An
-                // exception here should trigger a runtime failure because this
-                // function is noexcept.
+                // exception here should terminate because this function is
+                // noexcept.
                 new (to) pottery_lifecycle_value_t(std::move(*from));
                 from->~pottery_lifecycle_value_t();
             }

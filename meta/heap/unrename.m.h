@@ -30,7 +30,6 @@
 #undef {PREFIX}_context_t
 #undef {PREFIX}_state_t
 
-#undef {PREFIX}
 #undef {PREFIX}_access
 #undef {PREFIX}_set_index
 
@@ -40,13 +39,13 @@
 #undef {PREFIX}_sift_down
 #undef {PREFIX}_sift_up
 #undef {PREFIX}_build_impl
-#undef {PREFIX}_push_impl
-#undef {PREFIX}_pop_impl
-#undef {PREFIX}_remove_impl
+#undef {PREFIX}_expand_bulk_impl
+#undef {PREFIX}_contract_bulk_impl
+#undef {PREFIX}_contract_at_impl
 #undef {PREFIX}_valid_count_impl
 #undef {PREFIX}_build
-#undef {PREFIX}_push
-#undef {PREFIX}_pop
-#undef {PREFIX}_remove
+#undef {PREFIX}_expand_bulk
+#undef {PREFIX}_contract_bulk
+#undef {PREFIX}_contract_at
 #undef {PREFIX}_valid
 #undef {PREFIX}_valid_count

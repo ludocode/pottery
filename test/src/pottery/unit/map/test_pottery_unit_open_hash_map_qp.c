@@ -32,6 +32,12 @@ static inline size_t fnv1a(const char* p) {
     return hash;
 }
 
+// workarounds for MSVC C++/CLR not allowing different structs in different
+// translation units with the same name
+#ifdef __CLR_VER
+#define ufo_map_t pottery_open_hash_map_qp_ufo_t
+#endif
+
 // Instantiate a map of const char* to ufo_t
 // Use quadratic probing with no empty or tombstone states so the map will
 // store metadata for us.

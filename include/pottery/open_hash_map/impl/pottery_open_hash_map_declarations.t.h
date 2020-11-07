@@ -122,6 +122,9 @@ POTTERY_OPEN_HASH_MAP_EXTERN
 bool pottery_ohm_remove_key(pottery_ohm_t* map, pottery_ohm_key_t key);
 #endif
 
+/**
+ * Returns true if the ref exists.
+ */
 static inline
 bool pottery_ohm_ref_exists(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
     return pottery_ohm_table_ref_exists(
@@ -129,6 +132,18 @@ bool pottery_ohm_ref_exists(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
             map->values,
             map->log_2_size,
             ref);
+}
+
+/**
+ * Returns true if there is a value in the map with this key.
+ */
+static inline
+bool pottery_ohm_contains_key(pottery_ohm_t* map, pottery_ohm_key_t key) {
+    return pottery_ohm_table_contains_key(
+            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
+            map->values,
+            map->log_2_size,
+            key);
 }
 
 static inline
@@ -302,14 +317,14 @@ bool pottery_ohm_ref_is_value(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
             pottery_cast(uint8_t, pottery_ohm_bucket_state_other))
         return false;
 
-    // We can't use IS_ELEMENT if we have metadata because that means something
+    // We can't use IS_VALUE if we have metadata because that means something
     // is not in-band: the user can't possibly tell whether something is empty
     // or a tombstone if we're storing that ourselves.
-    #elif defined(POTTERY_OPEN_HASH_MAP_IS_ELEMENT)
+    #elif defined(POTTERY_OPEN_HASH_MAP_IS_VALUE)
         #if defined(POTTERY_OPEN_HASH_MAP_CONTEXT_TYPE)
-            return POTTERY_OPEN_HASH_MAP_IS_ELEMENT(map->context, ref);
+            return POTTERY_OPEN_HASH_MAP_IS_VALUE(map->context, ref);
         #else
-            return POTTERY_OPEN_HASH_MAP_IS_ELEMENT(ref);
+            return POTTERY_OPEN_HASH_MAP_IS_VALUE(ref);
         #endif
 
     #endif

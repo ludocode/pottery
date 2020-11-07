@@ -80,8 +80,7 @@ bool string_set_add(string_set_t* set, const char* str) {
 }
 
 bool string_set_query(string_set_t* set, const char* str) {
-    // TODO add key_exists()
-    return string_set_map_ref_exists(&set->map, string_set_map_find(&set->map, str));
+    return string_set_map_contains_key(&set->map, str);
 }
 
 bool string_set_remove(string_set_t* set, const char* str) {

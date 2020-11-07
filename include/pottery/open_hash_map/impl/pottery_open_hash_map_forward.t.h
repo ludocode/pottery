@@ -31,13 +31,11 @@
 typedef POTTERY_OPEN_HASH_MAP_VALUE_TYPE pottery_ohm_value_t;
 #endif
 
-// The ref is an abstract handle to an element and bucket in the hash table.
+// The ref is a pointer to an element and bucket in the hash table.
 #ifdef POTTERY_OPEN_HASH_MAP_REF_TYPE
-#error "TODO it doesn't make sense to have a custom ref type"
-typedef POTTERY_OPEN_HASH_MAP_REF_TYPE pottery_ohm_ref_t;
-#else
-typedef pottery_ohm_value_t* pottery_ohm_ref_t;
+#error "Custom ref type is not supported."
 #endif
+typedef pottery_ohm_value_t* pottery_ohm_ref_t;
 
 // The key type is an abstract handle to a key used for lookups in the hash
 // table. Each element in the hash table has a unique key.

@@ -42,9 +42,3 @@
 #ifdef {SRC}_ACCESS
     #define {DEST}_ACCESS {SRC}_ACCESS
 #endif
-
-// TODO this is obsolete, it's been renamed to LIFECYCLE_BY_VALUE. probably
-// this template shouldn't be used anymore, e.g. intro_sort doesn't use it
-#ifdef {SRC}_BY_VALUE
-    #define {DEST}_BY_VALUE {SRC}_BY_VALUE
-#endif

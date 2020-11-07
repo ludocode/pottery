@@ -14,7 +14,7 @@ Pottery is modern C code written in the ultra-portable intersection of C11, gnu8
 
 Pottery does not use void pointer casts, function pointers, code block macros, compiler-dependent hacks, or any other inefficiencies or messyness of typical C containers. Pottery's templates are clean, composable, fast, strongly typed, and highly configurable.
 
-Pottery is not just an experiment to push the boundaries of meta-programming in C. It's a real library for writing real programs, and it's used throughout [HomeFort](https://homefort.app). I expect that most people who dig into this will decide it is some kind of deranged insanity. For those that don't, I hope you find it not just a curiosity but actually useful.
+Pottery is not just an experiment to push the boundaries of meta-programming in C. It's a real library for writing real programs, and it's used throughout [HomeFort](https://homefort.app/). I expect that most people who dig into this will decide it is some kind of deranged insanity. For those that don't, I hope you find it not just a curiosity but actually useful.
 
 #### Alpha Quality
 

@@ -2,11 +2,13 @@ This is a listing of templates available from Pottery.
 
 The documentation for each template is inline in each folder for ease of browsing. Just click a folder to see the documentation.
 
+Documentation is currently incomplete or missing entirely for most templates. Much more needs to be written. Eventually each template README should contain a full API reference.
+
 Here's a more hierarchical index:
 
 - Sorting Algorithms
     - [Insertion Sort](insertion_sort/), a very small algorithm that is efficient for short arrays
-    - [Shell Sort](shell_sort/), a modified insertion sort that work wells on large arrays
+    - [Shell Sort](shell_sort/), a modified insertion sort that works well on large arrays
     - [Heap Sort](heap_sort/), in-place sort based on binary heap with optimal worst case behaviour
     - [Quick Sort](quick_sort/), a simple and very fast in-place partition sort
     - [Intro Sort](intro_sort/), quick sort with speed and safety fallbacks

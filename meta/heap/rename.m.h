@@ -30,7 +30,6 @@
 #define {SRC}_context_t POTTERY_CONCAT({DEST}, _context_t)
 #define {SRC}_state_t POTTERY_CONCAT({DEST}, _state_t)
 
-#define {SRC} {DEST} // TODO shouldn't be necessary?
 #define {SRC}_access POTTERY_CONCAT({DEST}, _access)
 #define {SRC}_set_index POTTERY_CONCAT({DEST}, _set_index)
 
@@ -40,13 +39,13 @@
 #define {SRC}_sift_down POTTERY_CONCAT({DEST}, _sift_down)
 #define {SRC}_sift_up POTTERY_CONCAT({DEST}, _sift_up)
 #define {SRC}_build_impl POTTERY_CONCAT({DEST}, _build_impl)
-#define {SRC}_push_impl POTTERY_CONCAT({DEST}, _push_impl)
-#define {SRC}_pop_impl POTTERY_CONCAT({DEST}, _pop_impl)
-#define {SRC}_remove_impl POTTERY_CONCAT({DEST}, _remove_impl)
+#define {SRC}_expand_bulk_impl POTTERY_CONCAT({DEST}, _expand_bulk_impl)
+#define {SRC}_contract_bulk_impl POTTERY_CONCAT({DEST}, _contract_bulk_impl)
+#define {SRC}_contract_at_impl POTTERY_CONCAT({DEST}, _contract_at_impl)
 #define {SRC}_valid_count_impl POTTERY_CONCAT({DEST}, _valid_count_impl)
 #define {SRC}_build POTTERY_CONCAT({DEST}, _build)
-#define {SRC}_push POTTERY_CONCAT({DEST}, _push)
-#define {SRC}_pop POTTERY_CONCAT({DEST}, _pop)
-#define {SRC}_remove POTTERY_CONCAT({DEST}, _remove)
+#define {SRC}_expand_bulk POTTERY_CONCAT({DEST}, _expand_bulk)
+#define {SRC}_contract_bulk POTTERY_CONCAT({DEST}, _contract_bulk)
+#define {SRC}_contract_at POTTERY_CONCAT({DEST}, _contract_at)
 #define {SRC}_valid POTTERY_CONCAT({DEST}, _valid)
 #define {SRC}_valid_count POTTERY_CONCAT({DEST}, _valid_count)

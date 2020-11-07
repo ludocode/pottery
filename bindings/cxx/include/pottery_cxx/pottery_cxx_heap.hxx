@@ -99,9 +99,9 @@ void push_heap(RandomAccessIterator first, RandomAccessIterator last, Less less)
     // Invalid arguments are undefined behavior. We'll check anyway and abort()
     // to prevent an overflow on count below.
     if (count == 0)
-        pottery_terminate();
+        terminate();
 
-    pottery::impl::Heap<RandomAccessIterator, Less>::heap_push(less, first, count - 1, 1);
+    pottery::impl::Heap<RandomAccessIterator, Less>::heap_expand_bulk(less, first, count - 1, 1);
 }
 
 template <class RandomAccessIterator>
@@ -122,9 +122,9 @@ void pop_heap(RandomAccessIterator first, RandomAccessIterator last, Less less) 
     // Invalid arguments are undefined behavior. We'll check anyway and abort()
     // to prevent trying to pop from an empty array.
     if (count == 0)
-        pottery_terminate();
+        terminate();
 
-    pottery::impl::Heap<RandomAccessIterator, Less>::heap_pop(less, first, count, 1);
+    pottery::impl::Heap<RandomAccessIterator, Less>::heap_contract_bulk(less, first, count, 1);
 }
 
 template <class RandomAccessIterator>
@@ -143,7 +143,7 @@ void sort_heap(RandomAccessIterator first, RandomAccessIterator last, Less less)
     size_t count = pottery_cast(size_t, last - first);
     if (count == 0)
         return;
-    pottery::impl::Heap<RandomAccessIterator, Less>::heap_pop(less, first, count, count);
+    pottery::impl::Heap<RandomAccessIterator, Less>::heap_contract_bulk(less, first, count, count);
 }
 
 template <class RandomAccessIterator>

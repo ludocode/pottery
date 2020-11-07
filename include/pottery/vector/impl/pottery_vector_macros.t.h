@@ -84,9 +84,6 @@
 #define pottery_vector_insert_last_vector POTTERY_VECTOR_NAME(_insert_last_vector)
 #define pottery_vector_insert_first_vector POTTERY_VECTOR_NAME(_insert_first_vector)
 
-#define pottery_vector_alloc_context POTTERY_VECTOR_NAME(_alloc_context)
-#define pottery_vector_set_alloc_context POTTERY_VECTOR_NAME(_set_alloc_context)
-
 #define pottery_vector_impl_alloc POTTERY_VECTOR_NAME(_impl_alloc)
 #define pottery_vector_impl_free POTTERY_VECTOR_NAME(_impl_free)
 #define pottery_vector_impl_create_space POTTERY_VECTOR_NAME(_impl_create_space)

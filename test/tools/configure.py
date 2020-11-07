@@ -163,7 +163,9 @@ with open(flagtest_src, "w") as out:
 int main(int argc, char** argv) {
     // array dereference to test for the existence of
     // sanitizer libs when using -fsanitize (libubsan)
-    return argv[argc - 1] == 0;
+    // compare it to another string in the array so that
+    // -Wzero-as-null-pointer-constant works
+    return argv[argc - 1] == argv[0];
 }
 """)
 
@@ -360,8 +362,7 @@ if compiler != "MSVC":
     for flag in extraFlags:
         defaultCPPFlags += flagsIfSupported(flag)
 
-    if checkFlags(["-x", "c++", "-Wzero-as-null-pointer-constant"]):
-        # TODO this isn't working in GCC or Clang
+    if checkFlags(defaultCXXFlags + ["-Wzero-as-null-pointer-constant"]):
         defaultCXXFlags.append("-Wzero-as-null-pointer-constant")
 
     # TODO we need a build without this, partly for valgrind and partly because

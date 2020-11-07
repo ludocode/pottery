@@ -36,6 +36,7 @@
 #undef {PREFIX}_displace
 #undef {PREFIX}_remove
 #undef {PREFIX}_remove_key
+#undef {PREFIX}_contains_key
 
 #undef {PREFIX}_begin
 #undef {PREFIX}_end

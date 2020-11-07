@@ -55,23 +55,6 @@ typedef pottery_oht_ref_t pottery_oht_key_t;
 typedef POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE pottery_oht_context_t;
 #endif
 
-#if 0//TODO remove
-typedef struct pottery_oht_t {
-    #ifdef POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE
-    pottery_oht_context_t context;
-    #endif
-
-    pottery_oht_ref_t first;
-    size_t log_2_size; // power-of-two size (i.e. log_2 of the size)
-
-    size_t count;
-
-    #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
-    size_t tombstones;
-    #endif
-} pottery_oht_t;
-#endif
-
 /*
  * Helpers to wrap configuration
  */
@@ -111,7 +94,6 @@ pottery_oht_ref_t pottery_oht_access_at(
         pottery_oht_ref_t first,
         size_t index)
 {
-    // TODO rename to ACCESS_AT or ACCESS_SHIFT maybe
     #ifndef POTTERY_OPEN_HASH_TABLE_ACCESS
         // With no defined access expression, it's a simple array.
         POTTERY_OPEN_HASH_TABLE_CONTEXT_UNUSED;
@@ -126,35 +108,6 @@ pottery_oht_ref_t pottery_oht_access_at(
 /*
  * Public functions
  */
-
-#if 0//TODO remove
-/**
- * Configures a hash table around an existing array.
- *
- * The array must already be a valid hash table. (To set up a hash table array
- * for the first time, make sure all elements are empty.)
- */
-POTTERY_OPEN_HASH_TABLE_EXTERN
-void pottery_oht_configure(pottery_oht_t* oht,
-    POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-    pottery_oht_ref_t first,
-    size_t log_2_size,
-    size_t count
-    #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
-    , size_t tombstones
-    #endif
-) {
-    #ifdef POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE
-    oht->context = context;
-    #endif
-    oht->first = first;
-    oht->log_2_size = log_2_size;
-    oht->count = count;
-    #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
-    oht->tombstones = tombstones;
-    #endif
-}
-#endif
 
 /**
  * Ensures there is an entry for the given key, adding it if necessary and
@@ -301,11 +254,29 @@ bool pottery_oht_ref_exists(
             first, log_2_size);
 }
 
+static inline
+bool pottery_oht_contains_key(
+        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        pottery_oht_ref_t first,
+        size_t log_2_size,
+        pottery_oht_key_t key)
+{
+    return pottery_oht_ref_exists(
+            POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
+            first,
+            log_2_size,
+            pottery_oht_find(
+                    POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
+                    first,
+                    log_2_size,
+                    key));
+}
+
 /**
  * Returns a ref representing the start of the hash table (the first element
  * if it has any elements, or the end of the hash table otherwise.)
  *
- * If the hast table is empty, the returned ref does not exist, and is equal
+ * If the hash table is empty, the returned ref does not exist, and is equal
  * to pottery_oht_end().
  */
 POTTERY_OPEN_HASH_TABLE_EXTERN

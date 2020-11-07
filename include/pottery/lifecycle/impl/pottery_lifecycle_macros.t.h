@@ -267,10 +267,19 @@
 #endif
 
 /*
- * copy by passing by value (e.g. as argument of insert() or return value of extract())
- * TODO should actually be move by value?
+ * Move by passing by value (e.g. as argument of insert() or return value of extract())
+ *
+ * This is allowed if we can move by value (common for C types), or if we can
+ * init_copy (a.k.a. copy construct) and destroy (common for C++ types.)
+ *
+ * This could be extended later to allow passing of non-copyable C++ types, but
+ * it will need to be more configurable because only partial C++ extensions
+ * will be able to be instantiated (for example vector would need to only
+ * instantiate insert() functions that take r-value references and not const
+ * references.) This isn't implemented yet.
  */
-#if POTTERY_LIFECYCLE_INIT_COPY_BY_VALUE && POTTERY_LIFECYCLE_CAN_DESTROY
+#if POTTERY_LIFECYCLE_MOVE_BY_VALUE || \
+        (POTTERY_LIFECYCLE_INIT_COPY_BY_VALUE && POTTERY_LIFECYCLE_DESTROY_BY_VALUE)
     #define POTTERY_LIFECYCLE_CAN_PASS 1
 #else
     #define POTTERY_LIFECYCLE_CAN_PASS 0

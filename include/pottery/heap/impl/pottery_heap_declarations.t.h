@@ -44,30 +44,30 @@ typedef pottery_heap_value_t* pottery_heap_ref_t;
 typedef POTTERY_HEAP_CONTEXT_TYPE pottery_heap_context_t;
 #endif
 
-typedef struct pottery_state_t {
+typedef struct pottery_heap_state_t {
     #ifdef POTTERY_HEAP_CONTEXT_TYPE
     pottery_heap_context_t context;
     #endif
     pottery_heap_ref_t first;
-} pottery_state_t;
+} pottery_heap_state_t;
 
 
 
 #if POTTERY_FORWARD_DECLARATIONS
 POTTERY_HEAP_EXTERN
-void pottery_heap_build_impl(pottery_state_t state, size_t count);
+void pottery_heap_build_impl(pottery_heap_state_t state, size_t count);
 
 POTTERY_HEAP_EXTERN
-void pottery_heap_push_impl(pottery_state_t state, size_t current_count, size_t push_count);
+void pottery_heap_expand_bulk_impl(pottery_heap_state_t state, size_t current_count, size_t expand_count);
 
 POTTERY_HEAP_EXTERN
-void pottery_heap_pop_impl(pottery_state_t state, size_t current_count, size_t pop_count);
+void pottery_heap_contract_bulk_impl(pottery_heap_state_t state, size_t current_count, size_t pop_count);
 
 POTTERY_HEAP_EXTERN
-void pottery_heap_remove_impl(pottery_state_t state, size_t current_count, size_t index_to_remove);
+void pottery_heap_contract_at_impl(pottery_heap_state_t state, size_t current_count, size_t index_to_contract);
 
 POTTERY_HEAP_EXTERN
-size_t pottery_heap_valid_count_impl(pottery_state_t state, size_t count);
+size_t pottery_heap_valid_count_impl(pottery_heap_state_t state, size_t count);
 #endif
 
 
@@ -80,7 +80,7 @@ void pottery_heap_build(
         pottery_heap_ref_t first,
         size_t count
 ) {
-    pottery_state_t state = {
+    pottery_heap_state_t state = {
         #ifdef POTTERY_HEAP_CONTEXT_TYPE
         context,
         #endif
@@ -89,47 +89,44 @@ void pottery_heap_build(
     pottery_heap_build_impl(state, count);
 }
 
-// TODO should rename the below to push_bulk and pop_bulk, provide single
-// push/pop. I think I didn't do this originally because of the confusion of
-// what size should be if there's no push/pop count argument
-
 /**
- * Adds `push_count` elements to a heap of size `current_count`.
+ * Expands a heap of size `current_count` to encompass an additional
+ * `expand_count` elements at the end of the range.
  *
- * The resulting size of the heap will be (current_count + push_count).
+ * The resulting size of the heap will be (current_count + expand_count).
  *
- * Note that this API is different from the C++ std::push_heap. std::push_heap
+ * Note that this API is different from C++ std::push_heap. std::push_heap
  * takes as arguments the bounds you want the heap to be after pushing the
  * last element. This is somewhat inconsistent from std::pop_heap which takes
  * the current bounds of the heap before popping the largest element. Pottery
  * avoids this ambiguity by always taking the current count as the argument.
  */
 static inline
-void pottery_heap_push(
+void pottery_heap_expand_bulk(
         #ifdef POTTERY_HEAP_CONTEXT_TYPE
         pottery_heap_context_t context,
         #endif
         pottery_heap_ref_t first,
         size_t current_count,
-        size_t push_count
+        size_t expand_count
 ) {
-    pottery_state_t state = {
+    pottery_heap_state_t state = {
         #ifdef POTTERY_HEAP_CONTEXT_TYPE
         context,
         #endif
         first,
     };
-    pottery_heap_push_impl(state, current_count, push_count);
+    pottery_heap_expand_bulk_impl(state, current_count, expand_count);
 }
 
 /**
- * Removes `pop_count` elements from a heap of current size `current_count`,
- * moving them to the end of the array.
+ * Contracts a heap of size `current_count` by the `pop_count` largest
+ * elements, moving them to the end of the range.
  *
  * The resulting size of the heap will be (current_count - pop_count).
  */
 static inline
-void pottery_heap_pop(
+void pottery_heap_contract_bulk(
         #ifdef POTTERY_HEAP_CONTEXT_TYPE
         pottery_heap_context_t context,
         #endif
@@ -137,37 +134,37 @@ void pottery_heap_pop(
         size_t current_count,
         size_t pop_count
 ) {
-    pottery_state_t state = {
+    pottery_heap_state_t state = {
         #ifdef POTTERY_HEAP_CONTEXT_TYPE
         context,
         #endif
         first,
     };
-    pottery_heap_pop_impl(state, current_count, pop_count);
+    pottery_heap_contract_bulk_impl(state, current_count, pop_count);
 }
 
 /**
- * Removes a single element from a heap of current size `current_count`, moving
- * it to the end of the array.
+ * Contracts a heap of size `current_count` by moving a single element at the
+ * given index to the end of the range.
  *
  * The resulting size of the heap will be (current_count - 1).
  */
 static inline
-void pottery_heap_remove(
+void pottery_heap_contract_at(
         #ifdef POTTERY_HEAP_CONTEXT_TYPE
         pottery_heap_context_t context,
         #endif
         pottery_heap_ref_t first,
         size_t current_count,
-        size_t index_to_remove
+        size_t index_to_contract
 ) {
-    pottery_state_t state = {
+    pottery_heap_state_t state = {
         #ifdef POTTERY_HEAP_CONTEXT_TYPE
         context,
         #endif
         first,
     };
-    pottery_heap_remove_impl(state, current_count, index_to_remove);
+    pottery_heap_contract_at_impl(state, current_count, index_to_contract);
 }
 
 /**
@@ -181,7 +178,7 @@ size_t pottery_heap_valid_count(
         pottery_heap_ref_t first,
         size_t count
 ) {
-    pottery_state_t state = {
+    pottery_heap_state_t state = {
         #ifdef POTTERY_HEAP_CONTEXT_TYPE
         context,
         #endif

@@ -148,7 +148,7 @@ Another name for this is "relocate".
 
 Indicates that the type is movable by value. This is implied by `BY_VALUE`.
 
-In C, this means `move()` is a simple assignment, or with `memcpy()` or equivalent for values in bulk.
+In C, this means `move()` is a simple assignment, or with `memcpy()` or equivalent for arrays of values.
 
 For bitwise-movable C++ types, move is done with `memcpy()` or equivalent. For non-bitwise-movable C++ types, this will run a move constructor on the destination from the source followed by destructing the source.
 

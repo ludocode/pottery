@@ -57,12 +57,12 @@ static inline void ufo_check(const ufo_t* ufo) {
     pottery_test_assert(ufo->string != pottery_null);
     // force a read from our string that the compiler can't optimize away. it
     // must have at least a null-terminator.
-    *(volatile char*)(ufo->string);
+    *pottery_reinterpret_cast(volatile char*, ufo->string);
 }
 
 static inline void ufo_destroy(ufo_t* ufo) {
     ufo_check(ufo);
-    ufo->self = (ufo_t*)(-1);
+    ufo->self = pottery_reinterpret_cast(ufo_t*, -1);
     pottery_test_free(ufo->string);
     // we don't clear out the allocated string pointer in order to let
     // instrumentation detect use-after-free.
@@ -76,6 +76,7 @@ static inline pottery_error_t ufo_init(ufo_t* ufo, const char* string, int32_t i
 }
 
 static inline pottery_error_t ufo_init_copy(ufo_t* to, const ufo_t* from) {
+    pottery_assert(to != from);
     ufo_check(from);
     to->self = to;
     to->string = pottery_test_strdup(from->string);
@@ -83,8 +84,8 @@ static inline pottery_error_t ufo_init_copy(ufo_t* to, const ufo_t* from) {
     return POTTERY_OK;
 }
 
-// TODO is this allowed to fail? Need to document what can fail in lifecycle functions
 static inline pottery_error_t ufo_init_steal(ufo_t* to, ufo_t* from) {
+    pottery_assert(to != from);
     ufo_check(from);
 
     to->self = to;
@@ -97,19 +98,21 @@ static inline pottery_error_t ufo_init_steal(ufo_t* to, ufo_t* from) {
 }
 
 static inline void ufo_move(ufo_t* to, ufo_t* from) {
+    pottery_assert(to != from);
     ufo_check(from);
 
     to->self = to;
     to->string = from->string;
     to->integer = from->integer;
 
-    from->self = (ufo_t*)(-1);
+    from->self = pottery_reinterpret_cast(ufo_t*, -1);
     // we do clear out the allocated pointer here because the old pointer is
     // still alive, so we wouldn't detect use-after-free.
-    from->string = (char*)(-1);
+    from->string = pottery_reinterpret_cast(char*, -1);
 }
 
 static inline pottery_error_t ufo_copy(ufo_t* to, const ufo_t* from) {
+    pottery_assert(to != from);
     ufo_check(to);
     ufo_check(from);
 
@@ -125,6 +128,7 @@ static inline pottery_error_t ufo_copy(ufo_t* to, const ufo_t* from) {
 }
 
 static inline void ufo_steal(ufo_t* to, ufo_t* from) {
+    pottery_assert(to != from);
     ufo_check(to);
     ufo_check(from);
 
@@ -137,6 +141,7 @@ static inline void ufo_steal(ufo_t* to, ufo_t* from) {
 }
 
 static inline void ufo_swap(ufo_t* left, ufo_t* right) {
+    pottery_assert(left != right);
     ufo_check(left);
     ufo_check(right);
 

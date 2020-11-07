@@ -55,8 +55,8 @@
     #define {DEST}_SET_TOMBSTONE {SRC}_SET_TOMBSTONE
 #endif
 
-#ifdef {SRC}_IS_ELEMENT
-    #define {DEST}_IS_ELEMENT {SRC}_IS_ELEMENT
+#ifdef {SRC}_IS_VALUE
+    #define {DEST}_IS_VALUE {SRC}_IS_ELEMENT
 #endif
 
 #ifdef {SRC}_LINEAR_PROBING

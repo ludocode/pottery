@@ -24,7 +24,6 @@
 
 #include "pottery/common/test_pottery_ufo.h"
 
-#if 0 // TODO RE-ENABLE
 #define POTTERY_HEAP_SORT_PREFIX sort_ufos_by_string
 #define POTTERY_HEAP_SORT_VALUE_TYPE ufo_t
 #define POTTERY_HEAP_SORT_LIFECYCLE_MOVE ufo_move
@@ -34,4 +33,3 @@
 #define FUZZ_SORT_IS_STABLE 0
 #define TEST_POTTERY_FUZZ_SORT_UFO_PREFIX pottery_heap_sort_fuzz_ufo
 #include "pottery/fuzz/sort/test_fuzz_sort_ufos.t.h"
-#endif

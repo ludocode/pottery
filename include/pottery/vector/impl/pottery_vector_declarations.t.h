@@ -64,7 +64,6 @@ pottery_error_t pottery_vector_init(pottery_vector_t* vector) {
     pottery_vector_impl_reset(vector);
 
     #if POTTERY_DEBUG
-        // TODO make sure these work properly
         #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
             vector->self_check = vector; // internal capacity makes this not bitwise movable
         #endif
@@ -294,21 +293,21 @@ pottery_error_t pottery_vector_construct_last(pottery_vector_t* vector,
 
 #if defined(__cplusplus) && POTTERY_VECTOR_CXX
 
-// C++ non-const reference
-// (Not a const reference, this is not a copy! It's a pass, which is
-// effectively like init_steal, a.k.a. move construction. See container API
-// documentation on Insert.)
+#if POTTERY_LIFECYCLE_CAN_INIT_COPY
+
+// C++ const reference
 
 static inline
 pottery_error_t pottery_vector_insert_at(pottery_vector_t* vector,
-        size_t index, pottery_vector_element_t& value)
+        size_t index, const pottery_vector_element_t& value)
 {
     pottery_vector_entry_t entry;
     pottery_error_t error = pottery_vector_impl_create_space(vector, index, 1, &entry);
-    if (error == POTTERY_OK)
-        pottery_vector_lifecycle_init_steal(POTTERY_VECTOR_CONTEXT_VAL(vector) entry, &value);
-    // TODO this isn't right, this will run the C++ destructor
-    pottery_vector_lifecycle_destroy(POTTERY_VECTOR_CONTEXT_VAL(vector) &value);
+    if (error == POTTERY_OK) {
+        error = pottery_vector_lifecycle_init_copy(POTTERY_VECTOR_CONTEXT_VAL(vector) entry, &value);
+        if (error != POTTERY_OK)
+            pottery_vector_impl_remove_space(vector, index, 1);
+    }
     return error;
 }
 
@@ -339,6 +338,10 @@ pottery_error_t pottery_vector_insert_after(pottery_vector_t* vector,
     return pottery_vector_insert_at(vector, index + 1, value);
 }
 
+#endif // POTTERY_LIFECYCLE_CAN_INIT_COPY
+
+#if POTTERY_LIFECYCLE_CAN_INIT_STEAL
+
 // C++ rvalue reference
 
 static inline
@@ -347,10 +350,11 @@ pottery_error_t pottery_vector_insert_at(pottery_vector_t* vector,
 {
     pottery_vector_entry_t entry;
     pottery_error_t error = pottery_vector_impl_create_space(vector, index, 1, &entry);
-    if (error == POTTERY_OK)
-        pottery_vector_lifecycle_init_steal(POTTERY_VECTOR_CONTEXT_VAL(vector) entry, &value);
-    // TODO this isn't right, this will run the C++ destructor
-    pottery_vector_lifecycle_destroy(POTTERY_VECTOR_CONTEXT_VAL(vector) &value);
+    if (error == POTTERY_OK) {
+        error = pottery_vector_lifecycle_init_steal(POTTERY_VECTOR_CONTEXT_VAL(vector) entry, &value);
+        if (error != POTTERY_OK)
+            pottery_vector_impl_remove_space(vector, index, 1);
+    }
     return error;
 }
 
@@ -381,7 +385,9 @@ pottery_error_t pottery_vector_insert_after(pottery_vector_t* vector,
     return pottery_vector_insert_at(vector, index + 1, std::move(value));
 }
 
-#else
+#endif
+
+#else // C/C++
 
 // C by value
 
@@ -391,9 +397,6 @@ pottery_error_t pottery_vector_insert_at(pottery_vector_t* vector, size_t index,
     pottery_error_t error = pottery_vector_impl_create_space(vector, index, 1, &entry);
     if (error == POTTERY_OK)
         *entry = value;
-    else
-        // TODO this isn't right, this will run the C++ destructor
-        pottery_vector_lifecycle_destroy(POTTERY_VECTOR_CONTEXT_VAL(vector) &value);
     return error;
 }
 
@@ -643,7 +646,8 @@ static inline
 pottery_vector_element_t pottery_vector_extract(pottery_vector_t* vector,
         pottery_vector_entry_t* entry)
 {
-    pottery_vector_element_t element = *pottery_vector_entry_element(vector, entry);
+    pottery_vector_element_t element = pottery_move_if_cxx(
+            *pottery_vector_entry_element(vector, entry));
     pottery_vector_remove(vector, entry);
     return element;
 }
