@@ -1,5 +1,5 @@
 NAME = $(shell basename "$(shell pwd)")
-BUILD = build
+BUILD = build/lifecycle_style
 EXECUTABLE = $(BUILD)/$(NAME)
 
 run: $(EXECUTABLE) FORCE
@@ -19,7 +19,7 @@ CPPFLAGS += -MD -MP
 
 CFLAGS = -O0 -g
 
-C_SRCS := $(shell find . -type f -name '*.c')
+C_SRCS := $(shell find . -type f -name '*.c') ../string/string.c
 CXX_SRCS := $(shell find . -type f -name '*.cxx')
 C_OBJS := $(patsubst %, $(BUILD)/%.o, $(C_SRCS))
 CXX_OBJS := $(patsubst %, $(BUILD)/%.o, $(CXX_SRCS))

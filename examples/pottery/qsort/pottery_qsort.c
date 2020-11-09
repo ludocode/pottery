@@ -95,8 +95,7 @@ static void pottery_qsort_swap_large(size_t element_size, void* vleft, void* vri
 // the compare function as the context directly.
 typedef int (*pottery_qsort_compare_t)(const void* left, const void* right);
 
-// The variable-sized qsort() context. We pass it by value since it contains
-// only two pointer-sized fields so on x86_64 it can be passed in registers.
+// The variable-sized qsort() context.
 typedef struct {
     size_t element_size;
     pottery_qsort_compare_t compare;
@@ -121,16 +120,13 @@ typedef struct {
 // GNU extension (and C11 Annex K) compare function. The user_context is last.
 typedef int (*pottery_gnu_qsort_r_compare_t)(const void* left, const void* right, void* user_context);
 
-// The fixed-size context. We pass it by value since it contains only two
-// pointers so on x86_64 it can be passed in registers.
+// The fixed-size context.
 typedef struct {
     pottery_gnu_qsort_r_compare_t compare;
     void* user_context;
 } pottery_gnu_qsort_r_context_fixed_t;
 
-// The variable-sized context. We pass it by pointer rather than value since
-// it's 3 pointer sized (even if we passed by value it would still be passed on
-// the stack.)
+// The variable-sized context.
 typedef struct {
     size_t element_size;
     pottery_gnu_qsort_r_compare_t compare;
@@ -156,13 +152,13 @@ typedef struct {
 // BSD (and MSVC without __cdecl) extension compare function. The user_context is first.
 typedef int (*pottery_bsd_qsort_r_compare_t)(void* user_context, const void* left, const void* right);
 
-// The fixed-size context. We pass it by value as above.
+// The fixed-size context.
 typedef struct {
     pottery_bsd_qsort_r_compare_t compare;
     void* user_context;
 } pottery_bsd_qsort_r_context_fixed_t;
 
-// The variable-size context. We pass it by pointer as above.
+// The variable-size context.
 typedef struct {
     size_t element_size;
     pottery_bsd_qsort_r_compare_t compare;

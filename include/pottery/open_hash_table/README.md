@@ -2,9 +2,11 @@
 
 A hash table that uses open addressing on an external generalized array.
 
-The `open_hash_table` template is composed of a set of algorithms that operate on an external power-of-two-sized array of buckets (similar to the [`heap`](../heap/) template for example.) It does not require the storage of any persistent state other than the external array itself. The hash table stores no state of its own, not even a count of elements or tombstones.
+The `open_hash_table` template is composed of a set of algorithms that operate on an external power-of-two-sized array of buckets. It does not require the storage of any persistent state other than the external array itself. The hash table stores no state of its own, not even a count of elements or tombstones.
 
-If you want an open hash table that automatically allocates its backing and grows or re-hashes as necessary, see [`open_hash_map`](../open_hash_map/).
+If you want an open hash table that automatically allocates its backing and grows and re-hashes as necessary, see [`open_hash_map`](../open_hash_map/).
+
+Like all Pottery associative containers, keys are contained within values rather than stored separately by the map. You must be careful never to change the key for a value while it is stored in an associative container, otherwise it will corrupt the container.
 
 The hash table supports a configurable probing sequence. The default is linear probing. Quadratic probing and double hashing are also available.
 

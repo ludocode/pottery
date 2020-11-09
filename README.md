@@ -8,7 +8,7 @@ A header-only container and algorithm template library in C.
 
 Pottery is a collection of templates for instantiating strongly typed containers and container algorithms in C.
 
-It's called "Pottery" because it doesn't exactly give you containers you can use out-of-the-box. It gives you the tools and the materials to build them but you still need to assemble them yourself. This can mean simply configuring and instantiating a template, but often you'll want to wrap one or more templates with your own code to build a practical data structure.
+It's called "Pottery" because it doesn't exactly give you containers you can use out-of-the-box. It gives you the tools and the materials to build them but there is still some assembly required. This can mean simply configuring and instantiating a template, but often you'll want to wrap one or more templates with your own code to build a practical data structure.
 
 Pottery is modern C code written in the ultra-portable intersection of C11, gnu89 and C++11 with no mandatory dependencies (not even libc.) Pottery supports many compilers including GCC, Clang, MSVC, TinyCC and various others. It supports (or intends to support) any modern C platform from microcontrollers to OS kernels to WebAssembly.
 
@@ -29,8 +29,8 @@ Mostly I am releasing this now because I am out of money and need to go get a re
 - [Features](docs/features.md)
 - [How It Works](docs/how_it_works.md)
 - [Examples](examples/pottery/)
-- [Integration](docs/integration.md)
-- [Core Concepts](docs/concepts.md)
+- [Integration Guide](docs/integration.md)
+- [Lifecycle Style](docs/lifecycle_style.md)
 - [Template Listing](include/pottery/)
 - [Meta-templates](meta/)
 - [C++ Bindings](bindings/cxx)

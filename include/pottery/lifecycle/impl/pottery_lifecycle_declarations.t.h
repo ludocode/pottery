@@ -159,7 +159,7 @@ void pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_ARG
         #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
             (POTTERY_LIFECYCLE_SWAP((context), (left), (right)));
         #else
-            (POTTERY_LIFECYCLE_SWAP((left), (right));
+            (POTTERY_LIFECYCLE_SWAP((left), (right)));
         #endif
 
     #elif POTTERY_LIFECYCLE_SWAP_BY_VALUE

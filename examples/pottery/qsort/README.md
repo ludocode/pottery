@@ -8,7 +8,7 @@ Check out the [`qsort_simple`](../qsort_simple/) example first to see how you ca
 
 We can also repeat this process for the `qsort_r()` extension variations rather than share an implementation, that way we aren't adding branches to each comparison.
 
-These are the variations of `qsort()` implemented here. They all have mutually incompatible interfaces, though some are implemented by wrapping others where possible without performance cost. There's a good description of the differences between them on [this StackOverflow](https://stackoverflow.com/a/39561369) post.
+These are the variations of `qsort()` implemented here. They all have mutually incompatible interfaces, though some are implemented by wrapping others where possible without performance cost. There's a good description of the differences between them on [this StackOverflow post](https://stackoverflow.com/a/39561369).
 
 - `pottery_qsort()` - Standard C `qsort()`
 - `pottery_gnu_qsort_r()` - GNU glibc (and uClibc) `qsort_r()`
