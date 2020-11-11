@@ -84,7 +84,15 @@ static inline const char* string_cstr(const string_t* string) {
     return string_storage_const_data(&string->storage);
 }
 
-bool string_equal(const string_t* left, const string_t* right);
+bool string_equal_bytes(const string_t* left, const char* right, size_t right_length);
+
+static inline bool string_equal_cstr(const string_t* left, const char* right) {
+    return string_equal_bytes(left, right, strlen(right));
+}
+
+static inline bool string_equal(const string_t* left, const string_t* right) {
+    return string_equal_bytes(left, string_bytes(right), string_length(right));
+}
 
 int string_compare(const string_t* left, const string_t* right);
 

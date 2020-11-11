@@ -15,6 +15,7 @@ The following scripts are available for UNIX systems:
 - `test/benchmark.sh` - Download competing libraries and build and run some basic benchmarks.
 - `test/scan-build.sh` - Run Clang Static Analyzer on the unit test suite.
 - `test/clean.sh` - Clean the build folder.
+- `test/examples.sh` - Build and run all examples.
 
 The following scripts are available for Windows:
 

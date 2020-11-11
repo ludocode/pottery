@@ -25,6 +25,7 @@
 #include "string_set.h"
 
 #include <stddef.h>
+#include <stdint.h>
 #include <string.h>
 
 static inline size_t fnv1a(const char* p) {

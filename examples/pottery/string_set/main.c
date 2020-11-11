@@ -24,6 +24,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include "string_set.h"
 
@@ -35,6 +36,10 @@ int main(void) {
 
     string_set_add(string_set, "eve");
     string_set_remove(string_set, "eve");
+
+    assert(string_set_query(string_set, "alice"));
+    assert(string_set_query(string_set, "bob"));
+    assert(!string_set_query(string_set, "eve"));
 
     printf("%s: %s\n", "alice", string_set_query(string_set, "alice") ? "exists" : "does not exist");
     printf("%s: %s\n", "bob",   string_set_query(string_set, "bob")   ? "exists" : "does not exist");

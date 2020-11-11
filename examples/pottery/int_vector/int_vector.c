@@ -23,6 +23,7 @@
  */
 
 #include <stdio.h>
+#include <assert.h>
 
 #define POTTERY_VECTOR_PREFIX int_vector
 #define POTTERY_VECTOR_VALUE_TYPE int
@@ -37,6 +38,9 @@ int main(void) {
     int_vector_insert_last(&vector, 20);
     int_vector_insert_at(&vector, 1, 15);
     int_vector_remove_at(&vector, 0);
+
+    assert(15 == *int_vector_first(&vector));
+    assert(20 == *int_vector_last(&vector));
 
     size_t i;
     for (i = 0; i < int_vector_count(&vector); ++i)

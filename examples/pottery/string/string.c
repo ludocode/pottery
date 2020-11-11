@@ -68,17 +68,16 @@ void string_clear(string_t* string) {
     string_abort_on_error(string_storage_insert_last(&string->storage, '\0'));
 }
 
-bool string_equal(const string_t* left, const string_t* right) {
-    if (left == right)
+bool string_equal_bytes(const string_t* left, const char* right_bytes, size_t right_length) {
+    const char* left_bytes = string_bytes(left);
+    if (left_bytes == right_bytes)
         return true;
 
     size_t left_length = string_length(left);
-    size_t right_length = string_length(right);
-
     if (left_length != right_length)
         return false;
 
-    return 0 == memcmp(string_bytes(left), string_bytes(right), left_length);
+    return 0 == memcmp(left_bytes, right_bytes, left_length);
 }
 
 int string_compare(const string_t* left, const string_t* right) {

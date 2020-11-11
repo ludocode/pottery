@@ -49,6 +49,11 @@
 
 
 
+// For examples that use <assert.h> we want to keep assertions enabled.
+#undef NDEBUG
+
+
+
 // The examples don't follow the warnings as strictly as the rest of Pottery
 // (otherwise the example code would be too ugly.)
 #ifdef __GNUC__
