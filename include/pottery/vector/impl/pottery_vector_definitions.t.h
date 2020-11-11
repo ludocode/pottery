@@ -453,15 +453,12 @@ pottery_error_t pottery_vector_insert_at_bulk(pottery_vector_t* vector, size_t i
     if (error != POTTERY_OK)
         return error;
 
-    size_t i;
-    for (i = 0; i < count; ++i) {
-        pottery_vector_element_t* element = inserted + i;
-        error = pottery_vector_lifecycle_init_copy(POTTERY_VECTOR_CONTEXT_VAL(vector) element, values++);
-        if (error != POTTERY_OK) {
-            pottery_vector_lifecycle_destroy_bulk(POTTERY_VECTOR_CONTEXT_VAL(vector) inserted, i);
-            pottery_vector_impl_remove_space(vector, index, count);
-            return error;
-        }
+    pottery_vector_element_t* end = inserted + count;
+    while (inserted != end) {
+        // Use move construction (rather than the lifecycle move() operation)
+        // to move values out of the array. We need to leave them constructed
+        // in C++. See notes in pottery_vector_extract() for more details.
+        *(inserted++) = pottery_move_if_cxx(*(values++));
     }
 
     return POTTERY_OK;

@@ -644,20 +644,37 @@ void pottery_vector_remove_last(pottery_vector_t* vector) {
 #if POTTERY_LIFECYCLE_CAN_PASS
 static inline
 pottery_vector_element_t pottery_vector_extract(pottery_vector_t* vector,
+        // TODO this shouldn't be a pointer. We should not use pointers to
+        // entries or refs anywhere (except as an output parameter where a
+        // function may fail.)
         pottery_vector_entry_t* entry)
 {
-    pottery_vector_element_t element = pottery_move_if_cxx(
-            *pottery_vector_entry_element(vector, entry));
-    pottery_vector_remove(vector, entry);
+    pottery_vector_element_t* ref = pottery_vector_entry_element(vector, entry);
+    pottery_vector_element_t element = pottery_move_if_cxx(*ref);
+
+    #ifdef __cplusplus
+    // The above uses move construction (rather than the move() operation) to
+    // pull the value out. For C this makes no difference because CAN_PASS
+    // requires MOVE_BY_VALUE. But we do it this way for C++ because we need a
+    // real value we can return. If we moved into an unconstructed temporary,
+    // no destructor would run on return, and if we moved into a normal value,
+    // its constructor would be run twice.
+    //
+    // We don't want to remove() the existing value in the array (in case e.g.
+    // DESTROY is free(); we don't own it anymore), but we still need to run
+    // its destructor before we displace() it so we do that manually.
+    ref->~pottery_vector_element_t();
+    #endif
+
+    pottery_vector_displace(vector, entry);
+
     return element;
 }
 
 static inline
 pottery_vector_element_t pottery_vector_extract_at(pottery_vector_t* vector, size_t index) {
     pottery_vector_entry_t entry = pottery_vector_at(vector, index);
-    pottery_vector_element_t element = *pottery_vector_entry_element(vector, &entry);
-    pottery_vector_remove_at(vector, index);
-    return element;
+    return pottery_vector_extract(vector, &entry);
 }
 
 static inline

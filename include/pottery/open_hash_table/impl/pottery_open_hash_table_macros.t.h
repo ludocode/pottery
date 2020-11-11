@@ -71,11 +71,14 @@
 #endif
 
 // Empty
-#if !defined(POTTERY_OPEN_HASH_TABLE_IS_EMPTY)
-    #error "You must define IS_EMPTY."
+#ifndef POTTERY_OPEN_HASH_TABLE_EMPTY_IS_ZERO
+    #define POTTERY_OPEN_HASH_TABLE_EMPTY_IS_ZERO 0
 #endif
-#if !defined(POTTERY_OPEN_HASH_TABLE_SET_EMPTY)
-    #error "You must define SET_EMPTY."
+#if !defined(POTTERY_OPEN_HASH_TABLE_IS_EMPTY) && !POTTERY_OPEN_HASH_TABLE_EMPTY_IS_ZERO
+    #error "You must define IS_EMPTY or EMPTY_IS_ZERO."
+#endif
+#if !defined(POTTERY_OPEN_HASH_TABLE_SET_EMPTY) && !POTTERY_OPEN_HASH_TABLE_EMPTY_IS_ZERO
+    #error "You must define SET_EMPTY or EMPTY_IS_ZERO."
 #endif
 
 // Tombstones
@@ -114,8 +117,11 @@
     #define pottery_oht_insert POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _insert)
     #define pottery_oht_find POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _find)
     #define pottery_oht_displace POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _displace)
+    #define pottery_oht_displace_all POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _displace_all)
     #define pottery_oht_remove POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _remove)
     #define pottery_oht_remove_key POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _remove_key)
+    #define pottery_oht_remove_all POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _remove_all)
+    #define pottery_oht_destroy_all POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _destroy_all)
     #define pottery_oht_contains_key POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _contains_key)
 
     #define pottery_oht_begin POTTERY_CONCAT(POTTERY_OPEN_HASH_TABLE_PREFIX, _begin)

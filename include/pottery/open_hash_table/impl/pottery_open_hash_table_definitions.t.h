@@ -155,10 +155,16 @@ bool pottery_oht_ref_is_empty(
         POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
         pottery_oht_ref_t ref)
 {
-    #if defined(POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE)
-        return POTTERY_OPEN_HASH_TABLE_IS_EMPTY(context, ref);
+    #ifdef POTTERY_OPEN_HASH_TABLE_IS_EMPTY
+        #ifdef POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE
+            return POTTERY_OPEN_HASH_TABLE_IS_EMPTY(context, ref);
+        #else
+            return POTTERY_OPEN_HASH_TABLE_IS_EMPTY(ref);
+        #endif
+    #elif POTTERY_OPEN_HASH_TABLE_EMPTY_IS_ZERO
+        return *ref == 0;
     #else
-        return POTTERY_OPEN_HASH_TABLE_IS_EMPTY(ref);
+        #error "Template configuration error!"
     #endif
 }
 
@@ -519,7 +525,68 @@ pottery_oht_ref_t pottery_oht_last(
     return last;
 }
 
+POTTERY_OPEN_HASH_TABLE_EXTERN
+void pottery_oht_displace_all(
+        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        pottery_oht_ref_t ref,
+        size_t log_2_size)
+{
+
+    // It might be possible to optimize this to a simple call to memset() for
+    // zero sentinels, but there's a long list of conditions. Here are some:
+    //
+    // - EMPTY_IS_ZERO needs to be 1, obviously;
+    // - SET_ZERO needs to be undefined, since otherwise only a small part of
+    //   the struct might need to be zero, and memset() would be slower;
+    // - __cplusplus needs to be undefined, since we might have to run a custom
+    //   assignment operator with side effects when assigning to 0;
+    // - All ACCESS options need to be undefined, otherwise the array might not
+    //   be contiguous in memory;
+    // - REF_TYPE needs to be undefined, since otherwise it might not even be a
+    //   pointer
+    //
+    // This is not worth doing right now. Maybe we can revisit this after
+    // putting in an array_access template so we can collect all of the
+    // possible ACCESS configuration options.
+
+    size_t size = pottery_cast(size_t, 1) << log_2_size;
+    for (size_t i = 0; i < size; ++i) {
+        pottery_oht_ref_set_empty(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
+        ref = pottery_oht_access_next(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
+    }
+}
+
 #if POTTERY_LIFECYCLE_CAN_DESTROY
+POTTERY_OPEN_HASH_TABLE_EXTERN
+void pottery_oht_destroy_all(
+        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        pottery_oht_ref_t ref,
+        size_t log_2_size)
+{
+    size_t size = pottery_cast(size_t, 1) << log_2_size;
+    for (size_t i = 0; i < size; ++i) {
+        if (pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref))
+            pottery_oht_lifecycle_destroy(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
+        ref = pottery_oht_access_next(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
+    }
+}
+
+POTTERY_OPEN_HASH_TABLE_EXTERN
+void pottery_oht_remove_all(
+        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        pottery_oht_ref_t ref,
+        size_t log_2_size)
+{
+    size_t size = pottery_cast(size_t, 1) << log_2_size;
+    for (size_t i = 0; i < size; ++i) {
+        if (pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref))
+            pottery_oht_lifecycle_destroy(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
+        // Clear it even if it wasn't an element since it might be a tombstone
+        pottery_oht_ref_set_empty(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
+        ref = pottery_oht_access_next(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
+    }
+}
+
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_remove(
         POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG

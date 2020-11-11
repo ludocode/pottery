@@ -47,7 +47,7 @@ static inline size_t fnv1a(const char* p) {
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY(x) free(*x)
 // This isn't strictly required, but it makes the map more efficient: It can
 // use an in-band value to mark empty buckets and can allocate zeroed memory
-// instead to get empty buckets.
+// (e.g. with calloc()) to get empty buckets.
 #define POTTERY_OPEN_HASH_MAP_EMPTY_IS_ZERO 1
 #include "pottery/open_hash_map/pottery_open_hash_map_static.t.h"
 
@@ -84,6 +84,6 @@ bool string_set_query(string_set_t* set, const char* str) {
 }
 
 bool string_set_remove(string_set_t* set, const char* str) {
-    // remove_key() frees the string for us.
+    // remove() functions free the string for us.
     return string_set_map_remove_key(&set->map, str);
 }

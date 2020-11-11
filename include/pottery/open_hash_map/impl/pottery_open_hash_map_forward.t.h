@@ -74,9 +74,14 @@ static inline
 void pottery_ohm_ref_move(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
         pottery_ohm_ref_t to, pottery_ohm_ref_t from);
 
+// We don't have CAN_DESTROY yet so we have to do it manually.
+#if defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY) || \
+        defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY_BY_VALUE) || \
+        defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_BY_VALUE)
 static inline
 void pottery_ohm_ref_destroy(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
         pottery_ohm_ref_t ref);
+#endif
 
 static inline
 pottery_ohm_key_t pottery_ohm_ref_key(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG

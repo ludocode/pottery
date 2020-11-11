@@ -133,7 +133,9 @@
 #undef pottery_ohm_emplace
 #undef pottery_ohm_find
 #undef pottery_ohm_displace
+#undef pottery_ohm_displace_all
 #undef pottery_ohm_remove
+#undef pottery_ohm_remove_all
 #undef pottery_ohm_remove_key
 #undef pottery_ohm_contains_key
 
@@ -145,12 +147,22 @@
 #undef pottery_ohm_previous
 
 #undef pottery_ohm_ref_exists
+#undef pottery_ohm_ref_move
+#undef pottery_ohm_ref_key
+#undef pottery_ohm_ref_key_equal
+#undef pottery_ohm_ref_key_hash
+#undef pottery_ohm_ref_is_empty
+#undef pottery_ohm_ref_set_empty
+#undef pottery_ohm_ref_is_value
 
 #undef pottery_ohm_impl_alloc
 #undef pottery_ohm_impl_free
+#undef pottery_ohm_impl_free_allocs
 #undef pottery_ohm_grow_if_needed
 #undef pottery_ohm_shrink_if_needed
 #undef pottery_ohm_rehash
+#undef pottery_ohm_load
+#undef pottery_ohm_init_impl
 
 
 
@@ -171,8 +183,11 @@
     #undef pottery_ohm_table_insert
     #undef pottery_ohm_table_find
     #undef pottery_ohm_table_displace
+    #undef pottery_ohm_table_displace_all
     #undef pottery_ohm_table_remove
     #undef pottery_ohm_table_remove_key
+    #undef pottery_ohm_table_remove_all
+    #undef pottery_ohm_table_destroy_all
     #undef pottery_ohm_table_contains_key
 
     #undef pottery_ohm_table_begin

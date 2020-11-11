@@ -15,13 +15,13 @@ If you'd like to use this string, just copy `string.h` and `string.c` into your 
 
 ## Implementation Details
 
-The implementation is mostly just inline functions that wrap an internal Pottery [Vector](../../docs/containers/vector.md) over `uint8_t`. If an out-of-memory situation occurs, the program aborts.
+The implementation is mostly just inline functions that wrap an internal Pottery [Vector](../../../include/pottery/vector/) over `uint8_t`. If an out-of-memory situation occurs, the program aborts.
 
 ### Small string optimization
 
 `string_t` uses a small string optimization. This provides a small amount of internal storage similar to most implementations of `std::string`, thus avoiding allocation for short strings. It does this simply by enabling the corresponding feature in Pottery's [Vector](../../../include/pottery/vector/).
 
-`string_t` implements most of the [Pottery-style lifecycle functions](../../../docs/lifecycle.md). You should read that document to understand how to safely manage its lifecycle. In particular, with the small string optimization, `string_t` is not bitwise-movable. `string_move()` must be used to move it around, for example when storing it in Pottery containers. Never pass a `string_t` by value and never move it with `memcpy()`.
+`string_t` implements all of the [Pottery-style lifecycle functions](../../../docs/lifecycle_style.md). You should read that document to understand how to safely manage its lifecycle. In particular, with the small string optimization, `string_t` is not bitwise-movable. `string_move()` must be used to move it around, for example when storing it in Pottery containers. Never pass a `string_t` by value and never move it with `memcpy()`.
 
 ### Null-termination
 

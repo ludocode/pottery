@@ -30,11 +30,11 @@
 #include "pottery/open_hash_map/impl/pottery_open_hash_map_config_alloc.t.h"
 #include "pottery/alloc/pottery_alloc_declare.t.h"
 
-#include "pottery/open_hash_map/impl/pottery_open_hash_map_config_lifecycle.t.h"
-#include "pottery/lifecycle/pottery_lifecycle_declare.t.h"
-
 #include "pottery/open_hash_map/impl/pottery_open_hash_map_config_table.t.h"
 #include "pottery/open_hash_table/pottery_open_hash_table_static.t.h"
+
+#include "pottery/open_hash_map/impl/pottery_open_hash_map_config_lifecycle.t.h"
+#include "pottery/lifecycle/pottery_lifecycle_declare.t.h"
 
 #include "pottery/open_hash_map/impl/pottery_open_hash_map_declarations.t.h"
 #include "pottery/open_hash_map/impl/pottery_open_hash_map_unmacros.t.h"

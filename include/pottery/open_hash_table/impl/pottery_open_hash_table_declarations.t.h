@@ -64,10 +64,16 @@ void pottery_oht_ref_set_empty(
         POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
         pottery_oht_ref_t ref)
 {
-    #if defined(POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE)
-        POTTERY_OPEN_HASH_TABLE_SET_EMPTY(context, ref);
+    #ifdef POTTERY_OPEN_HASH_TABLE_SET_EMPTY
+        #ifdef POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE
+            POTTERY_OPEN_HASH_TABLE_SET_EMPTY(context, ref);
+        #else
+            POTTERY_OPEN_HASH_TABLE_SET_EMPTY(ref);
+        #endif
+    #elif POTTERY_OPEN_HASH_TABLE_EMPTY_IS_ZERO
+        *ref = 0;
     #else
-        POTTERY_OPEN_HASH_TABLE_SET_EMPTY(ref);
+        #error "Template configuration error!"
     #endif
 }
 
@@ -185,7 +191,8 @@ pottery_oht_ref_t pottery_oht_find(
         pottery_oht_key_t key);
 
 /**
- * Displaces (removes) the given uninitialized entry from the hash table.
+ * Displaces (removes without destroying) the given uninitialized entry from
+ * the hash table.
  *
  * You must destroy the value (including the key) if necessary before
  * displacing it from the table.
@@ -202,6 +209,18 @@ void pottery_oht_displace(
         size_t* /*nullable*/ tombstones,
         #endif
         pottery_oht_ref_t ref);
+
+/**
+ * Displaces all elements from the hash table.
+ *
+ * This also sweeps the hash table of tombstones (if applicable). The hash
+ * table is effectively cleared; all buckets will be empty.
+ */
+POTTERY_OPEN_HASH_TABLE_EXTERN
+void pottery_oht_displace_all(
+        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        pottery_oht_ref_t first,
+        size_t log_2_size);
 
 #if POTTERY_LIFECYCLE_CAN_DESTROY
 POTTERY_OPEN_HASH_TABLE_EXTERN
@@ -226,6 +245,31 @@ bool pottery_oht_remove_key(
         size_t* /*nullable*/ tombstones,
         #endif
         pottery_oht_key_t key);
+
+/**
+ * Removes (destroying) all elements in the hash table.
+ *
+ * This also sweeps the hash table of tombstones (if applicable). The hash
+ * table is effectively cleared (after destroying); all buckets will be empty.
+ */
+POTTERY_OPEN_HASH_TABLE_EXTERN
+void pottery_oht_remove_all(
+        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        pottery_oht_ref_t first,
+        size_t log_2_size);
+
+/**
+ * Destroys all elements in the hash table.
+ *
+ * The hash table is effectively corrupt after calling this since it still
+ * contains entries, but the keys for those entries are uninitialized. Use this
+ * as a precursor to discarding or re-initializing the table.
+ */
+POTTERY_OPEN_HASH_TABLE_EXTERN
+void pottery_oht_destroy_all(
+        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        pottery_oht_ref_t first,
+        size_t log_2_size);
 #endif
 
 /**

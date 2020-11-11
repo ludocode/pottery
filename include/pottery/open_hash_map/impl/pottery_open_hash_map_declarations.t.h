@@ -111,9 +111,15 @@ pottery_ohm_ref_t pottery_ohm_find(pottery_ohm_t* map, pottery_ohm_key_t key) {
 POTTERY_OPEN_HASH_MAP_EXTERN
 void pottery_ohm_displace(pottery_ohm_t* map, pottery_ohm_ref_t ref);
 
+POTTERY_OPEN_HASH_MAP_EXTERN
+void pottery_ohm_displace_all(pottery_ohm_t* map);
+
 #if POTTERY_LIFECYCLE_CAN_DESTROY
 POTTERY_OPEN_HASH_MAP_EXTERN
 void pottery_ohm_remove(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+
+POTTERY_OPEN_HASH_MAP_EXTERN
+void pottery_ohm_remove_all(pottery_ohm_t* map);
 
 /**
  * Returns true if an entry matching the given key was removed.
@@ -361,6 +367,7 @@ void pottery_ohm_ref_move(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
     #endif
 }
 
+#if POTTERY_LIFECYCLE_CAN_DESTROY
 static inline
 void pottery_ohm_ref_destroy(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
         pottery_ohm_ref_t ref)
@@ -373,6 +380,7 @@ void pottery_ohm_ref_destroy(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
             #endif
             ref);
 }
+#endif
 
 static inline
 pottery_ohm_ref_t pottery_ohm_begin(pottery_ohm_t* map) {

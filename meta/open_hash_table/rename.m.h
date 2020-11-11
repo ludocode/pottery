@@ -34,8 +34,11 @@
 #define {SRC}_insert POTTERY_CONCAT({DEST}, _insert)
 #define {SRC}_find POTTERY_CONCAT({DEST}, _find)
 #define {SRC}_displace POTTERY_CONCAT({DEST}, _displace)
+#define {SRC}_displace_all POTTERY_CONCAT({DEST}, _displace_all)
 #define {SRC}_remove POTTERY_CONCAT({DEST}, _remove)
 #define {SRC}_remove_key POTTERY_CONCAT({DEST}, _remove_key)
+#define {SRC}_remove_all POTTERY_CONCAT({DEST}, _remove_all)
+#define {SRC}_destroy_all POTTERY_CONCAT({DEST}, _destroy_all)
 #define {SRC}_contains_key POTTERY_CONCAT({DEST}, _contains_key)
 
 #define {SRC}_begin POTTERY_CONCAT({DEST}, _begin)

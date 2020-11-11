@@ -66,7 +66,9 @@
 #endif
 
 // Empty
-#if !defined(POTTERY_OPEN_HASH_MAP_IS_EMPTY) && !defined(POTTERY_OPEN_HASH_MAP_SET_EMPTY)
+#if !defined(POTTERY_OPEN_HASH_MAP_IS_EMPTY) && \
+        !defined(POTTERY_OPEN_HASH_MAP_SET_EMPTY) && \
+        !defined(POTTERY_OPEN_HASH_MAP_EMPTY_IS_ZERO)
     #define POTTERY_OPEN_HASH_MAP_INTERNAL_EMPTY 1
 #else
     #define POTTERY_OPEN_HASH_MAP_INTERNAL_EMPTY 0
@@ -131,7 +133,7 @@
 
 #define pottery_ohm_t POTTERY_OPEN_HASH_MAP_NAME(_t)
 #define pottery_ohm_ref_t POTTERY_OPEN_HASH_MAP_NAME(_ref_t)
-#define pottery_ohm_value_t POTTERY_OPEN_HASH_MAP_NAME(value_t)
+#define pottery_ohm_value_t POTTERY_OPEN_HASH_MAP_NAME(_value_t)
 #define pottery_ohm_key_t POTTERY_OPEN_HASH_MAP_NAME(_key_t)
 #define pottery_ohm_context_t POTTERY_OPEN_HASH_MAP_NAME(_context_t)
 
@@ -143,7 +145,9 @@
 #define pottery_ohm_emplace POTTERY_OPEN_HASH_MAP_NAME(_emplace)
 #define pottery_ohm_find POTTERY_OPEN_HASH_MAP_NAME(_find)
 #define pottery_ohm_displace POTTERY_OPEN_HASH_MAP_NAME(_displace)
+#define pottery_ohm_displace_all POTTERY_OPEN_HASH_MAP_NAME(_displace_all)
 #define pottery_ohm_remove POTTERY_OPEN_HASH_MAP_NAME(_remove)
+#define pottery_ohm_remove_all POTTERY_OPEN_HASH_MAP_NAME(_remove_all)
 #define pottery_ohm_remove_key POTTERY_OPEN_HASH_MAP_NAME(_remove_key)
 #define pottery_ohm_contains_key POTTERY_OPEN_HASH_MAP_NAME(_contains_key)
 
@@ -155,12 +159,22 @@
 #define pottery_ohm_previous POTTERY_OPEN_HASH_MAP_NAME(_previous)
 
 #define pottery_ohm_ref_exists POTTERY_OPEN_HASH_MAP_NAME(_ref_exists)
+#define pottery_ohm_ref_move POTTERY_OPEN_HASH_MAP_NAME(_ref_move)
+#define pottery_ohm_ref_key POTTERY_OPEN_HASH_MAP_NAME(_ref_key)
+#define pottery_ohm_ref_key_equal POTTERY_OPEN_HASH_MAP_NAME(_ref_key_equal)
+#define pottery_ohm_ref_key_hash POTTERY_OPEN_HASH_MAP_NAME(_ref_key_hash)
+#define pottery_ohm_ref_is_empty POTTERY_OPEN_HASH_MAP_NAME(_ref_is_empty)
+#define pottery_ohm_ref_set_empty POTTERY_OPEN_HASH_MAP_NAME(_ref_set_empty)
+#define pottery_ohm_ref_is_value POTTERY_OPEN_HASH_MAP_NAME(_ref_is_value)
 
 #define pottery_ohm_impl_alloc POTTERY_OPEN_HASH_MAP_NAME(_impl_alloc)
 #define pottery_ohm_impl_free POTTERY_OPEN_HASH_MAP_NAME(_impl_free)
+#define pottery_ohm_impl_free_allocs POTTERY_OPEN_HASH_MAP_NAME(_impl_free_allocs)
 #define pottery_ohm_grow_if_needed POTTERY_OPEN_HASH_MAP_NAME(_grow_if_needed)
 #define pottery_ohm_shrink_if_needed POTTERY_OPEN_HASH_MAP_NAME(_shrink_if_needed)
 #define pottery_ohm_rehash POTTERY_OPEN_HASH_MAP_NAME(_rehash)
+#define pottery_ohm_load POTTERY_OPEN_HASH_MAP_NAME(_load)
+#define pottery_ohm_init_impl POTTERY_OPEN_HASH_MAP_NAME(_init_impl)
 
 
 
@@ -179,8 +193,11 @@
     #define pottery_ohm_table_insert POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _insert)
     #define pottery_ohm_table_find POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _find)
     #define pottery_ohm_table_displace POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _displace)
+    #define pottery_ohm_table_displace_all POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _displace_all)
     #define pottery_ohm_table_remove POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _remove)
     #define pottery_ohm_table_remove_key POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _remove_key)
+    #define pottery_ohm_table_remove_all POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _remove_all)
+    #define pottery_ohm_table_destroy_all POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _destroy_all)
     #define pottery_ohm_table_contains_key POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _contains_key)
 
     #define pottery_ohm_table_begin POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_OHT_PREFIX, _begin)

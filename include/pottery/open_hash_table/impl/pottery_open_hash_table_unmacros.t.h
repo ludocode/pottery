@@ -89,8 +89,11 @@
     #undef pottery_oht_insert
     #undef pottery_oht_find
     #undef pottery_oht_displace
+    #undef pottery_oht_displace_all
     #undef pottery_oht_remove
     #undef pottery_oht_remove_key
+    #undef pottery_oht_remove_all
+    #undef pottery_oht_destroy_all
     #undef pottery_oht_contains_key
 
     #undef pottery_oht_begin

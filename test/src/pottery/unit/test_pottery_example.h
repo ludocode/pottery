@@ -30,7 +30,7 @@
  * declared with POTTERY_TEST().
  *
  * This header is force-included by the unit test buildsystem when compiling
- * each example. The buildsystem also defines POTTERY_UNIT_TEST_FILENAME to
+ * each example. The buildsystem also defines POTTERY_EXAMPLE_NAME to
  * turn the filename into a test name.
  */
 
@@ -133,6 +133,7 @@ static inline int pottery_example_disable_puts(const char* s) {
  */
 #ifdef _MSC_VER
 #define strdup _strdup
+#define strcpy _strcpy
 #endif
 
 

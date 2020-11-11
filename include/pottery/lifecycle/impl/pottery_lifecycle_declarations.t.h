@@ -112,12 +112,9 @@ void pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_ARG
             (POTTERY_LIFECYCLE_MOVE((to), (from)));
         #endif
 
-    #elif POTTERY_LIFECYCLE_MOVE_BY_VALUE || \
-            POTTERY_LIFECYCLE_COPY_BY_VALUE
+    #elif POTTERY_LIFECYCLE_MOVE_BY_VALUE
         #if defined(__cplusplus)
-            if (pottery::is_bitwise_movable<pottery_lifecycle_value_t>::value ||
-                    pottery::is_bitwise_copyable<pottery_lifecycle_value_t>::value)
-            {
+            if (pottery::is_bitwise_movable<pottery_lifecycle_value_t>::value) {
                 // move bitwise
                 // cast to void* to prevent -Wclass-memaccess warnings
                 pottery_memcpy(pottery_cast(void*, to), pottery_cast(const void*, from), sizeof(*to));

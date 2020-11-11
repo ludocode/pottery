@@ -34,8 +34,11 @@
 #undef {PREFIX}_insert
 #undef {PREFIX}_find
 #undef {PREFIX}_displace
+#undef {PREFIX}_displace_all
 #undef {PREFIX}_remove
 #undef {PREFIX}_remove_key
+#undef {PREFIX}_remove_all
+#undef {PREFIX}_destroy_all
 #undef {PREFIX}_contains_key
 
 #undef {PREFIX}_begin

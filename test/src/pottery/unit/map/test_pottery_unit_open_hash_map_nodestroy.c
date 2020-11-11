@@ -35,10 +35,10 @@ static inline size_t fnv1a(const char* p) {
 // workarounds for MSVC C++/CLR not allowing different structs in different
 // translation units with the same name
 #ifdef __CLR_VER
-#define ufo_map_t pottery_open_hash_map_ufo_t
+#define ufo_map_t pottery_open_hash_map_nodestroy_ufo_t
 #endif
 
-// Instantiate a map of const char* to ufo_t with NULL as empty
+// Instantiate a map of const char* to ufo_t with no destroy expression
 #define POTTERY_OPEN_HASH_MAP_PREFIX ufo_map
 #define POTTERY_OPEN_HASH_MAP_VALUE_TYPE ufo_t
 #define POTTERY_OPEN_HASH_MAP_KEY_TYPE const char*
@@ -46,14 +46,7 @@ static inline size_t fnv1a(const char* p) {
 #define POTTERY_OPEN_HASH_MAP_KEY_HASH fnv1a
 #define POTTERY_OPEN_HASH_MAP_KEY_EQUAL 0 == strcmp
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE ufo_move
-#define POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY ufo_destroy
-// Configure zero as a sentinel value with get/set on the ufo string pointer
-#define POTTERY_OPEN_HASH_MAP_EMPTY_IS_ZERO 1
-#define POTTERY_OPEN_HASH_MAP_IS_EMPTY(x) x->string == pottery_null
-#define POTTERY_OPEN_HASH_MAP_SET_EMPTY(x) x->string = pottery_null
 #include "pottery/open_hash_map/pottery_open_hash_map_static.t.h"
 
-// Instantiate ufo_map tests on our ufo map
-#define POTTERY_TEST_MAP_UFO_PREFIX pottery_open_hash_map_ufo
-#define POTTERY_TEST_MAP_UFO_HAS_CAPACITY 1
-#include "pottery/unit/map/test_pottery_unit_map_ufo.t.h"
+// no tests for this yet; for now we just want to make sure it compiles without
+// the remove() functions

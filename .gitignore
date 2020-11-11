@@ -3,3 +3,4 @@
 /.ninja_log
 /core.*
 /vgcore.*
+/examples/pottery/*/build

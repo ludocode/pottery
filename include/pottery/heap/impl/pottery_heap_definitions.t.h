@@ -179,7 +179,7 @@ void pottery_heap_expand_bulk_impl(pottery_heap_state_t state, size_t current_co
 
 POTTERY_HEAP_EXTERN
 void pottery_heap_contract_bulk_impl(pottery_heap_state_t state, size_t current_count, size_t pop_count) {
-    pottery_assert(pop_count >= current_count);
+    pottery_assert(pop_count <= current_count);
     if (current_count > SIZE_MAX / 4)
         pottery_abort();
 
