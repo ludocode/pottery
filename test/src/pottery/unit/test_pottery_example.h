@@ -35,11 +35,26 @@
  */
 
 
+
 #define POTTERY_TEST_EXAMPLE
 
 // We want strdup() and other POSIX/GNU extensions available in example code
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
+
+// We want strcpy() and other standard functions available under MSVC in example code
+//#define _CRT_SECURE_NO_WARNINGS
+
+#ifdef _MSC_VER
+#include <string.h>
+static inline char* strcpy_workaround(char* to, const char* from) {
+    #pragma warning(push)
+    #pragma warning(disable:4996)
+    return strcpy(to, from);
+    #pragma warning(pop)
+}
+#define strcpy strcpy_workaround
 #endif
 
 // We're going to replace printf() so we need to include stdio first.
@@ -138,7 +153,6 @@ static inline int pottery_example_disable_puts(const char* s) {
  */
 #ifdef _MSC_VER
 #define strdup _strdup
-#define strcpy _strcpy
 #endif
 
 

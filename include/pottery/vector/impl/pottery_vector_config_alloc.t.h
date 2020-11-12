@@ -23,7 +23,7 @@
  */
 
 #ifndef POTTERY_VECTOR_IMPL
-#error "This is header internal to Pottery. Do not include it."
+#error "This header is internal to Pottery. Do not include it."
 #endif
 
 #define POTTERY_ALLOC_PREFIX POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _alloc)

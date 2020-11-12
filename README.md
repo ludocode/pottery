@@ -113,9 +113,9 @@ int_vector_destroy(&vector);
 
 These are all real functions. You can set a breakpoint on `int_vector_insert_at()` and step through it, bringing you into the [vector implementation code](include/pottery/vector/impl/pottery_vector_definitions.t.h). You can get nice stack traces if something goes wrong. You'll even get somewhat legible compiler errors (`-fmax-errors=1` in GCC or `-Wfatal-errors` in Clang can help.)
 
-We've defined `LIFECYCLE_BY_VALUE` to 1 above because `int` is trivially copyable and destroyable. You could instead provide a destroy expression for the vector to call on your elements to clean them up (for example if it contained pointers, you could tell it to destroy them with `free()`.) You could provide a move expression in case your type is not bitwise-movable. You could give it a copy initialization expression for your type to allow whole vector copies. Pottery calls all of these expressions directly, not through function pointers. Pottery's dynamic containers can fully manage the lifecycles of the elements they contain.
+We've defined `LIFECYCLE_BY_VALUE` to 1 above because `int` is trivially copyable and destroyable. You could instead provide a destroy expression for the vector to call on your elements to clean them up (for example if it contained pointers, you could tell it to destroy them with `free()`.) You could provide a move expression in case your type is not bitwise-movable. You could give it a copy initialization expression for your type to allow whole vector copies. Pottery evaluates your expressions directly; it does not call callbacks through function pointers. Pottery's dynamic containers can fully and efficiently manage the lifecycles of the elements they contain.
 
-You could also provide the vector with a custom allocator and context. You could configure it to provide some internal space for a small number of elements to avoid small allocations. You could configure it as a double-ended vector. You can even instantiate separate header and source files to use it in multiple translation units without each having a copy of the implementation.
+You could also provide the vector with a custom allocator and context. You could configure it to provide some internal space for a small number of elements to avoid small allocations. You could configure it as a double-ended vector. You could put C++ values in it and it will properly run move constructors, destructors, etc. You can even instantiate separate header and source files to use it in multiple translation units without each having a copy of the implementation.
 
 See the full example [here](examples/pottery/int_vector/).
 
@@ -124,7 +124,7 @@ See the full example [here](examples/pottery/int_vector/).
 
 Suppose you want a dynamically growable set of unique strings.
 
-We'll use an [`open_hash_map`](include/pottery/open_hash_map/) for this, so first we define a [simple hash function](https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function#FNV-1a_hash):
+We'll use an [`open_hash_map`](include/pottery/open_hash_map/) for this, so first we define [FNV-1a, a simple hash function](https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function#FNV-1a_hash):
 
 ```c
 static inline size_t fnv1a(const char* p) {
@@ -137,7 +137,7 @@ static inline size_t fnv1a(const char* p) {
 
 You could of course use a better hash function like MurmurHash or CityHash or whatever the cool kids are using these days.
 
-Next we define our map. We'll use `char*` as the value type and `const char*` as the key type, that way we can search it with const strings. In Pottery, map values contain their own keys, so in our case the key for a value is just the value itself.
+Next we define our map. We'll use `char*` as the value type and `const char*` as the key type, that way we can search it with const strings. In Pottery, map values contain their own keys, so in our case the key for a value (`VALUE_KEY`) is just the value itself.
 
 ```c
 #define POTTERY_OPEN_HASH_MAP_PREFIX string_set_map
@@ -156,7 +156,7 @@ This gives us a `string_set_map_t`. We can initialize it with `string_set_map_in
 
 We've declared that the map should hash keys with `fnv1a()`, compare keys with `strcmp()`, move values by simple assignment, and destroy values with `free()`. The map will manage our string memory for us.
 
-We've also declared `EMPTY_IS_ZERO`. This means that zero (null) is a sentinel value that can be used to mark an empty bucket, making the map more efficient. We could instead (or also) have provided custom `IS_EMPTY` and `SET_EMPTY` expressions to provide some other means of marking an empty bucket (for example if the map value was a struct, we could use a bit in the struct.) We could also declare nothing about empty buckets, in which case the map will allocate its own metadata bits to store which buckets are empty.
+We've also declared `EMPTY_IS_ZERO`. This means that zero (null) is a sentinel value that can be used to mark an empty bucket, making the map more efficient. We could instead (or also) have provided custom `IS_EMPTY` and `SET_EMPTY` expressions to provide some other means of marking an empty bucket (for example if the map value was a struct, we could use a field in the struct.) We could also declare nothing about empty buckets, in which case the map will allocate its own metadata bits to store which buckets are empty.
 
 The map uses linear probing by default. We could instead have declared `QUADRATIC_PROBING` or `DOUBLE_HASHING` to change the probing strategy. Alternate probing algorithms require the use of tombstones: we could declare `IS_TOMBSTONE` and `SET_TOMBSTONE` to store those in-band like our empty state, or just let the map store this metadata on its own. Pottery's hash tables can be extensively configured to get the exact behaviour you want.
 

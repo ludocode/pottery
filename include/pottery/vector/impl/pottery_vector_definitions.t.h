@@ -144,12 +144,6 @@ static void pottery_vector_impl_clear(pottery_vector_t* vector) {
 
 POTTERY_VECTOR_EXTERN
 void pottery_vector_displace_all(pottery_vector_t* vector) {
-    #if 0
-    size_t i;
-    for (i = 0; i < vector->count; ++i) {
-        pottery_vector_element_destruct(pottery_vector_at(vector, i));
-    }
-    #endif
     pottery_vector_impl_clear(vector);
 }
 

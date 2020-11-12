@@ -22,29 +22,19 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <assert.h>
+#define POTTERY_RING_IMPL
 
-#include "string_set.h"
+#include "pottery/ring/impl/pottery_ring_macros.t.h"
 
-int main(void) {
-    string_set_t* string_set = string_set_new();
+#include "pottery/ring/impl/pottery_ring_config_alloc.t.h"
+#include "pottery/alloc/pottery_alloc_declare.t.h"
 
-    string_set_add(string_set, "alice");
-    string_set_add(string_set, "eve");
-    string_set_add(string_set, "bob");
+#include "pottery/ring/impl/pottery_ring_config_lifecycle.t.h"
+#include "pottery/lifecycle/pottery_lifecycle_declare.t.h"
 
-    string_set_remove(string_set, "eve");
+#include "pottery/ring/impl/pottery_ring_declarations.t.h"
+#include "pottery/ring/impl/pottery_ring_unmacros.t.h"
 
-    assert(string_set_query(string_set, "alice"));
-    assert(string_set_query(string_set, "bob"));
-    assert(!string_set_query(string_set, "eve"));
+#include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
 
-    printf("%s: %s\n", "alice", string_set_query(string_set, "alice") ? "exists" : "does not exist");
-    printf("%s: %s\n", "bob",   string_set_query(string_set, "bob")   ? "exists" : "does not exist");
-    printf("%s: %s\n", "eve",   string_set_query(string_set, "eve")   ? "exists" : "does not exist");
-
-    string_set_delete(string_set);
-    return EXIT_SUCCESS;
-}
+#undef POTTERY_RING_IMPL
