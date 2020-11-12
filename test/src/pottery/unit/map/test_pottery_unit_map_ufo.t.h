@@ -36,6 +36,10 @@
     #define POTTERY_TEST_MAP_UFO_HAS_CAPACITY 0
 #endif
 
+#ifndef POTTERY_TEST_MAP_UFO_NO_DESTROY
+    #define POTTERY_TEST_MAP_UFO_NO_DESTROY 0
+#endif
+
 #define POTTERY_TEST_MAP_UFO(x) \
     POTTERY_TEST(POTTERY_CONCAT(POTTERY_CONCAT(POTTERY_TEST_MAP_UFO_PREFIX, _), x))
 
@@ -47,12 +51,13 @@ POTTERY_TEST_MAP_UFO(init_destroy) {
 }
 
 static inline void check_ufo_map(ufo_map_t* map) {
-    (void)map;
-    /*
-    size_t i;
-    for (i = 0; i < ufo_map_count(map); ++i)
-        ufo_check(ufo_map_at(map, i));
-        */
+    size_t count = 0;
+    ufo_map_ref_t ref = ufo_map_begin(map);
+    for (; ufo_map_ref_exists(map, ref); ufo_map_next(map, &ref)) {
+        ufo_check(ref);
+        ++count;
+    }
+    pottery_test_assert(count == ufo_map_count(map));
 }
 
 POTTERY_TEST_MAP_UFO(remove) {
@@ -77,16 +82,64 @@ POTTERY_TEST_MAP_UFO(remove) {
     pottery_test_assert(0 == strcmp(ufo_map_find(&map, "hello")->string, "hello"));
     pottery_test_assert(0 == strcmp(ufo_map_find(&map, "world")->string, "world"));
 
+    #if POTTERY_TEST_MAP_UFO_NO_DESTROY
+    // Destroy and displace
+    ref = ufo_map_find(&map, "hello");
+    ufo_destroy(ref);
+    ufo_map_displace(&map, ref);
+    #else
     // Removing an element should call its destroy function
     ufo_map_remove_key(&map, "hello");
+    #endif
+
     check_ufo_map(&map);
 
     // There's only one ufo left in the map, so first() should return it
     pottery_test_assert(0 == strcmp(ufo_map_first(&map)->string, "world"));
 
-    // Destroying with contained elements should be allowed because we should
-    // be instantiated with a destroy function. This should clean up the
-    // remaining ufo.
+    // If we have a destroy expression, destroying with contained elements
+    // is allowed because the map can destroy its contents. This cleans up the
+    // remaining ufo. If we don't have a destroy expression, we have to clear
+    // it manually (the map verifies that it's empty when destroyed to ensure
+    // that there are no leaks.)
+
+    #if POTTERY_TEST_MAP_UFO_NO_DESTROY
+    ufo_destroy(ufo_map_find(&map, "world"));
+    ufo_map_displace_all(&map);
+    #endif
+
+    ufo_map_destroy(&map);
+}
+
+POTTERY_TEST_MAP_UFO(remove_all) {
+    ufo_map_t map;
+    pottery_test_assert(POTTERY_OK == ufo_map_init(&map));
+
+    ufo_map_ref_t ref;
+
+    pottery_test_assert(ufo_map_emplace(&map, "apple", &ref, pottery_null) == POTTERY_OK);
+    pottery_test_assert(ufo_init(ref, "apple", 1) == POTTERY_OK);
+
+    pottery_test_assert(ufo_map_emplace(&map, "banana", &ref, pottery_null) == POTTERY_OK);
+    pottery_test_assert(ufo_init(ref, "banana", 1) == POTTERY_OK);
+
+    pottery_test_assert(ufo_map_emplace(&map, "cherry", &ref, pottery_null) == POTTERY_OK);
+    pottery_test_assert(ufo_init(ref, "cherry", 1) == POTTERY_OK);
+
+    check_ufo_map(&map);
+
+    #if POTTERY_TEST_MAP_UFO_NO_DESTROY
+    // Destroy and displace all
+    for (ref = ufo_map_begin(&map); ufo_map_ref_exists(&map, ref); ufo_map_next(&map, &ref))
+        ufo_destroy(ref);
+    ufo_map_displace_all(&map);
+    #else
+    // Remove all destroys all elements.
+    ufo_map_remove_all(&map);
+    #endif
+
+    check_ufo_map(&map);
+
     ufo_map_destroy(&map);
 }
 
@@ -131,9 +184,19 @@ POTTERY_TEST_MAP_UFO(grow_and_shrink) {
     #endif
 
     // Remove elements until the map is empty.
+    // (This scans from the front of the map forward every iteration. This is
+    // not the ideal way to empty a hash table.)
     while (!ufo_map_is_empty(&map)) {
+
         //printf("removing %i\n", ufo_map_first(&map)->integer);
+        #if POTTERY_TEST_MAP_UFO_NO_DESTROY
+        ufo_map_ref_t ref = ufo_map_first(&map);
+        ufo_destroy(ref);
+        ufo_map_displace(&map, ref);
+        #else
         ufo_map_remove(&map, ufo_map_first(&map));
+        #endif
+
         check_ufo_map(&map);
 
         // Track capacity changes

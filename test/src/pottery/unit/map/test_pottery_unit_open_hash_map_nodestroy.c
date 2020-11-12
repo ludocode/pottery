@@ -48,5 +48,9 @@ static inline size_t fnv1a(const char* p) {
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE ufo_move
 #include "pottery/open_hash_map/pottery_open_hash_map_static.t.h"
 
-// no tests for this yet; for now we just want to make sure it compiles without
-// the remove() functions
+// Instantiate ufo_map tests on our ufo map
+// (NO_DESTROY will make the tests manually destroy and displace instead of remove)
+#define POTTERY_TEST_MAP_UFO_PREFIX pottery_open_hash_map_ufo_nodestroy
+#define POTTERY_TEST_MAP_UFO_HAS_CAPACITY 1
+#define POTTERY_TEST_MAP_UFO_NO_DESTROY 1
+#include "pottery/unit/map/test_pottery_unit_map_ufo.t.h"

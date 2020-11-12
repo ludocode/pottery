@@ -329,6 +329,11 @@ bool pottery_ohm_remove_key(pottery_ohm_t* map, pottery_ohm_key_t key) {
 
 POTTERY_OPEN_HASH_MAP_EXTERN
 void pottery_ohm_displace_all(pottery_ohm_t* map) {
+    map->count = 0;
+    #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
+    map->tombstones = 0;
+    #endif
+
     // If the size is larger than the minimum, we re-allocate to the minimum
     // size; otherwise we clear and keep the existing allocation.
 
