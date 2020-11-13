@@ -35,8 +35,9 @@
     #define POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE pottery_ohm_t*
 #endif
 
-// Note that we don't forward along lifecycle configuration. Instead we give it
-// our wrappers for move and destroy.
+// Note that we don't forward along lifecycle configuration because we need to
+// provide our map as context. Instead we give it our wrappers for move and
+// destroy.
 
 #if defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE) || \
         defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE_BY_VALUE) || \
