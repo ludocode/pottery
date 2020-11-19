@@ -618,6 +618,16 @@ void pottery_vector_remove_at_bulk(pottery_vector_t* vector, size_t index, size_
 #endif // forward decls
 
 static inline
+void pottery_vector_remove_first_bulk(pottery_vector_t* vector, size_t count) {
+    pottery_vector_remove_at_bulk(vector, 0, count);
+}
+
+static inline
+void pottery_vector_remove_last_bulk(pottery_vector_t* vector, size_t count) {
+    pottery_vector_remove_at_bulk(vector, pottery_vector_count(vector) - count, count);
+}
+
+static inline
 void pottery_vector_remove(pottery_vector_t* vector, pottery_vector_entry_t* entry) {
     pottery_vector_remove_at(vector, pottery_vector_entry_index(vector, entry));
 }

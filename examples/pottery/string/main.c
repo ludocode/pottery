@@ -19,7 +19,7 @@ int main(void) {
     assert(string_equal_cstr(&homer, "Homer Simpson"));
     printf("%s\n", string_cstr(&homer));
 
-    // Insert data (total of 17 bytes, causing it to allocate)
+    // Insert data (enough to cause it to allocate)
     string_insert_cstr(&homer, 5, " J.");
     assert(string_equal_cstr(&homer, "Homer J. Simpson"));
     printf("%s\n", string_cstr(&homer));
@@ -30,9 +30,13 @@ int main(void) {
     assert(string_equal_cstr(&homer, "Homer Jay Simpson"));
     printf("%s\n", string_cstr(&homer));
 
-    // Add lots more data (total of 78 bytes, causing it to grow)
-    string_append_cstr(&homer, " works in sector 7G at the Springfield Nuclear Power Plant.");
+    #ifndef __CLR_VER
+    // Append lots more data via format strings, causing it to grow
+    string_append_format(&homer, " works at the %s %s", "Springfield", "Nuclear Power Plant.");
     printf("%s\n", string_cstr(&homer));
+    string_insert_format(&homer, 23, " in sector %01d%c", 7, 'G');
+    printf("%s\n", string_cstr(&homer));
+    #endif
 
     // Clean it up
     string_destroy(&homer);
