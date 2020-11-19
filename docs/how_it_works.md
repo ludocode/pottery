@@ -54,13 +54,13 @@ Configuration of child templates is done by `config` headers. For example `intro
 
 In many cases, a parent template needs to declare some identifiers before instantiating its child template. This is accomplished using a `forward` implementation header. For example, [`shell_sort`](../include/pottery/shell_sort/) must forward-declare its state in order to use it as a context for its child [`insertion_sort`](../include/pottery/insertion_sort/). This happens in [`impl/pottery_shell_sort_forward.t.h`](../include/pottery/shell_sort/impl/pottery_shell_sort_forward.t.h) before `insertion_sort` is instantiated. You can see the include order in [`pottery_shell_static.t.h`](../include/pottery/shell_sort/pottery_shell_sort_static.t.h)
 
-Some containers can depend on an external instantiation of its child templates. For example, with `intro_sort` above, all of the various sort algorithms can share a single instantiation of `lifecycle`. Rather than letting each one instantiate its own copy, `intro_sort` instantiates it, then configures it as an external template.
+Some templates can depend on external instantiations of its child templates. For example, with `intro_sort` above, all of the various sort algorithms can share a single instantiation of `lifecycle`. Rather than letting each one instantiate its own copy, `intro_sort` instantiates it, then configures it as an external template for its children.
 
 
 
 ## Exported Configuration
 
-Some templates export macros to allow parent templates to detect their capabilities after they are instantiated. For example the lifecycle template can instantiate a `swap()` function if given a `SWAP` expression. But it can also instantiate a `swap()` function if given a `MOVE` expression and a `VALUE_TYPE`.
+Some templates export macros to allow parent templates to detect their capabilities after they are instantiated. For example the lifecycle template can instantiate a `swap()` function if given a `SWAP` expression. But it can also instantiate a `swap()` function if given a `MOVE` expression and a `VALUE_TYPE`: it will swap by moving through a temporary.
 
 In order to allow the parent to detect whether swap is possible, the lifecycle template exports the macro `POTTERY_LIFECYCLE_CAN_SWAP`. This is defined to either 1 or 0, corresponding to whether or not `swap()` exists.
 
@@ -68,7 +68,7 @@ When these identifiers are no longer needed, they must be cleaned up. This is do
 
 See for example [`pottery_insertion_sort_static.t.h`](../include/pottery/insertion_sort/pottery_insertion_sort_static.t.h). The `insertion_sort` template instantiates lifecycle functions, instantiates its own functions based on the capabilities of the lifecycle template, then includes the lifecycle cleanup header to clean up. In [`pottery_insertion_sort_definitions.t.h`](../include/pottery/insertion_sort/pottery_insertion_sort_definitions.t.h), you can see where it checks `POTTERY_LIFECYCLE_CAN_MOVE` to decide whether to move or swap.
 
-`POTTERY_LIFECYCLE_CAN_DESTROY` is another macro that is checked often. You can see this macro throughout the implementation of [`vector`](../include/pottery/vector/) for example. This changes its behaviour and capabilities based on whether its contained values can be destroyed.
+`POTTERY_LIFECYCLE_CAN_DESTROY` and `POTTERY_LIFECYCLE_CAN_PASS` are some other macros that are checked often. You can see these macros throughout the implementation of [`vector`](../include/pottery/vector/) for example. These change the vector's behaviour and capabilities based on whether it can destroy or pass the values it contains. For example `displace_at()` is always implemented, but `remove_at()` is only implemented if the vector can destroy its values, and `extract_at()` is only implemented if the vector's values can be passed (as function arguments or return values.)
 
 
 
@@ -83,3 +83,5 @@ Since the context is optional, every function involving a context has an optiona
 - `CONTEXT_VAL` evaluates to a context value to be passed as a function parameter if a context is defined, such as "`context,`" (with the comma.) It evaluates to nothing otherwise.
 
 - `CONTEXT_UNUSED` evaluates to a cast of the context to void if a context is defined, e.g. `(void)context`, to silence warnings about unused arguments. It evaluates to nothing otherwise.
+
+If you want to have multiple contexts (for example one context for allocation expressions and another context for compare expressions), you need to combine them into a struct to be passed to all expressions.
