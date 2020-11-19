@@ -550,7 +550,8 @@ void pottery_oht_displace_all(
     // possible ACCESS configuration options.
 
     size_t size = pottery_cast(size_t, 1) << log_2_size;
-    for (size_t i = 0; i < size; ++i) {
+    size_t i;
+    for (i = 0; i < size; ++i) {
         pottery_oht_ref_set_empty(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
         ref = pottery_oht_access_next(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
     }
@@ -564,7 +565,8 @@ void pottery_oht_destroy_all(
         size_t log_2_size)
 {
     size_t size = pottery_cast(size_t, 1) << log_2_size;
-    for (size_t i = 0; i < size; ++i) {
+    size_t i;
+    for (i = 0; i < size; ++i) {
         if (pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref))
             pottery_oht_lifecycle_destroy(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
         ref = pottery_oht_access_next(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
@@ -578,7 +580,8 @@ void pottery_oht_remove_all(
         size_t log_2_size)
 {
     size_t size = pottery_cast(size_t, 1) << log_2_size;
-    for (size_t i = 0; i < size; ++i) {
+    size_t i;
+    for (i = 0; i < size; ++i) {
         if (pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref))
             pottery_oht_lifecycle_destroy(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
         // Clear it even if it wasn't an element since it might be a tombstone

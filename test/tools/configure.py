@@ -592,6 +592,12 @@ with open(ninja, "w") as out:
                         "-include pottery/unit/test_pottery_example.h"
                     ]
 
+                # little hack to detect whether the example main() function
+                # takes arguments
+                with open(src) as f:
+                    if "main(void)" in f.read():
+                        flags.append("-DPOTTERY_EXAMPLE_MAIN_VOID")
+
             obj = path.join(buildfolder, "objs", objname + obj_extension)
             objs.append(obj)
             out.write("build " + obj + ": compile " + src + "\n")

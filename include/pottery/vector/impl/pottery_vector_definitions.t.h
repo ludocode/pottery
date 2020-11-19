@@ -280,20 +280,15 @@ POTTERY_VECTOR_EXTERN
 pottery_error_t pottery_vector_impl_create_space(pottery_vector_t* vector,
         size_t index, size_t count, pottery_vector_element_t** elements)
 {
-    #if POTTERY_DEBUG
-    *elements = pottery_reinterpret_cast(pottery_vector_element_t*, -1);
-    #endif
-
     // Make sure the arguments are valid.
     if (count == 0) {
-        // We shouldn't need to set the pointer here because it shouldn't be
-        // accessed but certain static analyzers (e.g. MSVC in LTO mode) think
-        // it's accessed without being set.
         *elements = pottery_reinterpret_cast(pottery_vector_element_t*, -1);
         return POTTERY_OK; // no elements
     }
-    if (vector->count + count < vector->count)
+    if (vector->count + count < vector->count) {
+        *elements = pottery_reinterpret_cast(pottery_vector_element_t*, -1);
         return POTTERY_ERROR_OVERFLOW;
+    }
 
     size_t old_count = vector->count;
     pottery_assert(index <= old_count);

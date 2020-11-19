@@ -184,11 +184,13 @@ pottery_error_t pottery_ring_emplace_first(pottery_ring_t* ring, pottery_ring_en
     return POTTERY_OK;
 }
 
+#if POTTERY_LIFECYCLE_CAN_PASS
 POTTERY_RING_EXTERN
 void pottery_ring_insert_last_bulk(pottery_ring_t* ring, const pottery_ring_value_t* values, size_t count) {
     pottery_ring_sanity_check(ring);
     // TODO performance
-    for (size_t i = 0; i < count; ++i)
+    size_t i = 0;
+    for (; i < count; ++i)
         pottery_ring_insert_last(ring, values[i]);
     pottery_ring_sanity_check(ring);
 }
@@ -197,7 +199,8 @@ POTTERY_RING_EXTERN
 void pottery_ring_insert_first_bulk(pottery_ring_t* ring, const pottery_ring_value_t* values, size_t count) {
     pottery_ring_sanity_check(ring);
     // TODO performance
-    for (size_t i = 0; i < count; ++i)
+    size_t i;
+    for (i = 0; i < count; ++i)
         pottery_ring_insert_first(ring, values[count - i - 1]);
     pottery_ring_sanity_check(ring);
 }
@@ -205,7 +208,8 @@ void pottery_ring_insert_first_bulk(pottery_ring_t* ring, const pottery_ring_val
 POTTERY_RING_EXTERN
 void pottery_ring_extract_first_bulk(pottery_ring_t* ring, pottery_ring_value_t* values, size_t count) {
     pottery_ring_sanity_check(ring);
-    for (size_t i = 0; i < count; ++i)
+    size_t i;
+    for (i = 0; i < count; ++i)
         values[i] = pottery_ring_extract_first(ring);
     pottery_ring_sanity_check(ring);
 }
@@ -214,7 +218,9 @@ POTTERY_RING_EXTERN
 void pottery_ring_extract_last_bulk(pottery_ring_t* ring, pottery_ring_value_t* values, size_t count) {
     //fprintf(stderr, "extract last bulk\n");
     pottery_ring_sanity_check(ring);
-    for (size_t i = 0; i < count; ++i)
+    size_t i;
+    for (i = 0; i < count; ++i)
         values[count - i - 1] = pottery_ring_extract_last(ring);
     pottery_ring_sanity_check(ring);
 }
+#endif

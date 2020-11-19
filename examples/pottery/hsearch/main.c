@@ -7,9 +7,12 @@
 int main(void) {
     assert(0 != hcreate(32));
 
-    ENTRY alice = {"alice", NULL};
-    ENTRY bob   = {"bob", NULL};
-    ENTRY eve   = {"eve", NULL};
+    // Unfortunately we have to cast away const to put literal string keys in
+    // an hsearch table. They won't actually be modified or freed (as long as
+    // we don't call hdestroy1(free, ..) or hdestroy_openbsd().)
+    ENTRY alice = {pottery_const_cast(char*, "alice"), NULL};
+    ENTRY bob   = {pottery_const_cast(char*, "bob"), NULL};
+    ENTRY eve   = {pottery_const_cast(char*, "eve"), NULL};
 
     assert(NULL == hsearch(alice, FIND));
     assert(NULL == hsearch(bob, FIND));

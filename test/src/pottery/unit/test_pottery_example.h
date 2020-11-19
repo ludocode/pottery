@@ -43,9 +43,7 @@
 #define _GNU_SOURCE
 #endif
 
-// We want strcpy() and other standard functions available under MSVC in example code
-//#define _CRT_SECURE_NO_WARNINGS
-
+// We want strcpy() without warnings on MSVC
 #ifdef _MSC_VER
 #include <string.h>
 static inline char* strcpy_workaround(char* to, const char* from) {
@@ -84,25 +82,36 @@ static inline char* strcpy_workaround(char* to, const char* from) {
 
 
 /*
- * We need to replace `int main(void)` with POTTERY_TEST(x)` where x is a
+ * We need to replace `int main(...)` with POTTERY_TEST(x)` where x is a
  * generated test name based on the path.
  *
  * The first bit gets rid of the `int` by attaching it to another unused
  * function.
  *
- * The rest handles the `(void)` by attaching it to a wrapped function
- * that we forward-declare. (This means examples cannot currently take
- * command-line arguments.)
+ * The rest handles the `(...)` by attaching it to a wrapped function
+ * that we forward-declare. The buildsystem determines whether it takes
+ * arguments.
  */
+
+#ifdef POTTERY_EXAMPLE_MAIN_VOID
+    #define POTTERY_EXAMPLE_MAIN_ARGS void
+    #define POTTERY_EXAMPLE_MAIN_VALS /*nothing*/
+#else
+    #define POTTERY_EXAMPLE_MAIN_ARGS int argc, char** argv
+    #define POTTERY_EXAMPLE_MAIN_VALS 1, &name
+#endif
+
 #define main \
     POTTERY_EXAMPLE_TEST_UNUSED(void); \
     int POTTERY_EXAMPLE_TEST_UNUSED(void) {return 0;} \
     \
-    static int POTTERY_EXAMPLE_TEST_WRAPPER(void); \
+    static int POTTERY_EXAMPLE_TEST_WRAPPER(POTTERY_EXAMPLE_MAIN_ARGS); \
     \
     POTTERY_TEST(POTTERY_EXAMPLE_NAME) { \
         (void)&POTTERY_EXAMPLE_TEST_UNUSED; \
-        int ret = POTTERY_EXAMPLE_TEST_WRAPPER(); \
+        const char* name = "pottery_example_unit_test"; \
+        (void)name; \
+        int ret = POTTERY_EXAMPLE_TEST_WRAPPER(POTTERY_EXAMPLE_MAIN_VALS); \
         pottery_assert(ret == 0); \
     } \
     \

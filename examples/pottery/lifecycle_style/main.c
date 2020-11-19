@@ -98,7 +98,7 @@ static void add_employees(employees_t* employees) {
         employee_init_values(&homer, "Homer", "Simpson", "1986-01-01", 26);
 
         // Moves homer into the container
-        employee_t* ref;
+        employee_t* ref = pottery_null;
         employees_emplace(employees, employee_number(&homer), &ref, pottery_null);
         employee_move(ref, &homer);
 
@@ -112,7 +112,7 @@ static void add_employees(employees_t* employees) {
     {
         // Initializes kyle in-place
         int kyle_number = 31;
-        employee_t* kyle;
+        employee_t* kyle = pottery_null;
         employees_emplace(employees, kyle_number, &kyle, pottery_null);
         employee_init_values(kyle, "Kyle", "Broslovsky", "1999-01-01", kyle_number);
 
@@ -126,8 +126,8 @@ static void add_employees(employees_t* employees) {
         employee_init_values(&bob, "Bob", "Belcher", "2020-01-01", 17);
 
         // Inserts a copy of bob
-        bool created;
-        employee_t* ref;
+        bool created = false;
+        employee_t* ref = pottery_null;
         employees_emplace(employees, employee_number(&bob), &ref, &created);
         pottery_assert(created);
         employee_init_copy(ref, &bob);
@@ -146,7 +146,7 @@ static void add_employees(employees_t* employees) {
         employee_init_values(&stan, "Stan", "Smith", "1990-01-01", stan_number);
 
         // Inserts stan, stealing its contents
-        employee_t* ref;
+        employee_t* ref = pottery_null;
         employees_emplace(employees, employee_number(&stan), &ref, pottery_null);
         employee_init_steal(ref, &stan);
 

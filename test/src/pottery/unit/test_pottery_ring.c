@@ -57,15 +57,16 @@ static void test_pottery_ring_int_normal(int count) {
     int_ring_t ring;
     int_ring_init(&ring);
 
-    for (int i = 0; i < count; ++i) {
+    int i;
+    for (i = 0; i < count; ++i) {
         int_ring_insert_last(&ring, i);
     }
 
-    for (int i = 0; i < count; ++i) {
-        pottery_test_assert(*int_ring_at(&ring, (size_t)i) == i);
+    for (i = 0; i < count; ++i) {
+        pottery_test_assert(*int_ring_at(&ring, pottery_cast(size_t, i)) == i);
     }
 
-    for (int i = 0; i < count; ++i) {
+    for (i = 0; i < count; ++i) {
         pottery_test_assert(i == int_ring_extract_first(&ring));
     }
 
@@ -86,15 +87,16 @@ static void test_pottery_ring_int_reverse(int count) {
     int_ring_t ring;
     int_ring_init(&ring);
 
-    for (int i = 0; i < count; ++i) {
+    int i;
+    for (i = 0; i < count; ++i) {
         int_ring_insert_first(&ring, i);
     }
 
-    for (int i = 0; i < count; ++i) {
-        pottery_test_assert(*int_ring_at(&ring, (size_t)i) == count - i - 1);
+    for (i = 0; i < count; ++i) {
+        pottery_test_assert(*int_ring_at(&ring, pottery_cast(size_t, i)) == count - i - 1);
     }
 
-    for (int i = 0; i < count; ++i) {
+    for (i = 0; i < count; ++i) {
         pottery_test_assert(i == int_ring_extract_last(&ring));
     }
 
@@ -119,10 +121,11 @@ POTTERY_TEST(pottery_ring_bulk_insert) {
 
     int block[10000];
 
-    for (int count = 1; count < bulk_count; ++count) {
-        for (int i = 0; i < count; ++i)
+    int count, i;
+    for (count = 1; count < bulk_count; ++count) {
+        for (i = 0; i < count; ++i)
             block[i] = i;
-        int_ring_insert_last_bulk(&ring, block, (size_t)count);
+        int_ring_insert_last_bulk(&ring, block, pottery_cast(size_t, count));
 
         //fprintf(stderr, "inserted bulk, now contains:\n");
         //for (int i = 0; i < (int)int_ring_count(&ring); ++i)
@@ -130,8 +133,8 @@ POTTERY_TEST(pottery_ring_bulk_insert) {
         //fprintf(stderr, "\n");
     }
 
-    for (int count = 1; count < bulk_count; ++count)
-        for (int i = 0; i < count; ++i)
+    for (count = 1; count < bulk_count; ++count)
+        for (i = 0; i < count; ++i)
             pottery_test_assert(i == int_ring_extract_first(&ring));
 
     int_ring_destroy(&ring);
@@ -143,17 +146,18 @@ POTTERY_TEST(pottery_ring_bulk_insert_first) {
 
     int block[10000];
 
-    for (int count = 1; count < bulk_count; ++count) {
-        for (int i = 0; i < count; ++i)
+    int count, i;
+    for (count = 1; count < bulk_count; ++count) {
+        for (i = 0; i < count; ++i)
             block[i] = i;
 //fprintf(stderr,"*************************** insert first bulk %i\n",count);
-        int_ring_insert_first_bulk(&ring, block, (size_t)count);
+        int_ring_insert_first_bulk(&ring, block, pottery_cast(size_t, count));
     }
 
     // Each block is in ascending order, but we've inserted the blocks in reverse
     // order.
-    for (int count = bulk_count - 1; count > 0; --count)
-        for (int i = 0; i < count; ++i)
+    for (count = bulk_count - 1; count > 0; --count)
+        for (i = 0; i < count; ++i)
 //(fprintf(stderr,"====\n")),
 //(fprintf(stderr,"count %i expected %i actual %i\n",count, i,*int_ring_at(&ring,0))),
             pottery_test_assert(i == int_ring_extract_first(&ring));
@@ -167,13 +171,14 @@ POTTERY_TEST(pottery_ring_bulk_extract) {
 
     int block[10000];
 
-    for (int count = 1; count < bulk_count; ++count)
-        for (int i = 0; i < count; ++i)
+    int count, i;
+    for (count = 1; count < bulk_count; ++count)
+        for (i = 0; i < count; ++i)
             int_ring_insert_last(&ring, i);
 
-    for (int count = 1; count < bulk_count; ++count) {
-        int_ring_extract_first_bulk(&ring, block, (size_t)count);
-        for (int i = 0; i < count; ++i)
+    for (count = 1; count < bulk_count; ++count) {
+        int_ring_extract_first_bulk(&ring, block, pottery_cast(size_t, count));
+        for (i = 0; i < count; ++i)
             pottery_test_assert(i == block[i]);
     }
 
@@ -186,16 +191,17 @@ POTTERY_TEST(pottery_ring_bulk_extract_last) {
 
     int block[10000];
 
-    for (int count = 1; count < bulk_count; ++count)
-        for (int i = 0; i < count; ++i)
+    int count, i;
+    for (count = 1; count < bulk_count; ++count)
+        for (i = 0; i < count; ++i)
 //(fprintf(stderr,"%i\n",i)),
             int_ring_insert_last(&ring, i);
 
     // Each block is in ascending order, but we're extractping the blocks in
     // reverse order.
-    for (int count = bulk_count - 1; count > 0; --count) {
-        int_ring_extract_last_bulk(&ring, block, (size_t)count);
-        for (int i = 0; i < count; ++i)
+    for (count = bulk_count - 1; count > 0; --count) {
+        int_ring_extract_last_bulk(&ring, block, pottery_cast(size_t, count));
+        for (i = 0; i < count; ++i)
 //(fprintf(stderr,"%i %i\n",i,block[i])),
             pottery_test_assert(i == block[i]);
     }
@@ -212,22 +218,24 @@ POTTERY_TEST(pottery_ring_wrap_forward) {
     int value = 0;
 
     // load some values into the ring
-    for (int i = 0; i < step_size; ++i)
+    int i;
+    for (i = 0; i < step_size; ++i)
         int_ring_insert_last(&ring, value + i);
 
     // repeatedly test loading more values, then extractping the original values,
     // leaving always at least step_size values in the ring. this tests
     // wrapping behaviour of the ring.
-    for (int step = 0; step < steps; ++step) {
-        for (int i = 0; i < step_size; ++i)
+    int step;
+    for (step = 0; step < steps; ++step) {
+        for (i = 0; i < step_size; ++i)
             int_ring_insert_last(&ring, value + step_size + i);
-        for (int i = 0; i < step_size; ++i)
+        for (i = 0; i < step_size; ++i)
             pottery_test_assert((value + i) == int_ring_extract_first(&ring));
         value += step_size;
     }
 
     // extract the final values from the ring
-    for (int i = 0; i < step_size; ++i)
+    for (i = 0; i < step_size; ++i)
         pottery_test_assert((value + i) == int_ring_extract_first(&ring));
 
     int_ring_destroy(&ring);
@@ -242,22 +250,24 @@ POTTERY_TEST(pottery_ring_wrap_lastward) {
     int value = 0;
 
     // load some values into the ring
-    for (int i = 0; i < step_size; ++i)
+    int i;
+    for (i = 0; i < step_size; ++i)
         int_ring_insert_first(&ring, value + i);
 
     // repeatedly test loading more values, then extractping the original values,
     // leaving always at least step_size values in the ring. this tests
     // wrapping behaviour of the ring.
-    for (int step = 0; step < steps; ++step) {
-        for (int i = 0; i < step_size; ++i)
+    int step;
+    for (step = 0; step < steps; ++step) {
+        for (i = 0; i < step_size; ++i)
             int_ring_insert_first(&ring, value + step_size + i);
-        for (int i = 0; i < step_size; ++i)
+        for (i = 0; i < step_size; ++i)
             pottery_test_assert((value + i) == int_ring_extract_last(&ring));
         value += step_size;
     }
 
     // extract the final values from the ring
-    for (int i = 0; i < step_size; ++i)
+    for (i = 0; i < step_size; ++i)
         pottery_test_assert((value + i) == int_ring_extract_last(&ring));
 
     int_ring_destroy(&ring);
