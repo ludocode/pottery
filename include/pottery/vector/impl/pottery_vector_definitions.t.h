@@ -238,7 +238,7 @@ void pottery_vector_move(pottery_vector_t* to, pottery_vector_t* from) {
         // also steal debug stuff
         #if POTTERY_DEBUG
             #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
-                to->self_check = from->self_check;
+                to->self_check = to;
                 from->self_check = pottery_reinterpret_cast(pottery_vector_t*, -1);
             #endif
             #if POTTERY_LEAK_CHECK
