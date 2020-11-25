@@ -504,6 +504,9 @@ if compiler != "TinyCC" and compiler != "cproc" and compiler != "MSVC":
 srcs = []
 
 for root, dirs, files in itertools.chain(os.walk("test/src"), os.walk("examples")):
+    # skip clayfish. it requires pthreads and doesn't support windows yet
+    if "clayfish" in root:
+        continue
     for name in files:
         # skip any benchmark files
         if "benchmark" in name:
