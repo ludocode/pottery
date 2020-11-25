@@ -1,5 +1,5 @@
 NAME = $(shell basename "$(shell pwd)")
-BUILD = build
+BUILD = build/$(NAME)
 EXECUTABLE = $(BUILD)/$(NAME)
 
 run: $(EXECUTABLE) FORCE
@@ -21,15 +21,18 @@ CFLAGS = -O0 -g
 
 C_SRCS := $(shell find . -type f -name '*.c')
 CXX_SRCS := $(shell find . -type f -name '*.cxx')
-C_OBJS := $(patsubst %, $(BUILD)/%.o, $(C_SRCS))
-CXX_OBJS := $(patsubst %, $(BUILD)/%.o, $(CXX_SRCS))
-ALL_OBJS := $(C_OBJS) $(CXX_OBJS)
+
+-include Makefile.override.mk
 
 ifeq ($(CXX_SRCS),)
 LINK := $(CC)
 else
 LINK := $(CXX)
 endif
+
+C_OBJS := $(patsubst %, $(BUILD)/%.o, $(C_SRCS))
+CXX_OBJS := $(patsubst %, $(BUILD)/%.o, $(CXX_SRCS))
+ALL_OBJS := $(C_OBJS) $(CXX_OBJS)
 
 $(EXECUTABLE): $(ALL_OBJS)
 	$(LINK) $(CPPFLAGS) $(CFLAGS) $(CXXFLAGS) -o $@ $^
