@@ -109,7 +109,7 @@ bool position_is_legal(const position_t* position) {
     }
 
     position_state_t state = position_state(position);
-    if (state == position_state_checkmate || position_state_stalemate) {
+    if (state == position_state_checkmate || state == position_state_stalemate) {
         // the player to move has no legal moves
         return false;
     }

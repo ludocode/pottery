@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-#include <string.h>
 #include "cli.h"
 #include "uci.h"
 

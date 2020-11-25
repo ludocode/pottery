@@ -18,6 +18,7 @@ CPPFLAGS += -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter
 CPPFLAGS += -MD -MP
 
 CFLAGS = -O0 -g
+LDFLAGS =
 
 C_SRCS := $(shell find . -type f -name '*.c')
 CXX_SRCS := $(shell find . -type f -name '*.cxx')
@@ -35,7 +36,7 @@ CXX_OBJS := $(patsubst %, $(BUILD)/%.o, $(CXX_SRCS))
 ALL_OBJS := $(C_OBJS) $(CXX_OBJS)
 
 $(EXECUTABLE): $(ALL_OBJS)
-	$(LINK) $(CPPFLAGS) $(CFLAGS) $(CXXFLAGS) -o $@ $^
+	$(LINK) $(CPPFLAGS) $(CFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@ $^
 
 $(C_OBJS): $(BUILD)/%.o: % $(MAKEFILE_LIST)
 	@mkdir -p $(dir $@)

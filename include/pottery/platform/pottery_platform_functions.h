@@ -407,7 +407,10 @@ static inline size_t pottery_malloc_estimate_good_size(size_t size) {
 #endif
 #ifndef POTTERY_ALIGNED_MALLOC
     // C11 requires aligned_alloc().
-    #ifdef __STDC_VERSION__
+    // (Unfortunately Apple doesn't define it even in C11 unless
+    // __DARWIN_C_LEVEL==__DARWIN_C_FULL which is not the default. For safety
+    // we just won't use it on their platforms.)
+    #if defined(__STDC_VERSION__) && !defined(__APPLE__)
         #if __STDC_VERSION__ >= 201112L
             #define POTTERY_ALIGNED_MALLOC aligned_alloc
         #endif

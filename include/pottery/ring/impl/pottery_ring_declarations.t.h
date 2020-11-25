@@ -203,7 +203,7 @@ void pottery_ring_remove_first(pottery_ring_t* ring) {
 static inline
 void pottery_ring_remove_last(pottery_ring_t* ring) {
     pottery_ring_lifecycle_destroy(pottery_ring_last(ring));
-    pottery_ring_remove_last(ring);
+    pottery_ring_displace_last(ring);
 }
 #endif
 

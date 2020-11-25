@@ -9,4 +9,4 @@ else
 CFLAGS = -O3 -funroll-loops -flto -g
 endif
 
-CPPFLAGS += -Wl,-lpthread
+LDFLAGS += -Wl,-lpthread

@@ -25,6 +25,8 @@
 #ifndef CLAYFISH_CLI_H
 #define CLAYFISH_CLI_H
 
+#include "common.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

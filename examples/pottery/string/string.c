@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+
 #include "string.h"
 
 #define POTTERY_VECTOR_PREFIX string_storage

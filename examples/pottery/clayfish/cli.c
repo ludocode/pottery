@@ -22,12 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <ctype.h>
-
 #include "search.h"
 #include "position.h"
 #include "generate.h"

@@ -1,6 +1,6 @@
 # POSIX `hsearch()` with Pottery
 
-This is an implementation of the mostly terrible POSIX `hcreate()`. `hsearch()` and `hdestroy()` APIs and their various extensions using Pottery.
+This is an implementation of the mostly terrible POSIX `hcreate()`, `hsearch()` and `hdestroy()` APIs and their various extensions using Pottery.
 
 - [Linux `search(0P)` man page](https://man7.org/linux/man-pages/man0/search.h.0p.html)
 - [Linux `hsearch()` man page](https://linux.die.net/man/3/hsearch)

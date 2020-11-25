@@ -25,7 +25,7 @@
 #ifndef PIECE_H
 #define PIECE_H
 
-#include <stdbool.h>
+#include "common.h"
 
 #ifdef __cplusplus
 extern "C" {

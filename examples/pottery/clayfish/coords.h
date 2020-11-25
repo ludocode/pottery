@@ -25,9 +25,7 @@
 #ifndef COORDS_H
 #define COORDS_H
 
-#include <limits.h>
-#include <stdbool.h>
-#include <stdlib.h>
+#include "common.h"
 
 #ifdef __cplusplus
 extern "C" {

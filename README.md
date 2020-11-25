@@ -145,7 +145,7 @@ Next we define our map. We'll use `char*` as the value type and `const char*` as
 #define POTTERY_OPEN_HASH_MAP_KEY_TYPE const char*
 #define POTTERY_OPEN_HASH_MAP_VALUE_KEY(x) *x
 #define POTTERY_OPEN_HASH_MAP_KEY_HASH fnv1a
-#define POTTERY_OPEN_HASH_MAP_KEY_EQUAL 0 == strcmp
+#define POTTERY_OPEN_HASH_MAP_KEY_EQUAL(x, y) 0 == strcmp(x, y)
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE_BY_VALUE 1
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY(x) free(*x)
 #define POTTERY_OPEN_HASH_MAP_EMPTY_IS_ZERO 1
@@ -179,3 +179,5 @@ It is trivial to implement these functions as wrappers to our `string_set_map`. 
 ### Additional Examples
 
 There are more examples in the [`examples/`](examples/pottery/) folder and many more that stll need to be written. Have a look at what's there so far to learn more ways you can use Pottery.
+
+In particular, take a look at [Clayfish](examples/pottery/clayfish/) to see various uses of Pottery in a "real" application.

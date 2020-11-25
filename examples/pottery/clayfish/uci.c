@@ -24,11 +24,6 @@
 
 #include "uci.h"
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <fcntl.h>
-#include <pthread.h>
-
 #include "position.h"
 #include "eval.h"
 #include "common.h"

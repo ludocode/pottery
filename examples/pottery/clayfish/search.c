@@ -29,8 +29,6 @@
 #include "generate.h"
 #include "eval.h"
 
-#include <time.h>
-
 // how long we think between checking whether we should stop
 #define STEPS_PER_STOP_CHECK 20000
 
