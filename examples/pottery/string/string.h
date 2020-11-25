@@ -397,6 +397,38 @@ void string_set_format(string_t* string,
         #endif
         ;
 
+/**
+ * Initializes a string to a formatted string.
+ *
+ * @see string_append_vformat()
+ */
+void string_init_vformat(string_t* string,
+        #ifdef __MSC_VER
+        _Printf_format_string_
+        #endif
+        const char* format,
+        va_list args)
+        #ifdef __GNUC__
+        __attribute__((__format__(__printf__, 2, 0)))
+        #endif
+        ;
+
+/**
+ * Initializes a string to a formatted string.
+ *
+ * @see string_append_vformat()
+ */
+void string_init_format(string_t* string,
+        #ifdef __MSC_VER
+        _Printf_format_string_
+        #endif
+        const char* format,
+        ...)
+        #ifdef __GNUC__
+        __attribute__((__format__(__printf__, 2, 3)))
+        #endif
+        ;
+
 #endif // !defined(__CLR_VER)
 
 #ifdef __cplusplus

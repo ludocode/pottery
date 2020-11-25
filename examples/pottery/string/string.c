@@ -292,6 +292,36 @@ void string_set_format(string_t* string,
 }
 
 #ifdef __GNUC__
+__attribute__((__format__(__printf__, 2, 0)))
+#endif
+void string_init_vformat(string_t* string,
+        #ifdef __MSC_VER
+        _Printf_format_string_
+        #endif
+        const char* format,
+        va_list args)
+{
+    string_init_blank(string);
+    string_append_vformat(string, format, args);
+}
+
+#ifdef __GNUC__
+__attribute__((__format__(__printf__, 2, 3)))
+#endif
+void string_init_format(string_t* string,
+        #ifdef __MSC_VER
+        _Printf_format_string_
+        #endif
+        const char* format,
+        ...)
+{
+    va_list args;
+    va_start(args, format);
+    string_init_vformat(string, format, args);
+    va_end(args);
+}
+
+#ifdef __GNUC__
 __attribute__((__format__(__printf__, 3, 0)))
 #endif
 void string_insert_vformat(string_t* string,
