@@ -30,7 +30,7 @@
  */
 
 bool employee_init(employee_t* employee) {
-    string_init_blank(&employee->first_name);
+    string_init(&employee->first_name);
 
     // Our requirement that last_name is never null greatly simplifies the
     // code, but it is obviously not efficient in cases like this. We could

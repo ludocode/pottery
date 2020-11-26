@@ -237,7 +237,7 @@ static inline void string_destroy(string_t* string) {
 /**
  * Initializes the string with no contents (i.e. the empty string.)
  */
-void string_init_blank(string_t* string);
+void string_init(string_t* string);
 
 void string_init_cstr(string_t* string, const char* cstr);
 

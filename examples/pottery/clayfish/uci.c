@@ -158,7 +158,7 @@ static void* uci_input_thread(void* vuci) {
 
         string_t* string = NULL;
         string_queue_emplace_last(&uci->input_queue, &string);
-        string_init_blank(string);
+        string_init(string);
 
         if (ret == NULL) {
             // We failed to read from standard input.
@@ -210,7 +210,7 @@ typedef struct uci_parser_t {
 static void uci_parser_init(uci_parser_t* parser, const string_t* input) {
     parser->pos = string_cstr(input);
     parser->end = string_cstr(input) + string_length(input);
-    string_init_blank(&parser->word);
+    string_init(&parser->word);
 }
 
 static void uci_parser_destroy(uci_parser_t* parser) {
@@ -423,7 +423,7 @@ static bool uci_parse_position(uci_t* uci, uci_parser_t* parser) {
 
     // Print the final board position to the log
     string_t string;
-    string_init_blank(&string);
+    string_init(&string);
     position_format(&uci->position, &string);
     uci_printf(uci, uci_channel_debug, "Final position:\n%s", string_cstr(&string));
     string_destroy(&string);
@@ -626,7 +626,7 @@ static void uci_print_info(void* context) {
     uci_t* uci = (uci_t*)context;
 
     string_t info;
-    string_init_blank(&info);
+    string_init(&info);
     string_append_format(&info, "info score ");
 
     // Note that we subtract 1 (rather than add 1) because our scores are

@@ -7,7 +7,7 @@ int main(void) {
 
     // Initialize a blank string
     string_t homer;
-    string_init_blank(&homer);
+    string_init(&homer);
 
     // Append a C string
     string_append_cstr(&homer, "Homer");
@@ -38,8 +38,7 @@ int main(void) {
     printf("%s\n", string_cstr(&homer));
     #endif
 
-    // Clean it up
+    // Clean up
     string_destroy(&homer);
-
     return EXIT_SUCCESS;
 }

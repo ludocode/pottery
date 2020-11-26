@@ -73,7 +73,7 @@ static void cli_ai_move(position_t* position) {
 
 static void cli_print_board(position_t* position) {
     string_t string;
-    string_init_blank(&string);
+    string_init(&string);
     position_format(position, &string);
     puts(string_cstr(&string));
     putchar('\n');

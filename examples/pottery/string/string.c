@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+// We need stdio.h for vsnprintf()
 #include <stdio.h>
 
 #include "string.h"
@@ -32,7 +33,7 @@
 #define POTTERY_VECTOR_INTERNAL_CAPACITY POTTERY_STRING_INTERNAL_CAPACITY
 #include "pottery/vector/pottery_vector_define.t.h"
 
-void string_init_blank(string_t* string) {
+void string_init(string_t* string) {
     string_storage_init(&string->storage);
     string_abort_on_error(string_storage_insert_last(&string->storage, '\0'));
 }
@@ -303,7 +304,7 @@ void string_init_vformat(string_t* string,
         const char* format,
         va_list args)
 {
-    string_init_blank(string);
+    string_init(string);
     string_append_vformat(string, format, args);
 }
 
@@ -335,7 +336,7 @@ void string_insert_vformat(string_t* string,
         va_list args)
 {
     string_t temp;
-    string_init_blank(&temp);
+    string_init(&temp);
     string_append_vformat(&temp, format, args);
     string_insert_string(string, index, &temp);
     string_destroy(&temp);
