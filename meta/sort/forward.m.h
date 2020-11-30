@@ -39,6 +39,7 @@
 #ifdef {SRC}_CONTEXT_TYPE
     #define {DEST}_CONTEXT_TYPE {SRC}_CONTEXT_TYPE
 #endif
+// TODO ACCESS is deprecated. This whole metatemplate can be removed
 #ifdef {SRC}_ACCESS
     #define {DEST}_ACCESS {SRC}_ACCESS
 #endif

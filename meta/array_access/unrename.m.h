@@ -23,16 +23,17 @@
  */
 
 //!!! END_LICENSE
-// Un-renames quick_sort identifiers with prefix "{PREFIX}"
+// Un-renames array_access identifiers with prefix "{PREFIX}"
 
 #undef {PREFIX}_ref_t
-#undef {PREFIX}_const_ref_t
 #undef {PREFIX}_value_t
 #undef {PREFIX}_context_t
 
-#undef {PREFIX}
-#undef {PREFIX}_range
-#undef {PREFIX}_prepare_pivot
-#undef {PREFIX}_partition
-#undef {PREFIX}_fallback
-#undef {PREFIX}_depth_fallback
+#undef {PREFIX}_shift
+#undef {PREFIX}_offset
+#undef {PREFIX}_next
+#undef {PREFIX}_previous
+
+#undef {PREFIX}_select
+#undef {PREFIX}_index
+#undef {PREFIX}_count

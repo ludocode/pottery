@@ -158,12 +158,13 @@
     #undef pottery_vector_count
     #undef pottery_vector_is_empty
     #undef pottery_vector_at
-    #undef pottery_vector_index
     #undef pottery_vector_first
     #undef pottery_vector_last
     #undef pottery_vector_any
 
     // iteration
+    #undef pottery_vector_select
+    #undef pottery_vector_index
     #undef pottery_vector_begin
     #undef pottery_vector_end
     #undef pottery_vector_next

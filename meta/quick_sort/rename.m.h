@@ -29,10 +29,9 @@
 #define {SRC}_const_ref_t POTTERY_CONCAT({DEST}, _const_ref_t)
 #define {SRC}_value_t POTTERY_CONCAT({DEST}, _value_t)
 #define {SRC}_context_t POTTERY_CONCAT({DEST}, _context_t)
-#define {SRC}_state_t POTTERY_CONCAT({DEST}, _state_t)
 
 #define {SRC} {DEST}
-#define {SRC}_access POTTERY_CONCAT({DEST}, _access)
+#define {SRC}_range POTTERY_CONCAT({DEST}, _range)
 #define {SRC}_prepare_pivot POTTERY_CONCAT({DEST}, _prepare_pivot)
 #define {SRC}_partition POTTERY_CONCAT({DEST}, _partition)
 #define {SRC}_fallback POTTERY_CONCAT({DEST}, _fallback)

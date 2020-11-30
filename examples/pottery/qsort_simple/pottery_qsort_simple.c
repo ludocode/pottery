@@ -32,8 +32,13 @@ typedef struct qsort_context_t {
 } qsort_context_t;
 
 static inline
-void* qsort_access(qsort_context_t context, void* reference, size_t index) {
-    return (char*)reference + (index * context.element_size);
+void* qsort_array_access_select(qsort_context_t context, void* base, size_t index) {
+    return (char*)base + (index * context.element_size);
+}
+
+static inline
+size_t qsort_array_access_index(qsort_context_t context, void* base, void* ref) {
+    return (size_t)((char*)ref - (char*)base) / context.element_size;
 }
 
 static inline
@@ -65,7 +70,8 @@ void qsort_swap(qsort_context_t context, void* vleft, void* vright) {
 #define POTTERY_INTRO_SORT_PREFIX qsort_run
 #define POTTERY_INTRO_SORT_REF_TYPE void*
 #define POTTERY_INTRO_SORT_CONTEXT_TYPE qsort_context_t
-#define POTTERY_INTRO_SORT_ACCESS qsort_access
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_SELECT qsort_array_access_select
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_INDEX qsort_array_access_index
 #define POTTERY_INTRO_SORT_COMPARE_THREE_WAY qsort_compare
 #define POTTERY_INTRO_SORT_LIFECYCLE_SWAP qsort_swap
 #include "pottery/intro_sort/pottery_intro_sort_static.t.h"

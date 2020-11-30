@@ -126,12 +126,13 @@
     #define pottery_vector_count POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _count)
     #define pottery_vector_is_empty POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _is_empty)
     #define pottery_vector_at POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _at)
-    #define pottery_vector_index POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _index)
     #define pottery_vector_first POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _first)
     #define pottery_vector_last POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _last)
     #define pottery_vector_any POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _any)
 
     // iteration
+    #define pottery_vector_select POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _select)
+    #define pottery_vector_index POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _index)
     #define pottery_vector_begin POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _begin)
     #define pottery_vector_end POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _end)
     #define pottery_vector_next POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _next)

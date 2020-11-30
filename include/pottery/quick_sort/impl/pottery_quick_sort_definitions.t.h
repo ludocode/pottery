@@ -27,32 +27,6 @@
 #endif
 
 /*
- * Helpers to wrap configuration
- */
-
-typedef struct pottery_quick_sort_state_t {
-    #ifdef POTTERY_QUICK_SORT_CONTEXT_TYPE
-    pottery_quick_sort_context_t context;
-    #endif
-    pottery_quick_sort_ref_t first;
-} pottery_quick_sort_state_t;
-
-// Gets the ref for the element at index.
-static pottery_always_inline
-pottery_quick_sort_ref_t pottery_quick_sort_access(pottery_quick_sort_state_t state, size_t index) {
-    (void)state;
-
-    #ifndef POTTERY_QUICK_SORT_ACCESS
-        // With no defined access expression, it's a simple array.
-        return state.first + index;
-    #elif defined(POTTERY_QUICK_SORT_CONTEXT_TYPE)
-        return POTTERY_QUICK_SORT_ACCESS(state.context, state.first, index);
-    #else
-        return POTTERY_QUICK_SORT_ACCESS(state.first, index);
-    #endif
-}
-
-/*
  * Implementation
  */
 
@@ -63,7 +37,10 @@ pottery_quick_sort_ref_t pottery_quick_sort_access(pottery_quick_sort_state_t st
 
 // Chooses a pivot and swaps it with the element at the start of the array.
 static inline
-void pottery_quick_sort_prepare_pivot(pottery_quick_sort_state_t state, size_t start_index, size_t end_index) {
+void pottery_quick_sort_prepare_pivot(
+        POTTERY_QUICK_SORT_ARGS
+        size_t start_index, size_t end_index)
+{
     if (end_index - start_index < 2) {
         // there are less than three elements so it doesn't matter which one
         // is the pivot. just use the first.
@@ -72,34 +49,34 @@ void pottery_quick_sort_prepare_pivot(pottery_quick_sort_state_t state, size_t s
 
     // choose elements for the median
     size_t middle_index = start_index + (end_index - start_index) / 2; // avoid overflow
-    pottery_quick_sort_ref_t start = pottery_quick_sort_access(state, start_index);
-    pottery_quick_sort_ref_t middle = pottery_quick_sort_access(state, middle_index);
-    pottery_quick_sort_ref_t end = pottery_quick_sort_access(state, end_index);
+    pottery_quick_sort_ref_t start = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS start_index);
+    pottery_quick_sort_ref_t middle = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS middle_index);
+    pottery_quick_sort_ref_t end = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS end_index);
 
     // if there is at most some arbitrary threshold of elements, use median
     if (end_index - start_index + 1 <= 128) {
         pottery_quick_sort_ref_t median = pottery_quick_sort_compare_median(
-                POTTERY_QUICK_SORT_CONTEXT_VAL(state) start, middle, end);
+                POTTERY_QUICK_SORT_CONTEXT_VAL start, middle, end);
         if (median != start)
-            pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL(state) start, median);
+            pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL start, median);
         return;
     }
 
     // use ninther
     size_t third_offset = (end_index - start_index) / 3;
     size_t sixth_offset = (end_index - start_index) / 6;
-    pottery_quick_sort_ref_t left_middle = pottery_quick_sort_access(state, start_index + sixth_offset);
-    pottery_quick_sort_ref_t left_end = pottery_quick_sort_access(state, start_index + third_offset);
-    pottery_quick_sort_ref_t right_start = pottery_quick_sort_access(state, middle_index + third_offset);
-    pottery_quick_sort_ref_t right_middle = pottery_quick_sort_access(state, middle_index + third_offset + sixth_offset);
+    pottery_quick_sort_ref_t left_middle = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS start_index + sixth_offset);
+    pottery_quick_sort_ref_t left_end = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS start_index + third_offset);
+    pottery_quick_sort_ref_t right_start = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS middle_index + third_offset);
+    pottery_quick_sort_ref_t right_middle = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS middle_index + third_offset + sixth_offset);
 
-    pottery_quick_sort_ref_t median = pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL(state)
-            pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL(state) start, left_middle, left_end),
-            pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL(state) left_end, middle, right_start),
-            pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL(state) right_start, right_middle, end));
+    pottery_quick_sort_ref_t median = pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL
+            pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL start, left_middle, left_end),
+            pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL left_end, middle, right_start),
+            pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL right_start, right_middle, end));
 
     if (median != start)
-        pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL(state) start, median);
+        pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL start, median);
 }
 
 // There are two implementations of partitioning here, one that moves through a
@@ -121,19 +98,22 @@ void pottery_quick_sort_prepare_pivot(pottery_quick_sort_state_t state, size_t s
 
 #if POTTERY_QUICK_SORT_USE_MOVE
 static inline
-size_t pottery_quick_sort_partition(pottery_quick_sort_state_t state, size_t start_index, size_t end_index) {
+size_t pottery_quick_sort_partition(
+        POTTERY_QUICK_SORT_ARGS
+        size_t start_index, size_t end_index)
+{
     pottery_assert(end_index - start_index >= 1);
-    pottery_quick_sort_ref_t pivot = pottery_quick_sort_access(state, start_index);
+    pottery_quick_sort_ref_t pivot = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS start_index);
 
     size_t low_index = start_index;
     size_t high_index = end_index;
-    pottery_quick_sort_ref_t high = pottery_quick_sort_access(state, high_index);
+    pottery_quick_sort_ref_t high = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS high_index);
 
     // Start by finding an element from the right that belongs on the left (or
     // is equal to the pivot. It's critical that we don't skip equal elements.)
     while (low_index < high_index && pottery_quick_sort_compare_less(
-                POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, high)) {
-        high = pottery_quick_sort_access(state, --high_index);
+                POTTERY_QUICK_SORT_CONTEXT_VAL pivot, high)) {
+        high = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS --high_index);
     }
 
     // If we've found none, the pivot goes at the start. (Either this partition
@@ -147,7 +127,7 @@ size_t pottery_quick_sort_partition(pottery_quick_sort_state_t state, size_t sta
     size_t hole_index = high_index;
     pottery_quick_sort_ref_t hole = high;
     pottery_quick_sort_value_t temp;
-    pottery_quick_sort_lifecycle_move(POTTERY_QUICK_SORT_CONTEXT_VAL(state) &temp, hole);
+    pottery_quick_sort_lifecycle_move(POTTERY_QUICK_SORT_CONTEXT_VAL &temp, hole);
 
     // Now we alternate between low_index and high_index, finding elements on the wrong
     // side and moving them into the hole
@@ -156,31 +136,31 @@ size_t pottery_quick_sort_partition(pottery_quick_sort_state_t state, size_t sta
 
         // Scan from the left
         do {
-            low = pottery_quick_sort_access(state, ++low_index);
+            low = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS ++low_index);
         } while (low_index < high_index && pottery_quick_sort_compare_greater(
-                    POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, low));
+                    POTTERY_QUICK_SORT_CONTEXT_VAL pivot, low));
 
         if (low_index == high_index) {
             break;
         }
 
         // Put this element in the hole; the hole is now on the left.
-        pottery_quick_sort_lifecycle_move(POTTERY_QUICK_SORT_CONTEXT_VAL(state) hole, low);
+        pottery_quick_sort_lifecycle_move(POTTERY_QUICK_SORT_CONTEXT_VAL hole, low);
         hole_index = low_index;
         hole = low;
 
         // Scan from the right
         do {
-            high = pottery_quick_sort_access(state, --high_index);
+            high = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS --high_index);
         } while (low_index < high_index && pottery_quick_sort_compare_less(
-                    POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, high));
+                    POTTERY_QUICK_SORT_CONTEXT_VAL pivot, high));
 
         if (low_index == high_index) {
             break;
         }
 
         // Put this element in the hole; the hole is now on the right.
-        pottery_quick_sort_lifecycle_move(POTTERY_QUICK_SORT_CONTEXT_VAL(state) hole, high);
+        pottery_quick_sort_lifecycle_move(POTTERY_QUICK_SORT_CONTEXT_VAL hole, high);
         hole_index = high_index;
         hole = high;
     }
@@ -189,18 +169,21 @@ size_t pottery_quick_sort_partition(pottery_quick_sort_state_t state, size_t sta
     // it. The pivot goes here and the temporary goes where the pivot was.
     (void)hole_index;
     pottery_assert(hole_index == high_index);
-    pottery_quick_sort_lifecycle_move(POTTERY_QUICK_SORT_CONTEXT_VAL(state) hole, pivot);
-    pottery_quick_sort_lifecycle_move(POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, &temp);
+    pottery_quick_sort_lifecycle_move(POTTERY_QUICK_SORT_CONTEXT_VAL hole, pivot);
+    pottery_quick_sort_lifecycle_move(POTTERY_QUICK_SORT_CONTEXT_VAL pivot, &temp);
     return high_index;
 }
 #endif
 
 #if !POTTERY_QUICK_SORT_USE_MOVE
 static inline
-size_t pottery_quick_sort_partition(pottery_quick_sort_state_t state, size_t start_index, size_t end_index) {
+size_t pottery_quick_sort_partition(
+        POTTERY_QUICK_SORT_ARGS
+        size_t start_index, size_t end_index)
+{
     pottery_assert(end_index - start_index >= 1);
 
-    pottery_quick_sort_ref_t pivot = pottery_quick_sort_access(state, start_index);
+    pottery_quick_sort_ref_t pivot = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS start_index);
 
     size_t low = start_index;
     size_t high = end_index + 1;
@@ -216,31 +199,32 @@ size_t pottery_quick_sort_partition(pottery_quick_sort_state_t state, size_t sta
         do {
             ++low;
         } while (low < high && pottery_quick_sort_compare_greater(
-                    POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, pottery_quick_sort_access(state, low)));
+                    POTTERY_QUICK_SORT_CONTEXT_VAL pivot, pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS low)));
         do {
             --high;
         } while (low < high && pottery_quick_sort_compare_less(
-                    POTTERY_QUICK_SORT_CONTEXT_VAL(state) pivot, pottery_quick_sort_access(state, high)));
+                    POTTERY_QUICK_SORT_CONTEXT_VAL pivot, pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS high)));
 
         if (low >= high)
             break;
 
-        pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL(state)
-                pottery_quick_sort_access(state, low), pottery_quick_sort_access(state, high));
+        pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL
+                pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS low),
+                pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS high));
     }
 
     // It's possible that the above algorithm stopped on an element that was
     // never compared with anything. We compare it to the pivot to decide where
     // the pivot should go.
-    if (low > end_index || pottery_quick_sort_compare_less(POTTERY_QUICK_SORT_CONTEXT_VAL(state)
-                pivot, pottery_quick_sort_access(state, low)))
+    if (low > end_index || pottery_quick_sort_compare_less(POTTERY_QUICK_SORT_CONTEXT_VAL
+                pivot, pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS low)))
         --low;
 
     // Unlike in normal Hoare partitioning, we now know where the pivot element
     // goes, so we swap it into place and skip it in the recursion.
     if (low != start_index) {
-        pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL(state)
-                pivot, pottery_quick_sort_access(state, low));
+        pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL
+                pivot, pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS low));
     }
 
     return low;
@@ -251,21 +235,28 @@ size_t pottery_quick_sort_partition(pottery_quick_sort_state_t state, size_t sta
 // We noinline the depth fallback to keep it out of the main implementation
 // since it should be rarely used.
 pottery_noinline static
-void pottery_quick_sort_depth_fallback(pottery_quick_sort_state_t state, size_t first, size_t count) {
+void pottery_quick_sort_depth_fallback(
+        POTTERY_QUICK_SORT_ARGS
+        size_t first, size_t count)
+{
+    POTTERY_QUICK_SORT_ARGS_UNUSED;
+
     POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK(
-            POTTERY_QUICK_SORT_CONTEXT_VAL(state)
-            pottery_quick_sort_access(state, first),
+            POTTERY_QUICK_SORT_CONTEXT_VAL
+            pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS first),
             count);
 }
 #endif
 
 static inline
-bool pottery_quick_sort_fallback(pottery_quick_sort_state_t state, size_t first, size_t count
+bool pottery_quick_sort_fallback(
+        POTTERY_QUICK_SORT_ARGS
+        size_t first, size_t count
         #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
         , size_t depth, size_t depth_limit
         #endif
 ) {
-    (void)state;
+    POTTERY_QUICK_SORT_ARGS_UNUSED;
     (void)first;
     (void)count;
 
@@ -283,8 +274,8 @@ bool pottery_quick_sort_fallback(pottery_quick_sort_state_t state, size_t first,
     #endif
     if (count <= count_limit) {
         POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK(
-                POTTERY_QUICK_SORT_CONTEXT_VAL(state)
-                pottery_quick_sort_access(state, first),
+                POTTERY_QUICK_SORT_CONTEXT_VAL
+                pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS first),
                 count);
         return true;
     }
@@ -293,7 +284,9 @@ bool pottery_quick_sort_fallback(pottery_quick_sort_state_t state, size_t first,
     // Switch to the depth limit fallback if we're too deep
     #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
     if (pottery_unlikely(depth == depth_limit)) {
-        pottery_quick_sort_depth_fallback(state, first, count);
+        pottery_quick_sort_depth_fallback(
+                POTTERY_QUICK_SORT_VALS
+                first, count);
         return true;
     }
     #endif
@@ -302,36 +295,30 @@ bool pottery_quick_sort_fallback(pottery_quick_sort_state_t state, size_t first,
 }
 
 POTTERY_QUICK_SORT_EXTERN
-void pottery_quick_sort(
-        #ifdef POTTERY_QUICK_SORT_CONTEXT_TYPE
-        pottery_quick_sort_context_t context,
-        #endif
-        pottery_quick_sort_ref_t ref,
-        size_t total_count
+void pottery_quick_sort_range(
+        POTTERY_QUICK_SORT_ARGS
+        size_t offset,
+        size_t range_count
 ) {
-    pottery_quick_sort_state_t state = {
-        #ifdef POTTERY_QUICK_SORT_CONTEXT_TYPE
-        context,
-        #endif
-        ref,
-    };
+    POTTERY_QUICK_SORT_ARGS_UNUSED;
 
-    if (total_count <= 1)
+    if (range_count <= 1)
         return;
 
-    // set up the stack
-    // we push the small partition which is less than half the size of its
-    // parent so it's not possible to use more than sizeof(size_t)*8 entries.
+    // Set up the stack
+    // We push the small partition, so each new stack entry is at most half the
+    // size of its parent. Since the maximum count is the range of a size_t,
+    // it's not possible to use more than sizeof(size_t)*CHAR_BIT entries.
     struct {
         size_t first;
         size_t last;
         #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
         size_t depth;
         #endif
-    } stack[sizeof(size_t) * 8];
+    } stack[sizeof(size_t) * CHAR_BIT];
     size_t pos = 0;
-    stack[0].first = 0;
-    stack[0].last = total_count - 1;
+    stack[0].first = offset;
+    stack[0].last = offset + range_count - 1;
     #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
     stack[0].depth = 0;
     #endif
@@ -340,7 +327,7 @@ void pottery_quick_sort(
     #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
     size_t n = 1;
     size_t depth_limit = 2;
-    while (n < total_count) {
+    while (n < range_count) {
         n *= 2;
         depth_limit += 2;
     }
@@ -350,10 +337,12 @@ void pottery_quick_sort(
         size_t first = stack[pos].first;
         size_t last = stack[pos].last;
         pottery_assert(last > first);
-        size_t count = last - first + 1;
+        size_t step_count = last - first + 1;
 
         // see if we should use any fallbacks
-        if (pottery_quick_sort_fallback(state, first, count
+        if (pottery_quick_sort_fallback(
+                POTTERY_QUICK_SORT_VALS
+                first, step_count
                 #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
                 , stack[pos].depth, depth_limit
                 #endif
@@ -365,11 +354,11 @@ void pottery_quick_sort(
         }
 
         // choose a pivot, swapping it with the start index
-        pottery_quick_sort_prepare_pivot(state, first, last);
+        pottery_quick_sort_prepare_pivot(POTTERY_QUICK_SORT_VALS first, last);
 
         // do the partition. note that this places the pivot in its correct
         // final position so we exclude it from the resulting partitions.
-        size_t pivot = pottery_quick_sort_partition(state, first, last);
+        size_t pivot = pottery_quick_sort_partition(POTTERY_QUICK_SORT_VALS first, last);
         size_t left_count = pivot - first;
         size_t right_count = last - pivot;
 

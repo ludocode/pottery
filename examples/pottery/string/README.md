@@ -32,7 +32,7 @@ The implementation is mostly just inline functions that wrap an internal Pottery
 
 ### Null-termination
 
-`string_t` carries around a null-terminator in its contents. This allows it to be used a C-string through `string_cstr()` so it can be passed to traditional C APIs that require null termination.
+`string_t` carries around a null-terminator in its contents, allowing it to be used as a C string. Call `string_cstr()` to get a pointer to the contents as a null-terminated string to pass it to traditional C APIs that require null termination.
 
 To get the string's length, you must use `string_length()`, which will subtract the null-terminator from the number of bytes in its storage.
 

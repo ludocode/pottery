@@ -26,3 +26,4 @@ Here's a more hierarchical index:
     - [Lifecycle](lifecycle/), a wrapper and generator for lifecycle functions
     - [Alloc](alloc/), an allocator wrapper to zero, align, expand, relocate, check for overflow
     - [Compare](compare/), a generator for comparison functions
+    - [Array Access](array_access/), accessor functions for a generalized array

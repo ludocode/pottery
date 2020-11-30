@@ -128,6 +128,12 @@ pottery_vector_entry_t pottery_vector_at(const pottery_vector_t* vector, size_t 
 }
 
 static inline
+pottery_vector_entry_t pottery_vector_select(const pottery_vector_t* vector, size_t index) {
+    pottery_assert(index <= pottery_vector_count(vector));
+    return pottery_vector_begin(vector) + index;
+}
+
+static inline
 pottery_vector_element_t* pottery_vector_data(pottery_vector_t* vector) {
     return pottery_vector_begin(vector);
 }

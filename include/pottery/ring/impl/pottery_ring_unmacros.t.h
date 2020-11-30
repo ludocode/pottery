@@ -32,6 +32,7 @@
 #undef pottery_ring_page_t
 
 #undef pottery_ring_at
+#undef pottery_ring_select
 #undef pottery_ring_index
 #undef pottery_ring_first
 #undef pottery_ring_last

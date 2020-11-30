@@ -22,17 +22,11 @@
  * SOFTWARE.
  */
 
-//!!! END_LICENSE
-// Un-renames quick_sort identifiers with prefix "{PREFIX}"
+#ifndef POTTERY_ARRAY_ACCESS_INHERENT_BASE
+#error "The array_access template was either not instantiated or was already cleaned up."
+#endif
 
-#undef {PREFIX}_ref_t
-#undef {PREFIX}_const_ref_t
-#undef {PREFIX}_value_t
-#undef {PREFIX}_context_t
-
-#undef {PREFIX}
-#undef {PREFIX}_range
-#undef {PREFIX}_prepare_pivot
-#undef {PREFIX}_partition
-#undef {PREFIX}_fallback
-#undef {PREFIX}_depth_fallback
+#ifndef POTTERY_ARRAY_ACCESS_NO_CLEANUP
+#undef POTTERY_ARRAY_ACCESS_INHERENT_BASE
+#undef POTTERY_ARRAY_ACCESS_INHERENT_COUNT
+#endif

@@ -29,8 +29,6 @@
     #include "pottery/lifecycle/pottery_lifecycle_define.t.h"
 #endif
 
-// no compare!
-
 #include "pottery/quick_sort/impl/pottery_quick_sort_macros.t.h"
 #include "pottery/quick_sort/impl/pottery_quick_sort_definitions.t.h"
 

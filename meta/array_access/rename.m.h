@@ -23,16 +23,20 @@
  */
 
 //!!! END_LICENSE
-// Un-renames quick_sort identifiers with prefix "{PREFIX}"
+// Renames array_access identifiers from {SRC} to {DEST}
 
-#undef {PREFIX}_ref_t
-#undef {PREFIX}_const_ref_t
-#undef {PREFIX}_value_t
-#undef {PREFIX}_context_t
+#define {SRC}_ref_t POTTERY_CONCAT({DEST}, _ref_t)
+#define {SRC}_value_t POTTERY_CONCAT({DEST}, _value_t)
+#define {SRC}_context_t POTTERY_CONCAT({DEST}, _context_t)
 
-#undef {PREFIX}
-#undef {PREFIX}_range
-#undef {PREFIX}_prepare_pivot
-#undef {PREFIX}_partition
-#undef {PREFIX}_fallback
-#undef {PREFIX}_depth_fallback
+#define {SRC}_begin POTTERY_CONCAT({DEST}, _begin)
+#define {SRC}_end POTTERY_CONCAT({DEST}, _end)
+#define {SRC}_count POTTERY_CONCAT({DEST}, _count)
+
+#define {SRC}_select POTTERY_CONCAT({DEST}, _select)
+#define {SRC}_index POTTERY_CONCAT({DEST}, _index)
+
+#define {SRC}_next POTTERY_CONCAT({DEST}, _next)
+#define {SRC}_previous POTTERY_CONCAT({DEST}, _previous)
+#define {SRC}_equal POTTERY_CONCAT({DEST}, _equal)
+#define {SRC}_exists POTTERY_CONCAT({DEST}, _exists)

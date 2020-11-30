@@ -32,7 +32,7 @@ int main(void) {
 
     #ifndef __CLR_VER
     // Append lots more data via format strings, causing it to grow
-    string_append_format(&homer, " works at the %s %s", "Springfield", "Nuclear Power Plant.");
+    string_append_format(&homer, " works at the %s %s.", "Springfield", "Nuclear Power Plant");
     printf("%s\n", string_cstr(&homer));
     string_insert_format(&homer, 23, " in sector %01d%c", 7, 'G');
     printf("%s\n", string_cstr(&homer));

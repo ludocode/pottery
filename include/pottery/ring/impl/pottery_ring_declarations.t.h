@@ -128,6 +128,13 @@ pottery_ring_value_t* pottery_ring_at(pottery_ring_t* ring, size_t index) {
 }
 
 static inline
+pottery_ring_value_t* pottery_ring_select(pottery_ring_t* ring, size_t index) {
+    if (index == pottery_ring_count(ring))
+        return pottery_null;
+    return pottery_ring_at(ring, index);
+}
+
+static inline
 size_t pottery_ring_index(pottery_ring_t* ring, pottery_ring_value_t* value) {
     return (pottery_cast(size_t, value - ring->values) + ring->count - ring->start) % ring->capacity;
 }

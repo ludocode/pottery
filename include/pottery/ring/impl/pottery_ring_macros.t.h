@@ -50,6 +50,7 @@
 #define pottery_ring_page_t POTTERY_RING_NAME(_page_t)
 
 #define pottery_ring_at POTTERY_RING_NAME(_at)
+#define pottery_ring_select POTTERY_RING_NAME(_select)
 #define pottery_ring_index POTTERY_RING_NAME(_index)
 #define pottery_ring_first POTTERY_RING_NAME(_first)
 #define pottery_ring_last POTTERY_RING_NAME(_last)

@@ -51,12 +51,13 @@
 #define {SRC}_count POTTERY_CONCAT({DEST}, _count)
 #define {SRC}_is_empty POTTERY_CONCAT({DEST}, _is_empty)
 #define {SRC}_at POTTERY_CONCAT({DEST}, _at)
-#define {SRC}_index POTTERY_CONCAT({DEST}, _index)
 #define {SRC}_first POTTERY_CONCAT({DEST}, _first)
 #define {SRC}_last POTTERY_CONCAT({DEST}, _last)
 #define {SRC}_any POTTERY_CONCAT({DEST}, _any)
 
 // iteration
+#define {SRC}_select POTTERY_CONCAT({DEST}, _select)
+#define {SRC}_index POTTERY_CONCAT({DEST}, _index)
 #define {SRC}_begin POTTERY_CONCAT({DEST}, _begin)
 #define {SRC}_end POTTERY_CONCAT({DEST}, _end)
 #define {SRC}_next POTTERY_CONCAT({DEST}, _next)

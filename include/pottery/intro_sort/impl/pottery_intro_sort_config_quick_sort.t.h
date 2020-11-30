@@ -30,9 +30,10 @@
 
 #define POTTERY_QUICK_SORT_PREFIX POTTERY_CONCAT(POTTERY_INTRO_SORT_PREFIX, _quick_sort)
 
-// We'll be using our own compare and lifecycle templates
+// We'll be using our own compare, lifecycle and array_access templates
 #define POTTERY_QUICK_SORT_EXTERNAL_LIFECYCLE POTTERY_CONCAT(POTTERY_INTRO_SORT_PREFIX, _lifecycle)
 #define POTTERY_QUICK_SORT_EXTERNAL_COMPARE POTTERY_CONCAT(POTTERY_INTRO_SORT_PREFIX, _compare)
+#define POTTERY_QUICK_SORT_EXTERNAL_ARRAY_ACCESS POTTERY_CONCAT(POTTERY_INTRO_SORT_PREFIX, _array_access)
 
 // Switch to insertion_sort when partition is too small
 #define POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK POTTERY_CONCAT(POTTERY_INTRO_SORT_PREFIX, _insertion_sort)
@@ -51,9 +52,4 @@
 // Forward the context
 #ifdef POTTERY_INTRO_SORT_CONTEXT_TYPE
     #define POTTERY_QUICK_SORT_CONTEXT_TYPE POTTERY_INTRO_SORT_CONTEXT_TYPE
-#endif
-
-// Forward the accessor
-#ifdef POTTERY_INTRO_SORT_ACCESS
-    #define POTTERY_QUICK_SORT_ACCESS POTTERY_INTRO_SORT_ACCESS
 #endif

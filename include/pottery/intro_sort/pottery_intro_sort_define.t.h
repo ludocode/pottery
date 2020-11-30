@@ -27,8 +27,6 @@
 #include "pottery/intro_sort/impl/pottery_intro_sort_config_lifecycle.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_define.t.h"
 
-// no compare!
-
 #include "pottery/intro_sort/impl/pottery_intro_sort_config_insertion_sort.t.h"
 #include "pottery/insertion_sort/pottery_insertion_sort_define.t.h"
 
@@ -37,8 +35,6 @@
 
 #include "pottery/intro_sort/impl/pottery_intro_sort_config_quick_sort.t.h"
 #include "pottery/quick_sort/pottery_quick_sort_define.t.h"
-
-// no intro_sort!
 
 #include "pottery/compare/pottery_compare_cleanup.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"

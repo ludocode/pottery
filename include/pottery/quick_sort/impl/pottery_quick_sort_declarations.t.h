@@ -40,12 +40,34 @@ typedef pottery_quick_sort_value_t* pottery_quick_sort_ref_t;
 typedef POTTERY_QUICK_SORT_CONTEXT_TYPE pottery_quick_sort_context_t;
 #endif
 
+/**
+ * Sorts a sub-range of elements within an array.
+ */
 #if POTTERY_FORWARD_DECLARATIONS
 POTTERY_QUICK_SORT_EXTERN
-void pottery_quick_sort(
-        #ifdef POTTERY_QUICK_SORT_CONTEXT_TYPE
-        pottery_quick_sort_context_t context,
-        #endif
-        pottery_quick_sort_ref_t first,
-        size_t count);
+void pottery_quick_sort_range(
+        POTTERY_QUICK_SORT_ARGS
+        size_t offset,
+        size_t range_count);
 #endif
+
+/**
+ * Sorts an array.
+ */
+static inline
+void pottery_quick_sort(
+        #if POTTERY_ARRAY_ACCESS_INHERENT_COUNT
+        POTTERY_QUICK_SORT_SOLE_ARGS
+        #else
+        POTTERY_QUICK_SORT_ARGS
+        size_t total_count
+        #endif
+) {
+    #if POTTERY_ARRAY_ACCESS_INHERENT_COUNT
+    size_t total_count = pottery_array_access_count(
+            POTTERY_QUICK_SORT_SOLE_VALS)
+    #endif
+
+    pottery_quick_sort_range(POTTERY_QUICK_SORT_VALS
+            0, total_count);
+}

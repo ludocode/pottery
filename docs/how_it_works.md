@@ -28,7 +28,7 @@ A template instantiation here is performed by [`pottery_compare_static.t.h`](../
 
 ## Separate Header and Source Files
 
-The compare template is simple because all of its functions are `static inline`. Larger Pottery functions are not inline. Instead, Pottery templates with large functions have a separate `definitions` header.
+The compare template is simple in part because all of its functions are `static inline`. Larger Pottery functions are not inline. Instead, Pottery templates with large functions have a separate `definitions` header.
 
 Take a look at the [`alloc` template](../include/pottery/alloc/) template for an example. This has two separate implementation headers: [`impl/pottery_alloc_declarations.t.h`](../include/pottery/alloc/impl/pottery_alloc_declarations.t.h) and [`impl/pottery_alloc_definitions.t.h`](../include/pottery/alloc/impl/pottery_alloc_definitions.t.h).
 
@@ -49,6 +49,7 @@ Pottery's templates are composable. For example the `intro_sort` template intern
         - [`heap`](../include/pottery/heap/)
     - [`lifecycle`](../include/pottery/lifecycle/)
     - [`compare`](../include/pottery/compare/)
+    - [`array_access`](../include/pottery/array_access/)
 
 Configuration of child templates is done by `config` headers. For example `intro_sort` configures its child `quick_sort` in [`pottery_intro_sort_config_quick_sort.t.h`](../include/pottery/intro_sort/impl/pottery_intro_sort_config_quick_sort.t.h). Template composition is accomplished by forwarding along whatever configuration is necessary, instantiating dependent templates, and then renaming the functions they would use in those templates. Some of the forwarding and un-forwarding code is generated using [meta-templates](../meta/).
 

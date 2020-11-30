@@ -23,16 +23,26 @@
  */
 
 //!!! END_LICENSE
-// Un-renames quick_sort identifiers with prefix "{PREFIX}"
+// Undefines (forwardable/forwarded) array_access configuration on {PREFIX}
 
-#undef {PREFIX}_ref_t
-#undef {PREFIX}_const_ref_t
-#undef {PREFIX}_value_t
-#undef {PREFIX}_context_t
+// types
+#undef {PREFIX}_REF_TYPE
+#undef {PREFIX}_VALUE_TYPE
+#undef {PREFIX}_CONTEXT_TYPE
 
-#undef {PREFIX}
-#undef {PREFIX}_range
-#undef {PREFIX}_prepare_pivot
-#undef {PREFIX}_partition
-#undef {PREFIX}_fallback
-#undef {PREFIX}_depth_fallback
+// absolute addressing configs
+#undef {PREFIX}_BEGIN
+#undef {PREFIX}_END
+#undef {PREFIX}_COUNT
+
+// required configs for non-standard array access
+#undef {PREFIX}_SELECT
+#undef {PREFIX}_INDEX
+
+// required config for non-trivial refs
+#undef {PREFIX}_EQUAL
+
+// optional configs
+#undef {PREFIX}_NEXT
+#undef {PREFIX}_PREVIOUS
+#undef {PREFIX}_EXISTS

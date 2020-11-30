@@ -94,7 +94,10 @@
 #define POTTERY_INTRO_SORT_REF_TYPE void*
 #define POTTERY_INTRO_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_VARIABLE
 #define POTTERY_INTRO_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_VARIABLE_TYPE
-#define POTTERY_INTRO_SORT_ACCESS(context, ref, offset) (char*)ref + offset * context.element_size
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_SELECT(context, base, offset) (char*)base + offset * context.element_size
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_INDEX(context, base, ref) (size_t)((char*)ref - (char*)base) / context.element_size
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_NEXT(context, base, ref) (char*)ref + context.element_size
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_PREVIOUS(context, base, ref) (char*)ref - context.element_size
 #define POTTERY_INTRO_SORT_LIFECYCLE_SWAP(context, a, b) pottery_qsort_swap_small(context.element_size, a, b)
 #include "pottery/intro_sort/pottery_intro_sort_static.t.h"
 
@@ -103,7 +106,10 @@
 #define POTTERY_INTRO_SORT_REF_TYPE void*
 #define POTTERY_INTRO_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_VARIABLE
 #define POTTERY_INTRO_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_VARIABLE_TYPE
-#define POTTERY_INTRO_SORT_ACCESS(context, ref, offset) (char*)ref + offset * context.element_size
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_SELECT(context, base, offset) (char*)base + offset * context.element_size
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_INDEX(context, base, ref) (size_t)((char*)ref - (char*)base) / context.element_size
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_NEXT(context, base, ref) (char*)ref + context.element_size
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_PREVIOUS(context, base, ref) (char*)ref - context.element_size
 #define POTTERY_INTRO_SORT_LIFECYCLE_SWAP(context, a, b) pottery_qsort_swap_large(context.element_size, a, b)
 #include "pottery/intro_sort/pottery_intro_sort_static.t.h"
 

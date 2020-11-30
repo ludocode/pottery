@@ -22,17 +22,12 @@
  * SOFTWARE.
  */
 
-//!!! END_LICENSE
-// Un-renames quick_sort identifiers with prefix "{PREFIX}"
+#define POTTERY_ARRAY_ACCESS_INTERNAL
 
-#undef {PREFIX}_ref_t
-#undef {PREFIX}_const_ref_t
-#undef {PREFIX}_value_t
-#undef {PREFIX}_context_t
+// no extern definitions! everything is inline.
 
-#undef {PREFIX}
-#undef {PREFIX}_range
-#undef {PREFIX}_prepare_pivot
-#undef {PREFIX}_partition
-#undef {PREFIX}_fallback
-#undef {PREFIX}_depth_fallback
+#include "pottery/array_access/impl/pottery_array_access_macros.t.h"
+#include "pottery/array_access/impl/pottery_array_access_declarations.t.h"
+#include "pottery/array_access/impl/pottery_array_access_unmacros.t.h"
+
+#undef POTTERY_ARRAY_ACCESS_INTERNAL

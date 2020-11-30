@@ -23,16 +23,39 @@
  */
 
 //!!! END_LICENSE
-// Un-renames quick_sort identifiers with prefix "{PREFIX}"
+// Forwards array_access configuration from {SRC} to {DEST}
 
-#undef {PREFIX}_ref_t
-#undef {PREFIX}_const_ref_t
-#undef {PREFIX}_value_t
-#undef {PREFIX}_context_t
+// absolute addressing configs
+#ifdef {SRC}_BEGIN
+    #define {DEST}_BEGIN {SRC}_BEGIN
+#endif
+#ifdef {SRC}_END
+    #define {DEST}_END {SRC}_END
+#endif
+#ifdef {SRC}_COUNT
+    #define {DEST}_COUNT {SRC}_COUNT
+#endif
 
-#undef {PREFIX}
-#undef {PREFIX}_range
-#undef {PREFIX}_prepare_pivot
-#undef {PREFIX}_partition
-#undef {PREFIX}_fallback
-#undef {PREFIX}_depth_fallback
+// required configs for non-standard array access
+#ifdef {SRC}_SELECT
+    #define {DEST}_SELECT {SRC}_SELECT
+#endif
+#ifdef {SRC}_INDEX
+    #define {DEST}_INDEX {SRC}_INDEX
+#endif
+
+// required config for non-trivial refs
+#ifdef {SRC}_EQUAL
+    #define {DEST}_EQUAL {SRC}_EQUAL
+#endif
+
+// optional configs
+#ifdef {SRC}_NEXT
+    #define {DEST}_NEXT {SRC}_NEXT
+#endif
+#ifdef {SRC}_PREVIOUS
+    #define {DEST}_PREVIOUS {SRC}_PREVIOUS
+#endif
+#ifdef {SRC}_EXISTS
+    #define {DEST}_EXISTS {SRC}_EXISTS
+#endif

@@ -51,12 +51,13 @@
 #undef {PREFIX}_count
 #undef {PREFIX}_is_empty
 #undef {PREFIX}_at
-#undef {PREFIX}_index
 #undef {PREFIX}_first
 #undef {PREFIX}_last
 #undef {PREFIX}_any
 
 // iteration
+#undef {PREFIX}_select
+#undef {PREFIX}_index
 #undef {PREFIX}_begin
 #undef {PREFIX}_end
 #undef {PREFIX}_next
