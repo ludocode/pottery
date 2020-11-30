@@ -39,10 +39,3 @@ typedef pottery_insertion_sort_value_t* pottery_insertion_sort_ref_t;
 #ifdef POTTERY_INSERTION_SORT_CONTEXT_TYPE
 typedef POTTERY_INSERTION_SORT_CONTEXT_TYPE pottery_insertion_sort_context_t;
 #endif
-
-typedef struct pottery_insertion_sort_state_t {
-    #ifdef POTTERY_INSERTION_SORT_CONTEXT_TYPE
-    pottery_insertion_sort_context_t context;
-    #endif
-    pottery_insertion_sort_ref_t first;
-} pottery_insertion_sort_state_t;

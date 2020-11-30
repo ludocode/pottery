@@ -30,6 +30,7 @@
 #define {SRC}_context_t POTTERY_CONCAT({DEST}, _context_t)
 #define {SRC}_state_t POTTERY_CONCAT({DEST}, _state_t)
 
-#define {SRC} POTTERY_CONCAT({DEST}, )
+#define {SRC} {DEST}
+#define {SRC}_range POTTERY_CONCAT({DEST}, _range)
 #define {SRC}_access POTTERY_CONCAT({DEST}, _access)
 #define {SRC}_impl POTTERY_CONCAT({DEST}, _impl)
