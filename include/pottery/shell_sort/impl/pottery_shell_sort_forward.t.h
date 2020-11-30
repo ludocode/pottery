@@ -38,18 +38,34 @@ typedef pottery_shell_sort_value_t* pottery_shell_sort_ref_t;
 
 #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
 typedef POTTERY_SHELL_SORT_CONTEXT_TYPE pottery_shell_sort_context_t;
-#else
-typedef pottery_shell_sort_ref_t pottery_shell_sort_context_t;
 #endif
 
 typedef struct pottery_shell_sort_state_t {
+    #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
     pottery_shell_sort_context_t context;
-    size_t offset;
+    #endif
+    #if !POTTERY_SHELL_SORT_INHERENT_BASE
+    pottery_shell_sort_ref_t base;
+    #endif
     size_t gap;
 } pottery_shell_sort_state_t;
 
 #if POTTERY_FORWARD_DECLARATIONS
 static inline
-pottery_shell_sort_ref_t pottery_shell_sort_access(pottery_shell_sort_state_t state,
-        pottery_shell_sort_ref_t first, size_t index);
+pottery_shell_sort_ref_t pottery_shell_sort_gap_select(
+        pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base, size_t index);
+
+static inline
+pottery_shell_sort_ref_t pottery_shell_sort_gap_shift(
+        pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base,
+        pottery_shell_sort_ref_t ref, ssize_t offset);
+
+static inline
+size_t pottery_shell_sort_gap_index(pottery_shell_sort_state_t state,
+        pottery_shell_sort_ref_t base, pottery_shell_sort_ref_t ref);
+
+static inline
+ssize_t pottery_shell_sort_gap_offset(
+        pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base,
+        pottery_shell_sort_ref_t first, pottery_shell_sort_ref_t second);
 #endif

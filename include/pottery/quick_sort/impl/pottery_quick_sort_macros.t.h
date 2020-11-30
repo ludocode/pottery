@@ -221,6 +221,8 @@
     #define pottery_quick_sort_array_access_select POTTERY_CONCAT(POTTERY_QUICK_SORT_ARRAY_ACCESS_PREFIX, _select)
     #define pottery_quick_sort_array_access_index POTTERY_CONCAT(POTTERY_QUICK_SORT_ARRAY_ACCESS_PREFIX, _index)
 
+    #define pottery_quick_sort_array_access_shift POTTERY_CONCAT(POTTERY_QUICK_SORT_ARRAY_ACCESS_PREFIX, _shift)
+    #define pottery_quick_sort_array_access_offset POTTERY_CONCAT(POTTERY_QUICK_SORT_ARRAY_ACCESS_PREFIX, _offset)
     #define pottery_quick_sort_array_access_next POTTERY_CONCAT(POTTERY_QUICK_SORT_ARRAY_ACCESS_PREFIX, _next)
     #define pottery_quick_sort_array_access_previous POTTERY_CONCAT(POTTERY_QUICK_SORT_ARRAY_ACCESS_PREFIX, _previous)
     #define pottery_quick_sort_array_access_equal POTTERY_CONCAT(POTTERY_QUICK_SORT_ARRAY_ACCESS_PREFIX, _equal)

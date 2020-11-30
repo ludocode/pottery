@@ -28,17 +28,21 @@
     #define POTTERY_SHELL_SORT_EXTERN pottery_maybe_unused static
 #endif
 
-#include "pottery/shell_sort/impl/pottery_shell_sort_macros.t.h"
-#include "pottery/shell_sort/impl/pottery_shell_sort_forward.t.h"
-
 #include "pottery/shell_sort/impl/pottery_shell_sort_config_lifecycle.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_declare.t.h"
 
 #include "pottery/shell_sort/impl/pottery_shell_sort_config_compare.t.h"
 #include "pottery/compare/pottery_compare_static.t.h"
 
+#include "pottery/shell_sort/impl/pottery_shell_sort_config_array_access.t.h"
+#include "pottery/array_access/pottery_array_access_static.t.h"
+
+#include "pottery/shell_sort/impl/pottery_shell_sort_macros.t.h"
+#include "pottery/shell_sort/impl/pottery_shell_sort_forward.t.h"
+
 // Cleanup before insertion_sort since we need insertion_sort to define its own
 // compare and lifecycle functions that wrap our context
+#include "pottery/array_access/pottery_array_access_cleanup.t.h"
 #include "pottery/compare/pottery_compare_cleanup.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
 

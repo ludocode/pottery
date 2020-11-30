@@ -8,6 +8,8 @@ The functions instantiated by this template provide abstract array access and it
 
 - `select()` -- Get the ref at an index, or the end ref if the index is the end of the array
 - `index()` -- Get the index of a ref
+- `shift()` -- Shifts a ref forwards or backwards by a signed offset
+- `offset()` -- Calculates the offset (difference in index) between two refs
 - `next()` -- Get the ref following a given ref
 - `previous()` -- Get the ref preceding a given ref
 - `equal()` -- Compare refs for equality (true if they refer to the same element)
@@ -33,7 +35,7 @@ Defining `BEGIN` enables "inherent base" mode and defines `POTTERY_ARRAY_ACCESS_
 
 Defining `COUNT` or `END` (or both) enables "inherent count" mode and defines `POTTERY_ARRAY_ACCESS_INHERENT_COUNT` to 1. This instantiates additional functions `end()`, `count()` and `exists()` for interacting with the inherent count of the context.
 
-If you want to instantiate a sort template to sort a [deque](../deque) for example, you can make the deque the context and define `BEGIN` and `END`/`COUNT`, giving it an inherent range and enabling both of the above modes. This will instantiate a sort function that takes only the deque itself as argument and sorts its entire contents.
+If you want to instantiate a sort template to sort a [vector](../vector) for example, you can make the vector the context and define `BEGIN` and `END`/`COUNT`, giving it an inherent range and enabling both of the above modes. This will instantiate a sort function that takes only the vector itself as argument and sorts its entire contents.
 
 Note that the context is still optional even if there is an inherent base and count. You could use this for example to define a hash table or sort function that operates on static storage.
 

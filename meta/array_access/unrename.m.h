@@ -29,11 +29,16 @@
 #undef {PREFIX}_value_t
 #undef {PREFIX}_context_t
 
+#undef {PREFIX}_begin
+#undef {PREFIX}_end
+#undef {PREFIX}_count
+
+#undef {PREFIX}_select
+#undef {PREFIX}_index
+
 #undef {PREFIX}_shift
 #undef {PREFIX}_offset
 #undef {PREFIX}_next
 #undef {PREFIX}_previous
-
-#undef {PREFIX}_select
-#undef {PREFIX}_index
-#undef {PREFIX}_count
+#undef {PREFIX}_equal
+#undef {PREFIX}_exists

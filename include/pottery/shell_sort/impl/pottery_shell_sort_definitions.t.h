@@ -28,12 +28,20 @@
 
 POTTERY_SHELL_SORT_EXTERN
 void pottery_shell_sort(
-        #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
-        pottery_shell_sort_context_t context,
-        #endif
-        pottery_shell_sort_ref_t first,
+        #if POTTERY_SHELL_SORT_INHERENT_COUNT
+        POTTERY_SHELL_SORT_SOLE_ARGS
+        #else
+        POTTERY_SHELL_SORT_ARGS
         size_t count
+        #endif
 ) {
+    #if POTTERY_SHELL_SORT_INHERENT_BASE
+    pottery_shell_sort_ref_t base = pottery_shell_sort_array_access_begin(POTTERY_SHELL_SORT_SOLE_ARGS);
+    #endif
+    #if POTTERY_SHELL_SORT_INHERENT_COUNT
+    size_t count = pottery_shell_sort_array_access_count(POTTERY_SHELL_SORT_SOLE_ARGS);
+    #endif
+
     // Calculate gaps based on Ciura sequence extended by *2.25 (A102549).
     //     https://en.wikipedia.org/wiki/Shellsort#Gap_sequences
     // The Ciura gap sequence needs 20 elements on 32-bit or 47 elements on
@@ -75,24 +83,26 @@ void pottery_shell_sort(
     #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
     state.context = context;
     #endif
+    #if !POTTERY_SHELL_SORT_INHERENT_BASE
+    state.base = base;
+    #endif
 
     // Perform successive insertion sorts based on gap sequence
     for (;;) {
         state.gap = gaps[i];
-        for (state.offset = 0; state.offset < state.gap; ++state.offset) {
+        pottery_shell_sort_ref_t step_base = base;
+
+        for (size_t offset = 0; offset < state.gap; ++offset) {
             size_t step_count = count / state.gap;
-            if (state.offset + state.gap * step_count < count)
+            if (offset + state.gap * step_count < count)
                 ++step_count;
 
-            //printf("sorting %zi elements with offset %zi gap %zi step_count %zi\n", count, state.offset, state.gap, step_count);
+            //printf("sorting %zi elements with offset %zi gap %zi step_count %zi\n", count, offset, state.gap, step_count);
 
-            // TODO: We could simplify this by offsetting first before calling
-            // this, that way we don't have to put offset in state. This would
-            // also probably marginally improve performance since the state
-            // would usually be the size of two pointers so it could be passed
-            // in registers. I'll do this after I build an array_access
-            // template to consolidate all the accessor functions.
-            pottery_shell_sort_insertion_sort(state, first, step_count);
+            pottery_shell_sort_insertion_sort(state, step_base, step_count);
+
+            step_base = pottery_shell_sort_array_access_next(
+                    POTTERY_SHELL_SORT_VALS step_base);
         }
 
         if (i == 0)

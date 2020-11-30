@@ -29,26 +29,90 @@
 #if POTTERY_FORWARD_DECLARATIONS
 POTTERY_SHELL_SORT_EXTERN
 void pottery_shell_sort(
-        #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
-        pottery_shell_sort_context_t context,
+        #if POTTERY_SHELL_SORT_INHERENT_COUNT
+        POTTERY_SHELL_SORT_SOLE_ARGS
+        #else
+        POTTERY_SHELL_SORT_ARGS
+        size_t total_count
         #endif
-        pottery_shell_sort_ref_t first,
-        size_t count);
+        );
 #endif
 
-// Gets the ref for the element at index based on the gap sequence.
-// Our embedded insertion_sort uses this as its accessor function.
+/*
+ * Gap sequence wrappers for insertion sort.
+ *
+ * These translate array_access calls from insertion_sort to shell_sort,
+ * multiplying and dividing by the gap sequence.
+ */
+
+// The first ref for an insertion_sort step is already shifted by the gap
+// sequence offset. We therefore use shift for everything, not select, because
+// insertion_sort's indices are relative to the first offset ref, not the true
+// base of the sort.
+// Despite this, we still have to pass the real base to array_access, so it's
+// stored in the shell_sort state.
+
 static inline
-pottery_shell_sort_ref_t pottery_shell_sort_access(pottery_shell_sort_state_t state,
-        pottery_shell_sort_ref_t first, size_t index)
+pottery_shell_sort_ref_t pottery_shell_sort_gap_select(
+        pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base, size_t index)
 {
-    size_t real_index = state.offset + index * state.gap;
-    #ifndef POTTERY_SHELL_SORT_ACCESS
-        // With no defined access expression, it's a simple array.
-        return first + real_index;
-    #elif defined(POTTERY_SHELL_SORT_CONTEXT_TYPE)
-        return POTTERY_SHELL_SORT_ACCESS(state.context, state.first, index);
-    #else
-        return POTTERY_SHELL_SORT_ACCESS(state.first, index);
-    #endif
+    return pottery_shell_sort_array_access_shift(
+            #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
+            state.context,
+            #endif
+            #if !POTTERY_SHELL_SORT_INHERENT_BASE
+            state.base,
+            #endif
+            base,
+            pottery_cast(ssize_t, index * state.gap));
+}
+
+static inline
+pottery_shell_sort_ref_t pottery_shell_sort_gap_shift(
+        pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base,
+        pottery_shell_sort_ref_t ref, ssize_t offset)
+{
+    (void)base;
+    return pottery_shell_sort_array_access_shift(
+            #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
+            state.context,
+            #endif
+            #if !POTTERY_SHELL_SORT_INHERENT_BASE
+            state.base,
+            #endif
+            ref,
+            offset * pottery_cast(ssize_t, state.gap));
+}
+
+static inline
+size_t pottery_shell_sort_gap_index(pottery_shell_sort_state_t state,
+        pottery_shell_sort_ref_t base, pottery_shell_sort_ref_t ref)
+{
+    ssize_t offset = pottery_shell_sort_array_access_offset(
+            #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
+            state.context,
+            #endif
+            #if !POTTERY_SHELL_SORT_INHERENT_BASE
+            state.base,
+            #endif
+            base,
+            ref);
+    return pottery_cast(size_t, offset / pottery_cast(ssize_t, state.gap));
+}
+
+static inline
+ssize_t pottery_shell_sort_gap_offset(
+        pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base,
+        pottery_shell_sort_ref_t first, pottery_shell_sort_ref_t second)
+{
+    (void)base;
+    return pottery_shell_sort_array_access_offset(
+            #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
+            state.context,
+            #endif
+            #if !POTTERY_SHELL_SORT_INHERENT_BASE
+            state.base,
+            #endif
+            first,
+            second) / pottery_cast(ssize_t, state.gap);
 }

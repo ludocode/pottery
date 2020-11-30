@@ -30,13 +30,6 @@
 
 #define POTTERY_INSERTION_SORT_PREFIX POTTERY_CONCAT(POTTERY_SHELL_SORT_PREFIX, _insertion_sort)
 
-#ifdef POTTERY_SHELL_SORT_EXTERNAL_LIFECYCLE
-    #define POTTERY_INSERTION_SORT_EXTERNAL_LIFECYCLE POTTERY_SHELL_SORT_EXTERNAL_LIFECYCLE
-#endif
-#ifdef POTTERY_SHELL_SORT_EXTERNAL_COMPARE
-    #define POTTERY_INSERTION_SORT_EXTERNAL_COMPARE POTTERY_SHELL_SORT_EXTERNAL_COMPARE
-#endif
-
 #ifdef POTTERY_SHELL_SORT_REF_TYPE
     #define POTTERY_INSERTION_SORT_REF_TYPE POTTERY_SHELL_SORT_REF_TYPE
 #endif
@@ -44,10 +37,13 @@
     #define POTTERY_INSERTION_SORT_VALUE_TYPE POTTERY_SHELL_SORT_VALUE_TYPE
 #endif
 
-// We pass our own state and accessor to insertion_sort so we can multiply its
-// accesses by the current gap sequence.
+// We pass our own state as the insertion_sort context and configure its
+// array_access to use our gap sequence.
 #define POTTERY_INSERTION_SORT_CONTEXT_TYPE pottery_shell_sort_state_t
-#define POTTERY_INSERTION_SORT_ACCESS pottery_shell_sort_access
+#define POTTERY_INSERTION_SORT_ARRAY_ACCESS_SELECT pottery_shell_sort_gap_select
+#define POTTERY_INSERTION_SORT_ARRAY_ACCESS_INDEX pottery_shell_sort_gap_index
+#define POTTERY_INSERTION_SORT_ARRAY_ACCESS_SHIFT pottery_shell_sort_gap_shift
+#define POTTERY_INSERTION_SORT_ARRAY_ACCESS_OFFSET pottery_shell_sort_gap_offset
 
 // Since we're using our own context, insertion_sort needs to generate its
 // own lifecycle and compare functions that wrap ours.

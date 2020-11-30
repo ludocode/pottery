@@ -50,6 +50,12 @@
 #endif
 
 // optional configs
+#ifdef {SRC}_SHIFT
+    #define {DEST}_SHIFT {SRC}_SHIFT
+#endif
+#ifdef {SRC}_OFFSET
+    #define {DEST}_OFFSET {SRC}_OFFSET
+#endif
 #ifdef {SRC}_NEXT
     #define {DEST}_NEXT {SRC}_NEXT
 #endif

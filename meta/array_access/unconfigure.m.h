@@ -43,6 +43,8 @@
 #undef {PREFIX}_EQUAL
 
 // optional configs
+#undef {PREFIX}_SHIFT
+#undef {PREFIX}_OFFSET
 #undef {PREFIX}_NEXT
 #undef {PREFIX}_PREVIOUS
 #undef {PREFIX}_EXISTS
