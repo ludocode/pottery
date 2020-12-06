@@ -396,13 +396,15 @@ pottery_error_t pottery_vector_insert_after(pottery_vector_t* vector,
 #else // C/C++
 
 // C by value
+// (This might still be used in C++ if POTTERY_VECTOR_CXX is disabled so we
+// still need to properly run constructors.)
 
 static inline
 pottery_error_t pottery_vector_insert_at(pottery_vector_t* vector, size_t index, pottery_vector_element_t value) {
     pottery_vector_entry_t entry;
     pottery_error_t error = pottery_vector_impl_create_space(vector, index, 1, &entry);
     if (error == POTTERY_OK)
-        *entry = value;
+        pottery_move_construct(pottery_vector_element_t, *entry, value);
     return error;
 }
 

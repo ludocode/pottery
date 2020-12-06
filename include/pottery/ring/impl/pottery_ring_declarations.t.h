@@ -55,14 +55,10 @@ typedef struct pottery_ring_t {
     size_t start;
     size_t count;
 
-    #ifdef POTTERY_RING_INTERNAL_COUNT
-    pottery_ring_value_t internal[POTTERY_RING_INTERNAL_COUNT];
-    #endif
-
-    #ifdef POTTERY_RING_ENABLE_EXTERNAL
-    pottery_ring_value_t* external;
-    size_t external_capacity;
-    #endif
+    //#if POTTERY_RING_INTERNAL_CAPACITY > 0
+    // TODO this doesn't work yet. it should probably be in a union with capacity like vector
+    //pottery_ring_value_t internal[POTTERY_RING_INTERNAL_CAPACITY];
+    //#endif
 } pottery_ring_t;
 
 static inline void pottery_ring_sanity_check(pottery_ring_t* ring) {
@@ -98,12 +94,19 @@ POTTERY_RING_EXTERN
 pottery_error_t pottery_ring_emplace_last(pottery_ring_t* ring, pottery_ring_entry_t* entry);
 
 #if POTTERY_LIFECYCLE_CAN_PASS
+
+// TODO add C++ const ref / r-value ref helpers like vector
+
+// C by value
+// (This might still be used in C++ if POTTERY_VECTOR_CXX is disabled so we
+// still need to properly run constructors.)
+
 static inline
 pottery_error_t pottery_ring_insert_first(pottery_ring_t* ring, pottery_ring_value_t value) {
     pottery_ring_entry_t entry;
     pottery_error_t error = pottery_ring_emplace_first(ring, &entry);
     if (error == POTTERY_OK)
-        *entry = value;
+        pottery_move_construct(pottery_ring_value_t, *entry, value);
     return error;
 }
 
@@ -112,7 +115,7 @@ pottery_error_t pottery_ring_insert_last(pottery_ring_t* ring, pottery_ring_valu
     pottery_ring_entry_t entry;
     pottery_error_t error = pottery_ring_emplace_last(ring, &entry);
     if (error == POTTERY_OK)
-        *entry = value;
+        pottery_move_construct(pottery_ring_value_t, *entry, value);
     return error;
 }
 #endif
@@ -136,7 +139,8 @@ pottery_ring_value_t* pottery_ring_select(pottery_ring_t* ring, size_t index) {
 
 static inline
 size_t pottery_ring_index(pottery_ring_t* ring, pottery_ring_value_t* value) {
-    return (pottery_cast(size_t, value - ring->values) + ring->count - ring->start) % ring->capacity;
+    size_t offset = pottery_cast(size_t, value - ring->values);
+    return (offset + ring->capacity - ring->start) % ring->capacity;
 }
 
 static inline
@@ -175,7 +179,7 @@ pottery_ring_value_t* pottery_ring_next(pottery_ring_t* ring, pottery_ring_value
     if (ref == pottery_ring_last(ring))
         return pottery_null;
     ++ref;
-    if (ref == ring->values + ring->count)
+    if (ref == ring->values + ring->capacity)
         ref = ring->values;
     return ref;
 }
@@ -188,7 +192,7 @@ pottery_ring_value_t* pottery_ring_previous(pottery_ring_t* ring, pottery_ring_v
         return pottery_ring_last(ring);
 
     if (ref == ring->values)
-        ref = ring->values + ring->count - 1;
+        ref = ring->values + ring->capacity - 1;
     else
         --ref;
 

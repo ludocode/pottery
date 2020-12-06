@@ -156,10 +156,10 @@ void* pottery_alloc_impl_malloc_zero_ea(POTTERY_ALLOC_CONTEXT_ARG size_t alignme
     return ptr;
 }
 
-#if (!defined(POTTERY_ALLOC_ZALLOC) && \
-            (defined(POTTERY_ALLOC_MALLOC) || defined(POTTERY_ALLOC_REALLOC))) || \
+#if !defined(POTTERY_ALLOC_ZALLOC) && ( \
+            (defined(POTTERY_ALLOC_MALLOC) || defined(POTTERY_ALLOC_REALLOC)) || \
     (!defined(POTTERY_ALLOC_ALIGNED_ZALLOC) && \
-            (defined(POTTERY_ALLOC_ALIGNED_MALLOC) || defined(POTTERY_ALLOC_ALIGNED_REALLOC)))
+            (defined(POTTERY_ALLOC_ALIGNED_MALLOC) || defined(POTTERY_ALLOC_ALIGNED_REALLOC))))
 // fundamental alignment allocation with manual zeroing (i.e. we don't have calloc())
 static inline
 void* pottery_alloc_impl_malloc_zero_fa_wrap(POTTERY_ALLOC_CONTEXT_ARG size_t alignment, size_t size) {
@@ -198,7 +198,6 @@ void* pottery_alloc_impl_malloc_zero_fa(POTTERY_ALLOC_CONTEXT_ARG size_t alignme
     #else
         #error "A memory allocation expression is required."
     #endif
-
 }
 
 static pottery_always_inline

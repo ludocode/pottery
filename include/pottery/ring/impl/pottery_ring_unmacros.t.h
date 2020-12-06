@@ -82,13 +82,10 @@
 #undef pottery_ring_sanity_check
 #undef pottery_ring_grow
 
-#undef P_RING_NAME
-#undef P_RING_NAME2
-#undef P_RING_NAME3
-
 #undef POTTERY_RING_PREFIX
 #undef POTTERY_RING_VALUE_TYPE
 #undef POTTERY_RING_EXTERN
+#undef POTTERY_RING_EXTERNAL_ALLOC
 
 
 

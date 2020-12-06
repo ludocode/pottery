@@ -36,6 +36,7 @@
 
 #include "pottery/vector/impl/pottery_vector_config_lifecycle.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_static.t.h"
+
 #include "pottery/vector/impl/pottery_vector_declarations.t.h"
 #include "pottery/vector/impl/pottery_vector_definitions.t.h"
 #include "pottery/vector/impl/pottery_vector_unmacros.t.h"

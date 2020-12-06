@@ -447,6 +447,7 @@ pottery_error_t pottery_vector_insert_at_bulk(pottery_vector_t* vector, size_t i
         // Use move construction (rather than the lifecycle move() operation)
         // to move values out of the array. We need to leave them constructed
         // in C++. See notes in pottery_vector_extract() for more details.
+        // TODO add lifecycle function move_construct_bulk?
         *(inserted++) = pottery_move_if_cxx(*(values++));
     }
 

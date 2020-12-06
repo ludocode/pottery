@@ -369,6 +369,15 @@
     #define pottery_move_if_cxx(x) (x)
 #endif
 
+/**
+ * Use move construction with placement new if C++
+ */
+#ifdef __cplusplus
+    #define pottery_move_construct(T, x, y) (new (&(x)) T(std::move(y)))
+#else
+    #define pottery_move_construct(T, x, y) ((x) = (y))
+#endif
+
 /*
  * Similarly, here's std::launder(), which we try to use whenever we re-use a
  * pointer after running a C++ constructor.

@@ -90,6 +90,9 @@ static void test_pottery_ring_int_reverse(int count) {
     int i;
     for (i = 0; i < count; ++i) {
         int_ring_insert_first(&ring, i);
+
+        // The index of the first element is always zero
+        pottery_test_assert(int_ring_index(&ring, int_ring_first(&ring)) == 0);
     }
 
     for (i = 0; i < count; ++i) {
@@ -241,7 +244,7 @@ POTTERY_TEST(pottery_ring_wrap_forward) {
     int_ring_destroy(&ring);
 }
 
-POTTERY_TEST(pottery_ring_wrap_lastward) {
+POTTERY_TEST(pottery_ring_wrap_backward) {
     int step_size = 5;
     int steps = 200;
 

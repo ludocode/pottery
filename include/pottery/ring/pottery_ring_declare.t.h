@@ -26,15 +26,21 @@
 
 #include "pottery/ring/impl/pottery_ring_macros.t.h"
 
-#include "pottery/ring/impl/pottery_ring_config_alloc.t.h"
-#include "pottery/alloc/pottery_alloc_declare.t.h"
+#ifndef POTTERY_RING_EXTERNAL_ALLOC
+    #include "pottery/ring/impl/pottery_ring_config_alloc.t.h"
+    #include "pottery/alloc/pottery_alloc_declare.t.h"
+#endif
 
-#include "pottery/ring/impl/pottery_ring_config_lifecycle.t.h"
-#include "pottery/lifecycle/pottery_lifecycle_declare.t.h"
+#ifndef POTTERY_RING_EXTERNAL_LIFECYCLE
+    #include "pottery/ring/impl/pottery_ring_config_lifecycle.t.h"
+    #include "pottery/lifecycle/pottery_lifecycle_declare.t.h"
+#endif
 
 #include "pottery/ring/impl/pottery_ring_declarations.t.h"
 #include "pottery/ring/impl/pottery_ring_unmacros.t.h"
 
-#include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
+#ifndef POTTERY_RING_EXTERNAL_LIFECYCLE
+    #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
+#endif
 
 #undef POTTERY_RING_IMPL

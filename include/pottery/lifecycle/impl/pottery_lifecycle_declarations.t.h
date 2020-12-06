@@ -172,7 +172,6 @@ void pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_ARG
             swap(*left, *right);
             return;
         }
-        #endif
 
         // swap bitwise through a temporary buffer
         // cast to void* to prevent -Wclass-memaccess warnings
@@ -183,6 +182,16 @@ void pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_ARG
                 sizeof(pottery_lifecycle_value_t));
         pottery_memcpy(pottery_cast(void*, right), pottery_cast(const void*, temp),
                 sizeof(pottery_lifecycle_value_t));
+
+        #else
+
+        // swap by simple assignment
+        pottery_lifecycle_value_t temp;
+        temp = *left;
+        *left = *right;
+        *right = temp;
+
+        #endif
 
     #elif (defined(POTTERY_LIFECYCLE_MOVE) || POTTERY_LIFECYCLE_MOVE_BY_VALUE) && \
             defined(POTTERY_LIFECYCLE_VALUE_TYPE)

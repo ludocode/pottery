@@ -92,7 +92,8 @@ void pottery_shell_sort(
         state.gap = gaps[i];
         pottery_shell_sort_ref_t step_base = base;
 
-        for (size_t offset = 0; offset < state.gap; ++offset) {
+        size_t offset;
+        for (offset = 0; offset < state.gap; ++offset) {
             size_t step_count = count / state.gap;
             if (offset + state.gap * step_count < count)
                 ++step_count;
