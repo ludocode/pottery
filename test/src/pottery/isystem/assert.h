@@ -26,12 +26,10 @@
 #define POTTERY_ISYSTEM_ASSERT_H
 
 // This is used to override the system assert when running unit tests. Examples
-// #include <assert.h> directly which re-defines assert, and we want them to
-// use pottery_assert instead.
+// #include <assert.h> directly which re-defines assert. We want them to use
+// pottery_assert instead.
 
 #undef assert
 #define assert pottery_assert
-#undef abort
-#define abort pottery_abort
 
 #endif

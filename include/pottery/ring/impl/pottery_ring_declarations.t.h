@@ -62,7 +62,7 @@ typedef struct pottery_ring_t {
 } pottery_ring_t;
 
 static inline void pottery_ring_sanity_check(pottery_ring_t* ring) {
-    pottery_assert((ring->capacity == 0) == (ring->values == NULL));
+    pottery_assert((ring->capacity == 0) == (ring->values == pottery_null));
 }
 
 #if POTTERY_FORWARD_DECLARATIONS

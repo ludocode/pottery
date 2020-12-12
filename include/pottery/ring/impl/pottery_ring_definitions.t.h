@@ -38,7 +38,7 @@ static void pottery_ring_impl_destroy_all(pottery_ring_t* ring) {
 
 POTTERY_RING_EXTERN
 void pottery_ring_init(pottery_ring_t* ring) {
-    ring->values = NULL;
+    ring->values = pottery_null;
     ring->capacity = 0;
     ring->start = 0;
     ring->count = 0;
@@ -55,7 +55,7 @@ void pottery_ring_destroy(pottery_ring_t* ring) {
     pottery_assert(ring->count == 0);
     #endif
 
-    if (ring->values != NULL)
+    if (ring->values != pottery_null)
         pottery_ring_alloc_free(pottery_alignof(pottery_ring_value_t), ring->values);
 }
 
@@ -168,7 +168,7 @@ static pottery_error_t pottery_ring_grow(pottery_ring_t* ring, size_t minimum_ca
         }
     }
 
-    if (ring->values != NULL)
+    if (ring->values != pottery_null)
         pottery_ring_alloc_free(pottery_alignof(pottery_ring_value_t), ring->values);
     ring->values = new_values;
     ring->capacity = new_capacity;
