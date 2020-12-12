@@ -179,6 +179,12 @@ bool pottery_ring_ref_exists(pottery_ring_t* ring, pottery_ring_value_t* ref) {
 }
 
 static inline
+pottery_ring_value_t* pottery_ring_ref_value(pottery_ring_t* ring, pottery_ring_value_t* ref) {
+    (void)ring;
+    return ref;
+}
+
+static inline
 pottery_ring_value_t* pottery_ring_next(pottery_ring_t* ring, pottery_ring_value_t* ref) {
     if (ref == pottery_ring_last(ring))
         return pottery_null;

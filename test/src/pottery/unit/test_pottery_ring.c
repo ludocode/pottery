@@ -116,7 +116,7 @@ POTTERY_TEST(pottery_ring_int_reverse_some) {
     test_pottery_ring_int_reverse(50);
 }
 
-static const int bulk_count = 200; // TODO 200
+static const int bulk_count = 200;
 
 POTTERY_TEST(pottery_ring_bulk_insert) {
     int_ring_t ring;

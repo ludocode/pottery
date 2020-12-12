@@ -25,6 +25,15 @@
 #ifndef TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX
 #error "Misconfigured template"
 #endif
+#ifndef TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_AT
+#define TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_AT 1
+#endif
+#ifndef TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_RESERVE
+#define TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_RESERVE 1
+#endif
+#ifndef TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_SHRINK
+#define TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_SHRINK 1
+#endif
 
 #ifdef TEST_POTTERY_FUZZ_MAIN
     #include <stdio.h>
@@ -188,34 +197,42 @@ static void fuzz_check(array_ufo_t* array, shadow_t* shadow) {
 
 typedef enum command_t {
 
+    #if TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_AT
     // these are our first two commands so that we can easily generate an afl
     // test case that grows a ton and then shrinks back down to nothing
     // (see test/tools/generate-corpus.sh)
     command_emplace_at,
     command_remove_at,
-
-    #if 0
-    command_emplace_first,
-    command_emplace_last,
-    command_emplace_before,
-    command_emplace_after,
     #endif
 
-    // remove
+    // these are our next two commands for the same reasons as above, in case
+    // at isn't supported by the container
+    command_emplace_last,
+    command_remove_first,
+
+    // additional commands
+    command_emplace_first,
+    command_remove_last,
+    #if TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_SHRINK
+    command_shrink,
+    #endif
+    #if TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_RESERVE
+    command_reserve,
+    #endif
 
     // alloc failure
     //command_alloc_failure, // TODO alloc fail after n more allocations
 
-    command_shrink,
-    command_reserve,
-
     command_count,
 } command_t;
 
+#if TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_SHRINK
 static void fuzz_shrink(array_ufo_t* array) {
     array_ufo_shrink(array);
 }
+#endif
 
+#if TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_RESERVE
 static void fuzz_reserve(array_ufo_t* array, fuzz_input_t* input) {
     // Reserve any number between 256 and (roughly) four times what the array
     // currently holds. Often we'll be reserving less (which should do
@@ -223,7 +240,9 @@ static void fuzz_reserve(array_ufo_t* array, fuzz_input_t* input) {
     size_t count = fuzz_load_u24(input) % (256 + 4 * array_ufo_count(array));
     array_ufo_reserve(array, count);
 }
+#endif
 
+#if TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_AT
 static void fuzz_emplace_at(array_ufo_t* array, fuzz_input_t* input, shadow_t* shadow) {
     if (shadow->count == FUZZ_ARRAY_UFO_COUNT_LIMIT)
         return;
@@ -248,7 +267,56 @@ static void fuzz_emplace_at(array_ufo_t* array, fuzz_input_t* input, shadow_t* s
     ufo_init_copy(shadow->array + pos, array_ufo_ref_value(array, ref));
     ++shadow->count;
 }
+#endif
 
+static void fuzz_emplace_first(array_ufo_t* array, fuzz_input_t* input, shadow_t* shadow) {
+    if (shadow->count == FUZZ_ARRAY_UFO_COUNT_LIMIT)
+        return;
+
+    // create the ufo
+    ufo_t ufo;
+    if (!fuzz_ufo_init(&ufo, input))
+        return;
+
+    // emplace into real array
+    //printf("emplacing %s as first of %zu\n", ufo.string, array_ufo_count(array));
+    array_ufo_ref_t ref;
+    if (POTTERY_OK != array_ufo_emplace_first(array, &ref)) {
+        ufo_destroy(&ufo);
+        return;
+    }
+    ufo_move(array_ufo_ref_value(array, ref), &ufo);
+
+    // insert into shadow array
+    ufo_move_bulk_up(shadow->array + 1, shadow->array, shadow->count);
+    ufo_init_copy(shadow->array, array_ufo_ref_value(array, ref));
+    ++shadow->count;
+}
+
+static void fuzz_emplace_last(array_ufo_t* array, fuzz_input_t* input, shadow_t* shadow) {
+    if (shadow->count == FUZZ_ARRAY_UFO_COUNT_LIMIT)
+        return;
+
+    // create the ufo
+    ufo_t ufo;
+    if (!fuzz_ufo_init(&ufo, input))
+        return;
+
+    // emplace into real array
+    //printf("emplacing %s as last of %zu\n", ufo.string, array_ufo_count(array));
+    array_ufo_ref_t ref;
+    if (POTTERY_OK != array_ufo_emplace_last(array, &ref)) {
+        ufo_destroy(&ufo);
+        return;
+    }
+    ufo_move(array_ufo_ref_value(array, ref), &ufo);
+
+    // insert into shadow array
+    ufo_init_copy(shadow->array + shadow->count, array_ufo_ref_value(array, ref));
+    ++shadow->count;
+}
+
+#if TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_AT
 static void fuzz_remove_at(array_ufo_t* array, fuzz_input_t* input, shadow_t* shadow) {
     if (array_ufo_is_empty(array)) {
         pottery_test_assert(shadow->count == 0);
@@ -268,6 +336,44 @@ static void fuzz_remove_at(array_ufo_t* array, fuzz_input_t* input, shadow_t* sh
     ufo_destroy(shadow->array + pos);
     ufo_move_bulk_down(shadow->array + pos, shadow->array + pos + 1, shadow->count - pos);
 }
+#endif
+
+static void fuzz_remove_first(array_ufo_t* array, fuzz_input_t* input, shadow_t* shadow) {
+    (void)input;
+
+    if (array_ufo_is_empty(array)) {
+        pottery_test_assert(shadow->count == 0);
+        //printf("array is empty, not removing\n");
+        return;
+    }
+
+    // remove from real array
+    //printf("removing first of %zu\n", pos, array_ufo_count(array));
+    array_ufo_remove_first(array);
+
+    // remove from shadow array
+    --shadow->count;
+    ufo_destroy(shadow->array);
+    ufo_move_bulk_down(shadow->array, shadow->array + 1, shadow->count);
+}
+
+static void fuzz_remove_last(array_ufo_t* array, fuzz_input_t* input, shadow_t* shadow) {
+    (void)input;
+
+    if (array_ufo_is_empty(array)) {
+        pottery_test_assert(shadow->count == 0);
+        //printf("array is empty, not removing\n");
+        return;
+    }
+
+    // remove from real array
+    //printf("removing last of %zu\n", pos, array_ufo_count(array));
+    array_ufo_remove_last(array);
+
+    // remove from shadow array
+    --shadow->count;
+    ufo_destroy(shadow->array + shadow->count);
+}
 
 static void fuzz(fuzz_input_t* input) {
     shadow_t shadow = {
@@ -285,21 +391,40 @@ static void fuzz(fuzz_input_t* input) {
         int command = *(input->pos++) % pottery_cast(int, command_count);
         switch (pottery_cast(command_t, command)) {
 
+            #if TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_AT
             case command_emplace_at:
                 fuzz_emplace_at(&array, input, &shadow);
                 break;
-
             case command_remove_at:
                 fuzz_remove_at(&array, input, &shadow);
                 break;
+            #endif
 
+            case command_emplace_first:
+                fuzz_emplace_first(&array, input, &shadow);
+                break;
+            case command_remove_first:
+                fuzz_remove_first(&array, input, &shadow);
+                break;
+
+            case command_emplace_last:
+                fuzz_emplace_last(&array, input, &shadow);
+                break;
+            case command_remove_last:
+                fuzz_remove_last(&array, input, &shadow);
+                break;
+
+            #if TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_SHRINK
             case command_shrink:
                 fuzz_shrink(&array);
                 break;
+            #endif
 
+            #if TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_RESERVE
             case command_reserve:
                 fuzz_reserve(&array, input);
                 break;
+            #endif
 
             default:
                 pottery_test_assert(false);
