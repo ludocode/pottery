@@ -247,7 +247,7 @@ size_t pottery_array_access_index(
  * return value of this should return the second ref.
  */
 static inline
-ssize_t pottery_array_access_offset(
+ptrdiff_t pottery_array_access_offset(
         POTTERY_ARRAY_ACCESS_ARGS
         pottery_array_access_ref_t first,
         pottery_array_access_ref_t second)
@@ -272,13 +272,13 @@ ssize_t pottery_array_access_offset(
     #elif defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE) && \
                 !defined(POTTERY_ARRAY_ACCESS_SELECT) && !defined(POTTERY_ARRAY_ACCESS_INDEX)
         // standard C array
-        return pottery_cast(ssize_t, second - first);
+        return pottery_cast(ptrdiff_t, second - first);
 
     #else
         // difference between indices
-        return pottery_cast(ssize_t, pottery_array_access_index(POTTERY_ARRAY_ACCESS_VALS second))
+        return pottery_cast(ptrdiff_t, pottery_array_access_index(POTTERY_ARRAY_ACCESS_VALS second))
                 -
-                pottery_cast(ssize_t, pottery_array_access_index(POTTERY_ARRAY_ACCESS_VALS first));
+                pottery_cast(ptrdiff_t, pottery_array_access_index(POTTERY_ARRAY_ACCESS_VALS first));
     #endif
 }
 
@@ -291,7 +291,7 @@ static inline
 pottery_array_access_ref_t pottery_array_access_shift(
         POTTERY_ARRAY_ACCESS_ARGS
         pottery_array_access_ref_t ref,
-        ssize_t offset)
+        ptrdiff_t offset)
 {
     POTTERY_ARRAY_ACCESS_ARGS_UNUSED;
 
@@ -320,7 +320,7 @@ pottery_array_access_ref_t pottery_array_access_shift(
         return pottery_array_access_select(
                 POTTERY_ARRAY_ACCESS_VALS
                 pottery_cast(size_t,
-                    pottery_cast(ssize_t, pottery_array_access_index(
+                    pottery_cast(ptrdiff_t, pottery_array_access_index(
                         POTTERY_ARRAY_ACCESS_VALS
                         ref)) + offset));
     #endif

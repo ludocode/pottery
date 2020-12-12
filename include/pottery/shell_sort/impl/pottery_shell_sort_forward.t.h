@@ -58,14 +58,14 @@ pottery_shell_sort_ref_t pottery_shell_sort_gap_select(
 static inline
 pottery_shell_sort_ref_t pottery_shell_sort_gap_shift(
         pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base,
-        pottery_shell_sort_ref_t ref, ssize_t offset);
+        pottery_shell_sort_ref_t ref, ptrdiff_t offset);
 
 static inline
 size_t pottery_shell_sort_gap_index(pottery_shell_sort_state_t state,
         pottery_shell_sort_ref_t base, pottery_shell_sort_ref_t ref);
 
 static inline
-ssize_t pottery_shell_sort_gap_offset(
+ptrdiff_t pottery_shell_sort_gap_offset(
         pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base,
         pottery_shell_sort_ref_t first, pottery_shell_sort_ref_t second);
 #endif

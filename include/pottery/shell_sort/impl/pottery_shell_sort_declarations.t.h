@@ -64,13 +64,13 @@ pottery_shell_sort_ref_t pottery_shell_sort_gap_select(
             state.base,
             #endif
             base,
-            pottery_cast(ssize_t, index * state.gap));
+            pottery_cast(ptrdiff_t, index * state.gap));
 }
 
 static inline
 pottery_shell_sort_ref_t pottery_shell_sort_gap_shift(
         pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base,
-        pottery_shell_sort_ref_t ref, ssize_t offset)
+        pottery_shell_sort_ref_t ref, ptrdiff_t offset)
 {
     (void)base;
     return pottery_shell_sort_array_access_shift(
@@ -81,14 +81,14 @@ pottery_shell_sort_ref_t pottery_shell_sort_gap_shift(
             state.base,
             #endif
             ref,
-            offset * pottery_cast(ssize_t, state.gap));
+            offset * pottery_cast(ptrdiff_t, state.gap));
 }
 
 static inline
 size_t pottery_shell_sort_gap_index(pottery_shell_sort_state_t state,
         pottery_shell_sort_ref_t base, pottery_shell_sort_ref_t ref)
 {
-    ssize_t offset = pottery_shell_sort_array_access_offset(
+    ptrdiff_t offset = pottery_shell_sort_array_access_offset(
             #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
             state.context,
             #endif
@@ -97,11 +97,11 @@ size_t pottery_shell_sort_gap_index(pottery_shell_sort_state_t state,
             #endif
             base,
             ref);
-    return pottery_cast(size_t, offset / pottery_cast(ssize_t, state.gap));
+    return pottery_cast(size_t, offset / pottery_cast(ptrdiff_t, state.gap));
 }
 
 static inline
-ssize_t pottery_shell_sort_gap_offset(
+ptrdiff_t pottery_shell_sort_gap_offset(
         pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base,
         pottery_shell_sort_ref_t first, pottery_shell_sort_ref_t second)
 {
@@ -114,5 +114,5 @@ ssize_t pottery_shell_sort_gap_offset(
             state.base,
             #endif
             first,
-            second) / pottery_cast(ssize_t, state.gap);
+            second) / pottery_cast(ptrdiff_t, state.gap);
 }
