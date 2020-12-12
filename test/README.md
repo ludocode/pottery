@@ -28,25 +28,25 @@ The following scripts are available for Windows:
 
 The unit test suite requires [**Python 3**](https://www.python.org/) and [**Ninja**](https://ninja-build.org/) on your `PATH`. On Windows, Ninja comes with the latest Visual Studio Build Tools but you'll need to [install Python 3](https://www.python.org/downloads/windows/). Make sure to check the box to add it to your PATH during installation. On Linux, you can find Python 3 and Ninja in your distribution's package manager.
 
-The unit test suite is run with `test/unit.sh` or `test\unit.bat`. Set "CC" to choose a compiler or leave it unset to use `cc` or `cl`. Pass a configuration to run or pass "all" to run all supported configurations. For example:
+The unit test suite is run with `test/unit.sh` or `test\unit.bat`. Set "CC" to choose a compiler or leave it unset to use `cc` or `cl`. Pass a configuration to run or leave it blank to run the default. You can also pass "all" to run all supported configurations or "more" to run a small set of configurations likely to find bugs. For example:
 
 ```sh
-CC=clang test/unit.sh all
+CC=clang test/unit.sh more
 ```
 
 The unit test suite supports various configurations. For example "c++17" compiles all source files as C++17 and "gnu89" compiles all source files as gnu89. Prefix the configuration with "run-" to run the tests, and suffix it with "-debug" or "-release" to choose debug or release builds. Pass multiple commands to run all of them. For example:
 
 ```sh
-test/unit.sh run-{c++17,gnu89}-{debug,release}
+test/unit.sh run-{default,c++17,gnu89}-{debug,release}
 ```
 
-The unit test suite also includes all examples in the `examples/` folder as well as all fuzz tests in the `test/src/fuzz/` folder. The only code in the repository excluded from the unit test suite is the benchmark code under `test/src/pottery/benchmark/`.
+The unit test suite also includes all examples in the `examples/` folder (except for Clayfish) as well as all fuzz tests in the `test/src/fuzz/` folder. The only code in the repository excluded from the unit test suite is the benchmark code under `test/src/pottery/benchmark/`.
 
 When building the examples as unit tests, Pottery converts the `main()` function into a unit test and disables print statements and some warnings. This hides all unit test code from the examples, keeping them simple and runnable as standalone binaries.
 
 When building the fuzz tests as unit tests, Pottery just generates a few kilobytes of random input to each of them over a number of rounds. The random seed is printed so you can reproduce bugs. See the [Fuzz Tests](#fuzz-tests) section below.
 
-The unit test suite is itself made up of a bunch of test templates. For example the template [`test_pottery_array_ufo.t.h`](test/src/pottery/unit/test_pottery_array_ufo.t.h) tests a generalized array of `ufo_t`, a common test object. This template is instantiated to test vector, deque, etc.
+The unit test suite is itself made up of a bunch of test templates. For example the template [`test_pottery_array_ufo.t.h`](test/src/pottery/unit/test_pottery_array_ufo.t.h) tests a generalized array of `ufo_t`, a common test object. This template is instantiated to test vector, ring, deque, etc.
 
 
 
@@ -62,8 +62,8 @@ To fuzz test with american fuzzy lop, use `test/fuzz.sh` and choose a container 
 
 ```sh
 echo core | sudo tee /proc/sys/kernel/core_pattern"
-cd /sys/devices/system/cpu
-echo performance | sudo tee cpu*/cpufreq/scaling_governor # echo ondemand to undo this later
+echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+# echo ondemand to undo the above later
 test/fuzz.sh test/build/afl/test_pottery_fuzz_vector
 ```
 

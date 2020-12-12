@@ -348,7 +348,7 @@ static void fuzz_remove_first(ufo_array_t* array, fuzz_input_t* input, shadow_t*
     }
 
     // remove from real array
-    //printf("removing first of %zu\n", pos, ufo_array_count(array));
+    //printf("removing first of %zu\n", ufo_array_count(array));
     ufo_array_remove_first(array);
 
     // remove from shadow array
@@ -367,7 +367,7 @@ static void fuzz_remove_last(ufo_array_t* array, fuzz_input_t* input, shadow_t* 
     }
 
     // remove from real array
-    //printf("removing last of %zu\n", pos, ufo_array_count(array));
+    //printf("removing last of %zu\n", ufo_array_count(array));
     ufo_array_remove_last(array);
 
     // remove from shadow array
