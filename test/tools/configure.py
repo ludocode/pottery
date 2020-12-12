@@ -241,6 +241,7 @@ if compiler == "MSVC":
     ]
 else:
     defaultCPPFlags += [
+        "-isystem test/src/pottery/isystem",
         "-Wall",
         "-g",
     ]
@@ -367,9 +368,9 @@ if compiler != "MSVC":
 
     # TODO we need a build without this, partly for valgrind and partly because
     # this breaks malloc_usable_size
-#    if checkFlags("-fsanitize=address"):
-#        defaultCPPFlags.append("-fsanitize=address");
-#        defaultLDFlags.append("-fsanitize=address");
+    #if checkFlags("-fsanitize=address"):
+    #    defaultCPPFlags.append("-fsanitize=address");
+    #    defaultLDFlags.append("-fsanitize=address");
 
     hasDeps = checkFlags("-MD")
 
@@ -639,11 +640,22 @@ with open(ninja, "w") as out:
     out.write("build default: phony run-default-debug\n")
     out.write("\n")
 
+    # add an "all" target that builds and runs everything
     out.write("build all: phony")
     for build in sorted(builds.keys()):
         if not builds[build].exclude:
             out.write(" run-")
             out.write(build)
+    out.write("\n")
+
+    # add a "more" target that builds builds more likely to reveal bugs and
+    # more likely to be used in real life
+    out.write("build more: phony")
+    for variant in "default", "c++17", "gnu89":
+        for conf in "debug", "release":
+            build = variant + "-" + conf
+            if build in builds:
+                out.write(" run-" + build)
     out.write("\n")
 
 print("Generated " + ninja)

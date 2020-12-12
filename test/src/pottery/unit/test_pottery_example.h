@@ -62,11 +62,6 @@ static inline char* strcpy_workaround(char* to, const char* from) {
 
 
 
-// For examples that use <assert.h> we want to keep assertions enabled.
-#undef NDEBUG
-
-
-
 // The examples don't follow the warnings as strictly as the rest of Pottery
 // (otherwise the example code would be too ugly.)
 #ifdef __GNUC__
@@ -143,17 +138,6 @@ static inline int pottery_example_disable_puts(const char* s) {
 }
 #define puts pottery_example_disable_puts
 #endif
-
-
-
-/*
- * We also want the examples to avoid normal assert and abort, instead calling
- * into Pottery so that the unit test harness can catch them.
- */
-#undef assert
-#define assert pottery_assert
-#undef abort
-#define abort pottery_abort
 
 
 
