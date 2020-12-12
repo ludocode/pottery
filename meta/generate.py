@@ -125,5 +125,6 @@ if __name__ == "__main__":
     # default paths if none were specified
     if not foundPaths:
         go("include", clean)
+        go("test/src", clean)
         go("bindings/cxx/include", clean)
 

@@ -24,7 +24,7 @@
 
 #include "pottery/common/test_pottery_ufo.h"
 
-#define POTTERY_VECTOR_PREFIX array_ufo
+#define POTTERY_VECTOR_PREFIX pottery_vector_fuzz_ufo
 #define POTTERY_VECTOR_VALUE_TYPE ufo_t
 #define POTTERY_VECTOR_LIFECYCLE_INIT_COPY ufo_init_copy
 #define POTTERY_VECTOR_LIFECYCLE_MOVE ufo_move

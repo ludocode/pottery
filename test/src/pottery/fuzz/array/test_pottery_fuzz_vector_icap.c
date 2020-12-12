@@ -24,13 +24,7 @@
 
 #include "pottery/common/test_pottery_ufo.h"
 
-// workarounds for MSVC C++/CLR not allowing different structs in different
-// translation units with the same name
-#ifdef __CLR_VER
-#define array_ufo_t pottery_vector_icap_fuzz_ufo_t
-#endif
-
-#define POTTERY_VECTOR_PREFIX array_ufo
+#define POTTERY_VECTOR_PREFIX pottery_vector_icap_fuzz_ufo
 #define POTTERY_VECTOR_INTERNAL_CAPACITY 37
 #define POTTERY_VECTOR_VALUE_TYPE ufo_t
 #define POTTERY_VECTOR_LIFECYCLE_INIT_COPY ufo_init_copy
