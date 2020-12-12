@@ -241,7 +241,6 @@ if compiler == "MSVC":
     ]
 else:
     defaultCPPFlags += [
-        "-isystem test/src/pottery/isystem",
         "-Wall",
         "-g",
     ]
@@ -587,11 +586,16 @@ with open(ninja, "w") as out:
             if src.startswith("examples"):
                 if compiler == "MSVC":
                     flags += [
+                        # MSVC searches /I even for angle bracket includes and
+                        # /external:I is not supported on older MSVC so we use
+                        # /I.
+                        "/Itest/src/pottery/isystem",
                         "-DPOTTERY_EXAMPLE_NAME=" + src.replace("\\", "_").split(".")[0],
                         "/FIpottery\\unit\\test_pottery_example.h"
                     ]
                 else:
                     flags += [
+                        "-isystem test/src/pottery/isystem",
                         "-DPOTTERY_EXAMPLE_NAME=" + src.replace("/", "_").split(".")[0],
                         "-include pottery/unit/test_pottery_example.h"
                     ]
