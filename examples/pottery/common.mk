@@ -7,6 +7,8 @@ run: $(EXECUTABLE) FORCE
 	@echo
 	@./$<
 
+build: $(EXECUTABLE) FORCE
+
 clean: FORCE
 	rm -rf build
 

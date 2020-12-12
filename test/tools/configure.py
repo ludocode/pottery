@@ -655,7 +655,7 @@ with open(ninja, "w") as out:
     # add a "more" target that builds builds more likely to reveal bugs and
     # more likely to be used in real life
     out.write("build more: phony")
-    for variant in "default", "c++17", "gnu89":
+    for variant in "default", "c++17", "gnu89", "c++-clr":
         for conf in "debug", "release":
             build = variant + "-" + conf
             if build in builds:

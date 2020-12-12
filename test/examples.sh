@@ -1,12 +1,14 @@
 #!/bin/sh
 set -e
-for f in examples/pottery/*; do
-
-    # skip common since it's not a real example
-    if [ $(basename $f) == "common" ]; then
-        continue
-    fi
-
+for f in examples/pottery/*/; do
     echo -e "\n\n\nBuilding $f"
-    ( cd $f ; make )
+
+    # We don't run clayfish since it's interactive.
+    if [ "$f" == "examples/pottery/clayfish/" ]; then
+        ( cd $f ; make build )
+    else
+        ( cd $f ; make run )
+    fi
 done
+
+echo -e "\n\n\nDone!"

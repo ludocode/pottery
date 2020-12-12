@@ -191,6 +191,12 @@ static void* uci_input_thread(void* vuci) {
         pthread_cond_signal(&uci->condition);
     }
     pthread_mutex_unlock(&uci->mutex);
+
+    // This is unreachable since our loop never breaks: it exits via exit()
+    // because there isn't really a sane way to interrupt fgets(). We clean up
+    // anyway in case the above loop is changed.
+    free(buffer);
+
     return NULL;
 }
 
