@@ -32,7 +32,7 @@
 
 typedef POTTERY_RING_VALUE_TYPE pottery_ring_value_t;
 
-typedef pottery_ring_value_t* pottery_ring_entry_t;
+typedef pottery_ring_value_t* pottery_ring_ref_t;
 
 /**
  * A double-ended queue of values implemented as a circular array.
@@ -92,9 +92,9 @@ void pottery_ring_remove_all(pottery_ring_t* ring);
 #endif
 
 POTTERY_RING_EXTERN
-pottery_error_t pottery_ring_emplace_first(pottery_ring_t* ring, pottery_ring_entry_t* entry);
+pottery_error_t pottery_ring_emplace_first(pottery_ring_t* ring, pottery_ring_ref_t* ref);
 POTTERY_RING_EXTERN
-pottery_error_t pottery_ring_emplace_last(pottery_ring_t* ring, pottery_ring_entry_t* entry);
+pottery_error_t pottery_ring_emplace_last(pottery_ring_t* ring, pottery_ring_ref_t* ref);
 #endif
 
 #if POTTERY_LIFECYCLE_CAN_PASS
@@ -107,19 +107,19 @@ pottery_error_t pottery_ring_emplace_last(pottery_ring_t* ring, pottery_ring_ent
 
 static inline
 pottery_error_t pottery_ring_insert_first(pottery_ring_t* ring, pottery_ring_value_t value) {
-    pottery_ring_entry_t entry;
-    pottery_error_t error = pottery_ring_emplace_first(ring, &entry);
+    pottery_ring_ref_t ref;
+    pottery_error_t error = pottery_ring_emplace_first(ring, &ref);
     if (error == POTTERY_OK)
-        pottery_move_construct(pottery_ring_value_t, *entry, value);
+        pottery_move_construct(pottery_ring_value_t, *ref, value);
     return error;
 }
 
 static inline
 pottery_error_t pottery_ring_insert_last(pottery_ring_t* ring, pottery_ring_value_t value) {
-    pottery_ring_entry_t entry;
-    pottery_error_t error = pottery_ring_emplace_last(ring, &entry);
+    pottery_ring_ref_t ref;
+    pottery_error_t error = pottery_ring_emplace_last(ring, &ref);
     if (error == POTTERY_OK)
-        pottery_move_construct(pottery_ring_value_t, *entry, value);
+        pottery_move_construct(pottery_ring_value_t, *ref, value);
     return error;
 }
 #endif

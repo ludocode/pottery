@@ -44,9 +44,8 @@
 
     // types
     #define array_ufo_t POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _t)
-    #define array_ufo_element_t POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _element_t)
+    #define array_ufo_value_t POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _value_t)
     #define array_ufo_ref_t POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _ref_t)
-    #define array_ufo_entry_t POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _entry_t)
 
     // lifecycle operations
     #define array_ufo_copy POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _copy)
@@ -58,11 +57,10 @@
     #define array_ufo_steal POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _steal)
     #define array_ufo_swap POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _swap)
 
-    // entry operations
-    #define array_ufo_entry_index POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _entry_index)
-    #define array_ufo_entry_exists POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _entry_exists)
-    #define array_ufo_entry_equal POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _entry_equal)
-    #define array_ufo_entry_element POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _entry_element)
+    // ref operations
+    #define array_ufo_ref_exists POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _ref_exists)
+    #define array_ufo_ref_equal POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _ref_equal)
+    #define array_ufo_ref_value POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _ref_value)
 
     // lookup
     #define array_ufo_count POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _count)
@@ -181,10 +179,9 @@ static void fuzz_check(array_ufo_t* array, shadow_t* shadow) {
     pottery_test_assert(array_ufo_count(array) == shadow->count);
 
     ufo_t* expected = shadow->array;
-    // TODO use entry! vector doesn't have entry yet
-    ufo_t* entry = array_ufo_begin(array);
-    for (; array_ufo_entry_exists(array, &entry); array_ufo_next(array, &entry)) {
-        ufo_t* ufo = entry;
+    array_ufo_ref_t ref = array_ufo_begin(array);
+    for (; array_ufo_ref_exists(array, ref); ref = array_ufo_next(array, ref)) {
+        ufo_t* ufo = array_ufo_ref_value(array, ref);
         pottery_test_assert(ufo_equal(ufo, expected++));
     }
 }
@@ -239,16 +236,16 @@ static void fuzz_emplace_at(array_ufo_t* array, fuzz_input_t* input, shadow_t* s
 
     // emplace into real array
     //printf("emplacing %s at %zu of %zu\n", ufo.string, pos, array_ufo_count(array));
-    array_ufo_entry_t entry;
-    if (POTTERY_OK != array_ufo_emplace_at(array, pos, &entry)) {
+    array_ufo_ref_t ref;
+    if (POTTERY_OK != array_ufo_emplace_at(array, pos, &ref)) {
         ufo_destroy(&ufo);
         return;
     }
-    ufo_move(entry, &ufo);
+    ufo_move(array_ufo_ref_value(array, ref), &ufo);
 
     // insert into shadow array
     ufo_move_bulk_up(shadow->array + pos + 1, shadow->array + pos, shadow->count - pos);
-    ufo_init_copy(shadow->array + pos, entry);
+    ufo_init_copy(shadow->array + pos, array_ufo_ref_value(array, ref));
     ++shadow->count;
 }
 

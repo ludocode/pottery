@@ -86,8 +86,6 @@
 
 #define pottery_vector_impl_alloc POTTERY_VECTOR_NAME(_impl_alloc)
 #define pottery_vector_impl_free POTTERY_VECTOR_NAME(_impl_free)
-#define pottery_vector_impl_create_space POTTERY_VECTOR_NAME(_impl_create_space)
-#define pottery_vector_impl_remove_space POTTERY_VECTOR_NAME(_impl_remove_space)
 #define pottery_vector_impl_clear POTTERY_VECTOR_NAME(_impl_clear)
 #define pottery_vector_impl_destroy_all POTTERY_VECTOR_NAME(_impl_destroy_all)
 #define pottery_vector_impl_copy POTTERY_VECTOR_NAME(_impl_copy)
@@ -102,9 +100,8 @@
 
     // types
     #define pottery_vector_t POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _t)
-    #define pottery_vector_element_t POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _element_t)
+    #define pottery_vector_value_t POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _value_t)
     #define pottery_vector_ref_t POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _ref_t)
-    #define pottery_vector_entry_t POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _entry_t)
 
     // lifecycle operations
     #define pottery_vector_copy POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _copy)
@@ -116,11 +113,10 @@
     #define pottery_vector_steal POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _steal)
     #define pottery_vector_swap POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _swap)
 
-    // entry operations
-    #define pottery_vector_entry_index POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _entry_index)
-    #define pottery_vector_entry_exists POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _entry_exists)
-    #define pottery_vector_entry_equal POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _entry_equal)
-    #define pottery_vector_entry_element POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _entry_element)
+    // ref operations
+    #define pottery_vector_ref_exists POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _ref_exists)
+    #define pottery_vector_ref_equal POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _ref_equal)
+    #define pottery_vector_ref_value POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _ref_value)
 
     // lookup
     #define pottery_vector_count POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _count)

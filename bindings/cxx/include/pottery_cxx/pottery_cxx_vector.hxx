@@ -188,31 +188,31 @@ public:
 
     iterator insert(const_iterator pos, const T& value) {
         size_t index = pottery_cast(size_t, pos - data());
-        iterator entry;
-        error_to_exception(wrapper::cvector_construct_at(&cvector, index, &entry, value));
-        return entry;
+        iterator ref;
+        error_to_exception(wrapper::cvector_construct_at(&cvector, index, &ref, value));
+        return ref;
     }
 
     iterator insert(const_iterator pos, T&& value) {
         size_t index = pottery_cast(size_t, pos - data());
-        iterator entry;
-        error_to_exception(wrapper::cvector_construct_at(&cvector, index, &entry, std::move(value)));
-        return entry;
+        iterator ref;
+        error_to_exception(wrapper::cvector_construct_at(&cvector, index, &ref, std::move(value)));
+        return ref;
     }
 
     template<typename... Args>
     iterator emplace(const_iterator pos, Args&&... args) {
         size_t index = pottery_cast(size_t, pos - data());
-        iterator entry;
-        error_to_exception(wrapper::cvector_construct_at(&cvector, index, &entry, std::forward<Args>(args)...));
-        return entry;
+        iterator ref;
+        error_to_exception(wrapper::cvector_construct_at(&cvector, index, &ref, std::forward<Args>(args)...));
+        return ref;
     }
 
     template<typename... Args>
     iterator emplace_back(Args&&... args) {
-        iterator entry;
-        error_to_exception(wrapper::cvector_construct_last(&cvector, &entry, std::forward<Args>(args)...));
-        return entry;
+        iterator ref;
+        error_to_exception(wrapper::cvector_construct_last(&cvector, &ref, std::forward<Args>(args)...));
+        return ref;
     }
 
     iterator erase(const_iterator pos) {
@@ -228,13 +228,13 @@ public:
     }
 
     void push_back(const T& value) {
-        iterator entry;
-        error_to_exception(wrapper::cvector_construct_last(&cvector, &entry, value));
+        iterator ref;
+        error_to_exception(wrapper::cvector_construct_last(&cvector, &ref, value));
     }
 
     void push_back(T&& value) {
-        iterator entry;
-        error_to_exception(wrapper::cvector_construct_last(&cvector, &entry, std::move(value)));
+        iterator ref;
+        error_to_exception(wrapper::cvector_construct_last(&cvector, &ref, std::move(value)));
     }
 
     void pop_back() {

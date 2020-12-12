@@ -26,27 +26,27 @@
 #error "This is an internal header. Do not include it."
 #endif
 
-// helper to allocate an array of elements
-static inline pottery_vector_element_t* pottery_vector_impl_alloc(
+// helper to allocate an array of values
+static inline pottery_vector_value_t* pottery_vector_impl_alloc(
         pottery_vector_t* vector, size_t* count)
 {
     (void)vector;
     void* ptr = pottery_vector_alloc_malloc_array_at_least(
             POTTERY_VECTOR_CONTEXT_VAL(vector)
-            pottery_alignof(pottery_vector_element_t),
-            count, sizeof(pottery_vector_element_t));
-    return pottery_cast(pottery_vector_element_t*, ptr);
+            pottery_alignof(pottery_vector_value_t),
+            count, sizeof(pottery_vector_value_t));
+    return pottery_cast(pottery_vector_value_t*, ptr);
 }
 
-// helper to free an array of elements
+// helper to free an array of values
 static inline void pottery_vector_impl_free(pottery_vector_t* vector,
-        pottery_vector_element_t* elements)
+        pottery_vector_value_t* values)
 {
     (void)vector;
     pottery_vector_alloc_free(
             POTTERY_VECTOR_CONTEXT_VAL(vector)
-            pottery_alignof(pottery_vector_element_t),
-            elements);
+            pottery_alignof(pottery_vector_value_t),
+            values);
 }
 
 // minimum capacity for an allocation. internal space can be smaller than this.
@@ -57,7 +57,7 @@ size_t pottery_vector_minimum_capacity(void) {
     #else
     // We define a reasonable default minimum size as the greater of 4 elements
     // or however many fit in 32 bytes.
-    return pottery_max_s(32 / sizeof(pottery_vector_element_t), 4);
+    return pottery_max_s(32 / sizeof(pottery_vector_value_t), 4);
     #endif
 }
 
@@ -77,8 +77,9 @@ pottery_error_t pottery_vector_reserve(pottery_vector_t* vector, size_t count) {
     size_t old_count = vector->count;
     if (count < old_count)
         return POTTERY_OK;
-    pottery_vector_element_t* elements;
-    pottery_error_t error = pottery_vector_impl_create_space(vector, old_count, count - old_count, &elements);
+    pottery_vector_value_t* values;
+    pottery_error_t error = pottery_vector_emplace_at_bulk(vector,
+            old_count, count - old_count, &values);
     if (error == POTTERY_OK)
         vector->count = old_count;
     return error;
@@ -111,7 +112,7 @@ void pottery_vector_impl_reset(pottery_vector_t* vector) {
     #endif
 }
 
-// Clears the vector after all its elements have been destroyed.
+// Clears the vector after all its values have been destroyed.
 static void pottery_vector_impl_clear(pottery_vector_t* vector) {
     #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
     if (vector->storage == vector->u.internal) {
@@ -120,9 +121,9 @@ static void pottery_vector_impl_clear(pottery_vector_t* vector) {
     }
     #endif
 
-    // We only free the vector if we're using more than double the minimum
+    // We only free the allocation if we're using more than double the minimum
     // space. This will prevent us from continually allocating and freeing if
-    // the vector is alternating between empty and a small number of elements.
+    // the vector is alternating between empty and a small number of values.
     // This is another parameter that should eventually be tunable.
 
     if (vector->u.capacity > 2 * pottery_vector_minimum_capacity()) {
@@ -158,7 +159,7 @@ void pottery_vector_remove_all(pottery_vector_t* vector) {
 POTTERY_VECTOR_EXTERN
 void pottery_vector_destroy(pottery_vector_t* vector) {
     // make sure the container is not already destroyed or otherwise invalid
-    pottery_assert(vector->storage != pottery_reinterpret_cast(pottery_vector_element_t*, -1));
+    pottery_assert(vector->storage != pottery_reinterpret_cast(pottery_vector_value_t*, -1));
 
     // Clean up the checks
     #if POTTERY_DEBUG
@@ -191,7 +192,7 @@ void pottery_vector_destroy(pottery_vector_t* vector) {
         // double-destroy. (If it was allocated, we expect you have some other
         // means of detecting double-free in debug builds so we leave it
         // as-is.)
-        vector->storage = pottery_reinterpret_cast(pottery_vector_element_t*, -1);
+        vector->storage = pottery_reinterpret_cast(pottery_vector_value_t*, -1);
         #endif
     }
 }
@@ -259,7 +260,7 @@ void pottery_vector_move(pottery_vector_t* to, pottery_vector_t* from) {
                 || from->storage == from->u.internal
                 #endif
                 )
-            from->storage = pottery_reinterpret_cast(pottery_vector_element_t*, -1);
+            from->storage = pottery_reinterpret_cast(pottery_vector_value_t*, -1);
         #endif
     }
 }
@@ -273,20 +274,17 @@ void pottery_vector_remove_at(pottery_vector_t* vector, size_t index) {
 }
 #endif
 
-/*
- * Creates uninitialized, unconstructed space for count elements at index.
- */
 POTTERY_VECTOR_EXTERN
-pottery_error_t pottery_vector_impl_create_space(pottery_vector_t* vector,
-        size_t index, size_t count, pottery_vector_element_t** elements)
+pottery_error_t pottery_vector_emplace_at_bulk(pottery_vector_t* vector,
+        size_t index, size_t count, pottery_vector_ref_t* out)
 {
     // Make sure the arguments are valid.
     if (count == 0) {
-        *elements = pottery_reinterpret_cast(pottery_vector_element_t*, -1);
-        return POTTERY_OK; // no elements
+        *out = pottery_reinterpret_cast(pottery_vector_value_t*, -1);
+        return POTTERY_OK;
     }
     if (vector->count + count < vector->count) {
-        *elements = pottery_reinterpret_cast(pottery_vector_element_t*, -1);
+        *out = pottery_reinterpret_cast(pottery_vector_value_t*, -1);
         return POTTERY_ERROR_OVERFLOW;
     }
 
@@ -318,13 +316,13 @@ printf("old_count %zi capacity %zi begin %zi\n",old_count,
             index < vector->count / 2 &&
             (!can_move_up || index < vector->count - index))
     {
-        pottery_vector_element_t* new_begin = vector->begin - count;
+        pottery_vector_value_t* new_begin = vector->begin - count;
         //printf("moving %zi elements down\n", index);
         pottery_vector_lifecycle_move_bulk_down(POTTERY_VECTOR_CONTEXT_VAL(vector)
                 new_begin, vector->begin, index);
         vector->begin = new_begin;
         vector->count += count;
-        *elements = vector->begin + index;
+        *out = vector->begin + index;
         return POTTERY_OK;
     }
     #endif
@@ -337,14 +335,14 @@ printf("old_count %zi capacity %zi begin %zi\n",old_count,
                 pottery_vector_begin(vector) + index,
                 vector->count - index);
         vector->count += count;
-        *elements = pottery_vector_begin(vector) + index;
+        *out = pottery_vector_begin(vector) + index;
         return POTTERY_OK;
     }
 
     #if POTTERY_VECTOR_DOUBLE_ENDED
     // Recenter. We only recenter if the vector is at most half full.
     if (new_count <= old_capacity && old_count < old_capacity / 2) {
-        pottery_vector_element_t* new_begin = vector->storage + (old_capacity - new_count) / 2;
+        pottery_vector_value_t* new_begin = vector->storage + (old_capacity - new_count) / 2;
 
         if (new_begin == vector->begin) {
             // Only move after elements up
@@ -368,7 +366,7 @@ printf("old_count %zi capacity %zi begin %zi\n",old_count,
 
         vector->begin = new_begin;
         vector->count += count;
-        *elements = vector->begin + index;
+        *out = vector->begin + index;
         return POTTERY_OK;
     }
     #endif
@@ -388,17 +386,17 @@ printf("old_count %zi capacity %zi begin %zi\n",old_count,
         new_capacity = pottery_vector_minimum_capacity();
 
     size_t alloc_size;
-    if (pottery_mul_overflow_s(sizeof(pottery_vector_element_t), new_capacity, &alloc_size))
+    if (pottery_mul_overflow_s(sizeof(pottery_vector_value_t), new_capacity, &alloc_size))
         return POTTERY_ERROR_OVERFLOW;
 
     // TODO if moves by value and not double-ended, use realloc_at_least
 
-    pottery_vector_element_t* new_storage = pottery_vector_impl_alloc(vector, &new_capacity);
+    pottery_vector_value_t* new_storage = pottery_vector_impl_alloc(vector, &new_capacity);
     if (new_storage == pottery_null)
         return POTTERY_ERROR_ALLOC;
 
     // Center in the new storage if double-ended
-    pottery_vector_element_t* new_begin = new_storage;
+    pottery_vector_value_t* new_begin = new_storage;
     #if POTTERY_VECTOR_DOUBLE_ENDED
     new_begin += (new_capacity - new_count) / 2;
     #endif
@@ -427,22 +425,22 @@ printf("old_count %zi capacity %zi begin %zi\n",old_count,
     #endif
     vector->u.capacity = new_capacity;
     vector->count = new_count;
-    *elements = pottery_bless(pottery_vector_element_t, new_begin + index);
+    *out = pottery_bless(pottery_vector_value_t, new_begin + index);
     return POTTERY_OK;
 }
 
 #if POTTERY_LIFECYCLE_CAN_PASS
 POTTERY_VECTOR_EXTERN
-pottery_error_t pottery_vector_insert_at_bulk(pottery_vector_t* vector, size_t index, const pottery_vector_element_t* values, size_t count) {
+pottery_error_t pottery_vector_insert_at_bulk(pottery_vector_t* vector, size_t index, const pottery_vector_value_t* values, size_t count) {
     if (count == 0)
         return POTTERY_OK;
 
-    pottery_vector_element_t* inserted;
-    pottery_error_t error = pottery_vector_impl_create_space(vector, index, count, &inserted);
+    pottery_vector_value_t* inserted;
+    pottery_error_t error = pottery_vector_emplace_at_bulk(vector, index, count, &inserted);
     if (error != POTTERY_OK)
         return error;
 
-    pottery_vector_element_t* end = inserted + count;
+    pottery_vector_value_t* end = inserted + count;
     while (inserted != end) {
         // Use move construction (rather than the lifecycle move() operation)
         // to move values out of the array. We need to leave them constructed
@@ -456,7 +454,7 @@ pottery_error_t pottery_vector_insert_at_bulk(pottery_vector_t* vector, size_t i
 #endif
 
 POTTERY_VECTOR_EXTERN
-void pottery_vector_impl_remove_space(pottery_vector_t* vector, size_t index, size_t count) {
+void pottery_vector_displace_at_bulk(pottery_vector_t* vector, size_t index, size_t count) {
     if (count == 0)
         return;
     pottery_assert(index + count > index); // overflow check
@@ -493,7 +491,7 @@ void pottery_vector_impl_remove_space(pottery_vector_t* vector, size_t index, si
     const size_t threshold_elements = 8;
     size_t old_bytes = 0;
     if (should_shrink && new_count != 0 && !pottery_mul_overflow_s(old_capacity,
-                sizeof(pottery_vector_element_t), &old_bytes))
+                sizeof(pottery_vector_value_t), &old_bytes))
         should_shrink &= old_bytes > threshold_bytes && new_count > threshold_elements;
 
     // Don't shrink if new capacity wouldn't change
@@ -516,8 +514,8 @@ void pottery_vector_impl_remove_space(pottery_vector_t* vector, size_t index, si
             return;
         }
 
-        pottery_vector_element_t* new_storage;
-        pottery_vector_element_t* new_begin;
+        pottery_vector_value_t* new_storage;
+        pottery_vector_value_t* new_begin;
 
         // TODO if moves by value and not double-ended, use realloc_at_least
 
@@ -599,7 +597,7 @@ void pottery_vector_impl_remove_space(pottery_vector_t* vector, size_t index, si
     // move elements up in-place
     #if POTTERY_VECTOR_DOUBLE_ENDED
     if (index < new_count / 2) {
-        pottery_vector_element_t* new_begin = vector->begin + count;
+        pottery_vector_value_t* new_begin = vector->begin + count;
         pottery_vector_lifecycle_move_bulk_up(POTTERY_VECTOR_CONTEXT_VAL(vector)
                 new_begin, vector->begin, index);
         vector->begin = new_begin;
@@ -640,7 +638,7 @@ pottery_error_t pottery_vector_shrink(pottery_vector_t* vector) {
 
     size_t old_capacity = pottery_vector_capacity(vector);
     size_t new_capacity = count;
-    pottery_vector_element_t* new_storage;
+    pottery_vector_value_t* new_storage;
 
     #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
     if (new_capacity <= POTTERY_VECTOR_INTERNAL_CAPACITY) {
@@ -677,7 +675,7 @@ pottery_error_t pottery_vector_shrink(pottery_vector_t* vector) {
         vector->u.capacity = new_capacity;
     }
 
-    pottery_vector_element_t* new_begin = new_storage;
+    pottery_vector_value_t* new_begin = new_storage;
     #if POTTERY_VECTOR_DOUBLE_ENDED
     // Center our data in the new storage
     new_begin += (new_capacity - count) / 2;
@@ -701,7 +699,7 @@ void pottery_vector_remove_at_bulk(pottery_vector_t* vector, size_t index, size_
         pottery_vector_lifecycle_destroy(POTTERY_VECTOR_CONTEXT_VAL(vector)
                 pottery_vector_at(vector, i));
     }
-    pottery_vector_impl_remove_space(vector, index, count);
+    pottery_vector_displace_at_bulk(vector, index, count);
 }
 #endif
 
@@ -732,15 +730,15 @@ pottery_error_t pottery_vector_impl_copy(pottery_vector_t* vector, const pottery
     pottery_assert(pottery_vector_is_empty(vector));
     size_t count = pottery_vector_count(other);
 
-    pottery_vector_element_t* src = pottery_vector_begin(other);
-    pottery_vector_element_t* dest;
-    pottery_error_t error = pottery_vector_impl_create_space(vector, 0, count, &dest);
+    pottery_vector_value_t* src = pottery_vector_begin(other);
+    pottery_vector_value_t* dest;
+    pottery_error_t error = pottery_vector_emplace_at_bulk(vector, 0, count, &dest);
     if (error != POTTERY_OK)
         return error;
 
     size_t i;
     for (i = 0; i < count; ++i) {
-        pottery_vector_element_t* element = dest + i;
+        pottery_vector_value_t* element = dest + i;
         error = pottery_vector_lifecycle_init_copy(POTTERY_VECTOR_CONTEXT_VAL(vector) element, src++);
         if (error != POTTERY_OK) {
             pottery_vector_lifecycle_destroy_bulk(POTTERY_VECTOR_CONTEXT_VAL(vector) dest, i);

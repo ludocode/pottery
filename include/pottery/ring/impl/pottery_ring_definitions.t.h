@@ -28,10 +28,10 @@
 
 #if POTTERY_LIFECYCLE_CAN_DESTROY
 static void pottery_ring_impl_destroy_all(pottery_ring_t* ring) {
-    pottery_ring_entry_t entry = pottery_ring_begin(ring);
-    while (pottery_ring_ref_exists(ring, entry)) {
-        pottery_ring_lifecycle_destroy(entry);
-        entry = pottery_ring_next(ring, entry);
+    pottery_ring_ref_t ref = pottery_ring_begin(ring);
+    while (pottery_ring_ref_exists(ring, ref)) {
+        pottery_ring_lifecycle_destroy(ref);
+        ref = pottery_ring_next(ring, ref);
     }
 }
 #endif
@@ -180,7 +180,7 @@ static pottery_error_t pottery_ring_grow(pottery_ring_t* ring, size_t minimum_ca
 }
 
 POTTERY_RING_EXTERN
-pottery_error_t pottery_ring_emplace_last(pottery_ring_t* ring, pottery_ring_entry_t* entry) {
+pottery_error_t pottery_ring_emplace_last(pottery_ring_t* ring, pottery_ring_ref_t* ref) {
     pottery_ring_sanity_check(ring);
     //fprintf(stderr, "insert last\n");
 
@@ -192,13 +192,13 @@ pottery_error_t pottery_ring_emplace_last(pottery_ring_t* ring, pottery_ring_ent
     }
 
     ring->count = new_count;
-    *entry = pottery_ring_at(ring, new_count - 1);
+    *ref = pottery_ring_at(ring, new_count - 1);
     pottery_ring_sanity_check(ring);
     return POTTERY_OK;
 }
 
 POTTERY_RING_EXTERN
-pottery_error_t pottery_ring_emplace_first(pottery_ring_t* ring, pottery_ring_entry_t* entry) {
+pottery_error_t pottery_ring_emplace_first(pottery_ring_t* ring, pottery_ring_ref_t* ref) {
     pottery_ring_sanity_check(ring);
     //fprintf(stderr, "insert first\n");
 
@@ -211,7 +211,7 @@ pottery_error_t pottery_ring_emplace_first(pottery_ring_t* ring, pottery_ring_en
 
     ring->count = new_count;
     ring->start = (ring->start + ring->capacity - 1) % ring->capacity;
-    *entry = pottery_ring_at(ring, 0);
+    *ref = pottery_ring_at(ring, 0);
     pottery_ring_sanity_check(ring);
     return POTTERY_OK;
 }

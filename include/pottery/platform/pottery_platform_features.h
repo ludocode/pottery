@@ -44,7 +44,7 @@
  *
  * - You may have attempted an out-of-bounds array access;
  *
- * - You may have attemped to dereference a non-existent entry/ref;
+ * - You may have attemped to dereference a non-existent ref;
  *
  * - You may have corrupted a map element by changing its key;
  *

@@ -118,8 +118,6 @@
 #undef pottery_vector_impl_alloc
 #undef pottery_vector_impl_alloc
 #undef pottery_vector_impl_free
-#undef pottery_vector_impl_create_space
-#undef pottery_vector_impl_remove_space
 #undef pottery_vector_impl_clear
 #undef pottery_vector_impl_destroy_all
 #undef pottery_vector_impl_copy
@@ -134,9 +132,8 @@
 
     // types
     #undef pottery_vector_t
-    #undef pottery_vector_element_t
+    #undef pottery_vector_value_t
     #undef pottery_vector_ref_t
-    #undef pottery_vector_entry_t
 
     // fundamental operations
     #undef pottery_vector_copy
@@ -148,11 +145,10 @@
     #undef pottery_vector_steal
     #undef pottery_vector_swap
 
-    // entry operations
-    #undef pottery_vector_entry_index
-    #undef pottery_vector_entry_exists
-    #undef pottery_vector_entry_equal
-    #undef pottery_vector_entry_element
+    // ref operations
+    #undef pottery_vector_ref_exists
+    #undef pottery_vector_ref_equal
+    #undef pottery_vector_ref_value
 
     // lookup
     #undef pottery_vector_count

@@ -52,12 +52,12 @@ POTTERY_TEST_ARRAY_UFO(remove) {
     ufo_array_t array;
     ufo_array_init(&array);
 
-    ufo_array_entry_t entry;
+    ufo_array_ref_t ref;
 
-    pottery_test_assert(ufo_array_emplace_last(&array, &entry) == POTTERY_OK);
-    ufo_init(ufo_array_entry_element(&array, &entry), "hello", 1);
-    pottery_test_assert(ufo_array_emplace_last(&array, &entry) == POTTERY_OK);
-    ufo_init(ufo_array_entry_element(&array, &entry), "world", 2);
+    pottery_test_assert(ufo_array_emplace_last(&array, &ref) == POTTERY_OK);
+    ufo_init(ufo_array_ref_value(&array, ref), "hello", 1);
+    pottery_test_assert(ufo_array_emplace_last(&array, &ref) == POTTERY_OK);
+    ufo_init(ufo_array_ref_value(&array, ref), "world", 2);
     check_ufo_array(&array);
 
     pottery_test_assert(0 == strcmp(ufo_array_first(&array)->string, "hello"));
@@ -90,9 +90,9 @@ POTTERY_TEST_ARRAY_UFO(grow_and_shrink) {
         char buf[16];
         snprintf(buf, sizeof(buf), "%i", i);
 
-        ufo_array_entry_t entry;
-        pottery_test_assert(ufo_array_emplace_last(&array, &entry) == POTTERY_OK);
-        ufo_init(ufo_array_entry_element(&array, &entry), buf, i);
+        ufo_array_ref_t ref;
+        pottery_test_assert(ufo_array_emplace_last(&array, &ref) == POTTERY_OK);
+        ufo_init(ufo_array_ref_value(&array, ref), buf, i);
         check_ufo_array(&array);
 
         // Track capacity changes

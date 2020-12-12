@@ -27,9 +27,8 @@
 
 // types
 #define {SRC}_t POTTERY_CONCAT({DEST}, _t)
-#define {SRC}_element_t POTTERY_CONCAT({DEST}, _element_t)
+#define {SRC}_value_t POTTERY_CONCAT({DEST}, _value_t)
 #define {SRC}_ref_t POTTERY_CONCAT({DEST}, _ref_t)
-#define {SRC}_entry_t POTTERY_CONCAT({DEST}, _entry_t)
 
 // lifecycle operations
 #define {SRC}_copy POTTERY_CONCAT({DEST}, _copy)
@@ -41,11 +40,10 @@
 #define {SRC}_steal POTTERY_CONCAT({DEST}, _steal)
 #define {SRC}_swap POTTERY_CONCAT({DEST}, _swap)
 
-// entry operations
-#define {SRC}_entry_index POTTERY_CONCAT({DEST}, _entry_index)
-#define {SRC}_entry_exists POTTERY_CONCAT({DEST}, _entry_exists)
-#define {SRC}_entry_equal POTTERY_CONCAT({DEST}, _entry_equal)
-#define {SRC}_entry_element POTTERY_CONCAT({DEST}, _entry_element)
+// ref operations
+#define {SRC}_ref_exists POTTERY_CONCAT({DEST}, _ref_exists)
+#define {SRC}_ref_equal POTTERY_CONCAT({DEST}, _ref_equal)
+#define {SRC}_ref_value POTTERY_CONCAT({DEST}, _ref_value)
 
 // lookup
 #define {SRC}_count POTTERY_CONCAT({DEST}, _count)
