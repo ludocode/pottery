@@ -71,6 +71,20 @@ void pottery_ring_remove_all(pottery_ring_t* ring) {
     pottery_ring_impl_destroy_all(ring);
     pottery_ring_displace_all(ring);
 }
+
+POTTERY_RING_EXTERN
+void pottery_ring_remove_first_bulk(pottery_ring_t* ring, size_t count) {
+    // TODO performance
+    for (size_t i = 0; i < count; ++i)
+        pottery_ring_remove_first(ring);
+}
+
+POTTERY_RING_EXTERN
+void pottery_ring_remove_last_bulk(pottery_ring_t* ring, size_t count) {
+    // TODO performance
+    for (size_t i = 0; i < count; ++i)
+        pottery_ring_remove_last(ring);
+}
 #endif
 
 POTTERY_RING_EXTERN
@@ -94,6 +108,20 @@ void pottery_ring_displace_last(pottery_ring_t* ring) {
     --ring->count;
 
     // TODO shrink
+}
+
+POTTERY_RING_EXTERN
+void pottery_ring_displace_first_bulk(pottery_ring_t* ring, size_t count) {
+    // TODO performance
+    for (size_t i = 0; i < count; ++i)
+        pottery_ring_displace_first(ring);
+}
+
+POTTERY_RING_EXTERN
+void pottery_ring_displace_last_bulk(pottery_ring_t* ring, size_t count) {
+    // TODO performance
+    for (size_t i = 0; i < count; ++i)
+        pottery_ring_displace_last(ring);
 }
 
 static pottery_error_t pottery_ring_grow(pottery_ring_t* ring, size_t minimum_capacity) {

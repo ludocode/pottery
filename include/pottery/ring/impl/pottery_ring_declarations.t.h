@@ -65,10 +65,12 @@ static inline void pottery_ring_sanity_check(pottery_ring_t* ring) {
     pottery_assert((ring->capacity == 0) == (ring->values == NULL));
 }
 
+#if POTTERY_FORWARD_DECLARATIONS
 POTTERY_RING_EXTERN
 void pottery_ring_init(pottery_ring_t* ring);
 POTTERY_RING_EXTERN
 void pottery_ring_destroy(pottery_ring_t* ring);
+#endif
 
 static inline
 size_t pottery_ring_count(pottery_ring_t* ring) {
@@ -80,6 +82,7 @@ bool pottery_ring_is_empty(pottery_ring_t* ring) {
     return ring->count == 0;
 }
 
+#if POTTERY_FORWARD_DECLARATIONS
 POTTERY_RING_EXTERN
 void pottery_ring_displace_all(pottery_ring_t* ring);
 
@@ -92,6 +95,7 @@ POTTERY_RING_EXTERN
 pottery_error_t pottery_ring_emplace_first(pottery_ring_t* ring, pottery_ring_entry_t* entry);
 POTTERY_RING_EXTERN
 pottery_error_t pottery_ring_emplace_last(pottery_ring_t* ring, pottery_ring_entry_t* entry);
+#endif
 
 #if POTTERY_LIFECYCLE_CAN_PASS
 
@@ -199,10 +203,17 @@ pottery_ring_value_t* pottery_ring_previous(pottery_ring_t* ring, pottery_ring_v
     return ref;
 }
 
+#if POTTERY_FORWARD_DECLARATIONS
 POTTERY_RING_EXTERN
 void pottery_ring_displace_first(pottery_ring_t* ring);
 POTTERY_RING_EXTERN
 void pottery_ring_displace_last(pottery_ring_t* ring);
+
+POTTERY_RING_EXTERN
+void pottery_ring_displace_first_bulk(pottery_ring_t* ring, size_t count);
+POTTERY_RING_EXTERN
+void pottery_ring_displace_last_bulk(pottery_ring_t* ring, size_t count);
+#endif
 
 #if POTTERY_LIFECYCLE_CAN_DESTROY
 static inline
@@ -216,6 +227,14 @@ void pottery_ring_remove_last(pottery_ring_t* ring) {
     pottery_ring_lifecycle_destroy(pottery_ring_last(ring));
     pottery_ring_displace_last(ring);
 }
+
+#if POTTERY_FORWARD_DECLARATIONS
+POTTERY_RING_EXTERN
+void pottery_ring_remove_first_bulk(pottery_ring_t* ring, size_t count);
+
+POTTERY_RING_EXTERN
+void pottery_ring_remove_last_bulk(pottery_ring_t* ring, size_t count);
+#endif
 #endif
 
 #if POTTERY_LIFECYCLE_CAN_PASS
@@ -243,6 +262,7 @@ pottery_ring_value_t pottery_ring_extract_last(pottery_ring_t* ring) {
     return element;
 }
 
+#if POTTERY_FORWARD_DECLARATIONS
 POTTERY_RING_EXTERN
 void pottery_ring_insert_last_bulk(pottery_ring_t* ring, const pottery_ring_value_t* values, size_t count);
 
@@ -272,4 +292,5 @@ void pottery_ring_extract_first_bulk(pottery_ring_t* ring, pottery_ring_value_t*
  */
 POTTERY_RING_EXTERN
 void pottery_ring_extract_last_bulk(pottery_ring_t* ring, pottery_ring_value_t* values, size_t count);
+#endif
 #endif

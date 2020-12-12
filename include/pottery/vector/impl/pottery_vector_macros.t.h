@@ -177,7 +177,9 @@
     #define pottery_vector_extract POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _extract)
     #define pottery_vector_extract_at POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _extract_at)
     #define pottery_vector_extract_first POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _extract_first)
+    #define pottery_vector_extract_first_bulk POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _extract_first_bulk)
     #define pottery_vector_extract_last POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _extract_last)
+    #define pottery_vector_extract_last_bulk POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _extract_last_bulk)
     #define pottery_vector_extract_and_next POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _extract_and_next)
     #define pottery_vector_extract_and_previous POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _extract_and_previous)
 

@@ -361,6 +361,23 @@
 #endif
 
 /*
+ * Similar to pottery_bless(), here's a wrapper for std::launder(), which we
+ * try to use whenever we re-use a pointer after running a C++ constructor.
+ *
+ * There are some arcane reachability rules with std::launder() that trigger
+ * undefined behaviour. I don't really understand them. It's highly likely that
+ * I'm using this wrong or not using it enough so please help me fix it.
+ */
+#ifdef __cplusplus
+    #if __cplusplus >= 201703L
+        #define pottery_launder(p) (std::launder(p))
+    #endif
+#endif
+#ifndef pottery_launder
+    #define pottery_launder(p) (p)
+#endif
+
+/*
  * Wrap an expression in std::move() if C++
  */
 #ifdef __cplusplus
@@ -376,23 +393,6 @@
     #define pottery_move_construct(T, x, y) (new (&(x)) T(std::move(y)))
 #else
     #define pottery_move_construct(T, x, y) ((x) = (y))
-#endif
-
-/*
- * Similarly, here's std::launder(), which we try to use whenever we re-use a
- * pointer after running a C++ constructor.
- *
- * There are some arcane reachability rules with std::launder() that trigger
- * undefined behaviour. I don't really understand them. It's highly likely that
- * I'm using this wrong so please help me fix it.
- */
-#ifdef __cplusplus
-    #if __cplusplus >= 201703L
-        #define pottery_launder(p) (std::launder(p))
-    #endif
-#endif
-#ifndef pottery_launder
-    #define pottery_launder(p) (p)
 #endif
 
 

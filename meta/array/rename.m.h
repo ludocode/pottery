@@ -102,7 +102,9 @@
 #define {SRC}_extract POTTERY_CONCAT({DEST}, _extract)
 #define {SRC}_extract_at POTTERY_CONCAT({DEST}, _extract_at)
 #define {SRC}_extract_first POTTERY_CONCAT({DEST}, _extract_first)
+#define {SRC}_extract_first_bulk POTTERY_CONCAT({DEST}, _extract_first_bulk)
 #define {SRC}_extract_last POTTERY_CONCAT({DEST}, _extract_last)
+#define {SRC}_extract_last_bulk POTTERY_CONCAT({DEST}, _extract_last_bulk)
 #define {SRC}_extract_and_next POTTERY_CONCAT({DEST}, _extract_and_next)
 #define {SRC}_extract_and_previous POTTERY_CONCAT({DEST}, _extract_and_previous)
 
