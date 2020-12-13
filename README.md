@@ -2,6 +2,7 @@
 
 A header-only container and algorithm template library in C.
 
+[![Unit Tests](https://github.com/ludocode/pottery/workflows/Unit%20Tests/badge.svg)](https://github.com/ludocode/pottery/actions?query=workflow%3A%22Unit+Tests%22)
 
 
 ## Introduction

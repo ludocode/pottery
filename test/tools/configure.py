@@ -83,7 +83,7 @@ elif cc.endswith("8cc"):
 else:
     # try --version
     ret = subprocess.run([cc, "--version"], universal_newlines=True,
-            capture_output=True)
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if ret.returncode == 0:
         if ret.stdout.startswith("cparser "):
             compiler = "cparser"
@@ -93,7 +93,7 @@ else:
     if compiler == "unknown":
         # try -v
         ret = subprocess.run([cc, "-v"], universal_newlines=True,
-                capture_output=True)
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if ret.returncode == 0:
             for line in (ret.stdout + "\n" + ret.stderr).splitlines():
                 if line.startswith("tcc "):
@@ -185,7 +185,7 @@ def checkFlags(flags):
         cmd = [cc, "-Wall", "-Wextra", "-Wpedantic", "-Werror"] + flags + [flagtest_src, "-o", flagtest_exe]
     #print(" ".join(cmd))
     ret = subprocess.run(cmd, universal_newlines=True,
-            capture_output=True)
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     if ret.returncode == 0:
         print("Supported.")
