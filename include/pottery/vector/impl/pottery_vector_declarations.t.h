@@ -275,11 +275,14 @@ template<class... Args> static inline
 pottery_error_t pottery_vector_construct_at(pottery_vector_t* vector,
         size_t index, pottery_vector_ref_t* ref, Args&&... args)
 {
-    pottery_error_t error = pottery_vector_emplace_at_bulk(vector, index, 1, ref);
+    // Use a temporary to avoid confusing clang analyzer
+    pottery_vector_ref_t temp;
+    pottery_error_t error = pottery_vector_emplace_at(vector, index, &temp);
+    *ref = temp;
     if (error != POTTERY_OK)
         return error;
 
-    error = pottery::construct(*ref, std::forward<Args>(args)...);
+    error = pottery::construct(temp, std::forward<Args>(args)...);
     if (error != POTTERY_OK)
         pottery_vector_displace_at_bulk(vector, index, 1);
     return error;

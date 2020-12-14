@@ -278,15 +278,16 @@ POTTERY_VECTOR_EXTERN
 pottery_error_t pottery_vector_emplace_at_bulk(pottery_vector_t* vector,
         size_t index, size_t count, pottery_vector_ref_t* out)
 {
+    // In case of error (or the count is zero), assign a garbage value to out.
+    // This shouldn't be necessary since the value shouldn't be used, but
+    // static analysis gets confused without this.
+    *out = pottery_reinterpret_cast(pottery_vector_value_t*, -1);
+
     // Make sure the arguments are valid.
-    if (count == 0) {
-        *out = pottery_reinterpret_cast(pottery_vector_value_t*, -1);
+    if (count == 0)
         return POTTERY_OK;
-    }
-    if (vector->count + count < vector->count) {
-        *out = pottery_reinterpret_cast(pottery_vector_value_t*, -1);
+    if (vector->count + count < vector->count)
         return POTTERY_ERROR_OVERFLOW;
-    }
 
     size_t old_count = vector->count;
     pottery_assert(index <= old_count);

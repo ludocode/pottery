@@ -77,10 +77,11 @@ typedef enum command_t {
 } command_t;
 
 static void fuzz_shuffle(fuzz_input_t* input, source_t* source) {
-    size_t count = fuzz_load_u16(input) % source->count;
-    if (count <= 1)
+    if (source->count < 2)
         return;
-    size_t start = fuzz_load_u16(input) % (source->count - count);
+    size_t count = fuzz_load_u16(input) % (source->count - 1) + 2;
+    size_t start = fuzz_load_u16(input) % (source->count - count + 1);
+
     srand(fuzz_load_u16(input));
 
     size_t i;
@@ -91,10 +92,10 @@ static void fuzz_shuffle(fuzz_input_t* input, source_t* source) {
 }
 
 static void fuzz_reverse(fuzz_input_t* input, source_t* source) {
-    size_t count = fuzz_load_u16(input) % source->count;
-    if (count <= 1)
+    if (source->count < 2)
         return;
-    size_t start = fuzz_load_u16(input) % (source->count - count);
+    size_t count = fuzz_load_u16(input) % (source->count - 1) + 2;
+    size_t start = fuzz_load_u16(input) % (source->count - count + 1);
 
     size_t i;
     for (i = 0; i < count / 2; ++i) {

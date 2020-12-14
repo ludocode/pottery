@@ -508,9 +508,17 @@ for root, dirs, files in itertools.chain(os.walk("test/src"), os.walk("examples"
     if "clayfish" in root:
         continue
     for name in files:
+
         # skip any benchmark files
         if "benchmark" in name:
             continue
+
+        # skip examples if we're running clang analyzer (the examples
+        # intentionally don't check for Pottery errors resulting from malloc()
+        # failure among other things, so clang analyzer flags bugs)
+        if root.startswith("examples") and os.getenv("POTTERY_SCAN_BUILD") == "true":
+            continue
+
         if name.endswith(".c") or name.endswith(".cxx"):
             srcs.append(os.path.join(root, name))
 
