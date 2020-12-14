@@ -4,11 +4,11 @@ This shows how you can use Pottery to implement a simple mutable byte string in 
 
 Even though this string is just an example to demonstrate Pottery, it is far superior to other C string libraries. Compare it to some other strings:
 
-- [GString](https://developer.gnome.org/glib/stable/glib-Strings.html)
-- [bstring](http://mike.steinert.ca/bstring/)
-- [sds](https://github.com/antirez/sds)
-- [vstr](http://www.and.org/vstr/tutorial)
-- [maxim2266/str](https://github.com/maxim2266/str)
+- [GString](https://developer.gnome.org/glib/stable/glib-Strings.html) (from GLib)
+- [bstring](http://mike.steinert.ca/bstring/) (the Better String Library)
+- [sds](https://github.com/antirez/sds) (Simple Dynamic Strings from Redis)
+- [vstr](http://www.and.org/vstr/tutorial) (a string designed for IO)
+- [maxim2266/str](https://github.com/maxim2266/str) (yet another string library)
 
 I believe you will find this API much more sane and less error-prone (although it can be a bit more verbose.) Despite this, it probably performs better than all of these anyway since it's much more like typical implementations of `std::string`: the container itself is not allocated and it contains internal storage to avoid allocations for small strings.
 

@@ -6,4 +6,4 @@ In our case we will sort a [deque](../../../include/pottery/deque/), which is a 
 
 We also demonstrate the inherent base and inherent count support in the array_access template. Since a deque has a built-in array, we pass its base and count to the sort algorithm as `ARRAY_ACCESS_BEGIN` and `ARRAY_ACCESS_COUNT`. This means we don't have to pass these to the sort algorithm, so `sort_deque()` takes only the deque itself as its argument!
 
-Note that we sort the trivial type `int`. You can instead put a non-bitwise-movable type in the deque and sort over it instead. You would just need to supply a `LIFECYCLE_MOVE` configuration to both the deque and sort algorithm. As an exercise you could extend this example to sort a deque of Pottery's example [string](../string/).
+Note that we sort the trivial type `int`. You can instead put a non-bitwise-movable type in the deque and sort over it instead. You would just need to supply a `LIFECYCLE_MOVE` expression to both the deque and sort algorithm. As an exercise you could extend this example to sort a deque of Pottery's example [string](../string/).
