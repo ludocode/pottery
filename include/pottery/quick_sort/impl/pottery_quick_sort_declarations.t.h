@@ -64,8 +64,8 @@ void pottery_quick_sort(
         #endif
 ) {
     #if POTTERY_ARRAY_ACCESS_INHERENT_COUNT
-    size_t total_count = pottery_array_access_count(
-            POTTERY_QUICK_SORT_SOLE_VALS)
+    size_t total_count = pottery_quick_sort_array_access_count(
+            POTTERY_QUICK_SORT_SOLE_VALS);
     #endif
 
     pottery_quick_sort_range(POTTERY_QUICK_SORT_VALS

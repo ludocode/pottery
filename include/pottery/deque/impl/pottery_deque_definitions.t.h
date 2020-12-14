@@ -340,6 +340,24 @@ pottery_deque_ref_t pottery_deque_select(pottery_deque_t* deque, size_t index) {
 }
 
 POTTERY_DEQUE_EXTERN
+size_t pottery_deque_index(pottery_deque_t* deque, pottery_deque_ref_t ref) {
+    // Check for empty
+    if (ref.page == pottery_null)
+        return 0;
+
+    size_t page_index = pottery_deque_page_ring_index(&deque->pages, ref.page);
+    size_t page_offset = pottery_cast(size_t, ref.value - *ref.page);
+
+    // Check if the element is on the first page
+    if (page_index == 0)
+        return page_offset - deque->first_page_start;
+
+    // Other pages
+    size_t per_page = pottery_deque_per_page();
+    return (per_page - deque->first_page_start) + per_page * (page_index - 1) + page_offset;
+}
+
+POTTERY_DEQUE_EXTERN
 pottery_error_t pottery_deque_emplace_first_bulk(pottery_deque_t* deque, pottery_deque_ref_t* ref, size_t count) {
     pottery_deque_sanity_check(deque);
     size_t per_page = pottery_deque_per_page();

@@ -57,7 +57,7 @@ void pottery_quick_sort_prepare_pivot(
     if (end_index - start_index + 1 <= 128) {
         pottery_quick_sort_ref_t median = pottery_quick_sort_compare_median(
                 POTTERY_QUICK_SORT_CONTEXT_VAL start, middle, end);
-        if (median != start)
+        if (!pottery_quick_sort_array_access_equal(POTTERY_QUICK_SORT_VALS median, start))
             pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL start, median);
         return;
     }
@@ -75,7 +75,7 @@ void pottery_quick_sort_prepare_pivot(
             pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL left_end, middle, right_start),
             pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL right_start, right_middle, end));
 
-    if (median != start)
+    if (!pottery_quick_sort_array_access_equal(POTTERY_QUICK_SORT_VALS median, start))
         pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL start, median);
 }
 

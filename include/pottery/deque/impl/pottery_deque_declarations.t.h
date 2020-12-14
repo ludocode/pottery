@@ -158,12 +158,15 @@ pottery_error_t pottery_deque_insert_first(pottery_deque_t* deque, pottery_deque
 POTTERY_DEQUE_EXTERN
 pottery_deque_ref_t pottery_deque_select(pottery_deque_t* deque, size_t index);
 
+POTTERY_DEQUE_EXTERN
+size_t pottery_deque_index(pottery_deque_t* deque, pottery_deque_ref_t ref);
+#endif
+
 static inline
 pottery_deque_ref_t pottery_deque_at(pottery_deque_t* deque, size_t index) {
     pottery_assert(index < pottery_deque_count(deque));
     return pottery_deque_select(deque, index);
 }
-#endif
 
 static inline
 pottery_deque_ref_t pottery_deque_first(pottery_deque_t* deque) {
