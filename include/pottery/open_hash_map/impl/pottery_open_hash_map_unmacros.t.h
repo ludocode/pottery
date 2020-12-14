@@ -155,6 +155,8 @@
 #undef pottery_ohm_ref_set_empty
 #undef pottery_ohm_ref_is_value
 
+#undef pottery_ohm_bucket_count
+#undef pottery_ohm_impl_values
 #undef pottery_ohm_impl_alloc
 #undef pottery_ohm_impl_free
 #undef pottery_ohm_impl_free_allocs

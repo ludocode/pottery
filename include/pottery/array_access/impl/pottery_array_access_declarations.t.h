@@ -106,10 +106,7 @@ pottery_array_access_ref_t pottery_array_access_end(
         #endif
 
     #else
-        #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
-        size_t total_count = pottery_array_access_count(
-                POTTERY_ARRAY_ACCESS_SOLE_VALS);
-        #endif
+        size_t total_count = pottery_array_access_count(POTTERY_ARRAY_ACCESS_SOLE_VALS);
         return pottery_array_access_select(
                 POTTERY_ARRAY_ACCESS_VALS
                 total_count);
@@ -468,6 +465,11 @@ bool pottery_array_access_exists(
     #elif defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE) && \
                 !defined(POTTERY_ARRAY_ACCESS_SELECT) && !defined(POTTERY_ARRAY_ACCESS_INDEX)
         // standard C array
+        #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
+        pottery_array_access_ref_t base = pottery_array_access_begin(
+                POTTERY_ARRAY_ACCESS_SOLE_VALS);
+        #endif
+        size_t total_count = pottery_array_access_count(POTTERY_ARRAY_ACCESS_SOLE_VALS);
         return ref != base + total_count;
 
     #else

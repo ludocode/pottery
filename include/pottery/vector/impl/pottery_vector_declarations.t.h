@@ -513,6 +513,10 @@ pottery_vector_ref_t pottery_vector_begin(const pottery_vector_t* vector) {
  */
 static inline
 pottery_vector_ref_t pottery_vector_end(pottery_vector_t* vector) {
+    // Vector uses one-past-the-end as its end ref. If the vector is empty, it
+    // uses the start of the storage, or the start offset into the storage for
+    // a double-ended vector. This may be null if there is no internal capacity
+    // and if storage has not yet been allocated.
     return pottery_vector_begin(vector) + pottery_vector_count(vector);
 }
 

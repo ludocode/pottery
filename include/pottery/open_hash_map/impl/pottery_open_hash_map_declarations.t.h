@@ -85,7 +85,7 @@ size_t pottery_ohm_load(pottery_ohm_t* map) {
  */
 static inline
 size_t pottery_ohm_capacity(pottery_ohm_t* map) {
-    size_t size = pottery_cast(size_t, 1) << map->log_2_size;
+    size_t size = pottery_ohm_bucket_count(map);
 
     // Currently the max load factor is 4/7 (~57%). This should be
     // configurable, and we should benchmark this to choose a reasonable
@@ -101,11 +101,7 @@ bool pottery_ohm_is_empty(pottery_ohm_t* map) {
 
 static inline
 pottery_ohm_ref_t pottery_ohm_find(pottery_ohm_t* map, pottery_ohm_key_t key) {
-    return pottery_ohm_table_find(
-            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-            map->values,
-            map->log_2_size,
-            key);
+    return pottery_ohm_table_find(map, map->log_2_size, key);
 }
 
 POTTERY_OPEN_HASH_MAP_EXTERN
@@ -133,11 +129,7 @@ bool pottery_ohm_remove_key(pottery_ohm_t* map, pottery_ohm_key_t key);
  */
 static inline
 bool pottery_ohm_ref_exists(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
-    return pottery_ohm_table_ref_exists(
-            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-            map->values,
-            map->log_2_size,
-            ref);
+    return pottery_ohm_table_ref_exists(map, map->log_2_size, ref);
 }
 
 /**
@@ -145,18 +137,12 @@ bool pottery_ohm_ref_exists(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
  */
 static inline
 bool pottery_ohm_contains_key(pottery_ohm_t* map, pottery_ohm_key_t key) {
-    return pottery_ohm_table_contains_key(
-            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-            map->values,
-            map->log_2_size,
-            key);
+    return pottery_ohm_table_contains_key(map, map->log_2_size, key);
 }
 
 static inline
-pottery_ohm_key_t pottery_ohm_ref_key(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref)
-{
-    POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_UNUSED;
+pottery_ohm_key_t pottery_ohm_ref_key(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
+    (void)map;
     #ifndef POTTERY_OPEN_HASH_MAP_VALUE_KEY
         // with no defined key expression, the ref is the key
         return ref;
@@ -168,10 +154,8 @@ pottery_ohm_key_t pottery_ohm_ref_key(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
 }
 
 static inline
-bool pottery_ohm_ref_key_equal(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_key_t left, pottery_ohm_key_t right)
-{
-    POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_UNUSED;
+bool pottery_ohm_ref_key_equal(pottery_ohm_t* map, pottery_ohm_key_t left, pottery_ohm_key_t right) {
+    (void)map;
     #if defined(POTTERY_OPEN_HASH_MAP_CONTEXT_TYPE)
         return POTTERY_OPEN_HASH_MAP_KEY_EQUAL(map->context, left, right);
     #else
@@ -180,10 +164,8 @@ bool pottery_ohm_ref_key_equal(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
 }
 
 static inline
-size_t pottery_ohm_ref_key_hash(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_key_t key)
-{
-    POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_UNUSED;
+size_t pottery_ohm_ref_key_hash(pottery_ohm_t* map, pottery_ohm_key_t key) {
+    (void)map;
     #if defined(POTTERY_OPEN_HASH_MAP_CONTEXT_TYPE)
         return POTTERY_OPEN_HASH_MAP_KEY_HASH(map->context, key);
     #else
@@ -193,10 +175,8 @@ size_t pottery_ohm_ref_key_hash(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
 
 #ifdef POTTERY_OPEN_HASH_TABLE_KEY_DOUBLE_HASH
 static inline
-size_t pottery_ohm_ref_key_double_hash(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_key_t key)
-{
-    POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_UNUSED;
+size_t pottery_ohm_ref_key_double_hash(pottery_ohm_t* map, pottery_ohm_key_t key) {
+    (void)map;
     #if defined(POTTERY_OPEN_HASH_MAP_CONTEXT_TYPE)
         return POTTERY_OPEN_HASH_MAP_KEY_DOUBLE_HASH(map->context, key);
     #else
@@ -208,27 +188,20 @@ size_t pottery_ohm_ref_key_double_hash(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
 #if POTTERY_OPEN_HASH_MAP_HAS_METADATA
 // Gets a pointer to the metadata byte for a ref in the map.
 static inline
-uint8_t* pottery_ohm_ref_metadata(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref)
-{
-    POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_UNUSED;
+uint8_t* pottery_ohm_ref_metadata(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
     return map->metadata + pottery_cast(size_t, ref - map->values);
 }
 
 static inline
-void pottery_ohm_ref_set_other(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref)
-{
+void pottery_ohm_ref_set_other(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
     *pottery_ohm_ref_metadata(map, ref) =
             pottery_cast(uint8_t, pottery_ohm_bucket_state_other);
 }
 #endif
 
 static inline
-bool pottery_ohm_ref_is_empty(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref)
-{
-    POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_UNUSED;
+bool pottery_ohm_ref_is_empty(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
+    (void)map;
     #if POTTERY_OPEN_HASH_MAP_INTERNAL_EMPTY
         return *pottery_ohm_ref_metadata(map, ref) ==
                 pottery_cast(uint8_t, pottery_ohm_bucket_state_empty);
@@ -250,10 +223,8 @@ bool pottery_ohm_ref_is_empty(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
 }
 
 static inline
-void pottery_ohm_ref_set_empty(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref)
-{
-    POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_UNUSED;
+void pottery_ohm_ref_set_empty(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
+    (void)map;
     #if POTTERY_OPEN_HASH_MAP_INTERNAL_EMPTY
         *pottery_ohm_ref_metadata(map, ref) =
                 pottery_cast(uint8_t, pottery_ohm_bucket_state_empty);
@@ -276,10 +247,8 @@ void pottery_ohm_ref_set_empty(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
 
 #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
 static inline
-bool pottery_ohm_ref_is_tombstone(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref)
-{
-    POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_UNUSED;
+bool pottery_ohm_ref_is_tombstone(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
+    (void)map;
     #if POTTERY_OPEN_HASH_MAP_INTERNAL_TOMBSTONE
         return *pottery_ohm_ref_metadata(map, ref) ==
                 pottery_cast(uint8_t, pottery_ohm_bucket_state_tombstone);
@@ -293,10 +262,8 @@ bool pottery_ohm_ref_is_tombstone(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
 }
 
 static inline
-void pottery_ohm_ref_set_tombstone(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref)
-{
-    POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_UNUSED;
+void pottery_ohm_ref_set_tombstone(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
+    (void)map;
     #if POTTERY_OPEN_HASH_MAP_INTERNAL_TOMBSTONE
         *pottery_ohm_ref_metadata(map, ref) =
                 pottery_cast(uint8_t, pottery_ohm_bucket_state_tombstone);
@@ -311,10 +278,8 @@ void pottery_ohm_ref_set_tombstone(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
 #endif
 
 static inline
-bool pottery_ohm_ref_is_value(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref)
-{
-    POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_UNUSED;
+bool pottery_ohm_ref_is_value(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
+    (void)map;
 
     // If we have metadata, we check it first. We can't rely on it exclusively
     // because the user might have configured empty or tombstones in-band.
@@ -338,11 +303,11 @@ bool pottery_ohm_ref_is_value(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
     // If the user has defined in-band empty or tombstones, we won't have those
     // stored in our metadata so check them here.
     #if POTTERY_OPEN_HASH_MAP_TOMBSTONES && !POTTERY_OPEN_HASH_MAP_INTERNAL_TOMBSTONE
-        if (pottery_ohm_ref_is_tombstone(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map) ref))
+        if (pottery_ohm_ref_is_tombstone(map, ref))
             return false;
     #endif
     #if !POTTERY_OPEN_HASH_MAP_INTERNAL_EMPTY
-    if (pottery_ohm_ref_is_empty(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map) ref))
+    if (pottery_ohm_ref_is_empty(map, ref))
         return false;
     #endif
 
@@ -351,9 +316,19 @@ bool pottery_ohm_ref_is_value(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
 }
 
 static inline
-void pottery_ohm_ref_move(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t to, pottery_ohm_ref_t from)
-{
+pottery_ohm_ref_t pottery_ohm_impl_values(pottery_ohm_t* map) {
+    return map->values;
+}
+
+static inline
+size_t pottery_ohm_bucket_count(pottery_ohm_t* map) {
+    return pottery_cast(size_t, 1) << map->log_2_size;
+}
+
+static inline
+void pottery_ohm_ref_move(pottery_ohm_t* map, pottery_ohm_ref_t to, pottery_ohm_ref_t from) {
+    (void)map;
+
     pottery_ohm_lifecycle_move(
             #ifdef POTTERY_OPEN_HASH_MAP_CONTEXT_TYPE
             map->context,
@@ -369,11 +344,9 @@ void pottery_ohm_ref_move(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
 
 #if POTTERY_LIFECYCLE_CAN_DESTROY
 static inline
-void pottery_ohm_ref_destroy(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref)
+void pottery_ohm_ref_destroy(pottery_ohm_t* map, pottery_ohm_ref_t ref)
 {
-    POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_UNUSED;
-
+    (void)map;
     pottery_ohm_lifecycle_destroy(
             #ifdef POTTERY_OPEN_HASH_MAP_CONTEXT_TYPE
             map->context,
@@ -384,50 +357,30 @@ void pottery_ohm_ref_destroy(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
 
 static inline
 pottery_ohm_ref_t pottery_ohm_begin(pottery_ohm_t* map) {
-    return pottery_ohm_table_begin(
-            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-            map->values,
-            map->log_2_size);
+    return pottery_ohm_table_begin(map, map->log_2_size);
 }
 
 static inline
 pottery_ohm_ref_t pottery_ohm_end(pottery_ohm_t* map) {
-    return pottery_ohm_table_end(
-            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-            map->values,
-            map->log_2_size);
+    return pottery_ohm_table_end(map, map->log_2_size);
 }
 
 static inline
 pottery_ohm_ref_t pottery_ohm_first(pottery_ohm_t* map) {
-    return pottery_ohm_table_first(
-            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-            map->values,
-            map->log_2_size);
+    return pottery_ohm_table_first(map, map->log_2_size);
 }
 
 static inline
 pottery_ohm_ref_t pottery_ohm_last(pottery_ohm_t* map) {
-    return pottery_ohm_table_last(
-            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-            map->values,
-            map->log_2_size);
+    return pottery_ohm_table_last(map, map->log_2_size);
 }
 
 static inline
 void pottery_ohm_next(pottery_ohm_t* map, pottery_ohm_ref_t* ref) {
-    pottery_ohm_table_next(
-            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-            map->values,
-            map->log_2_size,
-            ref);
+    pottery_ohm_table_next(map, map->log_2_size, ref);
 }
 
 static inline
 void pottery_ohm_previous(pottery_ohm_t* map, pottery_ohm_ref_t* ref) {
-    pottery_ohm_table_previous(
-            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-            map->values,
-            map->log_2_size,
-            ref);
+    pottery_ohm_table_previous(map, map->log_2_size, ref);
 }

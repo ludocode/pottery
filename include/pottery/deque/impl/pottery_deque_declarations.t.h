@@ -156,7 +156,13 @@ pottery_error_t pottery_deque_insert_first(pottery_deque_t* deque, pottery_deque
 
 #if POTTERY_FORWARD_DECLARATIONS
 POTTERY_DEQUE_EXTERN
-pottery_deque_ref_t pottery_deque_at(pottery_deque_t* deque, size_t index);
+pottery_deque_ref_t pottery_deque_select(pottery_deque_t* deque, size_t index);
+
+static inline
+pottery_deque_ref_t pottery_deque_at(pottery_deque_t* deque, size_t index) {
+    pottery_assert(index < pottery_deque_count(deque));
+    return pottery_deque_select(deque, index);
+}
 #endif
 
 static inline
@@ -285,6 +291,10 @@ pottery_deque_ref_t pottery_deque_previous(pottery_deque_t* deque, pottery_deque
 
 static inline
 pottery_deque_ref_t pottery_deque_end(pottery_deque_t* deque) {
+    // Deque uses one past the last element on the last page as its end ref.
+    // (This means if the last page is full, the end ref is one past the end of
+    // the page.) The only exception is when the deque is empty: since it has
+    // no pages, the end ref for an empty deque is null/null.
     if (pottery_deque_is_empty(deque))
         return pottery_deque_ref_make(pottery_null, pottery_null);
     pottery_deque_page_t* page = pottery_deque_page_ring_last(&deque->pages);

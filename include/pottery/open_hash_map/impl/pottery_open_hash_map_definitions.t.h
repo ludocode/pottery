@@ -124,8 +124,7 @@ pottery_error_t pottery_ohm_init_impl(pottery_ohm_t* map,
     // Clear the new values
     size_t i;
     for (i = 0; i < size; ++i)
-        pottery_ohm_table_ref_set_empty(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-                map->values + i);
+        pottery_ohm_table_ref_set_empty(map, map->values + i);
     #endif
 
     return POTTERY_OK;
@@ -154,10 +153,7 @@ POTTERY_OPEN_HASH_MAP_EXTERN
 void pottery_ohm_destroy(pottery_ohm_t* map) {
 
     #if POTTERY_LIFECYCLE_CAN_DESTROY
-    pottery_ohm_table_destroy_all(
-            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-            map->values,
-            map->log_2_size);
+    pottery_ohm_table_destroy_all(map, map->log_2_size);
     #else
     // If we don't have a destroy expression, you must manually empty the hash
     // map before destroying it.
@@ -191,15 +187,12 @@ pottery_error_t pottery_rehash(pottery_ohm_t* map, size_t new_log_2_size) {
         //printf("migrating bucket %zi\n", source - old_map.values);
 
         pottery_ohm_ref_t target = pottery_ohm_table_emplace(
-                POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-                map->values,
+                map,
                 map->log_2_size,
                 #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
                 pottery_null,
                 #endif
-                pottery_ohm_table_key(
-                        POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(&old_map)
-                        source),
+                pottery_ohm_table_key(&old_map, source),
                 pottery_null);
 
         pottery_ohm_lifecycle_move(
@@ -207,7 +200,7 @@ pottery_error_t pottery_rehash(pottery_ohm_t* map, size_t new_log_2_size) {
                 target, source);
 
         #if POTTERY_OPEN_HASH_MAP_HAS_METADATA
-        pottery_ohm_ref_set_other(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map) target);
+        pottery_ohm_ref_set_other(map, target);
         #endif
         ++map->count;
 
@@ -263,8 +256,7 @@ pottery_error_t pottery_ohm_emplace(pottery_ohm_t* map, pottery_ohm_key_t key,
         return error;
 
     *ref = pottery_ohm_table_emplace(
-            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-            map->values,
+            map,
             map->log_2_size,
             #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
             &map->tombstones,
@@ -273,7 +265,7 @@ pottery_error_t pottery_ohm_emplace(pottery_ohm_t* map, pottery_ohm_key_t key,
             created);
 
     #if POTTERY_OPEN_HASH_MAP_HAS_METADATA
-    pottery_ohm_ref_set_other(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map) *ref);
+    pottery_ohm_ref_set_other(map, *ref);
     #endif
 
     ++map->count;
@@ -283,8 +275,7 @@ pottery_error_t pottery_ohm_emplace(pottery_ohm_t* map, pottery_ohm_key_t key,
 POTTERY_OPEN_HASH_MAP_EXTERN
 void pottery_ohm_displace(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
     pottery_ohm_table_displace(
-            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-            map->values,
+            map,
             map->log_2_size,
             #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
             &map->tombstones,
@@ -298,8 +289,7 @@ void pottery_ohm_displace(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
 POTTERY_OPEN_HASH_MAP_EXTERN
 void pottery_ohm_remove(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
     pottery_ohm_table_remove(
-            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-            map->values,
+            map,
             map->log_2_size,
             #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
             &map->tombstones,
@@ -312,8 +302,7 @@ void pottery_ohm_remove(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
 POTTERY_OPEN_HASH_MAP_EXTERN
 bool pottery_ohm_remove_key(pottery_ohm_t* map, pottery_ohm_key_t key) {
     bool removed = pottery_ohm_table_remove_key(
-            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-            map->values,
+            map,
             map->log_2_size,
             #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
             &map->tombstones,
@@ -342,10 +331,7 @@ void pottery_ohm_displace_all(pottery_ohm_t* map) {
     // this later, this should just free and null the buckets instead.)
 
     if (map->log_2_size == POTTERY_OPEN_HASH_MAP_MINIMUM_LOG_2_SIZE) {
-        pottery_ohm_table_displace_all(
-                POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-                map->values,
-                map->log_2_size);
+        pottery_ohm_table_displace_all(map, map->log_2_size);
         return;
     }
 
@@ -358,10 +344,7 @@ void pottery_ohm_displace_all(pottery_ohm_t* map) {
             POTTERY_OPEN_HASH_MAP_MINIMUM_LOG_2_SIZE)))
     {
         *map = old_map;
-        pottery_ohm_table_displace_all(
-                POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-                map->values,
-                map->log_2_size);
+        pottery_ohm_table_displace_all(map, map->log_2_size);
         return;
     }
 
@@ -375,10 +358,7 @@ void pottery_ohm_remove_all(pottery_ohm_t* map) {
     // whole map if it doesn't resize. This will only happen if allocation
     // fails or if it's the minimum size, and in both cases performance is
     // irrelevant.
-    pottery_ohm_table_destroy_all(
-            POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map)
-            map->values,
-            map->log_2_size);
+    pottery_ohm_table_destroy_all(map, map->log_2_size);
     pottery_ohm_displace_all(map);
 }
 #endif

@@ -168,6 +168,7 @@ pottery_ring_value_t* pottery_ring_begin(pottery_ring_t* ring) {
 
 static inline
 pottery_ring_value_t* pottery_ring_end(pottery_ring_t* ring) {
+    // Ring uses null as its end ref.
     (void)ring;
     return pottery_null;
 }

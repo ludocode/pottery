@@ -71,48 +71,47 @@ typedef enum pottery_ohm_bucket_state_t {
 typedef struct pottery_ohm_t pottery_ohm_t;
 
 static inline
-void pottery_ohm_ref_move(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t to, pottery_ohm_ref_t from);
+void pottery_ohm_ref_move(pottery_ohm_t* map, pottery_ohm_ref_t to, pottery_ohm_ref_t from);
 
 // We don't have CAN_DESTROY yet so we have to do it manually.
 #if defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY) || \
         defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY_BY_VALUE) || \
         defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_BY_VALUE)
 static inline
-void pottery_ohm_ref_destroy(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref);
+void pottery_ohm_ref_destroy(pottery_ohm_t* map, pottery_ohm_ref_t ref);
 #endif
 
 static inline
-pottery_ohm_key_t pottery_ohm_ref_key(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref);
+pottery_ohm_key_t pottery_ohm_ref_key(pottery_ohm_t* map, pottery_ohm_ref_t ref);
 
 static inline
-bool pottery_ohm_ref_key_equal(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_key_t left, pottery_ohm_key_t right);
+bool pottery_ohm_ref_key_equal(pottery_ohm_t* map, pottery_ohm_key_t left, pottery_ohm_key_t right);
 
 static inline
-size_t pottery_ohm_ref_key_hash(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_key_t key);
+size_t pottery_ohm_ref_key_hash(pottery_ohm_t* map, pottery_ohm_key_t key);
 
 static inline
-bool pottery_ohm_ref_is_empty(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref);
+bool pottery_ohm_ref_is_empty(pottery_ohm_t* map, pottery_ohm_ref_t ref);
 
 static inline
-void pottery_ohm_ref_set_empty(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref);
+void pottery_ohm_ref_set_empty(pottery_ohm_t* map, pottery_ohm_ref_t ref);
 
 #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
 static inline
-bool pottery_ohm_ref_is_tombstone(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref);
+bool pottery_ohm_ref_is_tombstone(pottery_ohm_t* map, pottery_ohm_ref_t ref);
 
 static inline
-void pottery_ohm_ref_set_tombstone(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref);
+void pottery_ohm_ref_set_tombstone(pottery_ohm_t* map, pottery_ohm_ref_t ref);
 #endif
 
 static inline
-bool pottery_ohm_ref_is_value(POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG
-        pottery_ohm_ref_t ref);
+bool pottery_ohm_ref_is_value(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+
+static inline
+pottery_ohm_ref_t pottery_ohm_impl_values(pottery_ohm_t* map);
+
+/**
+ * Returns the number of buckets currently in the map.
+ */
+static inline
+size_t pottery_ohm_bucket_count(pottery_ohm_t* map);

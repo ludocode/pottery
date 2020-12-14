@@ -28,7 +28,7 @@ jobs:
 
     - name: Install Ninja (Ubuntu)
       if: contains(matrix.os, 'ubuntu')
-          # sudo apt-get update -y && 
+          # sudo apt-get update -y &&
       run: sudo apt-get install -y ninja-build
 
     - name: Install Ninja (macOS)

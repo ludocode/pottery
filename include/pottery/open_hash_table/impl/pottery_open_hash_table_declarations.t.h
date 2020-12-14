@@ -61,9 +61,11 @@ typedef POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE pottery_oht_context_t;
 
 static inline
 void pottery_oht_ref_set_empty(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        POTTERY_OPEN_HASH_TABLE_ARGS
         pottery_oht_ref_t ref)
 {
+    POTTERY_OPEN_HASH_TABLE_ARGS_UNUSED;
+
     #ifdef POTTERY_OPEN_HASH_TABLE_SET_EMPTY
         #ifdef POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE
             POTTERY_OPEN_HASH_TABLE_SET_EMPTY(context, ref);
@@ -80,34 +82,18 @@ void pottery_oht_ref_set_empty(
 // get the key for a ref
 static pottery_always_inline
 pottery_oht_key_t pottery_oht_key(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        POTTERY_OPEN_HASH_TABLE_ARGS
         pottery_oht_ref_t ref)
 {
+    POTTERY_OPEN_HASH_TABLE_ARGS_UNUSED;
+
     #ifndef POTTERY_OPEN_HASH_TABLE_VALUE_KEY
         // With no defined key expression, the ref is the key
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_UNUSED;
         return ref;
     #elif defined(POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE)
         return POTTERY_OPEN_HASH_TABLE_VALUE_KEY(context, ref);
     #else
         return POTTERY_OPEN_HASH_TABLE_VALUE_KEY(ref);
-    #endif
-}
-
-static pottery_always_inline
-pottery_oht_ref_t pottery_oht_access_at(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
-        size_t index)
-{
-    #ifndef POTTERY_OPEN_HASH_TABLE_ACCESS
-        // With no defined access expression, it's a simple array.
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_UNUSED;
-        return first + index;
-    #elif defined(POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE)
-        return POTTERY_OPEN_HASH_TABLE_ACCESS(context, first, index);
-    #else
-        return POTTERY_OPEN_HASH_TABLE_ACCESS(first, index);
     #endif
 }
 
@@ -133,8 +119,7 @@ pottery_oht_ref_t pottery_oht_access_at(
  */
 POTTERY_OPEN_HASH_TABLE_EXTERN
 pottery_oht_ref_t pottery_oht_emplace(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
         size_t* /*nullable*/ tombstones,
@@ -148,8 +133,7 @@ pottery_oht_ref_t pottery_oht_emplace(
  */
 static inline
 pottery_oht_ref_t pottery_oht_insert(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
         size_t* /*nullable*/ tombstones,
@@ -159,13 +143,12 @@ pottery_oht_ref_t pottery_oht_insert(
     bool created;
 
     pottery_oht_ref_t ref = pottery_oht_emplace(
-            POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-            first,
+            POTTERY_OPEN_HASH_TABLE_VALS
             log_2_size,
             #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
             tombstones,
             #endif
-            pottery_oht_key(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL &value),
+            pottery_oht_key(POTTERY_OPEN_HASH_TABLE_VALS &value),
             &created);
 
     if (!created) {
@@ -173,7 +156,7 @@ pottery_oht_ref_t pottery_oht_insert(
         pottery_oht_lifecycle_destroy(ref);
     }
 
-    *ref = value;
+    pottery_move_construct(pottery_oht_value_t, *ref, value);
     return ref;
 }
 #endif
@@ -185,8 +168,7 @@ pottery_oht_ref_t pottery_oht_insert(
  */
 POTTERY_OPEN_HASH_TABLE_EXTERN
 pottery_oht_ref_t pottery_oht_find(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         pottery_oht_key_t key);
 
@@ -202,8 +184,7 @@ pottery_oht_ref_t pottery_oht_find(
  */
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_displace(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
         size_t* /*nullable*/ tombstones,
@@ -218,15 +199,13 @@ void pottery_oht_displace(
  */
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_displace_all(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size);
 
 #if POTTERY_LIFECYCLE_CAN_DESTROY
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_remove(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
         size_t* /*nullable*/ tombstones,
@@ -238,8 +217,7 @@ void pottery_oht_remove(
  */
 POTTERY_OPEN_HASH_TABLE_EXTERN
 bool pottery_oht_remove_key(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
         size_t* /*nullable*/ tombstones,
@@ -254,8 +232,7 @@ bool pottery_oht_remove_key(
  */
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_remove_all(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size);
 
 /**
@@ -267,9 +244,12 @@ void pottery_oht_remove_all(
  */
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_destroy_all(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size);
+#endif
+
+#if POTTERY_LIFECYCLE_CAN_PASS
+// TODO extract
 #endif
 
 /**
@@ -277,41 +257,43 @@ void pottery_oht_destroy_all(
  */
 static inline
 pottery_oht_ref_t pottery_oht_end(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size)
 {
-    return pottery_oht_access_at(
-            POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-            first,
+    // Open Hash Table uses the end ref of the array as its end ref. (We have
+    // to select() it manually if the array access template doesn't support
+    // end().)
+    #if POTTERY_ARRAY_ACCESS_INHERENT_COUNT
+    (void)log_2_size;
+    return pottery_oht_array_access_end(POTTERY_OPEN_HASH_TABLE_SOLE_VALS);
+    #else
+    return pottery_oht_array_access_select(
+            POTTERY_OPEN_HASH_TABLE_VALS
             pottery_cast(size_t, 1) << log_2_size);
+    #endif
 }
 
 static inline
 bool pottery_oht_ref_exists(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         pottery_oht_ref_t ref)
 {
-    return ref != pottery_oht_end(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-            first, log_2_size);
+    return ref != pottery_oht_end(POTTERY_OPEN_HASH_TABLE_VALS
+            log_2_size);
 }
 
 static inline
 bool pottery_oht_contains_key(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         pottery_oht_key_t key)
 {
     return pottery_oht_ref_exists(
-            POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-            first,
+            POTTERY_OPEN_HASH_TABLE_VALS
             log_2_size,
             pottery_oht_find(
-                    POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-                    first,
+                    POTTERY_OPEN_HASH_TABLE_VALS
                     log_2_size,
                     key));
 }
@@ -325,8 +307,7 @@ bool pottery_oht_contains_key(
  */
 POTTERY_OPEN_HASH_TABLE_EXTERN
 pottery_oht_ref_t pottery_oht_begin(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size);
 
 /**
@@ -336,14 +317,13 @@ pottery_oht_ref_t pottery_oht_begin(
  */
 static inline
 pottery_oht_ref_t pottery_oht_first(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size)
 {
-    pottery_oht_ref_t ref = pottery_oht_begin(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-            first, log_2_size);
-    pottery_assert(ref != pottery_oht_end(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-            first, log_2_size));
+    pottery_oht_ref_t ref = pottery_oht_begin(POTTERY_OPEN_HASH_TABLE_VALS
+            log_2_size);
+    pottery_assert(ref != pottery_oht_end(POTTERY_OPEN_HASH_TABLE_VALS
+            log_2_size));
     return ref;
 }
 
@@ -354,20 +334,17 @@ pottery_oht_ref_t pottery_oht_first(
  */
 POTTERY_OPEN_HASH_TABLE_EXTERN
 pottery_oht_ref_t pottery_oht_last(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size);
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_next(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         pottery_oht_ref_t* ref);
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_previous(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         pottery_oht_ref_t* ref);

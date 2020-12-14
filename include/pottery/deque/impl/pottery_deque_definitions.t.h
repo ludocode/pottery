@@ -318,9 +318,9 @@ void pottery_deque_displace_last_bulk(pottery_deque_t* deque, size_t count) {
 }
 
 POTTERY_DEQUE_EXTERN
-pottery_deque_ref_t pottery_deque_at(pottery_deque_t* deque, size_t index) {
+pottery_deque_ref_t pottery_deque_select(pottery_deque_t* deque, size_t index) {
     pottery_deque_sanity_check(deque);
-    pottery_assert(index < pottery_deque_count(deque));
+    pottery_assert(index <= pottery_deque_count(deque));
 
     size_t page_count = pottery_deque_page_ring_count(&deque->pages);
     size_t per_page = pottery_deque_per_page();

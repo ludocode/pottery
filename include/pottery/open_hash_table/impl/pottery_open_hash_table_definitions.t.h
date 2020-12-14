@@ -30,50 +30,9 @@
  * Helpers to wrap configuration
  */
 
-// Gets the index of a ref
-static pottery_always_inline
-size_t pottery_oht_access_index(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
-        pottery_oht_ref_t ref)
-{
-    #ifndef POTTERY_OPEN_HASH_TABLE_ACCESS_OFFSET
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_UNUSED;
-        return pottery_cast(size_t, ref - first);
-    #elif defined(POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE)
-        return POTTERY_OPEN_HASH_TABLE_ACCESS_OFFSET(context, first, index);
-    #else
-        return POTTERY_OPEN_HASH_TABLE_ACCESS_OFFSET(first, index);
-    #endif
-}
-
-static pottery_always_inline
-pottery_oht_ref_t pottery_oht_access_next(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t ref)
-{
-    POTTERY_OPEN_HASH_TABLE_CONTEXT_UNUSED;
-    // This will be made properly configurable later when we make an
-    // array_access template. For now we just wrap access_at().
-    return pottery_oht_access_at(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref, 1);
-}
-
-static pottery_always_inline
-pottery_oht_ref_t pottery_oht_access_previous(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t ref)
-{
-    POTTERY_OPEN_HASH_TABLE_CONTEXT_UNUSED;
-    // This will be made properly configurable later when we make an
-    // array_access template. For now we just wrap access_at().
-    // (This is a bit of a hack since our access function doesn't take a signed
-    // offset yet.)
-    return pottery_oht_access_at(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref, SIZE_MAX - 1);
-}
-
 static inline
 size_t pottery_oht_key_hash(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        POTTERY_OPEN_HASH_TABLE_ARGS
         pottery_oht_key_t key)
 {
     #if defined(POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE)
@@ -85,7 +44,7 @@ size_t pottery_oht_key_hash(
 
 static inline
 size_t pottery_oht_key_equal(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        POTTERY_OPEN_HASH_TABLE_ARGS
         pottery_oht_key_t left,
         pottery_oht_key_t right)
 {
@@ -102,7 +61,7 @@ size_t pottery_oht_key_equal(
 #if POTTERY_OPEN_HASH_TABLE_DOUBLE_HASHING
 static inline
 size_t pottery_oht_key_double_hash_interval(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        POTTERY_OPEN_HASH_TABLE_ARGS
         pottery_oht_key_t key)
 {
     // If the user hasn't given us a double hashing function, we just use the
@@ -119,7 +78,7 @@ size_t pottery_oht_key_double_hash_interval(
                     POTTERY_OPEN_HASH_TABLE_KEY_DOUBLE_HASH(key);
                 #endif
             #else
-                pottery_oht_key_hash(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL key);
+                pottery_oht_key_hash(POTTERY_OPEN_HASH_TABLE_VALS key);
             #endif
 }
 #endif
@@ -127,7 +86,7 @@ size_t pottery_oht_key_double_hash_interval(
 #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
 static inline
 bool pottery_oht_ref_is_tombstone(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        POTTERY_OPEN_HASH_TABLE_ARGS
         pottery_oht_ref_t ref)
 {
     #if defined(POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE)
@@ -139,7 +98,7 @@ bool pottery_oht_ref_is_tombstone(
 
 static inline
 void pottery_oht_ref_set_tombstone(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        POTTERY_OPEN_HASH_TABLE_ARGS
         pottery_oht_ref_t ref)
 {
     #if defined(POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE)
@@ -152,7 +111,7 @@ void pottery_oht_ref_set_tombstone(
 
 static inline
 bool pottery_oht_ref_is_empty(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        POTTERY_OPEN_HASH_TABLE_ARGS
         pottery_oht_ref_t ref)
 {
     #ifdef POTTERY_OPEN_HASH_TABLE_IS_EMPTY
@@ -170,7 +129,7 @@ bool pottery_oht_ref_is_empty(
 
 static inline
 bool pottery_oht_ref_is_element(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
+        POTTERY_OPEN_HASH_TABLE_ARGS
         pottery_oht_ref_t ref)
 {
     #ifdef POTTERY_OPEN_HASH_TABLE_IS_VALUE
@@ -182,11 +141,11 @@ bool pottery_oht_ref_is_element(
 
     #else
         #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
-        if (pottery_oht_ref_is_tombstone(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref))
+        if (pottery_oht_ref_is_tombstone(POTTERY_OPEN_HASH_TABLE_VALS ref))
             return false;
         #endif
 
-        return !pottery_oht_ref_is_empty(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
+        return !pottery_oht_ref_is_empty(POTTERY_OPEN_HASH_TABLE_VALS ref);
     #endif
 }
 
@@ -247,30 +206,29 @@ size_t pottery_oht_next_probe(size_t log_2_size, size_t index, size_t probe) {
  */
 static
 pottery_oht_ref_t pottery_oht_probe(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         pottery_oht_key_t key,
         bool* /*nullable*/ empty_or_tombstone)
 {
     size_t hash = pottery_oht_key_hash(
-            POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL key);
+            POTTERY_OPEN_HASH_TABLE_VALS key);
     size_t bucket = pottery_oht_bucket_for_hash(log_2_size, hash);
     size_t probe = 1;
     #if POTTERY_OPEN_HASH_TABLE_DOUBLE_HASHING
     probe = pottery_oht_key_double_hash_interval(
-            POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL key);
+            POTTERY_OPEN_HASH_TABLE_VALS key);
     #endif
 
     size_t index = bucket;
 
     while (true) {
         //printf("probing at %zi\n", index);
-        pottery_oht_ref_t ref = pottery_oht_access_at(
-                POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL first, index);
+        pottery_oht_ref_t ref = pottery_oht_array_access_select(
+                POTTERY_OPEN_HASH_TABLE_VALS index);
 
         // see if we found an empty or tombstone bucket
-        if (!pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref)) {
+        if (!pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_VALS ref)) {
             //printf("found empty or tombstone\n");
             if (empty_or_tombstone != pottery_null)
                 *empty_or_tombstone = true;
@@ -278,9 +236,9 @@ pottery_oht_ref_t pottery_oht_probe(
         }
 
         // see if we found a matching key
-        //printf("comparing keys %s %s %i\n", key, pottery_oht_key(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref), strcmp(key, pottery_oht_key(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref)));
-        if (pottery_oht_key_equal(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL key,
-                    pottery_oht_key(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref)))
+        //printf("comparing keys %s %s %i\n", key, pottery_oht_key(POTTERY_OPEN_HASH_TABLE_VALS ref), strcmp(key, pottery_oht_key(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref)));
+        if (pottery_oht_key_equal(POTTERY_OPEN_HASH_TABLE_VALS key,
+                    pottery_oht_key(POTTERY_OPEN_HASH_TABLE_VALS ref)))
         {
             //printf("found key at %zi\n", index);
             if (empty_or_tombstone != pottery_null)
@@ -300,8 +258,7 @@ pottery_oht_ref_t pottery_oht_probe(
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 pottery_oht_ref_t pottery_oht_emplace(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
         size_t* tombstones,
@@ -311,12 +268,12 @@ pottery_oht_ref_t pottery_oht_emplace(
 {
     bool empty_or_tombstone;
     pottery_oht_ref_t ref = pottery_oht_probe(
-            POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-            first, log_2_size, key, &empty_or_tombstone);
+            POTTERY_OPEN_HASH_TABLE_VALS
+            log_2_size, key, &empty_or_tombstone);
 
     #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
     if (tombstones != pottery_null && empty_or_tombstone &&
-            pottery_oht_ref_is_tombstone(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref))
+            pottery_oht_ref_is_tombstone(POTTERY_OPEN_HASH_TABLE_VALS ref))
         (*tombstones)++;
     #endif
 
@@ -327,36 +284,34 @@ pottery_oht_ref_t pottery_oht_emplace(
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 pottery_oht_ref_t pottery_oht_find(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         pottery_oht_key_t key)
 {
     bool empty;
     pottery_oht_ref_t ref = pottery_oht_probe(
-            POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-            first, log_2_size, key, &empty);
+            POTTERY_OPEN_HASH_TABLE_VALS
+            log_2_size, key, &empty);
     //printf("empty %i\n",empty);
-    return empty ? pottery_oht_end(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-            first, log_2_size) : ref;
+    return empty ? pottery_oht_end(POTTERY_OPEN_HASH_TABLE_VALS
+            log_2_size) : ref;
 }
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_displace(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
         size_t* /*nullable*/ tombstones,
         #endif
         pottery_oht_ref_t ref)
 {
-    pottery_assert(!pottery_oht_ref_is_empty(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref));
+    pottery_assert(!pottery_oht_ref_is_empty(POTTERY_OPEN_HASH_TABLE_VALS ref));
 
     #if POTTERY_OPEN_HASH_TABLE_LINEAR_PROBING
     size_t mask = (pottery_cast(size_t, 1) << log_2_size) - 1;
-    size_t index = pottery_oht_access_index(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-            first, ref);
+    size_t index = pottery_oht_array_access_index(POTTERY_OPEN_HASH_TABLE_VALS
+            ref);
 
 
 
@@ -373,22 +328,22 @@ void pottery_oht_displace(
     // subsequent tombstones.
 
     size_t previous = (index + mask) & mask;
-    if (!pottery_oht_ref_is_empty(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-                pottery_oht_access_at(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL previous)))
+    if (!pottery_oht_ref_is_empty(POTTERY_OPEN_HASH_TABLE_VALS
+                pottery_oht_array_access_select(POTTERY_OPEN_HASH_TABLE_VALS previous)))
     {
         if (tombstones != pottery_null)
             (*tombstones)++;
-        pottery_oht_ref_set_tombstone(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
+        pottery_oht_ref_set_tombstone(POTTERY_OPEN_HASH_TABLE_VALS ref);
         return;
     }
 
     while (true) {
         // set this bucket as empty, and loop around if the next is a tombstone
-        pottery_oht_ref_set_empty(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
+        pottery_oht_ref_set_empty(POTTERY_OPEN_HASH_TABLE_VALS ref);
         index = (index + 1) & mask;
-        ref = pottery_oht_access_at(
-                POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG first, index);
-        if (!pottery_oht_ref_is_tombstone(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref))
+        ref = pottery_oht_array_access_select(
+                POTTERY_OPEN_HASH_TABLE_ARGS index);
+        if (!pottery_oht_ref_is_tombstone(POTTERY_OPEN_HASH_TABLE_VALS ref))
             break;
         if (tombstones != pottery_null)
             --tombstones;
@@ -408,25 +363,24 @@ void pottery_oht_displace(
     // back. Such a move creates a new empty bucket, so we need to continue the
     // search again until we run out of collisions to test.
 
-    pottery_oht_ref_set_empty(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
+    pottery_oht_ref_set_empty(POTTERY_OPEN_HASH_TABLE_VALS ref);
 
     while (true) {
         // look forward for a colliding element
         index = (index + 1) & mask;
-        pottery_oht_ref_t test = pottery_oht_access_at(
-                POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL first, index);
+        pottery_oht_ref_t test = pottery_oht_array_access_select(
+                POTTERY_OPEN_HASH_TABLE_VALS index);
 
         // we can stop when we run out of colliding elements
-        if (pottery_oht_ref_is_empty(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL test))
+        if (pottery_oht_ref_is_empty(POTTERY_OPEN_HASH_TABLE_VALS test))
             break;
 
         // see if this element goes in the now empty bucket
         bool empty;
         pottery_oht_ref_t target = pottery_oht_probe(
-                POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-                first,
+                POTTERY_OPEN_HASH_TABLE_VALS
                 log_2_size,
-                pottery_oht_key(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL test),
+                pottery_oht_key(POTTERY_OPEN_HASH_TABLE_VALS test),
                 &empty);
         if (target == ref) {
             (void)empty;
@@ -435,7 +389,7 @@ void pottery_oht_displace(
             // this element must be moved back.
             pottery_oht_lifecycle_move(
                     POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref, test);
-            pottery_oht_ref_set_empty(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL test);
+            pottery_oht_ref_set_empty(POTTERY_OPEN_HASH_TABLE_VALS test);
 
             // we continue the search with this new empty bucket.
             ref = test;
@@ -455,10 +409,9 @@ void pottery_oht_displace(
     // tombstone because we don't know in what collision sequences we may be
     // taking part.
 
-    (void)first;
     (void)log_2_size;
 
-    pottery_oht_ref_set_tombstone(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
+    pottery_oht_ref_set_tombstone(POTTERY_OPEN_HASH_TABLE_VALS ref);
     if (tombstones != pottery_null)
         (*tombstones)++;
 
@@ -469,68 +422,83 @@ void pottery_oht_displace(
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_next(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         pottery_oht_ref_t* ref)
 {
-    pottery_oht_ref_t end = pottery_oht_end(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL first, log_2_size);
+    pottery_oht_ref_t end = pottery_oht_end(POTTERY_OPEN_HASH_TABLE_VALS log_2_size);
     do {
-        *ref = pottery_oht_access_next(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL *ref);
-    } while (*ref != end && !pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL *ref));
+        *ref = pottery_oht_array_access_next(POTTERY_OPEN_HASH_TABLE_VALS *ref);
+    } while (*ref != end && !pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_VALS *ref));
 }
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_previous(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         pottery_oht_ref_t* ref)
 {
+    #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
+    pottery_oht_ref_t base = pottery_oht_array_access_begin(
+            POTTERY_OPEN_HASH_TABLE_SOLE_VALS);
+    #endif
     do {
-        if (*ref == first) {
-            *ref = pottery_oht_end(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL first, log_2_size);
+        // TODO shouldn't this just assert that ref isn't base? you shouldn't
+        // be allowed to call previous on the first element
+        if (*ref == base) {
+            *ref = pottery_oht_end(POTTERY_OPEN_HASH_TABLE_VALS log_2_size);
             return;
         }
-        *ref = pottery_oht_access_previous(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL *ref);
-    } while (!pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL *ref));
+        *ref = pottery_oht_array_access_previous(POTTERY_OPEN_HASH_TABLE_VALS *ref);
+    } while (!pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_VALS *ref));
 }
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 pottery_oht_ref_t pottery_oht_begin(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size)
 {
-    pottery_oht_ref_t end = pottery_oht_end(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL first, log_2_size);
-    pottery_oht_ref_t begin = first;
-    while (end != begin && !pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL begin))
-        begin = pottery_oht_access_next(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL begin);
+    #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
+    pottery_oht_ref_t base = pottery_oht_array_access_begin(
+            POTTERY_OPEN_HASH_TABLE_SOLE_VALS);
+    #endif
+    pottery_oht_ref_t end = pottery_oht_end(POTTERY_OPEN_HASH_TABLE_VALS log_2_size);
+    pottery_oht_ref_t begin = base;
+    while (end != begin && !pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_VALS begin))
+        begin = pottery_oht_array_access_next(POTTERY_OPEN_HASH_TABLE_VALS begin);
     return begin;
 }
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 pottery_oht_ref_t pottery_oht_last(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size)
 {
-    pottery_oht_ref_t last = pottery_oht_end(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL first, log_2_size);
+    #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
+    pottery_oht_ref_t base = pottery_oht_array_access_begin(
+            POTTERY_OPEN_HASH_TABLE_SOLE_VALS);
+    #endif
+    (void)base;
+
+    pottery_oht_ref_t last = pottery_oht_end(POTTERY_OPEN_HASH_TABLE_VALS log_2_size);
     do {
         // There must be at least one element so we shouldn't need to bounds
         // check. We do in debug mode.
-        pottery_assert(last != first);
-        last = pottery_oht_access_previous(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL last);
-    } while (!pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL last));
+        pottery_assert(last != base);
+        last = pottery_oht_array_access_previous(POTTERY_OPEN_HASH_TABLE_VALS last);
+    } while (!pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_VALS last));
     return last;
 }
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_displace_all(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t ref,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size)
 {
+    #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
+    pottery_oht_ref_t base = pottery_oht_array_access_begin(
+            POTTERY_OPEN_HASH_TABLE_SOLE_VALS);
+    #endif
 
     // It might be possible to optimize this to a simple call to memset() for
     // zero sentinels, but there's a long list of conditions. Here are some:
@@ -540,60 +508,69 @@ void pottery_oht_displace_all(
     //   the struct might need to be zero, and memset() would be slower;
     // - __cplusplus needs to be undefined, since we might have to run a custom
     //   assignment operator with side effects when assigning to 0;
-    // - All ACCESS options need to be undefined, otherwise the array might not
-    //   be contiguous in memory;
+    // - All ARRAY_ACCESS options need to be undefined (the array_access
+    //   template needs default behaviour), otherwise the array might not be
+    //   contiguous in memory;
     // - REF_TYPE needs to be undefined, since otherwise it might not even be a
     //   pointer
     //
-    // This is not worth doing right now. Maybe we can revisit this after
-    // putting in an array_access template so we can collect all of the
-    // possible ACCESS configuration options.
+    // This is not worth doing right now.
 
     size_t size = pottery_cast(size_t, 1) << log_2_size;
     size_t i;
+    pottery_oht_ref_t ref = base;
     for (i = 0; i < size; ++i) {
-        pottery_oht_ref_set_empty(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
-        ref = pottery_oht_access_next(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
+        pottery_oht_ref_set_empty(POTTERY_OPEN_HASH_TABLE_VALS ref);
+        ref = pottery_oht_array_access_next(POTTERY_OPEN_HASH_TABLE_VALS ref);
     }
 }
 
 #if POTTERY_LIFECYCLE_CAN_DESTROY
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_destroy_all(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t ref,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size)
 {
+    #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
+    pottery_oht_ref_t base = pottery_oht_array_access_begin(
+            POTTERY_OPEN_HASH_TABLE_SOLE_VALS);
+    #endif
+
     size_t size = pottery_cast(size_t, 1) << log_2_size;
     size_t i;
+    pottery_oht_ref_t ref = base;
     for (i = 0; i < size; ++i) {
-        if (pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref))
+        if (pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_VALS ref))
             pottery_oht_lifecycle_destroy(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
-        ref = pottery_oht_access_next(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
+        ref = pottery_oht_array_access_next(POTTERY_OPEN_HASH_TABLE_VALS ref);
     }
 }
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_remove_all(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t ref,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size)
 {
+    #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
+    pottery_oht_ref_t base = pottery_oht_array_access_begin(
+            POTTERY_OPEN_HASH_TABLE_SOLE_VALS);
+    #endif
+
     size_t size = pottery_cast(size_t, 1) << log_2_size;
     size_t i;
+    pottery_oht_ref_t ref = base;
     for (i = 0; i < size; ++i) {
-        if (pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref))
+        if (pottery_oht_ref_is_element(POTTERY_OPEN_HASH_TABLE_VALS ref))
             pottery_oht_lifecycle_destroy(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
         // Clear it even if it wasn't an element since it might be a tombstone
-        pottery_oht_ref_set_empty(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
-        ref = pottery_oht_access_next(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
+        pottery_oht_ref_set_empty(POTTERY_OPEN_HASH_TABLE_VALS ref);
+        ref = pottery_oht_array_access_next(POTTERY_OPEN_HASH_TABLE_VALS ref);
     }
 }
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 void pottery_oht_remove(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
         size_t* /*nullable*/ tombstones,
@@ -602,8 +579,7 @@ void pottery_oht_remove(
 {
     pottery_oht_lifecycle_destroy(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL ref);
     pottery_oht_displace(
-            POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-            first,
+            POTTERY_OPEN_HASH_TABLE_VALS
             log_2_size,
             #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
             tombstones,
@@ -613,27 +589,25 @@ void pottery_oht_remove(
 
 POTTERY_OPEN_HASH_TABLE_EXTERN
 bool pottery_oht_remove_key(
-        POTTERY_OPEN_HASH_TABLE_CONTEXT_ARG
-        pottery_oht_ref_t first,
+        POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
         size_t* /*nullable*/ tombstones,
         #endif
         pottery_oht_key_t key)
 {
-    pottery_oht_ref_t ref = pottery_oht_find(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-            first, log_2_size, key);
+    pottery_oht_ref_t ref = pottery_oht_find(POTTERY_OPEN_HASH_TABLE_VALS
+            log_2_size, key);
 
-    if (!pottery_oht_ref_exists(POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-            first, log_2_size, ref))
+    if (!pottery_oht_ref_exists(POTTERY_OPEN_HASH_TABLE_VALS
+            log_2_size, ref))
     {
         //printf("not found\n");
         return false;
     }
 
     pottery_oht_remove(
-            POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL
-            first,
+            POTTERY_OPEN_HASH_TABLE_VALS
             log_2_size,
             #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
             tombstones,

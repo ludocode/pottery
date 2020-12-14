@@ -22,19 +22,11 @@
  * SOFTWARE.
  */
 
-#define POTTERY_OPEN_HASH_MAP_PREFIX pottery_hsearch_impl
-#define POTTERY_OPEN_HASH_MAP_VALUE_TYPE POTTERY_ENTRY
-#define POTTERY_OPEN_HASH_MAP_KEY_TYPE const char*
-#define POTTERY_OPEN_HASH_MAP_VALUE_KEY(x) x->key
-#define POTTERY_OPEN_HASH_MAP_KEY_HASH pottery_hsearch_fnv1a
-#define POTTERY_OPEN_HASH_MAP_KEY_EQUAL 0 == strcmp
-#define POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE_BY_VALUE 1
+#define POTTERY_ARRAY_ACCESS_INTERNAL
 
-// We implement DESTROY_BY_VALUE since we don't own the values. This makes
-// destroy the same as displace, but it allows us to destroy a non-empty map.
-#define POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY_BY_VALUE 1
+#include "pottery/array_access/impl/pottery_array_access_macros.t.h"
+// No definitions file! Everything is inline. We still need macros though for
+// configuration purposes.
+#include "pottery/array_access/impl/pottery_array_access_unmacros.t.h"
 
-// NULL key represents an empty bucket.
-#define POTTERY_OPEN_HASH_MAP_EMPTY_IS_ZERO 1
-#define POTTERY_OPEN_HASH_MAP_SET_EMPTY(x) x->key = NULL
-#define POTTERY_OPEN_HASH_MAP_IS_EMPTY(x) x->key == NULL
+#undef POTTERY_ARRAY_ACCESS_INTERNAL

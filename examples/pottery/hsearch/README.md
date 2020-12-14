@@ -4,14 +4,14 @@ This is an implementation of the mostly terrible POSIX `hcreate()`, `hsearch()` 
 
 - [Linux `search(0P)` man page](https://man7.org/linux/man-pages/man0/search.h.0p.html)
 - [Linux `hsearch()` man page](https://linux.die.net/man/3/hsearch)
-- [GNU `hsearch()` documentation](https://www.gnu.org/software/libc/manual/html_node/Hash-Search-Function.html)
-- [FreeBSD `hsearch()` man page](https://www.unix.com/man-page/freebsd/3/hsearch_r/)
-- [NetBSD `hsearch()` man page](https://man.netbsd.org/hcreate.3)
-- [OpenBSD `hsearch()` man page](https://man.openbsd.org/hcreate.3)
+- [GNU glibc `hsearch()` documentation](https://www.gnu.org/software/libc/manual/html_node/Hash-Search-Function.html)
+- [FreeBSD `hsearch_r()` man page](https://www.unix.com/man-page/freebsd/3/hsearch_r/)
+- [NetBSD `hcreate()` man page](https://man.netbsd.org/hcreate.3)
+- [OpenBSD `hcreate()` man page](https://man.openbsd.org/hcreate.3)
 
 This is very nearly a drop-in replacement. There are some incompatibilities between systems that make it impossible to provide one implementation to match the behaviour of all systems. In particular:
 
-- GNU glibc requires that the hash table be zeroed before calling `hcreate_r()` so it can detect a double-create and return an error. musl, FreeBSD and NetBSD do not have this requirement and so cannot detect double-create. This implementation follows the musl/BSD behaviour.
+- GNU glibc requires that the hash table be zeroed by the user before calling `hcreate_r()` so it can detect a double-create and return an error. musl, FreeBSD and NetBSD do not have this requirement and so cannot detect double-create. This implementation follows the musl/BSD behaviour.
 
 - OpenBSD frees all keys with `free()` on a call to `hdestroy()`. No other implementation seems to do this (at least not a modern one.) This implementation provides `pottery_hdestroy_openbsd()` with the OpenBSD behaviour.
 

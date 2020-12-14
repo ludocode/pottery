@@ -107,21 +107,6 @@
     #define POTTERY_OPEN_HASH_MAP_CONTEXT_VAL /*nothing*/
 #endif
 
-// We pass our map as the context to table functions, but only if necessary
-// (i.e. if we have a user context or metadata.)
-
-#if defined(POTTERY_OPEN_HASH_MAP_CONTEXT_TYPE) || POTTERY_OPEN_HASH_MAP_HAS_METADATA
-    #define POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG pottery_ohm_t* map,
-    #define POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map) map,
-    #define POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_UNUSED (void)map
-    #define POTTERY_OPEN_HASH_MAP_HAS_TABLE_CONTEXT 1
-#else
-    #define POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_ARG /*nothing*/
-    #define POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_VAL(map) /*nothing*/
-    #define POTTERY_OPEN_HASH_MAP_TABLE_CONTEXT_UNUSED /*nothing*/
-    #define POTTERY_OPEN_HASH_MAP_HAS_TABLE_CONTEXT 0
-#endif
-
 
 
 /*
@@ -167,6 +152,8 @@
 #define pottery_ohm_ref_set_empty POTTERY_OPEN_HASH_MAP_NAME(_ref_set_empty)
 #define pottery_ohm_ref_is_value POTTERY_OPEN_HASH_MAP_NAME(_ref_is_value)
 
+#define pottery_ohm_bucket_count POTTERY_OPEN_HASH_MAP_NAME(_bucket_count)
+#define pottery_ohm_impl_values POTTERY_OPEN_HASH_MAP_NAME(_impl_values)
 #define pottery_ohm_impl_alloc POTTERY_OPEN_HASH_MAP_NAME(_impl_alloc)
 #define pottery_ohm_impl_free POTTERY_OPEN_HASH_MAP_NAME(_impl_free)
 #define pottery_ohm_impl_free_allocs POTTERY_OPEN_HASH_MAP_NAME(_impl_free_allocs)

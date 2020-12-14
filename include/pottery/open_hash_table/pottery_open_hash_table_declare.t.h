@@ -29,8 +29,17 @@
     #include "pottery/lifecycle/pottery_lifecycle_declare.t.h"
 #endif
 
+#ifndef POTTERY_OPEN_HASH_TABLE_EXTERNAL_ARRAY_ACCESS
+    #include "pottery/open_hash_table/impl/pottery_open_hash_table_config_array_access.t.h"
+    #include "pottery/array_access/pottery_array_access_declare.t.h"
+#endif
+
 #include "pottery/open_hash_table/impl/pottery_open_hash_table_macros.t.h"
 #include "pottery/open_hash_table/impl/pottery_open_hash_table_declarations.t.h"
+
+#ifndef POTTERY_OPEN_HASH_TABLE_EXTERNAL_ARRAY_ACCESS
+    #include "pottery/array_access/pottery_array_access_cleanup.t.h"
+#endif
 
 #ifndef POTTERY_OPEN_HASH_TABLE_EXTERNAL_LIFECYCLE
     #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
