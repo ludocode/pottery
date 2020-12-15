@@ -9,4 +9,8 @@ else
 CFLAGS = -O3 -funroll-loops -flto -g
 endif
 
+ifeq ($(CC),tcc)
 LDFLAGS += -lpthread
+else
+LDFLAGS += -pthread
+endif
