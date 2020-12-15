@@ -50,14 +50,14 @@ static inline void swap_ints(int* x, int* y) {
 // The context for our sort algorithm is a pointer to the deque.
 #define POTTERY_QUICK_SORT_CONTEXT_TYPE int_deque_t*
 
-// The ref type of the sort algorithm is the ref type of the deque.
+// The ref type of the sort algorithm is the entry type of the deque.
 // TODO Lifecycle should support a REF_VALUE configuration rather than
 // de-referencing refs directly, BY_VALUE should still be possible even with
 // non-trivial ref type (otherwise it won't be possible to MOVE at all since we
 // can't create an abstract ref to a temporary)
-#define POTTERY_QUICK_SORT_REF_TYPE int_deque_ref_t
+#define POTTERY_QUICK_SORT_REF_TYPE int_deque_entry_t
 #define POTTERY_QUICK_SORT_LIFECYCLE_SWAP(deque, x, y) \
-    swap_ints(int_deque_ref_value(deque, x), int_deque_ref_value(deque, y))
+    swap_ints(int_deque_entry_value(deque, x), int_deque_entry_value(deque, y))
 
 // The deque is itself an array container, so we pass its begin, end and count.
 // (Only one of end or count are needed, but passing them both could improve
@@ -78,8 +78,8 @@ static inline void swap_ints(int* x, int* y) {
 // Just LESS would be sufficient but we also define EQUAL in order to ensure
 // that the compare template can define all functions with a minimum number of
 // operations.
-#define POTTERY_QUICK_SORT_COMPARE_LESS(deque, x, y) *int_deque_ref_value(deque, x) < *int_deque_ref_value(deque, y)
-#define POTTERY_QUICK_SORT_COMPARE_EQUAL(deque, x, y) *int_deque_ref_value(deque, x) == *int_deque_ref_value(deque, y)
+#define POTTERY_QUICK_SORT_COMPARE_LESS(deque, x, y) *int_deque_entry_value(deque, x) < *int_deque_entry_value(deque, y)
+#define POTTERY_QUICK_SORT_COMPARE_EQUAL(deque, x, y) *int_deque_entry_value(deque, x) == *int_deque_entry_value(deque, y)
 
 #include "pottery/quick_sort/pottery_quick_sort_static.t.h"
 // TODO change above to intro_sort once heap is converted to array_access
@@ -107,7 +107,7 @@ int main(void) {
 
     // Print its contents
     for (i = 0; i < int_deque_count(&deque); ++i) {
-        printf("%i\n", *int_deque_ref_value(&deque, int_deque_at(&deque, i)));
+        printf("%i\n", *int_deque_entry_value(&deque, int_deque_at(&deque, i)));
     }
 
     return EXIT_SUCCESS;

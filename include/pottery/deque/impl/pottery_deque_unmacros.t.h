@@ -53,7 +53,7 @@
     // types
     #undef pottery_deque_t
     #undef pottery_deque_value_t
-    #undef pottery_deque_ref_t
+    #undef pottery_deque_entry_t
 
     // fundamental operations
     #undef pottery_deque_copy
@@ -65,10 +65,10 @@
     #undef pottery_deque_steal
     #undef pottery_deque_swap
 
-    // ref operations
-    #undef pottery_deque_ref_exists
-    #undef pottery_deque_ref_equal
-    #undef pottery_deque_ref_value
+    // entry operations
+    #undef pottery_deque_entry_exists
+    #undef pottery_deque_entry_equal
+    #undef pottery_deque_entry_value
 
     // lookup
     #undef pottery_deque_count
@@ -166,7 +166,7 @@
     // types
     #undef pottery_deque_page_ring_t
     #undef pottery_deque_page_ring_value_t
-    #undef pottery_deque_page_ring_ref_t
+    #undef pottery_deque_page_ring_entry_t
 
     // fundamental operations
     #undef pottery_deque_page_ring_copy
@@ -178,10 +178,10 @@
     #undef pottery_deque_page_ring_steal
     #undef pottery_deque_page_ring_swap
 
-    // ref operations
-    #undef pottery_deque_page_ring_ref_exists
-    #undef pottery_deque_page_ring_ref_equal
-    #undef pottery_deque_page_ring_ref_value
+    // entry operations
+    #undef pottery_deque_page_ring_entry_exists
+    #undef pottery_deque_page_ring_entry_equal
+    #undef pottery_deque_page_ring_entry_value
 
     // lookup
     #undef pottery_deque_page_ring_count

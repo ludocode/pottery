@@ -60,7 +60,7 @@ static void test_pottery_deque_int_normal(int count) {
     }
 
     for (i = 0; i < count; ++i) {
-        pottery_test_assert(*int_deque_ref_value(&deque,
+        pottery_test_assert(*int_deque_entry_value(&deque,
                     int_deque_at(&deque, pottery_cast(size_t, i))) == i);
     }
 
@@ -91,7 +91,7 @@ static void test_pottery_deque_int_reverse(int count) {
     }
 
     for (i = 0; i < count; ++i) {
-        pottery_test_assert(*int_deque_ref_value(&deque,
+        pottery_test_assert(*int_deque_entry_value(&deque,
                     int_deque_at(&deque, pottery_cast(size_t, i))) == count - i - 1);
     }
 
@@ -129,7 +129,7 @@ POTTERY_TEST(pottery_deque_bulk_insert) {
 
         //fprintf(stderr, "inserted bulk, now contains:\n");
         //for (i = 0; i < (int)int_deque_count(&deque); ++i)
-            //fprintf(stderr, "%i ", *int_deque_ref_value(&deque, int_deque_at(&deque, pottery_cast(size_t)i)));
+            //fprintf(stderr, "%i ", *int_deque_entry_value(&deque, int_deque_at(&deque, pottery_cast(size_t)i)));
         //fprintf(stderr, "\n");
     }
 

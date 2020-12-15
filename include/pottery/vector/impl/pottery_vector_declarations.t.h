@@ -53,10 +53,10 @@ POTTERY_VECTOR_EXTERN
 void pottery_vector_displace_at_bulk(pottery_vector_t* vector, size_t index, size_t count);
 
 static inline
-pottery_vector_ref_t pottery_vector_end(pottery_vector_t* vector);
+pottery_vector_entry_t pottery_vector_end(pottery_vector_t* vector);
 
 static inline
-pottery_vector_ref_t pottery_vector_begin(const pottery_vector_t* vector);
+pottery_vector_entry_t pottery_vector_begin(const pottery_vector_t* vector);
 #endif
 
 
@@ -128,13 +128,13 @@ size_t pottery_vector_capacity(const pottery_vector_t* vector) {
 }
 
 static inline
-pottery_vector_ref_t pottery_vector_at(const pottery_vector_t* vector, size_t index) {
+pottery_vector_entry_t pottery_vector_at(const pottery_vector_t* vector, size_t index) {
     pottery_assert(index < pottery_vector_count(vector));
     return pottery_vector_begin(vector) + index;
 }
 
 static inline
-pottery_vector_ref_t pottery_vector_select(const pottery_vector_t* vector, size_t index) {
+pottery_vector_entry_t pottery_vector_select(const pottery_vector_t* vector, size_t index) {
     pottery_assert(index <= pottery_vector_count(vector));
     return pottery_vector_begin(vector) + index;
 }
@@ -159,7 +159,7 @@ const pottery_vector_value_t* pottery_vector_const_data(const pottery_vector_t* 
  * The vector must have at least one element!
  */
 static inline
-pottery_vector_ref_t pottery_vector_first(pottery_vector_t* vector) {
+pottery_vector_entry_t pottery_vector_first(pottery_vector_t* vector) {
     pottery_assert(vector->count > 0);
     return pottery_vector_begin(vector);
 }
@@ -170,7 +170,7 @@ pottery_vector_ref_t pottery_vector_first(pottery_vector_t* vector) {
  * The vector must have at least one element!
  */
 static inline
-pottery_vector_ref_t pottery_vector_last(pottery_vector_t* vector) {
+pottery_vector_entry_t pottery_vector_last(pottery_vector_t* vector) {
     pottery_assert(vector->count > 0);
     return pottery_vector_begin(vector) + pottery_vector_count(vector) - 1;
 }
@@ -196,29 +196,29 @@ pottery_error_t pottery_vector_shrink(pottery_vector_t* vector);
  */
 
 /**
- * Returns the index of the ref in the vector.
+ * Returns the index of the entry in the vector.
  */
 static inline
-size_t pottery_vector_index(pottery_vector_t* vector, pottery_vector_ref_t ref) {
-    pottery_assert(ref >= pottery_vector_begin(vector) && ref <= pottery_vector_end(vector));
-    return pottery_cast(size_t, ref - pottery_vector_begin(vector));
+size_t pottery_vector_index(pottery_vector_t* vector, pottery_vector_entry_t entry) {
+    pottery_assert(entry >= pottery_vector_begin(vector) && entry <= pottery_vector_end(vector));
+    return pottery_cast(size_t, entry - pottery_vector_begin(vector));
 }
 
 /**
- * Returns true if the ref exists, false otherwise.
+ * Returns true if the entry exists, false otherwise.
  */
 static inline
-bool pottery_vector_ref_exists(pottery_vector_t* vector, pottery_vector_ref_t ref) {
-    pottery_assert(ref >= pottery_vector_begin(vector) && ref <= pottery_vector_end(vector));
-    return ref != pottery_vector_end(vector);
+bool pottery_vector_entry_exists(pottery_vector_t* vector, pottery_vector_entry_t entry) {
+    pottery_assert(entry >= pottery_vector_begin(vector) && entry <= pottery_vector_end(vector));
+    return entry != pottery_vector_end(vector);
 }
 
 /**
  * Returns true if the entries are equal, false otherwise.
  */
 static inline
-bool pottery_vector_ref_equal(pottery_vector_t* vector, pottery_vector_ref_t left,
-        pottery_vector_ref_t right)
+bool pottery_vector_entry_equal(pottery_vector_t* vector, pottery_vector_entry_t left,
+        pottery_vector_entry_t right)
 {
     (void)vector;
     pottery_assert(left >= pottery_vector_begin(vector) && left <= pottery_vector_end(vector));
@@ -227,16 +227,16 @@ bool pottery_vector_ref_equal(pottery_vector_t* vector, pottery_vector_ref_t lef
 }
 
 /**
- * Returns the element pointed to by this ref.
+ * Returns a pointer (a entry) to the value contained in this entry.
  */
 static inline
-pottery_vector_value_t* pottery_vector_ref_value(pottery_vector_t* vector,
-        pottery_vector_ref_t ref)
+pottery_vector_value_t* pottery_vector_entry_value(pottery_vector_t* vector,
+        pottery_vector_entry_t entry)
 {
     (void)vector;
-    pottery_assert(ref >= pottery_vector_begin(vector) && ref <= pottery_vector_end(vector));
-    pottery_assert(pottery_vector_ref_exists(vector, ref));
-    return ref;
+    pottery_assert(entry >= pottery_vector_begin(vector) && entry <= pottery_vector_end(vector));
+    pottery_assert(pottery_vector_entry_exists(vector, entry));
+    return entry;
 }
 
 #if POTTERY_FORWARD_DECLARATIONS
@@ -273,12 +273,12 @@ pottery_error_t pottery_vector_copy(pottery_vector_t* vector, const pottery_vect
 #if defined(__cplusplus) && POTTERY_VECTOR_CXX
 template<class... Args> static inline
 pottery_error_t pottery_vector_construct_at(pottery_vector_t* vector,
-        size_t index, pottery_vector_ref_t* ref, Args&&... args)
+        size_t index, pottery_vector_entry_t* entry, Args&&... args)
 {
     // Use a temporary to avoid confusing clang analyzer
-    pottery_vector_ref_t temp;
+    pottery_vector_entry_t temp;
     pottery_error_t error = pottery_vector_emplace_at(vector, index, &temp);
-    *ref = temp;
+    *entry = temp;
     if (error != POTTERY_OK)
         return error;
 
@@ -290,16 +290,16 @@ pottery_error_t pottery_vector_construct_at(pottery_vector_t* vector,
 
 template<class... Args> static inline
 pottery_error_t pottery_vector_construct_first(pottery_vector_t* vector,
-        pottery_vector_ref_t* ref, Args&&... args)
+        pottery_vector_entry_t* entry, Args&&... args)
 {
-    return pottery_vector_construct_at(vector, 0, ref, std::forward<Args>(args)...);
+    return pottery_vector_construct_at(vector, 0, entry, std::forward<Args>(args)...);
 }
 
 template<class... Args> static inline
 pottery_error_t pottery_vector_construct_last(pottery_vector_t* vector,
-        pottery_vector_ref_t* ref, Args&&... args)
+        pottery_vector_entry_t* entry, Args&&... args)
 {
-    return pottery_vector_construct_at(vector, vector->count, ref, std::forward<Args>(args)...);
+    return pottery_vector_construct_at(vector, vector->count, entry, std::forward<Args>(args)...);
 }
 #endif
 
@@ -315,16 +315,16 @@ pottery_error_t pottery_vector_construct_last(pottery_vector_t* vector,
 
 #if POTTERY_LIFECYCLE_CAN_INIT_COPY
 
-// C++ const reference
+// C++ const entryerence
 
 static inline
 pottery_error_t pottery_vector_insert_at(pottery_vector_t* vector,
         size_t index, const pottery_vector_value_t& value)
 {
-    pottery_vector_ref_t ref;
-    pottery_error_t error = pottery_vector_emplace_at_bulk(vector, index, 1, &ref);
+    pottery_vector_entry_t entry;
+    pottery_error_t error = pottery_vector_emplace_at_bulk(vector, index, 1, &entry);
     if (error == POTTERY_OK) {
-        error = pottery_vector_lifecycle_init_copy(POTTERY_VECTOR_CONTEXT_VAL(vector) ref, &value);
+        error = pottery_vector_lifecycle_init_copy(POTTERY_VECTOR_CONTEXT_VAL(vector) entry, &value);
         if (error != POTTERY_OK)
             pottery_vector_displace_at_bulk(vector, index, 1);
     }
@@ -343,18 +343,18 @@ pottery_error_t pottery_vector_insert_last(pottery_vector_t* vector, pottery_vec
 
 static inline
 pottery_error_t pottery_vector_insert_before(pottery_vector_t* vector,
-        pottery_vector_ref_t* ref, pottery_vector_value_t& value)
+        pottery_vector_entry_t* entry, pottery_vector_value_t& value)
 {
-    size_t index = pottery_vector_index(vector, ref);
+    size_t index = pottery_vector_index(vector, entry);
     return pottery_vector_insert_at(vector, index, value);
 }
 
 static inline
 pottery_error_t pottery_vector_insert_after(pottery_vector_t* vector,
-        pottery_vector_ref_t* ref, pottery_vector_value_t& value)
+        pottery_vector_entry_t* entry, pottery_vector_value_t& value)
 {
-    pottery_assert(pottery_vector_ref_exists(vector, ref));
-    size_t index = pottery_vector_index(vector, ref);
+    pottery_assert(pottery_vector_entry_exists(vector, entry));
+    size_t index = pottery_vector_index(vector, entry);
     return pottery_vector_insert_at(vector, index + 1, value);
 }
 
@@ -362,16 +362,16 @@ pottery_error_t pottery_vector_insert_after(pottery_vector_t* vector,
 
 #if POTTERY_LIFECYCLE_CAN_INIT_STEAL
 
-// C++ rvalue reference
+// C++ rvalue entryerence
 
 static inline
 pottery_error_t pottery_vector_insert_at(pottery_vector_t* vector,
         size_t index, pottery_vector_value_t&& value)
 {
-    pottery_vector_ref_t ref;
-    pottery_error_t error = pottery_vector_emplace_at_bulk(vector, index, 1, &ref);
+    pottery_vector_entry_t entry;
+    pottery_error_t error = pottery_vector_emplace_at_bulk(vector, index, 1, &entry);
     if (error == POTTERY_OK) {
-        error = pottery_vector_lifecycle_init_steal(POTTERY_VECTOR_CONTEXT_VAL(vector) ref, &value);
+        error = pottery_vector_lifecycle_init_steal(POTTERY_VECTOR_CONTEXT_VAL(vector) entry, &value);
         if (error != POTTERY_OK)
             pottery_vector_displace_at_bulk(vector, index, 1);
     }
@@ -390,18 +390,18 @@ pottery_error_t pottery_vector_insert_last(pottery_vector_t* vector, pottery_vec
 
 static inline
 pottery_error_t pottery_vector_insert_before(pottery_vector_t* vector,
-        pottery_vector_ref_t* ref, pottery_vector_value_t&& value)
+        pottery_vector_entry_t* entry, pottery_vector_value_t&& value)
 {
-    size_t index = pottery_vector_index(vector, ref);
+    size_t index = pottery_vector_index(vector, entry);
     return pottery_vector_insert_at(vector, index, std::move(value));
 }
 
 static inline
 pottery_error_t pottery_vector_insert_after(pottery_vector_t* vector,
-        pottery_vector_ref_t* ref, pottery_vector_value_t&& value)
+        pottery_vector_entry_t* entry, pottery_vector_value_t&& value)
 {
-    pottery_assert(pottery_vector_ref_exists(vector, ref));
-    size_t index = pottery_vector_index(vector, ref);
+    pottery_assert(pottery_vector_entry_exists(vector, entry));
+    size_t index = pottery_vector_index(vector, entry);
     return pottery_vector_insert_at(vector, index + 1, std::move(value));
 }
 
@@ -415,10 +415,10 @@ pottery_error_t pottery_vector_insert_after(pottery_vector_t* vector,
 
 static inline
 pottery_error_t pottery_vector_insert_at(pottery_vector_t* vector, size_t index, pottery_vector_value_t value) {
-    pottery_vector_ref_t ref;
-    pottery_error_t error = pottery_vector_emplace_at_bulk(vector, index, 1, &ref);
+    pottery_vector_entry_t entry;
+    pottery_error_t error = pottery_vector_emplace_at_bulk(vector, index, 1, &entry);
     if (error == POTTERY_OK)
-        pottery_move_construct(pottery_vector_value_t, *ref, value);
+        pottery_move_construct(pottery_vector_value_t, *entry, value);
     return error;
 }
 
@@ -434,18 +434,18 @@ pottery_error_t pottery_vector_insert_last(pottery_vector_t* vector, pottery_vec
 
 static inline
 pottery_error_t pottery_vector_insert_before(pottery_vector_t* vector,
-        pottery_vector_ref_t ref, pottery_vector_value_t value)
+        pottery_vector_entry_t entry, pottery_vector_value_t value)
 {
-    size_t index = pottery_vector_index(vector, ref);
+    size_t index = pottery_vector_index(vector, entry);
     return pottery_vector_insert_at(vector, index, value);
 }
 
 static inline
 pottery_error_t pottery_vector_insert_after(pottery_vector_t* vector,
-        pottery_vector_ref_t ref, pottery_vector_value_t value)
+        pottery_vector_entry_t entry, pottery_vector_value_t value)
 {
-    pottery_assert(pottery_vector_ref_exists(vector, ref));
-    size_t index = pottery_vector_index(vector, ref);
+    pottery_assert(pottery_vector_entry_exists(vector, entry));
+    size_t index = pottery_vector_index(vector, entry);
     return pottery_vector_insert_at(vector, index + 1, value);
 }
 
@@ -493,14 +493,14 @@ pottery_error_t pottery_vector_insert_last_vector(pottery_vector_t* vector, pott
  */
 
 /**
- * Returns an ref representing the start of the vector (the first element if
+ * Returns an entry representing the start of the vector (the first element if
  * it has any elements, or the end of the vector otherwise.)
  *
- * If the vector is empty, the returned ref does not exist, and is equal to
+ * If the vector is empty, the returned entry does not exist, and is equal to
  * pottery_vector_end().
  */
 static inline
-pottery_vector_ref_t pottery_vector_begin(const pottery_vector_t* vector) {
+pottery_vector_entry_t pottery_vector_begin(const pottery_vector_t* vector) {
     #if POTTERY_VECTOR_DOUBLE_ENDED
     return vector->begin;
     #else
@@ -509,46 +509,46 @@ pottery_vector_ref_t pottery_vector_begin(const pottery_vector_t* vector) {
 }
 
 /**
- * Returns a non-existent ref representing the end of the vector (one past
+ * Returns a non-existent entry representing the end of the vector (one past
  * the last element in the vector.)
  *
- * @see pottery_vector_ref_exists()
+ * @see pottery_vector_entry_exists()
  */
 static inline
-pottery_vector_ref_t pottery_vector_end(pottery_vector_t* vector) {
-    // Vector uses one-past-the-end as its end ref. If the vector is empty, it
-    // uses the start of the storage, or the start offset into the storage for
-    // a double-ended vector. This may be null if there is no internal capacity
-    // and if storage has not yet been allocated.
+pottery_vector_entry_t pottery_vector_end(pottery_vector_t* vector) {
+    // Vector uses one-past-the-end as its end entry. If the vector is empty,
+    // it uses the start of the storage, or the start offset into the storage
+    // for a double-ended vector. This may be null if there is no internal
+    // capacity and if storage has not yet been allocated.
     return pottery_vector_begin(vector) + pottery_vector_count(vector);
 }
 
 /**
- * Shifts the ref over to the next element, or the end of the vector.
+ * Shifts the entry over to the next element, or the end of the vector.
  *
  * It is an error to call this on the end of the vector.
  */
 static inline
-pottery_vector_ref_t pottery_vector_next(pottery_vector_t* vector, pottery_vector_ref_t ref) {
+pottery_vector_entry_t pottery_vector_next(pottery_vector_t* vector, pottery_vector_entry_t entry) {
     (void)vector;
-    pottery_assert(ref >= pottery_vector_begin(vector) && ref <= pottery_vector_end(vector));
-    pottery_assert(ref != pottery_vector_end(vector));
-    return ref + 1;
+    pottery_assert(entry >= pottery_vector_begin(vector) && entry <= pottery_vector_end(vector));
+    pottery_assert(entry != pottery_vector_end(vector));
+    return entry + 1;
 }
 
 /**
- * Shifts the ref over to the previous element, which must exist.
+ * Shifts the entry over to the previous element, which must exist.
  *
- * Calling this on the end of the vector returns a ref to the last element.
+ * Calling this on the end of the vector returns a entry to the last element.
  *
  * It is an error to call this on the first element.
  */
 static inline
-pottery_vector_ref_t pottery_vector_previous(pottery_vector_t* vector, pottery_vector_ref_t ref) {
+pottery_vector_entry_t pottery_vector_previous(pottery_vector_t* vector, pottery_vector_entry_t entry) {
     (void)vector;
-    pottery_assert(ref >= pottery_vector_begin(vector) && ref <= pottery_vector_end(vector));
-    pottery_assert(ref != pottery_vector_begin(vector));
-    return ref - 1;
+    pottery_assert(entry >= pottery_vector_begin(vector) && entry <= pottery_vector_end(vector));
+    pottery_assert(entry != pottery_vector_begin(vector));
+    return entry - 1;
 }
 
 
@@ -559,33 +559,33 @@ pottery_vector_ref_t pottery_vector_previous(pottery_vector_t* vector, pottery_v
 
 static inline
 pottery_error_t pottery_vector_emplace_at(pottery_vector_t* vector,
-        size_t index, pottery_vector_ref_t* ref)
+        size_t index, pottery_vector_entry_t* entry)
 {
-    return pottery_vector_emplace_at_bulk(vector, index, 1, ref);
+    return pottery_vector_emplace_at_bulk(vector, index, 1, entry);
 }
 
 static inline
-pottery_error_t pottery_vector_emplace_first(pottery_vector_t* vector, pottery_vector_ref_t* ref) {
-    return pottery_vector_emplace_at(vector, 0, ref);
+pottery_error_t pottery_vector_emplace_first(pottery_vector_t* vector, pottery_vector_entry_t* entry) {
+    return pottery_vector_emplace_at(vector, 0, entry);
 }
 
 static inline
-pottery_error_t pottery_vector_emplace_last(pottery_vector_t* vector, pottery_vector_ref_t* ref) {
-    return pottery_vector_emplace_at(vector, pottery_vector_count(vector), ref);
+pottery_error_t pottery_vector_emplace_last(pottery_vector_t* vector, pottery_vector_entry_t* entry) {
+    return pottery_vector_emplace_at(vector, pottery_vector_count(vector), entry);
 }
 
 static inline
 pottery_error_t pottery_vector_emplace_first_bulk(pottery_vector_t* vector,
-        size_t count, pottery_vector_ref_t* ref)
+        size_t count, pottery_vector_entry_t* entry)
 {
-    return pottery_vector_emplace_at_bulk(vector, 0, count, ref);
+    return pottery_vector_emplace_at_bulk(vector, 0, count, entry);
 }
 
 static inline
 pottery_error_t pottery_vector_emplace_last_bulk(pottery_vector_t* vector,
-        size_t count, pottery_vector_ref_t* ref)
+        size_t count, pottery_vector_entry_t* entry)
 {
-    return pottery_vector_emplace_at_bulk(vector, pottery_vector_count(vector), count, ref);
+    return pottery_vector_emplace_at_bulk(vector, pottery_vector_count(vector), count, entry);
 }
 
 
@@ -600,8 +600,8 @@ void pottery_vector_displace_at(pottery_vector_t* vector, size_t index) {
 }
 
 static inline
-void pottery_vector_displace(pottery_vector_t* vector, pottery_vector_ref_t ref) {
-    pottery_vector_displace_at(vector, pottery_vector_index(vector, ref));
+void pottery_vector_displace(pottery_vector_t* vector, pottery_vector_entry_t entry) {
+    pottery_vector_displace_at(vector, pottery_vector_index(vector, entry));
 }
 
 static inline
@@ -645,8 +645,8 @@ void pottery_vector_remove_last_bulk(pottery_vector_t* vector, size_t count) {
 }
 
 static inline
-void pottery_vector_remove(pottery_vector_t* vector, pottery_vector_ref_t ref) {
-    pottery_vector_remove_at(vector, pottery_vector_index(vector, ref));
+void pottery_vector_remove(pottery_vector_t* vector, pottery_vector_entry_t entry) {
+    pottery_vector_remove_at(vector, pottery_vector_index(vector, entry));
 }
 
 static inline
@@ -671,9 +671,9 @@ void pottery_vector_remove_last(pottery_vector_t* vector) {
 #if POTTERY_LIFECYCLE_CAN_PASS
 static inline
 pottery_vector_value_t pottery_vector_extract(pottery_vector_t* vector,
-        pottery_vector_ref_t ref)
+        pottery_vector_entry_t entry)
 {
-    pottery_vector_value_t ret = pottery_move_if_cxx(*ref);
+    pottery_vector_value_t ret = pottery_move_if_cxx(*entry);
 
     #ifdef __cplusplus
     // The above uses move construction (rather than the move() operation) to
@@ -686,18 +686,18 @@ pottery_vector_value_t pottery_vector_extract(pottery_vector_t* vector,
     // We don't want to remove() the existing value in the array (in case e.g.
     // DESTROY is free(); we don't own it anymore), but we still need to run
     // its destructor before we displace() it so we do that manually.
-    ref->~pottery_vector_value_t();
+    entry->~pottery_vector_value_t();
     #endif
 
-    pottery_vector_displace(vector, ref);
+    pottery_vector_displace(vector, entry);
 
     return ret;
 }
 
 static inline
 pottery_vector_value_t pottery_vector_extract_at(pottery_vector_t* vector, size_t index) {
-    pottery_vector_ref_t ref = pottery_vector_at(vector, index);
-    return pottery_vector_extract(vector, ref);
+    pottery_vector_entry_t entry = pottery_vector_at(vector, index);
+    return pottery_vector_extract(vector, entry);
 }
 
 static inline

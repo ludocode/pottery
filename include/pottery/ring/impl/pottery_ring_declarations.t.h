@@ -32,7 +32,7 @@
 
 typedef POTTERY_RING_VALUE_TYPE pottery_ring_value_t;
 
-typedef pottery_ring_value_t* pottery_ring_ref_t;
+typedef pottery_ring_value_t* pottery_ring_entry_t;
 
 /**
  * A double-ended queue of values implemented as a circular array.
@@ -92,9 +92,9 @@ void pottery_ring_remove_all(pottery_ring_t* ring);
 #endif
 
 POTTERY_RING_EXTERN
-pottery_error_t pottery_ring_emplace_first(pottery_ring_t* ring, pottery_ring_ref_t* ref);
+pottery_error_t pottery_ring_emplace_first(pottery_ring_t* ring, pottery_ring_entry_t* entry);
 POTTERY_RING_EXTERN
-pottery_error_t pottery_ring_emplace_last(pottery_ring_t* ring, pottery_ring_ref_t* ref);
+pottery_error_t pottery_ring_emplace_last(pottery_ring_t* ring, pottery_ring_entry_t* entry);
 #endif
 
 #if POTTERY_LIFECYCLE_CAN_PASS
@@ -107,19 +107,19 @@ pottery_error_t pottery_ring_emplace_last(pottery_ring_t* ring, pottery_ring_ref
 
 static inline
 pottery_error_t pottery_ring_insert_first(pottery_ring_t* ring, pottery_ring_value_t value) {
-    pottery_ring_ref_t ref;
-    pottery_error_t error = pottery_ring_emplace_first(ring, &ref);
+    pottery_ring_entry_t entry;
+    pottery_error_t error = pottery_ring_emplace_first(ring, &entry);
     if (error == POTTERY_OK)
-        pottery_move_construct(pottery_ring_value_t, *ref, value);
+        pottery_move_construct(pottery_ring_value_t, *entry, value);
     return error;
 }
 
 static inline
 pottery_error_t pottery_ring_insert_last(pottery_ring_t* ring, pottery_ring_value_t value) {
-    pottery_ring_ref_t ref;
-    pottery_error_t error = pottery_ring_emplace_last(ring, &ref);
+    pottery_ring_entry_t entry;
+    pottery_error_t error = pottery_ring_emplace_last(ring, &entry);
     if (error == POTTERY_OK)
-        pottery_move_construct(pottery_ring_value_t, *ref, value);
+        pottery_move_construct(pottery_ring_value_t, *entry, value);
     return error;
 }
 #endif
@@ -168,46 +168,46 @@ pottery_ring_value_t* pottery_ring_begin(pottery_ring_t* ring) {
 
 static inline
 pottery_ring_value_t* pottery_ring_end(pottery_ring_t* ring) {
-    // Ring uses null as its end ref.
+    // Ring uses null as its end entry.
     (void)ring;
     return pottery_null;
 }
 
 static inline
-bool pottery_ring_ref_exists(pottery_ring_t* ring, pottery_ring_value_t* ref) {
+bool pottery_ring_entry_exists(pottery_ring_t* ring, pottery_ring_value_t* entry) {
     (void)ring;
-    return ref != pottery_null;
+    return entry != pottery_null;
 }
 
 static inline
-pottery_ring_value_t* pottery_ring_ref_value(pottery_ring_t* ring, pottery_ring_value_t* ref) {
+pottery_ring_value_t* pottery_ring_entry_value(pottery_ring_t* ring, pottery_ring_value_t* entry) {
     (void)ring;
-    return ref;
+    return entry;
 }
 
 static inline
-pottery_ring_value_t* pottery_ring_next(pottery_ring_t* ring, pottery_ring_value_t* ref) {
-    if (ref == pottery_ring_last(ring))
+pottery_ring_value_t* pottery_ring_next(pottery_ring_t* ring, pottery_ring_value_t* entry) {
+    if (entry == pottery_ring_last(ring))
         return pottery_null;
-    ++ref;
-    if (ref == ring->values + ring->capacity)
-        ref = ring->values;
-    return ref;
+    ++entry;
+    if (entry == ring->values + ring->capacity)
+        entry = ring->values;
+    return entry;
 }
 
 static inline
-pottery_ring_value_t* pottery_ring_previous(pottery_ring_t* ring, pottery_ring_value_t* ref) {
+pottery_ring_value_t* pottery_ring_previous(pottery_ring_t* ring, pottery_ring_value_t* entry) {
     // It is an error to call this on the first element.
-    pottery_assert(ref != pottery_ring_first(ring));
-    if (ref == pottery_null)
+    pottery_assert(entry != pottery_ring_first(ring));
+    if (entry == pottery_null)
         return pottery_ring_last(ring);
 
-    if (ref == ring->values)
-        ref = ring->values + ring->capacity - 1;
+    if (entry == ring->values)
+        entry = ring->values + ring->capacity - 1;
     else
-        --ref;
+        --entry;
 
-    return ref;
+    return entry;
 }
 
 #if POTTERY_FORWARD_DECLARATIONS
@@ -247,11 +247,11 @@ void pottery_ring_remove_last_bulk(pottery_ring_t* ring, size_t count);
 #if POTTERY_LIFECYCLE_CAN_PASS
 static inline
 pottery_ring_value_t pottery_ring_extract_first(pottery_ring_t* ring) {
-    pottery_ring_value_t* ref = pottery_ring_first(ring);
-    pottery_ring_value_t element = pottery_move_if_cxx(*ref);
+    pottery_ring_value_t* entry = pottery_ring_first(ring);
+    pottery_ring_value_t element = pottery_move_if_cxx(*entry);
     #ifdef __cplusplus
     // see pottery_vector_extract() for details
-    ref->~pottery_ring_value_t();
+    entry->~pottery_ring_value_t();
     #endif
     pottery_ring_displace_first(ring);
     return element;
@@ -259,11 +259,11 @@ pottery_ring_value_t pottery_ring_extract_first(pottery_ring_t* ring) {
 
 static inline
 pottery_ring_value_t pottery_ring_extract_last(pottery_ring_t* ring) {
-    pottery_ring_value_t* ref = pottery_ring_last(ring);
-    pottery_ring_value_t element = pottery_move_if_cxx(*ref);
+    pottery_ring_value_t* entry = pottery_ring_last(ring);
+    pottery_ring_value_t element = pottery_move_if_cxx(*entry);
     #ifdef __cplusplus
     // see pottery_vector_extract() for details
-    ref->~pottery_ring_value_t();
+    entry->~pottery_ring_value_t();
     #endif
     pottery_ring_displace_last(ring);
     return element;

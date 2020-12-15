@@ -133,7 +133,7 @@
     // types
     #undef pottery_vector_t
     #undef pottery_vector_value_t
-    #undef pottery_vector_ref_t
+    #undef pottery_vector_entry_t
 
     // fundamental operations
     #undef pottery_vector_copy
@@ -145,10 +145,10 @@
     #undef pottery_vector_steal
     #undef pottery_vector_swap
 
-    // ref operations
-    #undef pottery_vector_ref_exists
-    #undef pottery_vector_ref_equal
-    #undef pottery_vector_ref_value
+    // entry operations
+    #undef pottery_vector_entry_exists
+    #undef pottery_vector_entry_equal
+    #undef pottery_vector_entry_value
 
     // lookup
     #undef pottery_vector_count

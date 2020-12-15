@@ -133,16 +133,16 @@ POTTERY_TEST_ARRAY_INT(many_elements) {
 }
 
 POTTERY_TEST_ARRAY_INT(bulk) {
-    int_array_ref_t ref;
+    int_array_entry_t entry;
     int_array_t array;
     int_array_init(&array);
 
-    pottery_test_assert(POTTERY_OK == int_array_emplace_at_bulk(&array, 0, 100, &ref));
+    pottery_test_assert(POTTERY_OK == int_array_emplace_at_bulk(&array, 0, 100, &entry));
     size_t i;
     for (i = 0; i < 100; ++i)
         *int_array_at(&array, i) = 7;
 
-    pottery_test_assert(POTTERY_OK == int_array_emplace_at_bulk(&array, 50, 100, &ref));
+    pottery_test_assert(POTTERY_OK == int_array_emplace_at_bulk(&array, 50, 100, &entry));
     for (i = 50; i < 150; ++i)
         *int_array_at(&array, i) = 9;
 

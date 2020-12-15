@@ -276,7 +276,7 @@ void pottery_vector_remove_at(pottery_vector_t* vector, size_t index) {
 
 POTTERY_VECTOR_EXTERN
 pottery_error_t pottery_vector_emplace_at_bulk(pottery_vector_t* vector,
-        size_t index, size_t count, pottery_vector_ref_t* out)
+        size_t index, size_t count, pottery_vector_entry_t* out)
 {
     // In case of error (or the count is zero), assign a garbage value to out.
     // This shouldn't be necessary since the value shouldn't be used, but

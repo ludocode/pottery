@@ -109,20 +109,20 @@ void pottery_deque_displace_last(pottery_deque_t* deque) {
 
 #if POTTERY_FORWARD_DECLARATIONS
 POTTERY_DEQUE_EXTERN
-pottery_error_t pottery_deque_emplace_first_bulk(pottery_deque_t* deque, pottery_deque_ref_t* ref, size_t count);
+pottery_error_t pottery_deque_emplace_first_bulk(pottery_deque_t* deque, pottery_deque_entry_t* entry, size_t count);
 
 POTTERY_DEQUE_EXTERN
-pottery_error_t pottery_deque_emplace_last_bulk(pottery_deque_t* deque, pottery_deque_ref_t* ref, size_t count);
+pottery_error_t pottery_deque_emplace_last_bulk(pottery_deque_t* deque, pottery_deque_entry_t* entry, size_t count);
 #endif
 
 static inline
-pottery_error_t pottery_deque_emplace_last(pottery_deque_t* deque, pottery_deque_ref_t* ref) {
-    return pottery_deque_emplace_last_bulk(deque, ref, 1);
+pottery_error_t pottery_deque_emplace_last(pottery_deque_t* deque, pottery_deque_entry_t* entry) {
+    return pottery_deque_emplace_last_bulk(deque, entry, 1);
 }
 
 static inline
-pottery_error_t pottery_deque_emplace_first(pottery_deque_t* deque, pottery_deque_ref_t* ref) {
-    return pottery_deque_emplace_first_bulk(deque, ref, 1);
+pottery_error_t pottery_deque_emplace_first(pottery_deque_t* deque, pottery_deque_entry_t* entry) {
+    return pottery_deque_emplace_first_bulk(deque, entry, 1);
 }
 
 #if POTTERY_LIFECYCLE_CAN_PASS
@@ -135,57 +135,57 @@ pottery_error_t pottery_deque_emplace_first(pottery_deque_t* deque, pottery_dequ
 
 static inline
 pottery_error_t pottery_deque_insert_last(pottery_deque_t* deque, pottery_deque_value_t value) {
-    pottery_deque_ref_t ref;
-    pottery_error_t error = pottery_deque_emplace_last(deque, &ref);
+    pottery_deque_entry_t entry;
+    pottery_error_t error = pottery_deque_emplace_last(deque, &entry);
     if (error != POTTERY_OK)
         return error;
-    pottery_move_construct(pottery_deque_value_t, *pottery_deque_ref_value(deque, ref), value);
+    pottery_move_construct(pottery_deque_value_t, *pottery_deque_entry_value(deque, entry), value);
     return POTTERY_OK;
 }
 
 static inline
 pottery_error_t pottery_deque_insert_first(pottery_deque_t* deque, pottery_deque_value_t value) {
-    pottery_deque_ref_t ref;
-    pottery_error_t error = pottery_deque_emplace_first(deque, &ref);
+    pottery_deque_entry_t entry;
+    pottery_error_t error = pottery_deque_emplace_first(deque, &entry);
     if (error != POTTERY_OK)
         return error;
-    pottery_move_construct(pottery_deque_value_t, *pottery_deque_ref_value(deque, ref), value);
+    pottery_move_construct(pottery_deque_value_t, *pottery_deque_entry_value(deque, entry), value);
     return POTTERY_OK;
 }
 #endif
 
 #if POTTERY_FORWARD_DECLARATIONS
 POTTERY_DEQUE_EXTERN
-pottery_deque_ref_t pottery_deque_select(pottery_deque_t* deque, size_t index);
+pottery_deque_entry_t pottery_deque_select(pottery_deque_t* deque, size_t index);
 
 POTTERY_DEQUE_EXTERN
-size_t pottery_deque_index(pottery_deque_t* deque, pottery_deque_ref_t ref);
+size_t pottery_deque_index(pottery_deque_t* deque, pottery_deque_entry_t entry);
 #endif
 
 static inline
-pottery_deque_ref_t pottery_deque_at(pottery_deque_t* deque, size_t index) {
+pottery_deque_entry_t pottery_deque_at(pottery_deque_t* deque, size_t index) {
     pottery_assert(index < pottery_deque_count(deque));
     return pottery_deque_select(deque, index);
 }
 
 static inline
-pottery_deque_ref_t pottery_deque_first(pottery_deque_t* deque) {
+pottery_deque_entry_t pottery_deque_first(pottery_deque_t* deque) {
     pottery_assert(!pottery_deque_is_empty(deque));
     pottery_deque_page_t* page = pottery_deque_page_ring_first(&deque->pages);
-    return pottery_deque_ref_make(page, *page + deque->first_page_start);
+    return pottery_deque_entry_make(page, *page + deque->first_page_start);
 }
 
 static inline
-pottery_deque_ref_t pottery_deque_last(pottery_deque_t* deque) {
+pottery_deque_entry_t pottery_deque_last(pottery_deque_t* deque) {
     pottery_assert(!pottery_deque_is_empty(deque));
     pottery_deque_page_t* page = pottery_deque_page_ring_last(&deque->pages);
-    return pottery_deque_ref_make(page, *page + deque->last_page_end - 1);
+    return pottery_deque_entry_make(page, *page + deque->last_page_end - 1);
 }
 
 #if POTTERY_LIFECYCLE_CAN_PASS
 static inline
 pottery_deque_value_t pottery_deque_extract_first(pottery_deque_t* deque) {
-    pottery_deque_value_t* p = pottery_deque_ref_value(deque, pottery_deque_first(deque));
+    pottery_deque_value_t* p = pottery_deque_entry_value(deque, pottery_deque_first(deque));
     pottery_deque_value_t ret = pottery_move_if_cxx(*p);
     #ifdef __cplusplus
     // We have to run the destructor. See note in pottery_vector_extract()
@@ -197,7 +197,7 @@ pottery_deque_value_t pottery_deque_extract_first(pottery_deque_t* deque) {
 
 static inline
 pottery_deque_value_t pottery_deque_extract_last(pottery_deque_t* deque) {
-    pottery_deque_value_t* p = pottery_deque_ref_value(deque, pottery_deque_last(deque));
+    pottery_deque_value_t* p = pottery_deque_entry_value(deque, pottery_deque_last(deque));
     pottery_deque_value_t ret = pottery_move_if_cxx(*p);
     #ifdef __cplusplus
     // We have to run the destructor. See note in pottery_vector_extract()
@@ -244,27 +244,27 @@ void pottery_deque_extract_last_bulk(pottery_deque_t* deque, pottery_deque_value
 
 /**
  * Returns a pointer to up to count contiguous values starting at the given
- * ref, shifting the ref forwards past those values.
+ * entry, shifting the entry forwards past those values.
  *
  * The given count is adjusted to the number of contiguous values returned and
- * the number of values past which the ref has been shifted.
+ * the number of values past which the entry has been shifted.
  *
  * The pointer returned is the same as that returned by
- * pottery_deque_ref_value() before the given ref is shifted.
+ * pottery_deque_entry_value() before the given entry is shifted.
  */
 POTTERY_DEQUE_EXTERN
 pottery_deque_value_t* pottery_deque_next_bulk(pottery_deque_t* deque,
-        pottery_deque_ref_t* ref, size_t* count);
+        pottery_deque_entry_t* entry, size_t* count);
 
 /**
  * Returns a pointer to up to count contiguous values starting at the given
- * ref, shifting the ref backwards past those values.
+ * entry, shifting the entry backwards past those values.
  *
  * The given count is adjusted to the number of contiguous values returned and
- * the number of values past which the ref has been shifted.
+ * the number of values past which the entry has been shifted.
  *
  * The pointer returned is the same as that returned by
- * pottery_deque_ref_value() before the given ref is shifted.
+ * pottery_deque_entry_value() before the given entry is shifted.
  *
  * @warning The pointer returned is to the first value when iterating
  *          backwards, so it is the last value in memory! You must offset the
@@ -272,49 +272,49 @@ pottery_deque_value_t* pottery_deque_next_bulk(pottery_deque_t* deque,
  */
 POTTERY_DEQUE_EXTERN
 pottery_deque_value_t* pottery_deque_previous_bulk(pottery_deque_t* deque,
-        pottery_deque_ref_t* ref, size_t* count);
+        pottery_deque_entry_t* entry, size_t* count);
 #endif
 
 // Like most deque functions, the below could be optimized by making non-bulk
 // implementations. For now we just wrap the bulk functions.
 
 static inline
-pottery_deque_ref_t pottery_deque_next(pottery_deque_t* deque, pottery_deque_ref_t ref) {
+pottery_deque_entry_t pottery_deque_next(pottery_deque_t* deque, pottery_deque_entry_t entry) {
     size_t count = 1;
-    pottery_deque_next_bulk(deque, &ref, &count);
-    return ref;
+    pottery_deque_next_bulk(deque, &entry, &count);
+    return entry;
 }
 
 static inline
-pottery_deque_ref_t pottery_deque_previous(pottery_deque_t* deque, pottery_deque_ref_t ref) {
+pottery_deque_entry_t pottery_deque_previous(pottery_deque_t* deque, pottery_deque_entry_t entry) {
     size_t count = 1;
-    pottery_deque_previous_bulk(deque, &ref, &count);
-    return ref;
+    pottery_deque_previous_bulk(deque, &entry, &count);
+    return entry;
 }
 
 static inline
-pottery_deque_ref_t pottery_deque_end(pottery_deque_t* deque) {
-    // Deque uses one past the last element on the last page as its end ref.
-    // (This means if the last page is full, the end ref is one past the end of
+pottery_deque_entry_t pottery_deque_end(pottery_deque_t* deque) {
+    // Deque uses one past the last element on the last page as its end entry.
+    // (This means if the last page is full, the end entry is one past the end of
     // the page.) The only exception is when the deque is empty: since it has
-    // no pages, the end ref for an empty deque is null/null.
+    // no pages, the end entry for an empty deque is null/null.
     if (pottery_deque_is_empty(deque))
-        return pottery_deque_ref_make(pottery_null, pottery_null);
+        return pottery_deque_entry_make(pottery_null, pottery_null);
     pottery_deque_page_t* page = pottery_deque_page_ring_last(&deque->pages);
-    return pottery_deque_ref_make(page, *page + deque->last_page_end);
+    return pottery_deque_entry_make(page, *page + deque->last_page_end);
 }
 
 static inline
-pottery_deque_ref_t pottery_deque_begin(pottery_deque_t* deque) {
+pottery_deque_entry_t pottery_deque_begin(pottery_deque_t* deque) {
     if (pottery_deque_is_empty(deque))
-        return pottery_deque_ref_make(pottery_null, pottery_null);
+        return pottery_deque_entry_make(pottery_null, pottery_null);
     pottery_deque_page_t* page = pottery_deque_page_ring_first(&deque->pages);
-    return pottery_deque_ref_make(page, *page + deque->first_page_start);
+    return pottery_deque_entry_make(page, *page + deque->first_page_start);
 }
 
 static inline
-bool pottery_deque_ref_equal(pottery_deque_t* deque,
-        pottery_deque_ref_t left, pottery_deque_ref_t right)
+bool pottery_deque_entry_equal(pottery_deque_t* deque,
+        pottery_deque_entry_t left, pottery_deque_entry_t right)
 {
     (void)deque;
     // If the values match, the pages must as well.
@@ -323,7 +323,7 @@ bool pottery_deque_ref_equal(pottery_deque_t* deque,
 }
 
 static inline
-bool pottery_deque_ref_exists(pottery_deque_t* deque, pottery_deque_ref_t ref) {
+bool pottery_deque_entry_exists(pottery_deque_t* deque, pottery_deque_entry_t entry) {
     (void)deque;
-    return !pottery_deque_ref_equal(deque, ref,  pottery_deque_end(deque));
+    return !pottery_deque_entry_equal(deque, entry,  pottery_deque_end(deque));
 }

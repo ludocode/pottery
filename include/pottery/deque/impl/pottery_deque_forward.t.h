@@ -27,28 +27,28 @@ typedef POTTERY_DEQUE_VALUE_TYPE pottery_deque_value_t;
 // TODO maybe don't bother with this, it just makes it confusing.
 typedef pottery_deque_value_t* pottery_deque_page_t;
 
-typedef struct pottery_deque_ref_t {
+typedef struct pottery_deque_entry_t {
     pottery_deque_page_t* page;
     pottery_deque_value_t* value;
-} pottery_deque_ref_t;
+} pottery_deque_entry_t;
 
 typedef struct pottery_deque_t pottery_deque_t;
 
 static inline
-pottery_deque_ref_t pottery_deque_ref_make(
+pottery_deque_entry_t pottery_deque_entry_make(
         pottery_deque_page_t* page,
         pottery_deque_value_t* value)
 {
-    pottery_deque_ref_t ref = {page, value};
-    return ref;
+    pottery_deque_entry_t entry = {page, value};
+    return entry;
 }
 
 static inline
-pottery_deque_value_t* pottery_deque_ref_value(
+pottery_deque_value_t* pottery_deque_entry_value(
         pottery_deque_t* deque,
-        pottery_deque_ref_t ref)
+        pottery_deque_entry_t entry)
 {
     (void)deque;
-    pottery_assert(ref.value != pottery_null);
-    return ref.value;
+    pottery_assert(entry.value != pottery_null);
+    return entry.value;
 }

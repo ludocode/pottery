@@ -28,7 +28,7 @@
 // types
 #undef {PREFIX}_t
 #undef {PREFIX}_value_t
-#undef {PREFIX}_ref_t
+#undef {PREFIX}_entry_t
 
 // fundamental operations
 #undef {PREFIX}_copy
@@ -40,10 +40,10 @@
 #undef {PREFIX}_steal
 #undef {PREFIX}_swap
 
-// ref operations
-#undef {PREFIX}_ref_exists
-#undef {PREFIX}_ref_equal
-#undef {PREFIX}_ref_value
+// entry operations
+#undef {PREFIX}_entry_exists
+#undef {PREFIX}_entry_equal
+#undef {PREFIX}_entry_value
 
 // lookup
 #undef {PREFIX}_count

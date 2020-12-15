@@ -48,7 +48,7 @@
 
 // internal types and functions
 #define pottery_deque_page_t POTTERY_DEQUE_NAME(_page_t)
-#define pottery_deque_ref_make POTTERY_DEQUE_NAME(_ref_make)
+#define pottery_deque_entry_make POTTERY_DEQUE_NAME(_entry_make)
 #define pottery_deque_per_page POTTERY_DEQUE_NAME(_per_page)
 #define pottery_deque_sanity_check POTTERY_DEQUE_NAME(_sanity_check)
 #define pottery_deque_acquire_page POTTERY_DEQUE_NAME(_acquire_page)
@@ -64,7 +64,7 @@
     // types
     #define pottery_deque_t POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _t)
     #define pottery_deque_value_t POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _value_t)
-    #define pottery_deque_ref_t POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _ref_t)
+    #define pottery_deque_entry_t POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _entry_t)
 
     // lifecycle operations
     #define pottery_deque_copy POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _copy)
@@ -76,10 +76,10 @@
     #define pottery_deque_steal POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _steal)
     #define pottery_deque_swap POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _swap)
 
-    // ref operations
-    #define pottery_deque_ref_exists POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _ref_exists)
-    #define pottery_deque_ref_equal POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _ref_equal)
-    #define pottery_deque_ref_value POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _ref_value)
+    // entry operations
+    #define pottery_deque_entry_exists POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _entry_exists)
+    #define pottery_deque_entry_equal POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _entry_equal)
+    #define pottery_deque_entry_value POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _entry_value)
 
     // lookup
     #define pottery_deque_count POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _count)
@@ -177,7 +177,7 @@
     // types
     #define pottery_deque_page_ring_t POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _t)
     #define pottery_deque_page_ring_value_t POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _value_t)
-    #define pottery_deque_page_ring_ref_t POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _ref_t)
+    #define pottery_deque_page_ring_entry_t POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _entry_t)
 
     // lifecycle operations
     #define pottery_deque_page_ring_copy POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _copy)
@@ -189,10 +189,10 @@
     #define pottery_deque_page_ring_steal POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _steal)
     #define pottery_deque_page_ring_swap POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _swap)
 
-    // ref operations
-    #define pottery_deque_page_ring_ref_exists POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _ref_exists)
-    #define pottery_deque_page_ring_ref_equal POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _ref_equal)
-    #define pottery_deque_page_ring_ref_value POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _ref_value)
+    // entry operations
+    #define pottery_deque_page_ring_entry_exists POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _entry_exists)
+    #define pottery_deque_page_ring_entry_equal POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _entry_equal)
+    #define pottery_deque_page_ring_entry_value POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _entry_value)
 
     // lookup
     #define pottery_deque_page_ring_count POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _count)

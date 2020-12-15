@@ -174,22 +174,22 @@ void pottery_deque_remove_all(pottery_deque_t* deque) {
 
 POTTERY_DEQUE_EXTERN
 void pottery_deque_remove_first_bulk(pottery_deque_t* deque, size_t count) {
-    pottery_deque_ref_t ref = pottery_deque_first(deque);
+    pottery_deque_entry_t entry = pottery_deque_first(deque);
     size_t i;
     for (i = 0; i < count; ++i) {
-        pottery_deque_lifecycle_destroy(pottery_deque_ref_value(deque, ref));
-        ref = pottery_deque_next(deque, ref);
+        pottery_deque_lifecycle_destroy(pottery_deque_entry_value(deque, entry));
+        entry = pottery_deque_next(deque, entry);
     }
     pottery_deque_displace_first_bulk(deque, count);
 }
 
 POTTERY_DEQUE_EXTERN
 void pottery_deque_remove_last_bulk(pottery_deque_t* deque, size_t count) {
-    pottery_deque_ref_t ref = pottery_deque_last(deque);
+    pottery_deque_entry_t entry = pottery_deque_last(deque);
     size_t i;
     for (i = 0; i < count; ++i) {
-        pottery_deque_lifecycle_destroy(pottery_deque_ref_value(deque, ref));
-        ref = pottery_deque_previous(deque, ref);
+        pottery_deque_lifecycle_destroy(pottery_deque_entry_value(deque, entry));
+        entry = pottery_deque_previous(deque, entry);
     }
     pottery_deque_displace_last_bulk(deque, count);
 }
@@ -318,7 +318,7 @@ void pottery_deque_displace_last_bulk(pottery_deque_t* deque, size_t count) {
 }
 
 POTTERY_DEQUE_EXTERN
-pottery_deque_ref_t pottery_deque_select(pottery_deque_t* deque, size_t index) {
+pottery_deque_entry_t pottery_deque_select(pottery_deque_t* deque, size_t index) {
     pottery_deque_sanity_check(deque);
     pottery_assert(index <= pottery_deque_count(deque));
 
@@ -330,23 +330,23 @@ pottery_deque_ref_t pottery_deque_select(pottery_deque_t* deque, size_t index) {
 
     if (index < first_page_count) {
         pottery_deque_page_t* page = pottery_deque_page_ring_at(&deque->pages, 0);
-        return pottery_deque_ref_make(page, *page + deque->first_page_start + index);
+        return pottery_deque_entry_make(page, *page + deque->first_page_start + index);
     }
 
     index -= first_page_count;
     size_t page_index = 1 + index / per_page;
     pottery_deque_page_t* page = pottery_deque_page_ring_at(&deque->pages, page_index);
-    return pottery_deque_ref_make(page, *page + index % per_page);
+    return pottery_deque_entry_make(page, *page + index % per_page);
 }
 
 POTTERY_DEQUE_EXTERN
-size_t pottery_deque_index(pottery_deque_t* deque, pottery_deque_ref_t ref) {
+size_t pottery_deque_index(pottery_deque_t* deque, pottery_deque_entry_t entry) {
     // Check for empty
-    if (ref.page == pottery_null)
+    if (entry.page == pottery_null)
         return 0;
 
-    size_t page_index = pottery_deque_page_ring_index(&deque->pages, ref.page);
-    size_t page_offset = pottery_cast(size_t, ref.value - *ref.page);
+    size_t page_index = pottery_deque_page_ring_index(&deque->pages, entry.page);
+    size_t page_offset = pottery_cast(size_t, entry.value - *entry.page);
 
     // Check if the element is on the first page
     if (page_index == 0)
@@ -358,7 +358,7 @@ size_t pottery_deque_index(pottery_deque_t* deque, pottery_deque_ref_t ref) {
 }
 
 POTTERY_DEQUE_EXTERN
-pottery_error_t pottery_deque_emplace_first_bulk(pottery_deque_t* deque, pottery_deque_ref_t* ref, size_t count) {
+pottery_error_t pottery_deque_emplace_first_bulk(pottery_deque_t* deque, pottery_deque_entry_t* entry, size_t count) {
     pottery_deque_sanity_check(deque);
     size_t per_page = pottery_deque_per_page();
 
@@ -371,7 +371,7 @@ pottery_error_t pottery_deque_emplace_first_bulk(pottery_deque_t* deque, pottery
             // the entire emplacement fits in the first page so we don't need to
             // add any pages.
             pottery_deque_page_t* page = pottery_deque_page_ring_first(&deque->pages);
-            *ref = pottery_deque_ref_make(page, *page + deque->first_page_start - 1);
+            *entry = pottery_deque_entry_make(page, *page + deque->first_page_start - 1);
             deque->first_page_start -= count;
             pottery_deque_sanity_check(deque);
             return POTTERY_OK;
@@ -415,21 +415,21 @@ pottery_error_t pottery_deque_emplace_first_bulk(pottery_deque_t* deque, pottery
         count -= per_page;
     }
 
-    // Now that we're done adding pages, we can set the ref.
+    // Now that we're done adding pages, we can set the entry.
     pottery_deque_page_t* page = pottery_deque_page_ring_at(&deque->pages,
             pages_added - (had_first_page_space ? 0 : 1));
-    *ref = pottery_deque_ref_make(page, *page + value_index);
+    *entry = pottery_deque_entry_make(page, *page + value_index);
     deque->first_page_start = per_page - count;
     pottery_deque_sanity_check(deque);
     return POTTERY_OK;
 }
 
 POTTERY_DEQUE_EXTERN
-pottery_error_t pottery_deque_emplace_last_bulk(pottery_deque_t* deque, pottery_deque_ref_t* ref, size_t count) {
+pottery_error_t pottery_deque_emplace_last_bulk(pottery_deque_t* deque, pottery_deque_entry_t* entry, size_t count) {
     pottery_deque_sanity_check(deque);
     size_t per_page = pottery_deque_per_page();
 
-    // We need to store the index of the page that will hold the first ref to
+    // We need to store the index of the page that will hold the first entry to
     // our new emplaced values to re-reference it after the ring is done
     // growing. It's either the last page or the one we will add after it.
     size_t page_index = pottery_deque_page_ring_count(&deque->pages);
@@ -441,7 +441,7 @@ pottery_error_t pottery_deque_emplace_last_bulk(pottery_deque_t* deque, pottery_
             // the entire emplacement fits in the last page so we don't need to
             // add any pages.
             pottery_deque_page_t* page = pottery_deque_page_ring_last(&deque->pages);
-            *ref = pottery_deque_ref_make(page, *page + deque->last_page_end);
+            *entry = pottery_deque_entry_make(page, *page + deque->last_page_end);
             deque->last_page_end += count;
             pottery_deque_sanity_check(deque);
             return POTTERY_OK;
@@ -483,9 +483,9 @@ pottery_error_t pottery_deque_emplace_last_bulk(pottery_deque_t* deque, pottery_
         count -= per_page;
     }
 
-    // Now that we're done adding pages, we can set the ref.
+    // Now that we're done adding pages, we can set the entry.
     pottery_deque_page_t* page = pottery_deque_page_ring_at(&deque->pages, page_index);
-    *ref = pottery_deque_ref_make(page, *page + value_index);
+    *entry = pottery_deque_entry_make(page, *page + value_index);
     deque->last_page_end = count;
     pottery_deque_sanity_check(deque);
     return POTTERY_OK;
@@ -499,15 +499,15 @@ pottery_error_t pottery_deque_insert_last_bulk(pottery_deque_t* deque,
     pottery_deque_sanity_check(deque);
 
     // create space
-    pottery_deque_ref_t ref;
-    pottery_error_t error = pottery_deque_emplace_last_bulk(deque, &ref, count);
+    pottery_deque_entry_t entry;
+    pottery_error_t error = pottery_deque_emplace_last_bulk(deque, &entry, count);
     if (error != POTTERY_OK)
         return error;
 
     // move values in bulk
     while (count > 0) {
         size_t step = count;
-        pottery_deque_value_t* step_values = pottery_deque_next_bulk(deque, &ref, &step);
+        pottery_deque_value_t* step_values = pottery_deque_next_bulk(deque, &entry, &step);
 
         // Use move construction (rather than the lifecycle move() operation)
         // to move values out of the array. We need to leave them constructed
@@ -533,15 +533,15 @@ pottery_error_t pottery_deque_insert_first_bulk(pottery_deque_t* deque, const po
     pottery_deque_sanity_check(deque);
 
     // create space
-    pottery_deque_ref_t ref;
-    pottery_error_t error = pottery_deque_emplace_first_bulk(deque, &ref, count);
+    pottery_deque_entry_t entry;
+    pottery_error_t error = pottery_deque_emplace_first_bulk(deque, &entry, count);
     if (error != POTTERY_OK)
         return error;
 
     // move values in bulk
     while (count > 0) {
         size_t step = count;
-        pottery_deque_value_t* step_values = pottery_deque_previous_bulk(deque, &ref, &step);
+        pottery_deque_value_t* step_values = pottery_deque_previous_bulk(deque, &entry, &step);
 
         // Use move construction (rather than the lifecycle move() operation)
         // to move values out of the array. We need to leave them constructed
@@ -585,28 +585,28 @@ void pottery_deque_extract_last_bulk(pottery_deque_t* deque, pottery_deque_value
 
 POTTERY_DEQUE_EXTERN
 pottery_deque_value_t* pottery_deque_next_bulk(pottery_deque_t* deque,
-        pottery_deque_ref_t* ref, size_t* count)
+        pottery_deque_entry_t* entry, size_t* count)
 {
     pottery_deque_sanity_check(deque);
-    pottery_assert(pottery_deque_ref_exists(deque, *ref));
+    pottery_assert(pottery_deque_entry_exists(deque, *entry));
 
-    pottery_deque_value_t* value = ref->value;
+    pottery_deque_value_t* value = entry->value;
 
-    if (ref->page == pottery_deque_page_ring_last(&deque->pages)) {
+    if (entry->page == pottery_deque_page_ring_last(&deque->pages)) {
         // last page. we may or may not consume it all.
-        size_t left = pottery_cast(size_t, *ref->page + deque->last_page_end - value);
+        size_t left = pottery_cast(size_t, *entry->page + deque->last_page_end - value);
         pottery_assert(*count <= left);
-        ref->value += left;
+        entry->value += left;
     } else {
-        size_t left = pottery_cast(size_t, *ref->page + pottery_deque_per_page() - value);
+        size_t left = pottery_cast(size_t, *entry->page + pottery_deque_per_page() - value);
         if (*count >= left) {
             // consume rest of page, move to next page
             *count = left;
-            ref->page = pottery_deque_page_ring_next(&deque->pages, ref->page);
-            ref->value = *ref->page;
+            entry->page = pottery_deque_page_ring_next(&deque->pages, entry->page);
+            entry->value = *entry->page;
         } else {
             // staying in same page
-            ref->value += *count;
+            entry->value += *count;
         }
     }
 
@@ -615,31 +615,31 @@ pottery_deque_value_t* pottery_deque_next_bulk(pottery_deque_t* deque,
 
 POTTERY_DEQUE_EXTERN
 pottery_deque_value_t* pottery_deque_previous_bulk(pottery_deque_t* deque,
-        pottery_deque_ref_t* ref, size_t* count)
+        pottery_deque_entry_t* entry, size_t* count)
 {
     pottery_deque_sanity_check(deque);
-    pottery_assert(pottery_deque_ref_exists(deque, *ref));
+    pottery_assert(pottery_deque_entry_exists(deque, *entry));
 
-    pottery_deque_value_t* value = ref->value;
-    size_t left = pottery_cast(size_t, value - *ref->page) + 1;
+    pottery_deque_value_t* value = entry->value;
+    size_t left = pottery_cast(size_t, value - *entry->page) + 1;
 
-    if (ref->page == pottery_deque_page_ring_first(&deque->pages)) {
+    if (entry->page == pottery_deque_page_ring_first(&deque->pages)) {
         // first page. we may or may not consume it all.
         pottery_assert(*count <= left);
         if (*count == left) {
-            *ref = pottery_deque_end(deque);
+            *entry = pottery_deque_end(deque);
         } else {
-            ref->value -= left;
+            entry->value -= left;
         }
     } else {
         if (*count >= left) {
             // consume rest of page, move to previous page
             *count = left;
-            ref->page = pottery_deque_page_ring_previous(&deque->pages, ref->page);
-            ref->value = *ref->page + pottery_deque_per_page() - 1;
+            entry->page = pottery_deque_page_ring_previous(&deque->pages, entry->page);
+            entry->value = *entry->page + pottery_deque_per_page() - 1;
         } else {
             // staying in same page
-            ref->value -= *count;
+            entry->value -= *count;
         }
     }
 
