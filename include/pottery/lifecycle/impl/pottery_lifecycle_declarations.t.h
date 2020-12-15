@@ -117,7 +117,8 @@ void pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_ARG
             if (pottery::is_bitwise_movable<pottery_lifecycle_value_t>::value) {
                 // move bitwise
                 // cast to void* to prevent -Wclass-memaccess warnings
-                pottery_memcpy(pottery_cast(void*, to), pottery_cast(const void*, from), sizeof(*to));
+                pottery_memcpy(pottery_cast(void*, to),
+                        pottery_cast(const void*, from), sizeof(*to));
             } else {
                 // move by move construction then destruction
                 // This isn't allowed to fail so we don't bother with
@@ -160,7 +161,6 @@ void pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_ARG
         #endif
 
     #elif POTTERY_LIFECYCLE_SWAP_BY_VALUE
-
         #if defined(__cplusplus)
         if (!pottery::is_bitwise_movable<pottery_lifecycle_value_t>::value) {
             // swap by ADL-swap() or std::swap()

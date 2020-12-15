@@ -28,14 +28,12 @@
 
 #define POTTERY_COMPARE_PREFIX POTTERY_CONCAT(POTTERY_HEAP_PREFIX, _compare)
 
-// Forward the ref and value
-#if defined(POTTERY_HEAP_REF_TYPE)
-    #define POTTERY_COMPARE_REF_TYPE POTTERY_HEAP_REF_TYPE
-#endif
+// Forward the value or ref (not both)
 #if defined(POTTERY_HEAP_VALUE_TYPE)
     #define POTTERY_COMPARE_VALUE_TYPE POTTERY_HEAP_VALUE_TYPE
-#endif
-#if !defined(POTTERY_HEAP_REF_TYPE) && !defined(POTTERY_HEAP_VALUE_TYPE)
+#elif defined(POTTERY_HEAP_REF_TYPE)
+    #define POTTERY_COMPARE_REF_TYPE POTTERY_HEAP_REF_TYPE
+#else
     #error "At least one of POTTERY_HEAP_REF_TYPE and POTTERY_HEAP_VALUE_TYPE must be defined."
 #endif
 

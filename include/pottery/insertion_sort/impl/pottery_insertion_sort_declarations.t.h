@@ -57,8 +57,8 @@ void pottery_insertion_sort(
         #endif
 ) {
     #if POTTERY_ARRAY_ACCESS_INHERENT_COUNT
-    size_t total_count = pottery_array_access_count(
-            POTTERY_INSERTION_SORT_SOLE_VALS)
+    size_t total_count = pottery_insertion_sort_array_access_count(
+            POTTERY_INSERTION_SORT_SOLE_VALS);
     #endif
 
     pottery_insertion_sort_range(POTTERY_INSERTION_SORT_VALS

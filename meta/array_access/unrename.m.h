@@ -40,5 +40,7 @@
 #undef {PREFIX}_offset
 #undef {PREFIX}_next
 #undef {PREFIX}_previous
+
+#undef {PREFIX}_value
 #undef {PREFIX}_equal
 #undef {PREFIX}_exists

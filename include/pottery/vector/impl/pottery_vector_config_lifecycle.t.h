@@ -30,6 +30,9 @@
 
 // Forward value type
 #define POTTERY_LIFECYCLE_VALUE_TYPE POTTERY_VECTOR_VALUE_TYPE
+#if defined(POTTERY_VECTOR_REF_TYPE) || defined(POTTERY_VECTOR_REF_VALUE)
+#error "Custom ref type is not supported."
+#endif
 
 // Forward our context
 #ifdef POTTERY_VECTOR_CONTEXT_TYPE

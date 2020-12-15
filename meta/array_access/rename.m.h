@@ -40,5 +40,7 @@
 #define {SRC}_offset POTTERY_CONCAT({DEST}, _offset)
 #define {SRC}_next POTTERY_CONCAT({DEST}, _next)
 #define {SRC}_previous POTTERY_CONCAT({DEST}, _previous)
+
+#define {SRC}_value POTTERY_CONCAT({DEST}, _value)
 #define {SRC}_equal POTTERY_CONCAT({DEST}, _equal)
 #define {SRC}_exists POTTERY_CONCAT({DEST}, _exists)

@@ -30,6 +30,9 @@
 
 // Forward value type
 #define POTTERY_LIFECYCLE_VALUE_TYPE POTTERY_DEQUE_VALUE_TYPE
+#if defined(POTTERY_DEQUE_REF_TYPE) || defined(POTTERY_DEQUE_REF_VALUE)
+#error "Custom ref type is not supported."
+#endif
 
 // Forward our context
 #ifdef POTTERY_DEQUE_CONTEXT_TYPE

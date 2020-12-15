@@ -66,6 +66,37 @@ size_t pottery_array_access_count(
 
 
 /**
+ * Returns a pointer to the value for a ref.
+ *
+ * The ref must exist.
+ */
+#if 0
+#if defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE)
+static inline
+pottery_array_access_value_t* pottery_array_access_value(
+        POTTERY_ARRAY_ACCESS_ARGS
+        pottery_array_access_ref_t ref)
+{
+    POTTERY_ARRAY_ACCESS_ARGS_UNUSED;
+
+    #ifdef POTTERY_ARRAY_ACCESS_REF_VALUE
+        #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
+            return (POTTERY_ARRAY_ACCESS_REF_VALUE((context), (ref)));
+        #else
+            return (POTTERY_ARRAY_ACCESS_REF_VALUE((ref)));
+        #endif
+    #else
+        // Without a REF_VALUE expression, the ref type must be a pointer to
+        // the value type.
+        return ref;
+    #endif
+}
+#endif
+#endif
+
+
+
+/**
  * Returns the first ref, or the end ref if empty.
  */
 static inline

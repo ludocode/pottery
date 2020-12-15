@@ -13,4 +13,8 @@ if [ "$CC" = "scan-build" ]; then
     exec test/scan-build.sh
 fi
 
+# Run the "more" variant of unit tests
 test/unit.sh more
+
+# Also build and run all examples standalone to make sure they work
+test/examples.sh
