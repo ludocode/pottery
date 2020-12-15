@@ -30,12 +30,17 @@
 
 #define POTTERY_INSERTION_SORT_PREFIX POTTERY_CONCAT(POTTERY_SHELL_SORT_PREFIX, _insertion_sort)
 
+
+
+// Manually forward the ref or value type. We use our own context and entry.
 #ifdef POTTERY_SHELL_SORT_REF_TYPE
     #define POTTERY_INSERTION_SORT_REF_TYPE POTTERY_SHELL_SORT_REF_TYPE
 #endif
 #ifdef POTTERY_SHELL_SORT_VALUE_TYPE
     #define POTTERY_INSERTION_SORT_VALUE_TYPE POTTERY_SHELL_SORT_VALUE_TYPE
 #endif
+
+
 
 // We pass our own state as the insertion_sort context and configure its
 // array_access to use our gap sequence.

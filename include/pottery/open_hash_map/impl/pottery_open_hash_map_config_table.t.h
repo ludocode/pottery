@@ -29,7 +29,6 @@
 #define POTTERY_OPEN_HASH_TABLE_PREFIX POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_PREFIX, _table)
 
 #define POTTERY_OPEN_HASH_TABLE_VALUE_TYPE pottery_ohm_value_t
-#define POTTERY_OPEN_HASH_TABLE_REF_TYPE pottery_ohm_ref_t
 #define POTTERY_OPEN_HASH_TABLE_KEY_TYPE pottery_ohm_key_t
 
 // Our table takes only the map as context, and it will have an inherent base
