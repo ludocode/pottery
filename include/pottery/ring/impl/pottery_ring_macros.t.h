@@ -55,7 +55,9 @@
     // types
     #define pottery_ring_t POTTERY_CONCAT(POTTERY_RING_PREFIX, _t)
     #define pottery_ring_value_t POTTERY_CONCAT(POTTERY_RING_PREFIX, _value_t)
+    #define pottery_ring_ref_t POTTERY_CONCAT(POTTERY_RING_PREFIX, _ref_t)
     #define pottery_ring_entry_t POTTERY_CONCAT(POTTERY_RING_PREFIX, _entry_t)
+    #define pottery_ring_context_t POTTERY_CONCAT(POTTERY_RING_PREFIX, _context_t)
 
     // lifecycle operations
     #define pottery_ring_copy POTTERY_CONCAT(POTTERY_RING_PREFIX, _copy)
@@ -174,8 +176,10 @@
     // types
     #define pottery_ring_lifecycle_value_t POTTERY_CONCAT(POTTERY_RING_LIFECYCLE_PREFIX, _value_t)
     #define pottery_ring_lifecycle_ref_t POTTERY_CONCAT(POTTERY_RING_LIFECYCLE_PREFIX, _ref_t)
-    #define pottery_ring_lifecycle_const_ref_t POTTERY_CONCAT(POTTERY_RING_LIFECYCLE_PREFIX, _const_ref_t)
+    #define pottery_ring_lifecycle_entry_t POTTERY_CONCAT(POTTERY_RING_LIFECYCLE_PREFIX, _entry_t)
     #define pottery_ring_lifecycle_context_t POTTERY_CONCAT(POTTERY_RING_LIFECYCLE_PREFIX, _context_t)
+
+    #define pottery_ring_lifecycle_const_ref_t POTTERY_CONCAT(POTTERY_RING_LIFECYCLE_PREFIX, _const_ref_t)
 
     // fundamental operations
     #define pottery_ring_lifecycle_init_steal POTTERY_CONCAT(POTTERY_RING_LIFECYCLE_PREFIX, _init_steal)

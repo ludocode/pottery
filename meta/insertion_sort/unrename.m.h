@@ -25,10 +25,10 @@
 //!!! END_LICENSE
 // Un-renames insertion_sort identifiers with prefix "{PREFIX}"
 
-#undef {PREFIX}_ref_t
 #undef {PREFIX}_value_t
+#undef {PREFIX}_ref_t
+#undef {PREFIX}_entry_t
 #undef {PREFIX}_context_t
-#undef {PREFIX}_state_t
 
 #undef {PREFIX}
 #undef {PREFIX}_access

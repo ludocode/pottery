@@ -46,7 +46,9 @@
     // types
     #undef pottery_ring_t
     #undef pottery_ring_value_t
+    #undef pottery_ring_ref_t
     #undef pottery_ring_entry_t
+    #undef pottery_ring_context_t
 
     // fundamental operations
     #undef pottery_ring_copy
@@ -159,10 +161,12 @@
     // Un-renames lifecycle identifiers with prefix "pottery_ring_lifecycle"
 
     // types
-    #undef pottery_ring_lifecycle_ref_t
-    #undef pottery_ring_lifecycle_const_ref_t
     #undef pottery_ring_lifecycle_value_t
+    #undef pottery_ring_lifecycle_ref_t
+    #undef pottery_ring_lifecycle_entry_t
     #undef pottery_ring_lifecycle_context_t
+
+    #undef pottery_ring_lifecycle_const_ref_t
 
     // fundamental operations
     #undef pottery_ring_lifecycle_init_steal

@@ -53,7 +53,9 @@
     // types
     #undef pottery_deque_t
     #undef pottery_deque_value_t
+    #undef pottery_deque_ref_t
     #undef pottery_deque_entry_t
+    #undef pottery_deque_context_t
 
     // fundamental operations
     #undef pottery_deque_copy
@@ -166,7 +168,9 @@
     // types
     #undef pottery_deque_page_ring_t
     #undef pottery_deque_page_ring_value_t
+    #undef pottery_deque_page_ring_ref_t
     #undef pottery_deque_page_ring_entry_t
+    #undef pottery_deque_page_ring_context_t
 
     // fundamental operations
     #undef pottery_deque_page_ring_copy

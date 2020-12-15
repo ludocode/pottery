@@ -33,7 +33,7 @@
 
 #ifdef {CONFIG}_CONTEXT_TYPE
     #if !POTTERY_ARRAY_ACCESS_INHERENT_BASE
-        #define {CONFIG}_SOLE_ARGS {NAME}_context_t context, {NAME}_ref_t base
+        #define {CONFIG}_SOLE_ARGS {NAME}_context_t context, {NAME}_entry_t base
         #define {CONFIG}_SOLE_VALS context, base
         #define {CONFIG}_ARGS_UNUSED (void)context, (void)base
     #else
@@ -43,7 +43,7 @@
     #endif
 #else
     #if !POTTERY_ARRAY_ACCESS_INHERENT_BASE
-        #define {CONFIG}_SOLE_ARGS {NAME}_ref_t base
+        #define {CONFIG}_SOLE_ARGS {NAME}_entry_t base
         #define {CONFIG}_SOLE_VALS base
         #define {CONFIG}_ARGS_UNUSED (void)base
     #else

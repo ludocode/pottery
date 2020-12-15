@@ -44,7 +44,7 @@
     #define {DEST}_INDEX {SRC}_INDEX
 #endif
 
-// required config for non-trivial refs
+// required config for non-trivial entries
 #ifdef {SRC}_EQUAL
     #define {DEST}_EQUAL {SRC}_EQUAL
 #endif

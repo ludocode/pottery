@@ -324,6 +324,5 @@ bool pottery_deque_entry_equal(pottery_deque_t* deque,
 
 static inline
 bool pottery_deque_entry_exists(pottery_deque_t* deque, pottery_deque_entry_t entry) {
-    (void)deque;
-    return !pottery_deque_entry_equal(deque, entry,  pottery_deque_end(deque));
+    return !pottery_deque_entry_equal(deque, entry, pottery_deque_end(deque));
 }

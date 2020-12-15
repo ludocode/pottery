@@ -28,7 +28,9 @@
 // types
 #define {SRC}_t POTTERY_CONCAT({DEST}, _t)
 #define {SRC}_value_t POTTERY_CONCAT({DEST}, _value_t)
+#define {SRC}_ref_t POTTERY_CONCAT({DEST}, _ref_t)
 #define {SRC}_entry_t POTTERY_CONCAT({DEST}, _entry_t)
+#define {SRC}_context_t POTTERY_CONCAT({DEST}, _context_t)
 
 // lifecycle operations
 #define {SRC}_copy POTTERY_CONCAT({DEST}, _copy)

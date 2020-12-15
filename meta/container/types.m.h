@@ -25,14 +25,13 @@
 //!!! END_LICENSE
 // Forwards container type configuration from {SRC} to {DEST}
 
-// Forward the value and ref
-// (TODO temporarily forwarding both. Once entry and ref are fully separated
-// this will only forward one or the other.)
-#if defined({SRC}_REF_TYPE)
+// Forward the value or ref
+#if defined({SRC}_REF_TYPE) && !defined({SRC}_VALUE_TYPE)
     #define {DEST}_REF_TYPE {SRC}_REF_TYPE
-#endif
-#if defined({SRC}_VALUE_TYPE)
+#elif defined({SRC}_VALUE_TYPE) && !defined({SRC}_REF_TYPE)
     #define {DEST}_VALUE_TYPE {SRC}_VALUE_TYPE
+#else
+    #error "Exactly one of {SRC}_REF_TYPE or {SRC}_VALUE_TYPE must be defined."
 #endif
 
 // Forward the entry

@@ -57,7 +57,7 @@ template <typename RandomAccessIterator, typename Less>
 struct heap_sort_wrapper {
     #define POTTERY_HEAP_SORT_PREFIX heap_sort
     #define POTTERY_HEAP_SORT_VALUE_TYPE typename std::iterator_traits<RandomAccessIterator>::value_type
-    #define POTTERY_HEAP_SORT_REF_TYPE RandomAccessIterator
+    #define POTTERY_HEAP_SORT_ENTRY_TYPE RandomAccessIterator
     #define POTTERY_HEAP_SORT_LIFECYCLE_MOVE_BY_VALUE 1 // call move constructor
     #define POTTERY_HEAP_SORT_LIFECYCLE_SWAP_BY_VALUE 1 // call ADL-swap or std::swap
     #define POTTERY_HEAP_SORT_CONTEXT_TYPE Less

@@ -36,6 +36,12 @@ typedef POTTERY_INSERTION_SORT_REF_TYPE pottery_insertion_sort_ref_t;
 typedef pottery_insertion_sort_value_t* pottery_insertion_sort_ref_t;
 #endif
 
+#ifdef POTTERY_INSERTION_SORT_ENTRY_TYPE
+typedef POTTERY_INSERTION_SORT_ENTRY_TYPE pottery_insertion_sort_entry_t;
+#else
+typedef pottery_insertion_sort_ref_t pottery_insertion_sort_entry_t;
+#endif
+
 #ifdef POTTERY_INSERTION_SORT_CONTEXT_TYPE
 typedef POTTERY_INSERTION_SORT_CONTEXT_TYPE pottery_insertion_sort_context_t;
 #endif

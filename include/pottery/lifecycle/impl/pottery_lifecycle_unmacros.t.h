@@ -85,10 +85,12 @@
     // Un-renames lifecycle identifiers with prefix "pottery_lifecycle"
 
     // types
-    #undef pottery_lifecycle_ref_t
-    #undef pottery_lifecycle_const_ref_t
     #undef pottery_lifecycle_value_t
+    #undef pottery_lifecycle_ref_t
+    #undef pottery_lifecycle_entry_t
     #undef pottery_lifecycle_context_t
+
+    #undef pottery_lifecycle_const_ref_t
 
     // fundamental operations
     #undef pottery_lifecycle_init_steal

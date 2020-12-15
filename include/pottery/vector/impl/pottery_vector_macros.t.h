@@ -101,7 +101,9 @@
     // types
     #define pottery_vector_t POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _t)
     #define pottery_vector_value_t POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _value_t)
+    #define pottery_vector_ref_t POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _ref_t)
     #define pottery_vector_entry_t POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _entry_t)
+    #define pottery_vector_context_t POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _context_t)
 
     // lifecycle operations
     #define pottery_vector_copy POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _copy)
@@ -216,8 +218,10 @@
     // types
     #define pottery_vector_lifecycle_value_t POTTERY_CONCAT(POTTERY_VECTOR_LIFECYCLE_PREFIX, _value_t)
     #define pottery_vector_lifecycle_ref_t POTTERY_CONCAT(POTTERY_VECTOR_LIFECYCLE_PREFIX, _ref_t)
-    #define pottery_vector_lifecycle_const_ref_t POTTERY_CONCAT(POTTERY_VECTOR_LIFECYCLE_PREFIX, _const_ref_t)
+    #define pottery_vector_lifecycle_entry_t POTTERY_CONCAT(POTTERY_VECTOR_LIFECYCLE_PREFIX, _entry_t)
     #define pottery_vector_lifecycle_context_t POTTERY_CONCAT(POTTERY_VECTOR_LIFECYCLE_PREFIX, _context_t)
+
+    #define pottery_vector_lifecycle_const_ref_t POTTERY_CONCAT(POTTERY_VECTOR_LIFECYCLE_PREFIX, _const_ref_t)
 
     // fundamental operations
     #define pottery_vector_lifecycle_init_steal POTTERY_CONCAT(POTTERY_VECTOR_LIFECYCLE_PREFIX, _init_steal)

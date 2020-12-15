@@ -25,8 +25,9 @@
 //!!! END_LICENSE
 // Un-renames array_access identifiers with prefix "{PREFIX}"
 
-#undef {PREFIX}_ref_t
 #undef {PREFIX}_value_t
+#undef {PREFIX}_ref_t
+#undef {PREFIX}_entry_t
 #undef {PREFIX}_context_t
 
 #undef {PREFIX}_begin

@@ -28,8 +28,15 @@ In addition, the template instantiates functions to operate in bulk:
 - `move_bulk_down()` -- moves an array of objects to a potentially overlapping lower address
 
 
+### Reference Type
 
-### State and Context
+Unlike most other Pottery container algorithms, the Lifecycle template operates directly on the ref type, not the entry type. Lifecycle functions and configured lifecycle expressions take ref types as arguments.
+
+This is mainly because lifecycle functions need to be able to operate on temporary values (among other things.) When `VALUE_TYPE` is defined, lifecycle functions operate directly on value pointers, and any `ENTRY_TYPE` is ignored. This means algorithms that use the lifecycle template (like sort algorithms) must dereference entries themselves before calling into the lifecycle template.
+
+
+
+### Context
 
 All configured lifecycle expressions can take an optional context as the first parameter. This is enabled if a `CONTEXT_TYPE` is defined. The below descriptions of configuration parameters includes the context; it is omitted if there is no context.
 
@@ -77,6 +84,8 @@ All below configuration options are prefixed by the template being instantiated 
 This is the abstract reference type for which lifecycle functions are being generated. Values of this type are passed to all configured lifecycle expressions and acceepted by all generated functions (after the optional context.)
 
 This is usually either a pointer to the real type allowing lifecycle operations on objects in memory, or an abstract identifier to be used with the context to identify it. For example the context may be a database connection and the type may be the key for a row: in this case the `COPY` expression would copy data from one row to another.
+
+Note that `REF_TYPE` and `VALUE_TYPE` are mutually exclusive: you can only define one or the other.
 
 ### `VALUE_TYPE`
 

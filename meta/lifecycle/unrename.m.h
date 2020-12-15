@@ -26,10 +26,12 @@
 // Un-renames lifecycle identifiers with prefix "{PREFIX}"
 
 // types
-#undef {PREFIX}_ref_t
-#undef {PREFIX}_const_ref_t
 #undef {PREFIX}_value_t
+#undef {PREFIX}_ref_t
+#undef {PREFIX}_entry_t
 #undef {PREFIX}_context_t
+
+#undef {PREFIX}_const_ref_t
 
 // fundamental operations
 #undef {PREFIX}_init_steal

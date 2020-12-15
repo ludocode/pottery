@@ -21,11 +21,17 @@ The template also defines additional comparison helpers, available if any single
 - `clamp()` -- the given reference limited by min and max references
 - `median()` -- the median of three references
 
-The compare template operates on an abstract reference type with an optional context. In the simplest case, the reference type is just a pointer to an element in memory, and the comparison expressions need no context to compare them. In more advanced usage, the context could contain for example a database connection, and the reference type could be the key type for rows to be compared.
-
 This template does not distinguish between "weak" and "strong" ordering. Whether "equal" implies equivalence or equality is specific to the configured comparison expressions and the context in which they are used.
 
 This template currently does not support partial ordering. This means you cannot use it for example to sort an array of floats where some are NaN. Functions will be implemented with their opposites where necessary under the assumptions of symmetry and total ordering. For example if you configure only `LESS`, you'll get `less()`, its simple negation `greater_or_equal()`,  its symmetric equivalent `greater()` with swapped arguments, etc.
+
+
+
+## Reference Type
+
+The compare template operates on an abstract reference type with an optional context. In the simplest case, the reference type is just a pointer to an element in memory, and the comparison expressions need no context to compare them. In more advanced usage, the reference type could be an entry in a container, so you can compare container elements. The compare template can even compare abstract values not in memory: a context could contain for example a database connection, the reference type could be the key type for rows to be compared, and configured compare expressions could perform database queries to compare elements.
+
+The reference type configuration follows the standard type rules. All compare functions and all configured expressions take the same abstract reference type as argument, and functions like `min()` and `median()` return this same type, which is defined as `entry_t`. This is a typedef to `ENTRY_TYPE` if configured, otherwise `REF_TYPE` if configured, otherwise a pointer to `VALUE_TYPE`. If `COMPARE_BY_VALUE` is set to 1, `VALUE_TYPE` must be defined, and `ENTRY_VALUE` must be defined if `ENTRY_TYPE` is defined as something not implicitly convertible to a pointer to `VALUE_TYPE`. (This will be documented elsewhere soon.)
 
 
 
@@ -42,7 +48,7 @@ There isn't much point in using this directly. Still, it could potentially be us
 #include "pottery/compare/pottery_compare_static.t.h"
 ```
 
-This generates `string_equal()`, `string_less()`, `string_greater()`, `string_less_or_equal()`, `string_compare()`, `string_min()`, `string_max()`, `string_median()`, etc. all as wrappers to `strcmp()`.
+This generates `string_equal()`, `string_less()`, `string_greater()`, `string_less_or_equal()`, `string_min()`, `string_max()`, `string_clamp()`, `string_median()`, etc. all as wrappers to `strcmp()`.
 
 ```c
 string_median("carrot", "apple", "banana"); // returns "banana"
@@ -54,9 +60,22 @@ string_median("carrot", "apple", "banana"); // returns "banana"
 
 ### Types
 
-#### `REF_TYPE`
+Note that `ENTRY_TYPE`, `REF_TYPE` and `VALUE_TYPE` follow the usual rules (to be documented elsewhere soon.) Remember `REF_TYPE` and `VALUE_TYPE` are mutually exclusive, so must define one of these combinations:
 
-- `REF_TYPE`, a type
+- Only `VALUE_TYPE` for primitives, structs and other value types;
+
+- Only `REF_TYPE` for pointers, abstract references, etc. (as in the `strcmp` example above);
+
+- `ENTRY_TYPE` and `VALUE_TYPE` for typical memory containers, such as Pottery containers;
+
+- `ENTRY_TYPE` and `REF_TYPE` for more abstract containers (like the database connection example earlier.)
+
+If `ENTRY_TYPE` is configured, `ENTRY_VALUE` must (usually) be as well to convert the entry to a ref.
+
+
+#### `ENTRY_TYPE`
+
+- `ENTRY_TYPE`, a type
 
 This is the abstract reference type for the type to be compared. Two values of this type are passed to all configured comparison expressions (after the optional context.)
 
@@ -65,6 +84,14 @@ This is usually either:
 - A pointer to the real type, allowing comparisons on objects in memory; or
 
 - An identifier to be used with the context to identify it. For example the context may be a database connection and the type may be the key for a row: in this case the compare expressions would pull the given rows from the database and compare them.
+
+If not configured, this defaults to `REF_TYPE` if configured, otherwise a pointer to `VALUE_TYPE`.
+
+#### `REF_TYPE`
+
+An abstract reference for the type to be compared.
+
+(This is separate from `ENTRY_TYPE` because if `VALUE_TYPE` exists, `REF_TYPE` cannot, and `ref_t` must be a pointer to `value_t`.)
 
 #### `VALUE_TYPE`
 

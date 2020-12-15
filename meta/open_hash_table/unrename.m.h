@@ -25,10 +25,12 @@
 //!!! END_LICENSE
 // Un-renames open_hash_table identifiers with prefix "{PREFIX}"
 
-#undef {PREFIX}_ref_t
 #undef {PREFIX}_value_t
-#undef {PREFIX}_key_t
+#undef {PREFIX}_ref_t
+#undef {PREFIX}_entry_t
 #undef {PREFIX}_context_t
+
+#undef {PREFIX}_key_t
 
 #undef {PREFIX}_emplace
 #undef {PREFIX}_insert

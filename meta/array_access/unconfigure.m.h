@@ -39,7 +39,7 @@
 #undef {PREFIX}_SELECT
 #undef {PREFIX}_INDEX
 
-// required config for non-trivial refs
+// required config for non-trivial entries
 #undef {PREFIX}_EQUAL
 
 // optional configs

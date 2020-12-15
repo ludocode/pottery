@@ -310,8 +310,10 @@
     // types
     #define pottery_lifecycle_value_t POTTERY_CONCAT(POTTERY_LIFECYCLE_PREFIX, _value_t)
     #define pottery_lifecycle_ref_t POTTERY_CONCAT(POTTERY_LIFECYCLE_PREFIX, _ref_t)
-    #define pottery_lifecycle_const_ref_t POTTERY_CONCAT(POTTERY_LIFECYCLE_PREFIX, _const_ref_t)
+    #define pottery_lifecycle_entry_t POTTERY_CONCAT(POTTERY_LIFECYCLE_PREFIX, _entry_t)
     #define pottery_lifecycle_context_t POTTERY_CONCAT(POTTERY_LIFECYCLE_PREFIX, _context_t)
+
+    #define pottery_lifecycle_const_ref_t POTTERY_CONCAT(POTTERY_LIFECYCLE_PREFIX, _const_ref_t)
 
     // fundamental operations
     #define pottery_lifecycle_init_steal POTTERY_CONCAT(POTTERY_LIFECYCLE_PREFIX, _init_steal)

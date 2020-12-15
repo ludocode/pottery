@@ -26,6 +26,11 @@
 #error "This is an internal header. Do not include it."
 #endif
 
+
+/*
+ * Types
+ */
+
 #if defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE)
 typedef POTTERY_ARRAY_ACCESS_VALUE_TYPE pottery_array_access_value_t;
 #endif
@@ -34,6 +39,12 @@ typedef POTTERY_ARRAY_ACCESS_VALUE_TYPE pottery_array_access_value_t;
 typedef POTTERY_ARRAY_ACCESS_REF_TYPE pottery_array_access_ref_t;
 #else
 typedef pottery_array_access_value_t* pottery_array_access_ref_t;
+#endif
+
+#ifdef POTTERY_ARRAY_ACCESS_ENTRY_TYPE
+typedef POTTERY_ARRAY_ACCESS_ENTRY_TYPE pottery_array_access_entry_t;
+#else
+typedef pottery_array_access_ref_t pottery_array_access_entry_t;
 #endif
 
 #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
@@ -48,13 +59,13 @@ typedef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE pottery_array_access_context_t;
 
 #if POTTERY_FORWARD_DECLARATIONS
 static inline
-pottery_array_access_ref_t pottery_array_access_select(
+pottery_array_access_entry_t pottery_array_access_select(
         POTTERY_ARRAY_ACCESS_ARGS
         size_t index);
 
 #if POTTERY_ARRAY_ACCESS_INHERENT_COUNT
 static inline
-pottery_array_access_ref_t pottery_array_access_end(
+pottery_array_access_entry_t pottery_array_access_end(
         POTTERY_ARRAY_ACCESS_SOLE_ARGS);
 
 static inline
@@ -66,41 +77,37 @@ size_t pottery_array_access_count(
 
 
 /**
- * Returns a pointer to the value for a ref.
+ * Returns a ref for an entry.
  *
- * The ref must exist.
+ * The entry must exist.
  */
-#if 0
-#if defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE)
 static inline
-pottery_array_access_value_t* pottery_array_access_value(
+pottery_array_access_ref_t pottery_array_access_value(
         POTTERY_ARRAY_ACCESS_ARGS
-        pottery_array_access_ref_t ref)
+        pottery_array_access_entry_t entry)
 {
     POTTERY_ARRAY_ACCESS_ARGS_UNUSED;
 
-    #ifdef POTTERY_ARRAY_ACCESS_REF_VALUE
+    #ifdef POTTERY_ARRAY_ACCESS_ENTRY_VALUE
         #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
-            return (POTTERY_ARRAY_ACCESS_REF_VALUE((context), (ref)));
+            return (POTTERY_ARRAY_ACCESS_ENTRY_VALUE((context), (entry)));
         #else
-            return (POTTERY_ARRAY_ACCESS_REF_VALUE((ref)));
+            return (POTTERY_ARRAY_ACCESS_ENTRY_VALUE((entry)));
         #endif
     #else
-        // Without a REF_VALUE expression, the ref type must be a pointer to
-        // the value type.
-        return ref;
+        // Without an ENTRY_VALUE expression, the entry type must implicitly
+        // convertible to the ref type (usually it's the same type.)
+        return entry;
     #endif
 }
-#endif
-#endif
 
 
 
 /**
- * Returns the first ref, or the end ref if empty.
+ * Returns the first entry, or the end entry if empty.
  */
 static inline
-pottery_array_access_ref_t pottery_array_access_begin(
+pottery_array_access_entry_t pottery_array_access_begin(
         POTTERY_ARRAY_ACCESS_SOLE_ARGS
 ) {
     POTTERY_ARRAY_ACCESS_ARGS_UNUSED;
@@ -121,10 +128,10 @@ pottery_array_access_ref_t pottery_array_access_begin(
 
 #if POTTERY_ARRAY_ACCESS_INHERENT_COUNT
 /**
- * Returns the end ref.
+ * Returns the end entry.
  */
 static inline
-pottery_array_access_ref_t pottery_array_access_end(
+pottery_array_access_entry_t pottery_array_access_end(
         POTTERY_ARRAY_ACCESS_SOLE_ARGS
 ) {
     POTTERY_ARRAY_ACCESS_ARGS_UNUSED;
@@ -183,11 +190,11 @@ size_t pottery_array_access_count(
 
 
 /**
- * Returns the ref with the given index, or the end ref if the given index is
+ * Returns the entry with the given index, or the end entry if the given index is
  * the total number of elements.
  */
 static inline
-pottery_array_access_ref_t pottery_array_access_select(
+pottery_array_access_entry_t pottery_array_access_select(
         POTTERY_ARRAY_ACCESS_ARGS
         size_t index)
 {
@@ -211,7 +218,7 @@ pottery_array_access_ref_t pottery_array_access_select(
     #elif defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE)
         // standard C array
         #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
-        pottery_array_access_ref_t base = pottery_array_access_begin(
+        pottery_array_access_entry_t base = pottery_array_access_begin(
                 POTTERY_ARRAY_ACCESS_SOLE_VALS);
         #endif
         return base + index;
@@ -224,37 +231,37 @@ pottery_array_access_ref_t pottery_array_access_select(
 
 
 /**
- * Returns the index of the given ref.
+ * Returns the index of the given entry.
  */
 static inline
 size_t pottery_array_access_index(
         POTTERY_ARRAY_ACCESS_ARGS
-        pottery_array_access_ref_t ref)
+        pottery_array_access_entry_t entry)
 {
     POTTERY_ARRAY_ACCESS_ARGS_UNUSED;
 
     #ifdef POTTERY_ARRAY_ACCESS_INDEX
         #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
             #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
-                return (POTTERY_ARRAY_ACCESS_INDEX((context), (ref)));
+                return (POTTERY_ARRAY_ACCESS_INDEX((context), (entry)));
             #else
-                return (POTTERY_ARRAY_ACCESS_INDEX((ref)));
+                return (POTTERY_ARRAY_ACCESS_INDEX((entry)));
             #endif
         #else
             #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
-                return (POTTERY_ARRAY_ACCESS_INDEX((context), (base), (ref)));
+                return (POTTERY_ARRAY_ACCESS_INDEX((context), (base), (entry)));
             #else
-                return (POTTERY_ARRAY_ACCESS_INDEX((base), (ref)));
+                return (POTTERY_ARRAY_ACCESS_INDEX((base), (entry)));
             #endif
         #endif
 
     #elif defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE)
         // standard C array
         #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
-        pottery_array_access_ref_t base = pottery_array_access_begin(
+        pottery_array_access_entry_t base = pottery_array_access_begin(
                 POTTERY_ARRAY_ACCESS_SOLE_VALS);
         #endif
-        return pottery_cast(size_t, ref - base);
+        return pottery_cast(size_t, entry - base);
 
     #else
         #error "Pottery template error!"
@@ -264,21 +271,21 @@ size_t pottery_array_access_index(
 
 
 /**
- * Returns the offset of the second ref relative to the first. This is the
- * difference in index between the two given refs (i.e. the number of elements
+ * Returns the offset of the second entry relative to the first. This is the
+ * difference in index between the two given entries (i.e. the number of elements
  * between them plus one.)
  *
- * If second comes before first, the return value is negative. If the refs
+ * If second comes before first, the return value is negative. If the entries
  * are equal, the return value is zero.
  *
- * This is the opposite of shift(). Calling shift() on the first ref with the
- * return value of this should return the second ref.
+ * This is the opposite of shift(). Calling shift() on the first entry with the
+ * return value of this should return the second entry.
  */
 static inline
 ptrdiff_t pottery_array_access_offset(
         POTTERY_ARRAY_ACCESS_ARGS
-        pottery_array_access_ref_t first,
-        pottery_array_access_ref_t second)
+        pottery_array_access_entry_t first,
+        pottery_array_access_entry_t second)
 {
     POTTERY_ARRAY_ACCESS_ARGS_UNUSED;
 
@@ -313,12 +320,12 @@ ptrdiff_t pottery_array_access_offset(
 
 
 /**
- * Returns a ref shifted forwards or backwards by a signed number of elements.
+ * Returns a entry shifted forwards or backwards by a signed number of elements.
  */
 static inline
-pottery_array_access_ref_t pottery_array_access_shift(
+pottery_array_access_entry_t pottery_array_access_shift(
         POTTERY_ARRAY_ACCESS_ARGS
-        pottery_array_access_ref_t ref,
+        pottery_array_access_entry_t entry,
         ptrdiff_t offset)
 {
     POTTERY_ARRAY_ACCESS_ARGS_UNUSED;
@@ -326,22 +333,22 @@ pottery_array_access_ref_t pottery_array_access_shift(
     #ifdef POTTERY_ARRAY_ACCESS_SHIFT
         #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
             #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
-                return (POTTERY_ARRAY_ACCESS_SHIFT((context), (ref), (offset)));
+                return (POTTERY_ARRAY_ACCESS_SHIFT((context), (entry), (offset)));
             #else
-                return (POTTERY_ARRAY_ACCESS_SHIFT((ref), (offset)));
+                return (POTTERY_ARRAY_ACCESS_SHIFT((entry), (offset)));
             #endif
         #else
             #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
-                return (POTTERY_ARRAY_ACCESS_SHIFT((context), (base), (ref), (offset)));
+                return (POTTERY_ARRAY_ACCESS_SHIFT((context), (base), (entry), (offset)));
             #else
-                return (POTTERY_ARRAY_ACCESS_SHIFT((base), (ref), (offset)));
+                return (POTTERY_ARRAY_ACCESS_SHIFT((base), (entry), (offset)));
             #endif
         #endif
 
     #elif defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE) && \
                 !defined(POTTERY_ARRAY_ACCESS_SELECT) && !defined(POTTERY_ARRAY_ACCESS_INDEX)
         // standard C array
-        return ref + offset;
+        return entry + offset;
 
     #else
         // add offset to index
@@ -350,34 +357,34 @@ pottery_array_access_ref_t pottery_array_access_shift(
                 pottery_cast(size_t,
                     pottery_cast(ptrdiff_t, pottery_array_access_index(
                         POTTERY_ARRAY_ACCESS_VALS
-                        ref)) + offset));
+                        entry)) + offset));
     #endif
 }
 
 
 
 /**
- * Returns the ref following the given ref.
+ * Returns the entry following the given entry.
  */
 static inline
-pottery_array_access_ref_t pottery_array_access_next(
+pottery_array_access_entry_t pottery_array_access_next(
         POTTERY_ARRAY_ACCESS_ARGS
-        pottery_array_access_ref_t ref)
+        pottery_array_access_entry_t entry)
 {
     POTTERY_ARRAY_ACCESS_ARGS_UNUSED;
 
     #ifdef POTTERY_ARRAY_ACCESS_NEXT
         #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
             #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
-                return (POTTERY_ARRAY_ACCESS_NEXT((context), (ref)));
+                return (POTTERY_ARRAY_ACCESS_NEXT((context), (entry)));
             #else
-                return (POTTERY_ARRAY_ACCESS_NEXT((ref)));
+                return (POTTERY_ARRAY_ACCESS_NEXT((entry)));
             #endif
         #else
             #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
-                return (POTTERY_ARRAY_ACCESS_NEXT((context), (base), (ref)));
+                return (POTTERY_ARRAY_ACCESS_NEXT((context), (base), (entry)));
             #else
-                return (POTTERY_ARRAY_ACCESS_NEXT((base), (ref)));
+                return (POTTERY_ARRAY_ACCESS_NEXT((base), (entry)));
             #endif
         #endif
 
@@ -385,34 +392,34 @@ pottery_array_access_ref_t pottery_array_access_next(
         // shift by +1
         return pottery_array_access_shift(
                 POTTERY_ARRAY_ACCESS_VALS
-                ref, 1);
+                entry, 1);
     #endif
 }
 
 
 
 /**
- * Returns the ref preceding the given ref.
+ * Returns the entry preceding the given entry.
  */
 static inline
-pottery_array_access_ref_t pottery_array_access_previous(
+pottery_array_access_entry_t pottery_array_access_previous(
         POTTERY_ARRAY_ACCESS_ARGS
-        pottery_array_access_ref_t ref)
+        pottery_array_access_entry_t entry)
 {
     POTTERY_ARRAY_ACCESS_ARGS_UNUSED;
 
     #ifdef POTTERY_ARRAY_ACCESS_PREVIOUS
         #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
             #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
-                return (POTTERY_ARRAY_ACCESS_PREVIOUS((context), (ref)));
+                return (POTTERY_ARRAY_ACCESS_PREVIOUS((context), (entry)));
             #else
-                return (POTTERY_ARRAY_ACCESS_PREVIOUS((ref)));
+                return (POTTERY_ARRAY_ACCESS_PREVIOUS((entry)));
             #endif
         #else
             #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
-                return (POTTERY_ARRAY_ACCESS_PREVIOUS((context), (base), (ref)));
+                return (POTTERY_ARRAY_ACCESS_PREVIOUS((context), (base), (entry)));
             #else
-                return (POTTERY_ARRAY_ACCESS_PREVIOUS((base), (ref)));
+                return (POTTERY_ARRAY_ACCESS_PREVIOUS((base), (entry)));
             #endif
         #endif
 
@@ -420,20 +427,20 @@ pottery_array_access_ref_t pottery_array_access_previous(
         // shift by -1
         return pottery_array_access_shift(
                 POTTERY_ARRAY_ACCESS_VALS
-                ref, -1);
+                entry, -1);
     #endif
 }
 
 
 
 /**
- * Returns true if the given refs are equal; false otherwise.
+ * Returns true if the given entries are equal; false otherwise.
  */
 static inline
 bool pottery_array_access_equal(
         POTTERY_ARRAY_ACCESS_ARGS
-        pottery_array_access_ref_t left,
-        pottery_array_access_ref_t right)
+        pottery_array_access_entry_t left,
+        pottery_array_access_entry_t right)
 {
     POTTERY_ARRAY_ACCESS_ARGS_UNUSED;
 
@@ -468,28 +475,28 @@ bool pottery_array_access_equal(
 
 #if POTTERY_ARRAY_ACCESS_INHERENT_COUNT
 /**
- * Returns true if the given ref exists (i.e. is not the end ref), false if it
- * does not (i.e. is the end ref.)
+ * Returns true if the given entry exists (i.e. is not the end entry), false if it
+ * does not (i.e. is the end entry.)
  */
 static inline
 bool pottery_array_access_exists(
         POTTERY_ARRAY_ACCESS_ARGS
-        pottery_array_access_ref_t ref)
+        pottery_array_access_entry_t entry)
 {
     POTTERY_ARRAY_ACCESS_ARGS_UNUSED;
 
     #ifdef POTTERY_ARRAY_ACCESS_EXISTS
         #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
             #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
-                return (POTTERY_ARRAY_ACCESS_EXISTS((context), (ref)));
+                return (POTTERY_ARRAY_ACCESS_EXISTS((context), (entry)));
             #else
-                return (POTTERY_ARRAY_ACCESS_EXISTS((ref)));
+                return (POTTERY_ARRAY_ACCESS_EXISTS((entry)));
             #endif
         #else
             #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
-                return (POTTERY_ARRAY_ACCESS_EXISTS((context), (base), (ref)));
+                return (POTTERY_ARRAY_ACCESS_EXISTS((context), (base), (entry)));
             #else
-                return (POTTERY_ARRAY_ACCESS_EXISTS((base), (ref)));
+                return (POTTERY_ARRAY_ACCESS_EXISTS((base), (entry)));
             #endif
         #endif
 
@@ -497,15 +504,15 @@ bool pottery_array_access_exists(
                 !defined(POTTERY_ARRAY_ACCESS_SELECT) && !defined(POTTERY_ARRAY_ACCESS_INDEX)
         // standard C array
         #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
-        pottery_array_access_ref_t base = pottery_array_access_begin(
+        pottery_array_access_entry_t base = pottery_array_access_begin(
                 POTTERY_ARRAY_ACCESS_SOLE_VALS);
         #endif
         size_t total_count = pottery_array_access_count(POTTERY_ARRAY_ACCESS_SOLE_VALS);
-        return ref != base + total_count;
+        return entry != base + total_count;
 
     #else
-        // compare against end ref
-        return !pottery_array_access_equal(POTTERY_ARRAY_ACCESS_VALS ref,
+        // compare against end entry
+        return !pottery_array_access_equal(POTTERY_ARRAY_ACCESS_VALS entry,
                 pottery_array_access_end(POTTERY_ARRAY_ACCESS_SOLE_VALS));
     #endif
 }

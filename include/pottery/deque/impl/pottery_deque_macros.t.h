@@ -64,7 +64,9 @@
     // types
     #define pottery_deque_t POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _t)
     #define pottery_deque_value_t POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _value_t)
+    #define pottery_deque_ref_t POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _ref_t)
     #define pottery_deque_entry_t POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _entry_t)
+    #define pottery_deque_context_t POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _context_t)
 
     // lifecycle operations
     #define pottery_deque_copy POTTERY_CONCAT(POTTERY_DEQUE_PREFIX, _copy)
@@ -177,7 +179,9 @@
     // types
     #define pottery_deque_page_ring_t POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _t)
     #define pottery_deque_page_ring_value_t POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _value_t)
+    #define pottery_deque_page_ring_ref_t POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _ref_t)
     #define pottery_deque_page_ring_entry_t POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _entry_t)
+    #define pottery_deque_page_ring_context_t POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _context_t)
 
     // lifecycle operations
     #define pottery_deque_page_ring_copy POTTERY_CONCAT(POTTERY_DEQUE_NAME(_page_ring), _copy)
@@ -296,8 +300,10 @@
     // types
     #define pottery_deque_lifecycle_value_t POTTERY_CONCAT(POTTERY_DEQUE_LIFECYCLE_PREFIX, _value_t)
     #define pottery_deque_lifecycle_ref_t POTTERY_CONCAT(POTTERY_DEQUE_LIFECYCLE_PREFIX, _ref_t)
-    #define pottery_deque_lifecycle_const_ref_t POTTERY_CONCAT(POTTERY_DEQUE_LIFECYCLE_PREFIX, _const_ref_t)
+    #define pottery_deque_lifecycle_entry_t POTTERY_CONCAT(POTTERY_DEQUE_LIFECYCLE_PREFIX, _entry_t)
     #define pottery_deque_lifecycle_context_t POTTERY_CONCAT(POTTERY_DEQUE_LIFECYCLE_PREFIX, _context_t)
+
+    #define pottery_deque_lifecycle_const_ref_t POTTERY_CONCAT(POTTERY_DEQUE_LIFECYCLE_PREFIX, _const_ref_t)
 
     // fundamental operations
     #define pottery_deque_lifecycle_init_steal POTTERY_CONCAT(POTTERY_DEQUE_LIFECYCLE_PREFIX, _init_steal)

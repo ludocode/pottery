@@ -133,7 +133,9 @@
     // types
     #undef pottery_vector_t
     #undef pottery_vector_value_t
+    #undef pottery_vector_ref_t
     #undef pottery_vector_entry_t
+    #undef pottery_vector_context_t
 
     // fundamental operations
     #undef pottery_vector_copy
@@ -246,10 +248,12 @@
     // Un-renames lifecycle identifiers with prefix "pottery_vector_lifecycle"
 
     // types
-    #undef pottery_vector_lifecycle_ref_t
-    #undef pottery_vector_lifecycle_const_ref_t
     #undef pottery_vector_lifecycle_value_t
+    #undef pottery_vector_lifecycle_ref_t
+    #undef pottery_vector_lifecycle_entry_t
     #undef pottery_vector_lifecycle_context_t
+
+    #undef pottery_vector_lifecycle_const_ref_t
 
     // fundamental operations
     #undef pottery_vector_lifecycle_init_steal

@@ -34,6 +34,11 @@ typedef struct pottery_deque_entry_t {
 
 typedef struct pottery_deque_t pottery_deque_t;
 
+#if POTTERY_FORWARD_DECLARATIONS
+static inline
+bool pottery_deque_entry_exists(pottery_deque_t* deque, pottery_deque_entry_t entry);
+#endif
+
 static inline
 pottery_deque_entry_t pottery_deque_entry_make(
         pottery_deque_page_t* page,
@@ -49,6 +54,6 @@ pottery_deque_value_t* pottery_deque_entry_value(
         pottery_deque_entry_t entry)
 {
     (void)deque;
-    pottery_assert(entry.value != pottery_null);
+    pottery_assert(pottery_deque_entry_exists(deque, entry));
     return entry.value;
 }
