@@ -80,8 +80,8 @@
 typedef int32_t score_t;
 
 // Zero-ply mates. Add/subtract 1 per ply.
-static const int32_t score_mate_by_white = 1000000;
-static const int32_t score_mate_by_black = -score_mate_by_white;
+#define score_mate_by_white 1000000
+#define score_mate_by_black (-score_mate_by_white)
 
 static inline bool score_is_mate_by_white(score_t score) {
     return score > score_mate_by_white - 100000;

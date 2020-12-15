@@ -17,7 +17,9 @@ FORCE:
 CPPFLAGS :=
 CPPFLAGS += -I../../../include -DPOTTERY_AVAILABLE=1
 CPPFLAGS += -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter
+ifneq ($(CC),tcc)
 CPPFLAGS += -MD -MP
+endif
 
 CFLAGS = -O0 -g
 LDFLAGS =
