@@ -105,22 +105,17 @@
     #undef pottery_oht_next
     #undef pottery_oht_previous
 
-    #undef pottery_oht_access_at
-    #undef pottery_oht_access_index
-    #undef pottery_oht_access_next
-    #undef pottery_oht_access_previous
-
     #undef pottery_oht_key
     #undef pottery_oht_key_hash
     #undef pottery_oht_key_equal
     #undef pottery_oht_double_hash_interval
-    #undef pottery_oht_is_tombstone
-    #undef pottery_oht_set_tombstone
-    #undef pottery_oht_is_empty
-    #undef pottery_oht_set_empty
-    #undef pottery_oht_is_element
-    #undef pottery_oht_ref_in_use
-    #undef pottery_oht_ref_exists
+    #undef pottery_oht_entry_is_tombstone
+    #undef pottery_oht_entry_set_tombstone
+    #undef pottery_oht_entry_is_empty
+    #undef pottery_oht_entry_set_empty
+    #undef pottery_oht_entry_is_element
+    #undef pottery_oht_entry_in_use
+    #undef pottery_oht_entry_exists
 
     #undef pottery_oht_bucket_for_hash
     #undef pottery_oht_next_probe

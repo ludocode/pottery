@@ -99,12 +99,12 @@ static void add_employees(employees_t* employees) {
         employee_init_values(&homer, "Homer", "Simpson", "1986-01-01", 26);
 
         // Moves homer into the container
-        employee_t* ref = pottery_null;
-        employees_emplace(employees, employee_number(&homer), &ref, pottery_null);
-        employee_move(ref, &homer);
+        employee_t* entry = pottery_null;
+        employees_emplace(employees, employee_number(&homer), &entry, pottery_null);
+        employee_move(entry, &homer);
 
         printf("Added: ");
-        print_employee(ref);
+        print_employee(entry);
         printf("\n");
 
         // homer is now uninitialized! We don't destroy it.
@@ -128,13 +128,13 @@ static void add_employees(employees_t* employees) {
 
         // Inserts a copy of bob
         bool created = false;
-        employee_t* ref = pottery_null;
-        employees_emplace(employees, employee_number(&bob), &ref, &created);
+        employee_t* entry = pottery_null;
+        employees_emplace(employees, employee_number(&bob), &entry, &created);
         pottery_assert(created);
-        employee_init_copy(ref, &bob);
+        employee_init_copy(entry, &bob);
 
         printf("Added: ");
-        print_employee(ref);
+        print_employee(entry);
         printf("\n");
 
         // We still need to destroy our original bob.
@@ -147,12 +147,12 @@ static void add_employees(employees_t* employees) {
         employee_init_values(&stan, "Stan", "Smith", "1990-01-01", stan_number);
 
         // Inserts stan, stealing its contents
-        employee_t* ref = pottery_null;
-        employees_emplace(employees, employee_number(&stan), &ref, pottery_null);
-        employee_init_steal(ref, &stan);
+        employee_t* entry = pottery_null;
+        employees_emplace(employees, employee_number(&stan), &entry, pottery_null);
+        employee_init_steal(entry, &stan);
 
         printf("Added: ");
-        print_employee(ref);
+        print_employee(entry);
         printf("\n");
 
         // Stan is still initialized, but it contains junk. We still need to
@@ -167,7 +167,7 @@ static void manipulate_employees(employees_t* employees) {
     // Find Stan
     int stan_number = 42;
     employee_t* employee = employees_find(employees, stan_number);
-    if (employees_ref_exists(employees, employee)) {
+    if (employees_entry_exists(employees, employee)) {
         printf("Found: ");
         print_employee(employee);
         printf("\n");
@@ -204,13 +204,14 @@ static void manipulate_employees(employees_t* employees) {
 
     // Check that Kyle no longer exists
     employee = employees_find(employees, kyle_number);
-    if (employees_ref_exists(employees, employee))
+    if (employees_entry_exists(employees, employee))
         abort();
     printf("No employee with number %i exists\n", kyle_number);
 
     // List the remaining employees
     employee = employees_first(employees);
-    for (; employees_ref_exists(employees, employee); employees_next(employees, &employee)) {
+    for (; employees_entry_exists(employees, employee);
+            employee = employees_next(employees, employee)) {
         printf("Remaining employee: ");
         print_employee(employee);
         printf("\n");

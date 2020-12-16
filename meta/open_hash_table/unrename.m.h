@@ -50,22 +50,17 @@
 #undef {PREFIX}_next
 #undef {PREFIX}_previous
 
-#undef {PREFIX}_access_at
-#undef {PREFIX}_access_index
-#undef {PREFIX}_access_next
-#undef {PREFIX}_access_previous
-
 #undef {PREFIX}_key
 #undef {PREFIX}_key_hash
 #undef {PREFIX}_key_equal
 #undef {PREFIX}_double_hash_interval
-#undef {PREFIX}_is_tombstone
-#undef {PREFIX}_set_tombstone
-#undef {PREFIX}_is_empty
-#undef {PREFIX}_set_empty
-#undef {PREFIX}_is_element
-#undef {PREFIX}_ref_in_use
-#undef {PREFIX}_ref_exists
+#undef {PREFIX}_entry_is_tombstone
+#undef {PREFIX}_entry_set_tombstone
+#undef {PREFIX}_entry_is_empty
+#undef {PREFIX}_entry_set_empty
+#undef {PREFIX}_entry_is_element
+#undef {PREFIX}_entry_in_use
+#undef {PREFIX}_entry_exists
 
 #undef {PREFIX}_bucket_for_hash
 #undef {PREFIX}_next_probe

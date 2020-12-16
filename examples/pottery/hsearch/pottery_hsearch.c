@@ -56,9 +56,9 @@ int pottery_hsearch_r(POTTERY_ENTRY item, POTTERY_ACTION action,
     // a BSD or POSIX requirement.
     if (table != NULL) {
         if (action == POTTERY_FIND) {
-            pottery_hsearch_impl_ref_t impl_entry =
+            pottery_hsearch_impl_entry_t impl_entry =
                     pottery_hsearch_impl_find(&table->impl, item.key);
-            if (!pottery_hsearch_impl_ref_exists(&table->impl, impl_entry)) {
+            if (!pottery_hsearch_impl_entry_exists(&table->impl, impl_entry)) {
                 *entry = NULL;
                 // GNU and BSD require that we set errno to ESRCH. This is not
                 // actually a POSIX requirement.
@@ -69,7 +69,7 @@ int pottery_hsearch_r(POTTERY_ENTRY item, POTTERY_ACTION action,
             return 1;
 
         } else if (action == POTTERY_ENTER) {
-            pottery_hsearch_impl_ref_t impl_entry;
+            pottery_hsearch_impl_entry_t impl_entry;
             if (POTTERY_OK != pottery_hsearch_impl_emplace(&table->impl, item.key, &impl_entry, NULL)) {
                 // The BSDs require that entry be set to NULL on error. This is also
                 // necessary to allow our hsearch() wrapper to ignore the return value.
@@ -102,14 +102,14 @@ void pottery_hdestroy1_r(struct pottery_hsearch_data *table,
     // them from the map. The only operation we do after this is destroying the
     // map which does not involve any key comparisons so it's safe.
     if (free_key != NULL && free_data != NULL) {
-        pottery_hsearch_impl_ref_t impl_entry = pottery_hsearch_impl_begin(&table->impl);
-        while (pottery_hsearch_impl_ref_exists(&table->impl, impl_entry)) {
+        pottery_hsearch_impl_entry_t impl_entry = pottery_hsearch_impl_begin(&table->impl);
+        while (pottery_hsearch_impl_entry_exists(&table->impl, impl_entry)) {
             POTTERY_ENTRY* entry = impl_entry;
             if (free_key)
                 free_key(entry->key);
             if (free_data)
                 free_data(entry->data);
-            pottery_hsearch_impl_next(&table->impl, &impl_entry);
+            impl_entry = pottery_hsearch_impl_next(&table->impl, impl_entry);
         }
     }
 

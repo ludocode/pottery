@@ -120,8 +120,9 @@
 #undef POTTERY_OPEN_HASH_MAP_NAME
 
 #undef pottery_ohm_t
-#undef pottery_ohm_ref_t
 #undef pottery_ohm_value_t
+#undef pottery_ohm_ref_t
+#undef pottery_ohm_entry_t
 #undef pottery_ohm_key_t
 #undef pottery_ohm_context_t
 
@@ -146,14 +147,14 @@
 #undef pottery_ohm_next
 #undef pottery_ohm_previous
 
-#undef pottery_ohm_ref_exists
-#undef pottery_ohm_ref_move
-#undef pottery_ohm_ref_key
-#undef pottery_ohm_ref_key_equal
-#undef pottery_ohm_ref_key_hash
-#undef pottery_ohm_ref_is_empty
-#undef pottery_ohm_ref_set_empty
-#undef pottery_ohm_ref_is_value
+#undef pottery_ohm_entry_exists
+#undef pottery_ohm_entry_move
+#undef pottery_ohm_entry_key
+#undef pottery_ohm_entry_key_equal
+#undef pottery_ohm_entry_key_hash
+#undef pottery_ohm_entry_is_empty
+#undef pottery_ohm_entry_set_empty
+#undef pottery_ohm_entry_is_value
 
 #undef pottery_ohm_bucket_count
 #undef pottery_ohm_impl_values
@@ -201,22 +202,17 @@
     #undef pottery_ohm_table_next
     #undef pottery_ohm_table_previous
 
-    #undef pottery_ohm_table_access_at
-    #undef pottery_ohm_table_access_index
-    #undef pottery_ohm_table_access_next
-    #undef pottery_ohm_table_access_previous
-
     #undef pottery_ohm_table_key
     #undef pottery_ohm_table_key_hash
     #undef pottery_ohm_table_key_equal
     #undef pottery_ohm_table_double_hash_interval
-    #undef pottery_ohm_table_is_tombstone
-    #undef pottery_ohm_table_set_tombstone
-    #undef pottery_ohm_table_is_empty
-    #undef pottery_ohm_table_set_empty
-    #undef pottery_ohm_table_is_element
-    #undef pottery_ohm_table_ref_in_use
-    #undef pottery_ohm_table_ref_exists
+    #undef pottery_ohm_table_entry_is_tombstone
+    #undef pottery_ohm_table_entry_set_tombstone
+    #undef pottery_ohm_table_entry_is_empty
+    #undef pottery_ohm_table_entry_set_empty
+    #undef pottery_ohm_table_entry_is_element
+    #undef pottery_ohm_table_entry_in_use
+    #undef pottery_ohm_table_entry_exists
 
     #undef pottery_ohm_table_bucket_for_hash
     #undef pottery_ohm_table_next_probe

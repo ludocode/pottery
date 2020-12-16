@@ -66,7 +66,7 @@ pottery_compare_ref_t pottery_compare_ref(POTTERY_COMPARE_CONTEXT_ARG
             return (POTTERY_COMPARE_ENTRY_REF((entry)));
         #endif
     #else
-        // Without an ENTRY_REF expression, the entry type must implicitly
+        // Without an ENTRY_REF expression, the entry type must be implicitly
         // convertible to the ref type (usually it's the same type.)
         return entry;
     #endif

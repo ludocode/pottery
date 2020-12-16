@@ -31,8 +31,9 @@
 typedef POTTERY_OPEN_HASH_MAP_VALUE_TYPE pottery_ohm_value_t;
 #endif
 
-// The ref is a pointer to an element and bucket in the hash table.
+// The ref and entry are both pointers to a bucket in the hash table.
 typedef pottery_ohm_value_t* pottery_ohm_ref_t;
+typedef pottery_ohm_value_t* pottery_ohm_entry_t;
 
 // The key type is an abstract handle to a key used for lookups in the hash
 // table. Each element in the hash table has a unique key.
@@ -68,44 +69,44 @@ typedef enum pottery_ohm_bucket_state_t {
 typedef struct pottery_ohm_t pottery_ohm_t;
 
 static inline
-void pottery_ohm_ref_move(pottery_ohm_t* map, pottery_ohm_ref_t to, pottery_ohm_ref_t from);
+void pottery_ohm_entry_move(pottery_ohm_t* map, pottery_ohm_entry_t to, pottery_ohm_entry_t from);
 
 // We don't have CAN_DESTROY yet so we have to do it manually.
 #if defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY) || \
         defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY_BY_VALUE) || \
         defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_BY_VALUE)
 static inline
-void pottery_ohm_ref_destroy(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+void pottery_ohm_entry_destroy(pottery_ohm_t* map, pottery_ohm_entry_t entry);
 #endif
 
 static inline
-pottery_ohm_key_t pottery_ohm_ref_key(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+pottery_ohm_key_t pottery_ohm_entry_key(pottery_ohm_t* map, pottery_ohm_entry_t entry);
 
 static inline
-bool pottery_ohm_ref_key_equal(pottery_ohm_t* map, pottery_ohm_key_t left, pottery_ohm_key_t right);
+bool pottery_ohm_entry_key_equal(pottery_ohm_t* map, pottery_ohm_key_t left, pottery_ohm_key_t right);
 
 static inline
-size_t pottery_ohm_ref_key_hash(pottery_ohm_t* map, pottery_ohm_key_t key);
+size_t pottery_ohm_entry_key_hash(pottery_ohm_t* map, pottery_ohm_key_t key);
 
 static inline
-bool pottery_ohm_ref_is_empty(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+bool pottery_ohm_entry_is_empty(pottery_ohm_t* map, pottery_ohm_entry_t entry);
 
 static inline
-void pottery_ohm_ref_set_empty(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+void pottery_ohm_entry_set_empty(pottery_ohm_t* map, pottery_ohm_entry_t entry);
 
 #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
 static inline
-bool pottery_ohm_ref_is_tombstone(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+bool pottery_ohm_entry_is_tombstone(pottery_ohm_t* map, pottery_ohm_entry_t entry);
 
 static inline
-void pottery_ohm_ref_set_tombstone(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+void pottery_ohm_entry_set_tombstone(pottery_ohm_t* map, pottery_ohm_entry_t entry);
 #endif
 
 static inline
-bool pottery_ohm_ref_is_value(pottery_ohm_t* map, pottery_ohm_ref_t ref);
+bool pottery_ohm_entry_is_value(pottery_ohm_t* map, pottery_ohm_entry_t entry);
 
 static inline
-pottery_ohm_ref_t pottery_ohm_impl_values(pottery_ohm_t* map);
+pottery_ohm_entry_t pottery_ohm_impl_values(pottery_ohm_t* map);
 
 /**
  * Returns the number of buckets currently in the map.

@@ -138,7 +138,7 @@ static inline size_t fnv1a(const char* p) {
 
 You could of course use a better hash function like MurmurHash or CityHash or whatever the cool kids are using these days.
 
-Next we define our map. We'll use `char*` as the value type and `const char*` as the key type, that way we can search it with const strings. In Pottery, map values contain their own keys, so in our case the key for a value (`REF_KEY`) is just the value itself.
+Next we define our map. We'll use `char*` as the value type and `const char*` as the key type, that way we can search it with const strings. In Pottery, map values contain their own keys. A ref in this case is a pointer to a value, and since we're building a set, the key for a ref (`REF_KEY`) is just the value:
 
 ```c
 #define POTTERY_OPEN_HASH_MAP_PREFIX string_set_map

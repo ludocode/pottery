@@ -124,7 +124,7 @@ pottery_error_t pottery_ohm_init_impl(pottery_ohm_t* map,
     // Clear the new values
     size_t i;
     for (i = 0; i < size; ++i)
-        pottery_ohm_table_ref_set_empty(map, map->values + i);
+        pottery_ohm_table_entry_set_empty(map, map->values + i);
     #endif
 
     return POTTERY_OK;
@@ -182,11 +182,11 @@ pottery_error_t pottery_rehash(pottery_ohm_t* map, size_t new_log_2_size) {
     *map = new_map;
 
     // Migrate all values from old table into new one
-    pottery_ohm_ref_t source = pottery_ohm_begin(&old_map);
-    while (pottery_ohm_ref_exists(&old_map, source)) {
+    pottery_ohm_entry_t source = pottery_ohm_begin(&old_map);
+    while (pottery_ohm_entry_exists(&old_map, source)) {
         //printf("migrating bucket %zi\n", source - old_map.values);
 
-        pottery_ohm_ref_t target = pottery_ohm_table_emplace(
+        pottery_ohm_entry_t target = pottery_ohm_table_emplace(
                 map,
                 map->log_2_size,
                 #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
@@ -200,11 +200,11 @@ pottery_error_t pottery_rehash(pottery_ohm_t* map, size_t new_log_2_size) {
                 target, source);
 
         #if POTTERY_OPEN_HASH_MAP_HAS_METADATA
-        pottery_ohm_ref_set_other(map, target);
+        pottery_ohm_entry_set_other(map, target);
         #endif
         ++map->count;
 
-        pottery_ohm_next(&old_map, &source);
+        source = pottery_ohm_next(&old_map, source);
     }
 
     // Free the old map
@@ -247,7 +247,7 @@ void pottery_ohm_shrink_if_needed(pottery_ohm_t* map) {
 
 POTTERY_OPEN_HASH_MAP_EXTERN
 pottery_error_t pottery_ohm_emplace(pottery_ohm_t* map, pottery_ohm_key_t key,
-        pottery_ohm_ref_t* ref, bool* /*nullable*/ created)
+        pottery_ohm_entry_t* entry, bool* /*nullable*/ created)
 {
     // If we're full we grow regardless of whether the element already exists
     // in order to make sure there's enough room for it.
@@ -255,7 +255,7 @@ pottery_error_t pottery_ohm_emplace(pottery_ohm_t* map, pottery_ohm_key_t key,
     if (error != POTTERY_OK)
         return error;
 
-    *ref = pottery_ohm_table_emplace(
+    *entry = pottery_ohm_table_emplace(
             map,
             map->log_2_size,
             #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
@@ -265,7 +265,7 @@ pottery_error_t pottery_ohm_emplace(pottery_ohm_t* map, pottery_ohm_key_t key,
             created);
 
     #if POTTERY_OPEN_HASH_MAP_HAS_METADATA
-    pottery_ohm_ref_set_other(map, *ref);
+    pottery_ohm_entry_set_other(map, *entry);
     #endif
 
     ++map->count;
@@ -273,28 +273,28 @@ pottery_error_t pottery_ohm_emplace(pottery_ohm_t* map, pottery_ohm_key_t key,
 }
 
 POTTERY_OPEN_HASH_MAP_EXTERN
-void pottery_ohm_displace(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
+void pottery_ohm_displace(pottery_ohm_t* map, pottery_ohm_entry_t entry) {
     pottery_ohm_table_displace(
             map,
             map->log_2_size,
             #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
             &map->tombstones,
             #endif
-            ref);
+            entry);
     --map->count;
     pottery_ohm_shrink_if_needed(map);
 }
 
 #if POTTERY_LIFECYCLE_CAN_DESTROY
 POTTERY_OPEN_HASH_MAP_EXTERN
-void pottery_ohm_remove(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
+void pottery_ohm_remove(pottery_ohm_t* map, pottery_ohm_entry_t entry) {
     pottery_ohm_table_remove(
             map,
             map->log_2_size,
             #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
             &map->tombstones,
             #endif
-            ref);
+            entry);
     --map->count;
     pottery_ohm_shrink_if_needed(map);
 }

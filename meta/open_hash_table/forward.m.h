@@ -24,8 +24,8 @@
 //!!! END_LICENSE
 
 // Forwards open_hash_table configuration from {SRC} to {DEST}
-// Note that we don't forward context, value and ref types. These are changed
-// by wrapping containers.
+// Note that we don't forward types. These are forwarded (and changed)
+// separately by wrapping containers.
 
 #ifdef {SRC}_KEY_TYPE
     #define {DEST}_KEY_TYPE {SRC}_KEY_TYPE

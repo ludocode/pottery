@@ -46,34 +46,34 @@
 #if defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE) || \
         defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE_BY_VALUE) || \
         defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_BY_VALUE)
-    #define POTTERY_OPEN_HASH_TABLE_LIFECYCLE_MOVE pottery_ohm_ref_move
+    #define POTTERY_OPEN_HASH_TABLE_LIFECYCLE_MOVE pottery_ohm_entry_move
 #endif
 #if defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY) || \
         defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_DESTROY_BY_VALUE) || \
         defined(POTTERY_OPEN_HASH_MAP_LIFECYCLE_BY_VALUE)
-    #define POTTERY_OPEN_HASH_TABLE_LIFECYCLE_DESTROY pottery_ohm_ref_destroy
+    #define POTTERY_OPEN_HASH_TABLE_LIFECYCLE_DESTROY pottery_ohm_entry_destroy
 #endif
 
 // We also manually forward along the hash table configuration. Anything
 // configured on the hash map must be forwarded to the table through a wrapper
 // that changes the context.
 
-#define POTTERY_OPEN_HASH_TABLE_KEY_HASH pottery_ohm_ref_key_hash
-#define POTTERY_OPEN_HASH_TABLE_REF_KEY pottery_ohm_ref_key
-#define POTTERY_OPEN_HASH_TABLE_KEY_EQUAL pottery_ohm_ref_key_equal
+#define POTTERY_OPEN_HASH_TABLE_KEY_HASH pottery_ohm_entry_key_hash
+#define POTTERY_OPEN_HASH_TABLE_REF_KEY pottery_ohm_entry_key
+#define POTTERY_OPEN_HASH_TABLE_KEY_EQUAL pottery_ohm_entry_key_equal
 #ifdef POTTERY_OPEN_HASH_TABLE_KEY_DOUBLE_HASH
-    #define POTTERY_OPEN_HASH_TABLE_KEY_DOUBLE_HASH pottery_ohm_ref_key_double_hash
+    #define POTTERY_OPEN_HASH_TABLE_KEY_DOUBLE_HASH pottery_ohm_entry_key_double_hash
 #endif
 
-#define POTTERY_OPEN_HASH_TABLE_IS_EMPTY pottery_ohm_ref_is_empty
-#define POTTERY_OPEN_HASH_TABLE_SET_EMPTY pottery_ohm_ref_set_empty
+#define POTTERY_OPEN_HASH_TABLE_IS_EMPTY pottery_ohm_entry_is_empty
+#define POTTERY_OPEN_HASH_TABLE_SET_EMPTY pottery_ohm_entry_set_empty
 
 #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
-#define POTTERY_OPEN_HASH_TABLE_IS_TOMBSTONE pottery_ohm_ref_is_tombstone
-#define POTTERY_OPEN_HASH_TABLE_SET_TOMBSTONE pottery_ohm_ref_set_tombstone
+#define POTTERY_OPEN_HASH_TABLE_IS_TOMBSTONE pottery_ohm_entry_is_tombstone
+#define POTTERY_OPEN_HASH_TABLE_SET_TOMBSTONE pottery_ohm_entry_set_tombstone
 #endif
 
-#define POTTERY_OPEN_HASH_TABLE_IS_VALUE pottery_ohm_ref_is_value
+#define POTTERY_OPEN_HASH_TABLE_IS_VALUE pottery_ohm_entry_is_value
 
 #define POTTERY_OPEN_HASH_TABLE_LINEAR_PROBING POTTERY_OPEN_HASH_MAP_LINEAR_PROBING
 #define POTTERY_OPEN_HASH_TABLE_QUADRATIC_PROBING POTTERY_OPEN_HASH_MAP_QUADRATIC_PROBING

@@ -52,9 +52,9 @@ POTTERY_TEST_MAP_UFO(init_destroy) {
 
 static inline void check_ufo_map(ufo_map_t* map) {
     size_t count = 0;
-    ufo_map_ref_t ref = ufo_map_begin(map);
-    for (; ufo_map_ref_exists(map, ref); ufo_map_next(map, &ref)) {
-        ufo_check(ref);
+    ufo_map_entry_t entry = ufo_map_begin(map);
+    for (; ufo_map_entry_exists(map, entry); entry = ufo_map_next(map, entry)) {
+        ufo_check(entry);
         ++count;
     }
     pottery_test_assert(count == ufo_map_count(map));
@@ -64,19 +64,19 @@ POTTERY_TEST_MAP_UFO(remove) {
     ufo_map_t map;
     pottery_test_assert(POTTERY_OK == ufo_map_init(&map));
 
-    ufo_map_ref_t ref;
+    ufo_map_entry_t entry;
     bool created;
 
     created = false;
-    pottery_test_assert(ufo_map_emplace(&map, "hello", &ref, &created) == POTTERY_OK);
+    pottery_test_assert(ufo_map_emplace(&map, "hello", &entry, &created) == POTTERY_OK);
     pottery_test_assert(created);
-    ufo_init(ref, "hello", 1);
+    ufo_init(entry, "hello", 1);
     check_ufo_map(&map);
 
     created = false;
-    pottery_test_assert(ufo_map_emplace(&map, "world", &ref, &created) == POTTERY_OK);
+    pottery_test_assert(ufo_map_emplace(&map, "world", &entry, &created) == POTTERY_OK);
     pottery_test_assert(created);
-    ufo_init(ref, "world", 2);
+    ufo_init(entry, "world", 2);
     check_ufo_map(&map);
 
     pottery_test_assert(0 == strcmp(ufo_map_find(&map, "hello")->string, "hello"));
@@ -84,9 +84,9 @@ POTTERY_TEST_MAP_UFO(remove) {
 
     #if POTTERY_TEST_MAP_UFO_NO_DESTROY
     // Destroy and displace
-    ref = ufo_map_find(&map, "hello");
-    ufo_destroy(ref);
-    ufo_map_displace(&map, ref);
+    entry = ufo_map_find(&map, "hello");
+    ufo_destroy(entry);
+    ufo_map_displace(&map, entry);
     #else
     // Removing an element should call its destroy function
     ufo_map_remove_key(&map, "hello");
@@ -115,23 +115,23 @@ POTTERY_TEST_MAP_UFO(remove_all) {
     ufo_map_t map;
     pottery_test_assert(POTTERY_OK == ufo_map_init(&map));
 
-    ufo_map_ref_t ref;
+    ufo_map_entry_t entry;
 
-    pottery_test_assert(ufo_map_emplace(&map, "apple", &ref, pottery_null) == POTTERY_OK);
-    pottery_test_assert(ufo_init(ref, "apple", 1) == POTTERY_OK);
+    pottery_test_assert(ufo_map_emplace(&map, "apple", &entry, pottery_null) == POTTERY_OK);
+    pottery_test_assert(ufo_init(entry, "apple", 1) == POTTERY_OK);
 
-    pottery_test_assert(ufo_map_emplace(&map, "banana", &ref, pottery_null) == POTTERY_OK);
-    pottery_test_assert(ufo_init(ref, "banana", 1) == POTTERY_OK);
+    pottery_test_assert(ufo_map_emplace(&map, "banana", &entry, pottery_null) == POTTERY_OK);
+    pottery_test_assert(ufo_init(entry, "banana", 1) == POTTERY_OK);
 
-    pottery_test_assert(ufo_map_emplace(&map, "cherry", &ref, pottery_null) == POTTERY_OK);
-    pottery_test_assert(ufo_init(ref, "cherry", 1) == POTTERY_OK);
+    pottery_test_assert(ufo_map_emplace(&map, "cherry", &entry, pottery_null) == POTTERY_OK);
+    pottery_test_assert(ufo_init(entry, "cherry", 1) == POTTERY_OK);
 
     check_ufo_map(&map);
 
     #if POTTERY_TEST_MAP_UFO_NO_DESTROY
     // Destroy and displace all
-    for (ref = ufo_map_begin(&map); ufo_map_ref_exists(&map, ref); ufo_map_next(&map, &ref))
-        ufo_destroy(ref);
+    for (entry = ufo_map_begin(&map); ufo_map_entry_exists(&map, entry); entry = ufo_map_next(&map, entry))
+        ufo_destroy(entry);
     ufo_map_displace_all(&map);
     #else
     // Remove all destroys all elements.
@@ -160,11 +160,11 @@ POTTERY_TEST_MAP_UFO(grow_and_shrink) {
         snprintf(key, sizeof(key), "%i", i);
 
         bool created = false;
-        ufo_map_ref_t ref;
+        ufo_map_entry_t entry;
         //printf("inserting %i\n", i);
-        pottery_test_assert(ufo_map_emplace(&map, key, &ref, &created) == POTTERY_OK);
+        pottery_test_assert(ufo_map_emplace(&map, key, &entry, &created) == POTTERY_OK);
         pottery_test_assert(created);
-        ufo_init(ref, key, i);
+        ufo_init(entry, key, i);
         check_ufo_map(&map);
 
         // Track capacity changes
@@ -190,9 +190,9 @@ POTTERY_TEST_MAP_UFO(grow_and_shrink) {
 
         //printf("removing %i\n", ufo_map_first(&map)->integer);
         #if POTTERY_TEST_MAP_UFO_NO_DESTROY
-        ufo_map_ref_t ref = ufo_map_first(&map);
-        ufo_destroy(ref);
-        ufo_map_displace(&map, ref);
+        ufo_map_entry_t entry = ufo_map_first(&map);
+        ufo_destroy(entry);
+        ufo_map_displace(&map, entry);
         #else
         ufo_map_remove(&map, ufo_map_first(&map));
         #endif
