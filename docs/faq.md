@@ -2,11 +2,11 @@
 
 ## Why does Pottery exist?
 
-Pottery is designed to provide fast, high-level data structures in plain C programs. The goal is to make it as easy to declare a strongly-typed data structure in C as it is in Java, C++, or any other language with built-in support for templates or generics. In these languages it's really easy to write `std::vector<MyType>` or `ArrayList<MyType>` for example. Pottery makes it almost as easy in C.
+Pottery is designed to provide fast, high-level data structures in plain C programs. The goal is to make it as easy to declare a strongly-typed data structure in C as it is in Java, C++, or any other language with built-in support for templates or generics. In those languages it's really easy to write `std::vector<MyType>` or `ArrayList<MyType>` for example. Pottery makes it _almost_ as easy in C.
 
-A major objection that C++ programmers have to using C over C++ is that the STL exists. C programmers often hear "Why didn't you just use C++? You could just use `std::map` and be done!" Pottery can greatly reduce the value of that argument. There are many reasons to use C over C++ and other languages. Having easy-to-use high-level data structures can tip the scales back in favor of C.
+A major objection that C++ programmers have to using C over C++ is that the STL exists. C programmers often hear "Why didn't you just use C++? You could just use `std::map` and be done!" Pottery can reduce the strength of that argument. There are many reasons to use C over C++ or other languages. Having easy-to-use high-level data structures can continue to tip the scales in favour of C.
 
-In addition, Pottery can be used in situations where the STL is inappopriate, for example in OS kernels or in microcontrollers. It provides low-level intrusive containers and algorithms for resource-constrained platforms without a memory allocator. There are also many high-level language interpreters and runtimes that are written in C rather than C++ where Pottery could be useful.
+In addition, Pottery can be used even in C++ in situations where the STL is inappopriate, for example in OS kernels or in microcontrollers. It provides low-level intrusive containers and algorithms for resource-constrained platforms without a memory allocator. There are also many pre-existing software projects that are written in C rather than C++ where Pottery could be useful.
 
 ## Doesn't this bloat compiled binary size?
 

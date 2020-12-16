@@ -9,7 +9,7 @@ A header-only container and algorithm template library in C.
 
 Pottery is a collection of templates for instantiating strongly typed containers and container algorithms in C.
 
-It's called "Pottery" because it doesn't exactly give you containers you can use out-of-the-box. It gives you the tools and the materials to build them but there is still some assembly required. This can mean simply configuring and instantiating a template, but often you'll want to wrap one or more templates with your own code to build a practical data structure.
+It's called "Pottery" because it doesn't exactly give you containers you can use out-of-the-box. It gives you the tools, the materials, the instructions to build them but you still have to assemble them yourself. This can mean simply configuring and instantiating a template, but often you'll want to wrap one or more templates with your own interface to build a practical data structure.
 
 Pottery is modern C code written in the ultra-portable intersection of C11, gnu89 and C++11 with no mandatory dependencies (not even libc.) Pottery supports many compilers including GCC, Clang, MSVC, TinyCC and various others. It supports (or intends to support) any modern C platform from microcontrollers to OS kernels to WebAssembly.
 
@@ -19,7 +19,7 @@ Pottery is not just an experiment to push the boundaries of meta-programming in 
 
 #### Alpha Quality
 
-This is early stage alpha-quality software under development. It is incomplete, poorly documented and full of bugs, it has had very little testing and benchmarking, and APIs are likely to change. There are currently not a lot of algorithms and data structures here but the templating system is pretty solid so I hope to implement many more in the future. (In fact several more are written already but they are not clean enough to be released yet.)
+This is early stage alpha-quality software under development. It is incomplete, poorly documented and full of bugs, it has had very little testing and benchmarking, and APIs are likely to change. There are currently not a lot of algorithms and data structures here but the templating system is pretty solid so I hope to implement many more in the future. In fact several more are written already (linked list, weight-balanced tree, priority queue, linear map...) but they are not clean enough to be released yet.
 
 Mostly I am releasing this now because I am out of money and need to go get a real job again. If you would like to pay me to write code (for this or anything else) please get in touch because I really need to feed [my daughter](https://ludocode.com/assets/celeste-kraft-dinner.jpg).
 
@@ -32,6 +32,7 @@ Mostly I am releasing this now because I am out of money and need to go get a re
 - [Examples](examples/pottery/)
 - [Integration Guide](docs/integration.md)
 - [Lifecycle Style](docs/lifecycle_style.md)
+- [Glossary](docs/glossary.md)
 - [Template Listing](include/pottery/)
 - [Meta-templates](meta/)
 - [C++ Bindings](bindings/cxx)
