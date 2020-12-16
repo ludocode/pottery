@@ -52,8 +52,8 @@
     #endif
 
     // Forward the entry dereference mechanism
-    #if defined(POTTERY_SHELL_SORT_ENTRY_VALUE)
-        #define POTTERY_ARRAY_ACCESS_ENTRY_VALUE POTTERY_SHELL_SORT_ENTRY_VALUE
+    #if defined(POTTERY_SHELL_SORT_ENTRY_REF)
+        #define POTTERY_ARRAY_ACCESS_ENTRY_REF POTTERY_SHELL_SORT_ENTRY_REF
     #endif
 
     // Forward the context

@@ -82,20 +82,20 @@ size_t pottery_array_access_count(
  * The entry must exist.
  */
 static inline
-pottery_array_access_ref_t pottery_array_access_value(
+pottery_array_access_ref_t pottery_array_access_ref(
         POTTERY_ARRAY_ACCESS_ARGS
         pottery_array_access_entry_t entry)
 {
     POTTERY_ARRAY_ACCESS_ARGS_UNUSED;
 
-    #ifdef POTTERY_ARRAY_ACCESS_ENTRY_VALUE
+    #ifdef POTTERY_ARRAY_ACCESS_ENTRY_REF
         #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
-            return (POTTERY_ARRAY_ACCESS_ENTRY_VALUE((context), (entry)));
+            return (POTTERY_ARRAY_ACCESS_ENTRY_REF((context), (entry)));
         #else
-            return (POTTERY_ARRAY_ACCESS_ENTRY_VALUE((entry)));
+            return (POTTERY_ARRAY_ACCESS_ENTRY_REF((entry)));
         #endif
     #else
-        // Without an ENTRY_VALUE expression, the entry type must implicitly
+        // Without an ENTRY_REF expression, the entry type must implicitly
         // convertible to the ref type (usually it's the same type.)
         return entry;
     #endif

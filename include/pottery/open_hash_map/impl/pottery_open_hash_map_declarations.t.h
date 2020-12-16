@@ -143,13 +143,13 @@ bool pottery_ohm_contains_key(pottery_ohm_t* map, pottery_ohm_key_t key) {
 static inline
 pottery_ohm_key_t pottery_ohm_ref_key(pottery_ohm_t* map, pottery_ohm_ref_t ref) {
     (void)map;
-    #ifndef POTTERY_OPEN_HASH_MAP_VALUE_KEY
+    #ifndef POTTERY_OPEN_HASH_MAP_REF_KEY
         // with no defined key expression, the ref is the key
         return ref;
     #elif defined(POTTERY_OPEN_HASH_MAP_CONTEXT_TYPE)
-        return POTTERY_OPEN_HASH_MAP_VALUE_KEY(map->context, ref);
+        return POTTERY_OPEN_HASH_MAP_REF_KEY(map->context, ref);
     #else
-        return POTTERY_OPEN_HASH_MAP_VALUE_KEY(ref);
+        return POTTERY_OPEN_HASH_MAP_REF_KEY(ref);
     #endif
 }
 

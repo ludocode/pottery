@@ -50,8 +50,8 @@
     #endif
 
     // Forward the entry dereference mechanism
-    #if defined(POTTERY_RING_ENTRY_VALUE)
-        #define POTTERY_LIFECYCLE_ENTRY_VALUE POTTERY_RING_ENTRY_VALUE
+    #if defined(POTTERY_RING_ENTRY_REF)
+        #define POTTERY_LIFECYCLE_ENTRY_REF POTTERY_RING_ENTRY_REF
     #endif
 
     // Forward the context

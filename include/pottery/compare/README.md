@@ -31,7 +31,7 @@ This template currently does not support partial ordering. This means you cannot
 
 The compare template operates on an abstract reference type with an optional context. In the simplest case, the reference type is just a pointer to an element in memory, and the comparison expressions need no context to compare them. In more advanced usage, the reference type could be an entry in a container, so you can compare container elements. The compare template can even compare abstract values not in memory: a context could contain for example a database connection, the reference type could be the key type for rows to be compared, and configured compare expressions could perform database queries to compare elements.
 
-The reference type configuration follows the standard type rules. All compare functions and all configured expressions take the same abstract reference type as argument, and functions like `min()` and `median()` return this same type, which is defined as `entry_t`. This is a typedef to `ENTRY_TYPE` if configured, otherwise `REF_TYPE` if configured, otherwise a pointer to `VALUE_TYPE`. If `COMPARE_BY_VALUE` is set to 1, `VALUE_TYPE` must be defined, and `ENTRY_VALUE` must be defined if `ENTRY_TYPE` is defined as something not implicitly convertible to a pointer to `VALUE_TYPE`. (This will be documented elsewhere soon.)
+The reference type configuration follows the standard type rules. All compare functions and all configured expressions take the same abstract reference type as argument, and functions like `min()` and `median()` return this same type, which is defined as `entry_t`. This is a typedef to `ENTRY_TYPE` if configured, otherwise `REF_TYPE` if configured, otherwise a pointer to `VALUE_TYPE`. If `COMPARE_BY_VALUE` is set to 1, `VALUE_TYPE` must be defined, and `ENTRY_REF` must be defined if `ENTRY_TYPE` is defined as something not implicitly convertible to a pointer to `VALUE_TYPE`. (This will be documented elsewhere soon.)
 
 
 
@@ -70,7 +70,7 @@ Note that `ENTRY_TYPE`, `REF_TYPE` and `VALUE_TYPE` follow the usual rules (to b
 
 - `ENTRY_TYPE` and `REF_TYPE` for more abstract containers (like the database connection example earlier.)
 
-If `ENTRY_TYPE` is configured, `ENTRY_VALUE` must (usually) be as well to convert the entry to a ref.
+If `ENTRY_TYPE` is configured, `ENTRY_REF` must (usually) be as well to convert the entry to a ref.
 
 
 #### `ENTRY_TYPE`

@@ -50,8 +50,8 @@
     #endif
 
     // Forward the entry dereference mechanism
-    #if defined(POTTERY_HEAP_ENTRY_VALUE)
-        #define POTTERY_COMPARE_ENTRY_VALUE POTTERY_HEAP_ENTRY_VALUE
+    #if defined(POTTERY_HEAP_ENTRY_REF)
+        #define POTTERY_COMPARE_ENTRY_REF POTTERY_HEAP_ENTRY_REF
     #endif
 
     // Forward the context

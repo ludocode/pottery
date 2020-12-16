@@ -176,6 +176,8 @@
     #undef pottery_heap_sort_compare_entry_t
     #undef pottery_heap_sort_compare_context_t
 
+    #undef pottery_heap_sort_compare_ref
+
     #undef pottery_heap_sort_compare_three_way
     #undef pottery_heap_sort_compare_equal
     #undef pottery_heap_sort_compare_not_equal

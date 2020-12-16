@@ -87,13 +87,13 @@ pottery_oht_key_t pottery_oht_key(
 {
     POTTERY_OPEN_HASH_TABLE_ARGS_UNUSED;
 
-    #ifndef POTTERY_OPEN_HASH_TABLE_VALUE_KEY
+    #ifndef POTTERY_OPEN_HASH_TABLE_REF_KEY
         // With no defined key expression, the ref is the key
         return ref;
     #elif defined(POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE)
-        return POTTERY_OPEN_HASH_TABLE_VALUE_KEY(context, ref);
+        return POTTERY_OPEN_HASH_TABLE_REF_KEY(context, ref);
     #else
-        return POTTERY_OPEN_HASH_TABLE_VALUE_KEY(ref);
+        return POTTERY_OPEN_HASH_TABLE_REF_KEY(ref);
     #endif
 }
 

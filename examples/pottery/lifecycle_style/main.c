@@ -52,7 +52,7 @@
 // employee numbers are sequential.)
 #define POTTERY_OPEN_HASH_MAP_VALUE_TYPE employee_t
 #define POTTERY_OPEN_HASH_MAP_KEY_TYPE int
-#define POTTERY_OPEN_HASH_MAP_VALUE_KEY(v) v->number
+#define POTTERY_OPEN_HASH_MAP_REF_KEY(v) v->number
 #define POTTERY_OPEN_HASH_MAP_KEY_HASH(x) (size_t)x
 #define POTTERY_OPEN_HASH_MAP_KEY_EQUAL(x, y) x == y
 

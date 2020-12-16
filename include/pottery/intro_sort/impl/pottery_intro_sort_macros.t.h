@@ -106,7 +106,7 @@
     #define pottery_intro_sort_compare_entry_t POTTERY_CONCAT(POTTERY_INTRO_SORT_COMPARE_PREFIX, _entry_t)
     #define pottery_intro_sort_compare_context_t POTTERY_CONCAT(POTTERY_INTRO_SORT_COMPARE_PREFIX, _context_t)
 
-    #define pottery_intro_sort_compare_value POTTERY_CONCAT(POTTERY_INTRO_SORT_COMPARE_PREFIX, _value)
+    #define pottery_intro_sort_compare_ref POTTERY_CONCAT(POTTERY_INTRO_SORT_COMPARE_PREFIX, _ref)
 
     #define pottery_intro_sort_compare_three_way POTTERY_CONCAT(POTTERY_INTRO_SORT_COMPARE_PREFIX, _three_way)
     #define pottery_intro_sort_compare_equal POTTERY_CONCAT(POTTERY_INTRO_SORT_COMPARE_PREFIX, _equal)

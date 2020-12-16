@@ -59,7 +59,7 @@
 // that changes the context.
 
 #define POTTERY_OPEN_HASH_TABLE_KEY_HASH pottery_ohm_ref_key_hash
-#define POTTERY_OPEN_HASH_TABLE_VALUE_KEY pottery_ohm_ref_key
+#define POTTERY_OPEN_HASH_TABLE_REF_KEY pottery_ohm_ref_key
 #define POTTERY_OPEN_HASH_TABLE_KEY_EQUAL pottery_ohm_ref_key_equal
 #ifdef POTTERY_OPEN_HASH_TABLE_KEY_DOUBLE_HASH
     #define POTTERY_OPEN_HASH_TABLE_KEY_DOUBLE_HASH pottery_ohm_ref_key_double_hash

@@ -42,7 +42,7 @@ static inline size_t fnv1a(const char* p) {
 #define POTTERY_OPEN_HASH_MAP_PREFIX ufo_map
 #define POTTERY_OPEN_HASH_MAP_VALUE_TYPE ufo_t
 #define POTTERY_OPEN_HASH_MAP_KEY_TYPE const char*
-#define POTTERY_OPEN_HASH_MAP_VALUE_KEY(x) x->string
+#define POTTERY_OPEN_HASH_MAP_REF_KEY(x) x->string
 #define POTTERY_OPEN_HASH_MAP_KEY_HASH fnv1a
 #define POTTERY_OPEN_HASH_MAP_KEY_EQUAL 0 == strcmp
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE ufo_move

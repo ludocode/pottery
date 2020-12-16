@@ -31,7 +31,7 @@
 
 #undef {PREFIX}_KEY_HASH
 #undef {PREFIX}_KEY_EQUAL
-#undef {PREFIX}_VALUE_KEY
+#undef {PREFIX}_REF_KEY
 
 #undef {PREFIX}_IS_EMPTY
 #undef {PREFIX}_SET_EMPTY

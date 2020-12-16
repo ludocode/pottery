@@ -51,7 +51,7 @@
 // deque values.
 #define POTTERY_QUICK_SORT_VALUE_TYPE int
 #define POTTERY_QUICK_SORT_ENTRY_TYPE int_deque_entry_t
-#define POTTERY_QUICK_SORT_ENTRY_VALUE int_deque_entry_value
+#define POTTERY_QUICK_SORT_ENTRY_REF int_deque_entry_value
 #define POTTERY_QUICK_SORT_LIFECYCLE_BY_VALUE 1
 #define POTTERY_QUICK_SORT_COMPARE_BY_VALUE 1
 

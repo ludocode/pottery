@@ -34,8 +34,8 @@
 #ifdef {SRC}_KEY_HASH
     #define {DEST}_KEY_HASH {SRC}_KEY_HASH
 #endif
-#ifdef {SRC}_VALUE_KEY
-    #define {DEST}_VALUE_KEY {SRC}_VALUE_KEY
+#ifdef {SRC}_REF_KEY
+    #define {DEST}_REF_KEY {SRC}_REF_KEY
 #endif
 #ifdef {SRC}_KEY_EQUAL
     #define {DEST}_KEY_EQUAL {SRC}_KEY_EQUAL

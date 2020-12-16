@@ -40,8 +40,8 @@
 #endif
 
 // Forward the entry dereference mechanism
-#if defined({SRC}_ENTRY_VALUE)
-    #define {DEST}_ENTRY_VALUE {SRC}_ENTRY_VALUE
+#if defined({SRC}_ENTRY_REF)
+    #define {DEST}_ENTRY_REF {SRC}_ENTRY_REF
 #endif
 
 // Forward the context
