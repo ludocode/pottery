@@ -2,9 +2,9 @@
 
 This is a helper template for other Pottery containers. It is not intended to be used directly.
 
-The Pottery Lifecycle template defines functions that wrap the arbitrary lifecycle expressions you define for your element types stored in Pottery data structures.
+The Pottery Lifecycle template defines functions that wrap the arbitrary lifecycle expressions you define for your value types stored in Pottery data structures.
 
-The instantiated lifecycle functions follow [Pottery-style lifecycle semantics and naming conventions](../../../docs/lifecycle_style.md). Most Pottery containers and algorithms use this template internally to store or manipulate elements.
+The instantiated lifecycle functions follow [Pottery-style lifecycle semantics and naming conventions](../../../docs/lifecycle_style.md). Most Pottery containers and algorithms use this template internally to store or manipulate values. These are also summarized in the [glossary](../../../docs/glossary.md).
 
 The Lifecycle template instantiates functions for as many of the following eight fundamental lifecycle behaviours as possible:
 
@@ -17,16 +17,15 @@ The Lifecycle template instantiates functions for as many of the following eight
 - `swap()`
 - `destroy()`
 
-The first four of these are allowed to fail; they return an error code result. The last four cannot fail and return void. If an `init*()` function fails, the destination object is not initialized and must not be destroyed.
+The first four of these are allowed to fail; they return an error code result. The last four cannot fail and return void. If an `init*()` function fails, the destination value is not initialized and must not be destroyed.
 
 In addition, the template instantiates functions to operate in bulk:
 
-- `destroy_bulk()` -- destroys an array of objects
-- `move_bulk()` -- moves an array of objects to a potentially overlapping address
-- `move_bulk_restrict()` -- moves an array of objects to a non-overlapping address
-- `move_bulk_up()` -- moves an array of objects to a potentially overlapping higher address
-- `move_bulk_down()` -- moves an array of objects to a potentially overlapping lower address
-
+- `destroy_bulk()` -- destroys a C array of values
+- `move_bulk()` -- moves a C array of values to a potentially overlapping address
+- `move_bulk_restrict()` -- moves a C array of values to a non-overlapping address
+- `move_bulk_up()` -- moves a C array of values to a potentially overlapping higher address
+- `move_bulk_down()` -- moves a C array of values to a potentially overlapping lower address
 
 ### Reference Type
 
@@ -71,7 +70,7 @@ If you define custom expressions in C++, they cannot throw. You must catch all e
 
 # Configuration Options
 
-All below configuration options are prefixed by the template being instantiated along with `LIFECYCLE`. For example on [`vector`](../vector/), `BY_VALUE` is `POTTERY_VECTOR_LIFECYCLE_BY_VALUE`. When using lifecycle directly, the prefix is just `POTTERY_LIFECYCLE`.
+All below configuration options are prefixed by the configuration prefix of the template being instantiated plus `LIFECYCLE`. For example on [`vector`](../vector/), `BY_VALUE` is `POTTERY_VECTOR_LIFECYCLE_BY_VALUE`. When using lifecycle directly, the prefix is just `POTTERY_LIFECYCLE`.
 
 
 
@@ -79,25 +78,23 @@ All below configuration options are prefixed by the template being instantiated 
 
 ### `REF_TYPE`
 
-- `REF_TYPE`, a type
-
 This is the abstract reference type for which lifecycle functions are being generated. Values of this type are passed to all configured lifecycle expressions and acceepted by all generated functions (after the optional context.)
 
-This is usually either a pointer to the real type allowing lifecycle operations on objects in memory, or an abstract identifier to be used with the context to identify it. For example the context may be a database connection and the type may be the key for a row: in this case the `COPY` expression would copy data from one row to another.
+This is usually either a pointer to the real type allowing lifecycle operations on values in memory, or an abstract identifier to be used with the context to identify it. For example the context may be a database connection and the type may be the key for a row: in this case the `COPY` expression would copy data from one row to another.
 
 Note that `REF_TYPE` and `VALUE_TYPE` are mutually exclusive: you can only define one or the other.
 
+See the [glossary](../../../docs/glossary.md) for more information on the ref type.
+
 ### `VALUE_TYPE`
 
-- `VALUE_TYPE`, a type
-
-This is a concrete value type for performing lifecycle operations on objects in memory. This is required for any of the `BY_VALUE` configuration options and for bulk operations on ranges of elements.
+This is a concrete value type for performing lifecycle operations on values in memory. This is required for any of the `BY_VALUE` configuration options and for bulk operations on C arrays of values.
 
 If this is defined, `REF_TYPE` will be defined as a pointer to this. You cannot define both `VALUE_TYPE` and `REF_TYPE`.
 
-### `CONTEXT_TYPE`
+See the [glossary](../../../docs/glossary.md) for more information on the value type.
 
-- `CONTEXT_TYPE`, a type
+### `CONTEXT_TYPE`
 
 An optional comparison context type. If configured, the context type is passed as the first argument to all configured comparison expressions and accepted as the first argument of all generated functions.
 
@@ -105,22 +102,20 @@ An optional comparison context type. If configured, the context type is passed a
 
 ## Automatic By Value
 
-The following configuration parameter can be defined to declare that the element is a value type so that all lifecycle operations are automatic:
+The following configuration parameter can be defined to declare that all lifecycle operations are automatic:
 
-- `BY_VALUE`
+### `BY_VALUE`
 
-This requires a `VALUE_TYPE` and declares that the element is automatically initialized, assignable by value for both moves and copies, and automatically destroyed. This is equivalent to defining all of the following:
+A flag indicating that the value is automatically initialized and destroyed, and assignable by value for both moves and copies. Defining this to 1 has the same behaviour as defining all of the following (except overrides, see the next section) to 1:
 
-```c
-#define MOVE_BY_VALUE 1
-#define DESTROY_BY_VALUE 1
-#define INIT_BY_VALUE 1
-#define INIT_COPY_BY_VALUE 1
-#define COPY_BY_VALUE 1
-#define INIT_STEAL_BY_VALUE 1
-#define STEAL_BY_VALUE 1
-#define SWAP_BY_VALUE 1
-```
+- `MOVE_BY_VALUE`
+- `DESTROY_BY_VALUE`
+- `INIT_BY_VALUE`
+- `INIT_COPY_BY_VALUE`
+- `COPY_BY_VALUE`
+- `INIT_STEAL_BY_VALUE`
+- `STEAL_BY_VALUE`
+- `SWAP_BY_VALUE`
 
 In C this implies that the type is a trivial bitwise copyable type. `move()`, `copy()`, `steal()`, `init_copy()`, `init_steal()` and `swap()` are all performed by simple assignment of the `VALUE_TYPE`, and `init()` and `destroy()` are no-ops.
 
@@ -128,11 +123,13 @@ In C++ this means that `VALUE_TYPE` is a "value type": all of its constructors a
 
 Use it for trivial types like `int`, for POD structs, for copyable and default-constructible C++ objects, or for pointer types as long as the container does not own the pointers. For pointers that the container owns, define `MOVE_BY_VALUE 1` and a `DESTROY` expression. If your C++ type is not copyable or default-constructible, don't use `BY_VALUE`; instead define explictly the `BY_VALUE` operations it allows.
 
-You can override certain lifecycle behaviours while using this to specialize the functionality. For example suppose you are storing pointers in a vector. You could define `INIT` to zero-initialize the value:
+#### Overriding `BY_VALUE`
+
+You can override certain lifecycle behaviours while using this to specialize the functionality. For example suppose you are storing unowned pointers in a container, so you don't need special behaviour for copy, destroy, etc. You could define `INIT` to zero-initialize the value and `BY_VALUE` for everything else:
 
 ```c
-#define BY_VALUE 1
-#define INIT(p) *p = 0
+#define POTTERY_LIFECYCLE_BY_VALUE 1
+#define POTTERY_LIFECYCLE_INIT(p) *p = 0
 ```
 
 Just note that this overrides C++ constructors; see the C++ notes above.
@@ -141,21 +138,19 @@ Just note that this overrides C++ constructors; see the C++ notes above.
 
 ## Move
 
-Almost all dynamic containers (those that own their contained objects) must have a way to move elements. They require that at least one of the parameters in this section be defined.
+Most dynamic containers (those that own their contained objects) require a way to move values. They require that at least one of the parameters in this section be defined.
 
 ### `MOVE`
 
-- `MOVE`, expression matching `void(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from)`
+An expression matching `void(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from)`.
 
-Moves the given element from storage at `from` to storage at `to`. The value pointed `to` is uninitialized (but default-constructed), and the value pointed `from` must be left uninitialized (but constructed, as its destructor will be run).
+Moves the given value from storage at `from` to storage at `to`. The value pointed `to` is uninitialized (but default-constructed), and the value pointed `from` must be left uninitialized (but constructed, as its destructor will be run).
 
 Another name for this is "relocate".
 
 ### `MOVE_BY_VALUE`
 
-- `MOVE_BY_VALUE`, a flag
-
-Indicates that the type is movable by value. This is implied by `BY_VALUE`.
+A flag indicating that the type is movable by value. This is implied by `BY_VALUE`.
 
 In C, this means `move()` is a simple assignment, or with `memcpy()` or equivalent for arrays of values.
 
@@ -179,21 +174,19 @@ In this case Pottery will use `memcpy()` to relocate `Foo` even though it is non
 
 ## Destroy
 
-If neither of the below are defined, the element is not destroyable. In this case `remove()`-style functions will not be defined for containers.
+If neither of the below are defined, the value is not destroyable. In this case `remove()`-style functions will not be defined for containers.
 
-Furthermore, it is an error to destroy a non-empty dynamic container with non-destroyable elements (the container will assert() against this in debug mode.) You must manually empty such a container (by displacing all elements) before destroying it.
+Furthermore, it is an error to destroy a non-empty dynamic container with non-destroyable values (the container will assert() against this in debug mode.) You must manually empty such a container (by displacing all values) before destroying it.
 
 ### `DESTROY`
 
-- `DESTROY`, expression matching `void(CONTEXT_TYPE context, REF_TYPE element)`
+An expression matching `void(CONTEXT_TYPE context, REF_TYPE ref)`.
 
-Destroys the given element.
+Destroys the given value.
 
 ### `DESTROY_BY_VALUE`
 
-- `DESTROY_BY_VALUE`, a flag
-
-Indicates that the type is automatically destroyable. This is implied by `BY_VALUE`.
+A flag indicating that the type is automatically destroyable. This is implied by `BY_VALUE`.
 
 In C, this means `destroy()` does nothing. In C++ it runs the destructor.
 
@@ -203,17 +196,19 @@ In C++, if your destructor throws, Pottery aborts.
 
 ## Initialize
 
-Allows initializing an element with empty, blank or default contents.
+Allows initializing a value with empty, blank or default contents.
 
 This doesn't necessarily mean the contents are valid. For example, for an `int`, this doesn't have to assign a value; it just becomes "initialized" to whatever garbage happened to be at that memory location.
 
-- `INIT`, expression matching `pottery_error_t(CONTEXT_TYPE context, REF_TYPE element)`
+### `INIT`
 
-Initializes the given element with empty, blank or default contents. The given value pointer is uninitialized; you must initialize it.
+An expression matching `pottery_error_t(CONTEXT_TYPE context, REF_TYPE ref)`.
 
-- `INIT_BY_VALUE`, a flag
+Initializes the given value with empty, blank or default contents. The given value pointer is uninitialized; you must initialize it.
 
-Indicates that the type is automatically initializable. This is implied by `BY_VALUE`.
+### `INIT_BY_VALUE`
+
+A flag indicating that the type is automatically initializable. This is implied by `BY_VALUE`.
 
 In C, this means `init()` does nothing. In C++ it runs the default constructor.
 
@@ -225,17 +220,15 @@ At most one of the following options may be defined:
 
 ### `INIT_COPY`
 
-- `INIT_COPY`, expression matching `pottery_error_t(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from)`
+An expression matching `pottery_error_t(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from)`.
 
-Initializes an element at a new storage location, copying an existing element into it.
+Initializes a value at a new storage location, copying an existing value into it.
 
-In C++, the default constructor will be run first, which means the element must have a default constructor. To use copy construction, define `INIT_COPY_BY_VALUE` instead.
+In C++, the default constructor will be run first, which means the value must have a default constructor. To use copy construction, define `INIT_COPY_BY_VALUE` instead.
 
 ### `INIT_COPY_BY_VALUE`
 
-- `INIT_COPY_BY_VALUE`, a flag
-
-Indicates that the type is initializable as a copy by value (bitwise for C types or by copy constructor for C++ types.) This is implied by `BY_VALUE`.
+A flag indicating that the type is initializable as a copy by value (bitwise for C types or by copy constructor for C++ types.) This is implied by `BY_VALUE`.
 
 
 
@@ -245,17 +238,15 @@ At most one of the following assign parameters may be defined:
 
 ### `COPY`
 
-- `COPY`, expression matching `pottery_error_t(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from)`
+An expression matching `pottery_error_t(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from)`.
 
-Copies the contents of an existing element into another existing value, replacing its contents. The values in `to` and `from` are already initialized and must remain initialized. In addition, `from` is `const` and must not be modified.
+Copies the contents of an existing value into another existing value, replacing its contents. The values in `to` and `from` are already initialized and must remain initialized. In addition, `from` is `const` and must not be modified.
 
-If this fails, it you must leave the destination object initialized, but it is up to you whether its original contents are preserved or whether it contains junk. The generated `copy()` will have the same behaviour.
+If this fails, it you must leave the destination value initialized, but it is up to you whether its original contents are preserved or whether it contains junk. The generated `copy()` will have the same behaviour.
 
 ### `COPY_BY_VALUE`
 
-- `COPY_BY_VALUE`, a flag
-
-Indicates that the type is assignable by value (bitwise for C types or by copy assignment for C++ types, as with `operator=(const&)`.) This is implied by `BY_VALUE`.
+A flag indicating that the type is assignable by value (bitwise for C types or by copy assignment for C++ types, as with `operator=(const&)`.) This is implied by `BY_VALUE`.
 
 
 
@@ -265,17 +256,15 @@ At most one of the following parameters may be defined:
 
 ### `INIT_STEAL`
 
-- `INIT_STEAL`, expression matching `pottery_error_t(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from)`
+An expression matching `pottery_error_t(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from)`.
 
-Initializes an element at a new storage location, stealing an existing value into it.
+Initializes a value at a new storage location, stealing an existing value into it.
 
-In C++, the default constructor will be run first, which means the element must have a default constructor. To use move construction, define `INIT_STEAL_BY_VALUE` instead.
+In C++, the default constructor will be run first, which means the value must have a default constructor. To use move construction, define `INIT_STEAL_BY_VALUE` instead.
 
 ### `INIT_STEAL_BY_VALUE`
 
-- `INIT_STEAL_BY_VALUE`, a flag
-
-Indicates that the type is initializable as a steal by value (bitwise for C types or by steal constructor for C++ types.) This is implied by `BY_VALUE`.
+A flag indicating that the type is initializable as a steal by value (bitwise for C types or by steal constructor for C++ types.) This is implied by `BY_VALUE`.
 
 
 
@@ -285,15 +274,13 @@ At most one of the following steal parameters may be defined:
 
 ### `STEAL`
 
-- `STEAL`, expression matching `void(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from)`
+An expression matching `void(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from)`.
 
-Moves the contents of an existing element into another existing value, replacing its contents. The value stolen `from` is left initialized but blank. The values in `to` and `from` are already initialized and must remain initialized.
+Moves the contents of an existing value into another existing value, replacing its contents. The value stolen `from` is left initialized but blank. The values in `to` and `from` are already initialized and must remain initialized.
 
 ### `STEAL_BY_VALUE`
 
-- `STEAL_BY_VALUE`, a flag
-
-Indicates that the type is stealable by value (bitwise for C types or by move assignment for C++ types, as with `operator=(&&)`.) This is implied by `BY_VALUE`.
+A flag indicating that the type is stealable by value (bitwise for C types or by move assignment for C++ types, as with `operator=(&&)`.) This is implied by `BY_VALUE`.
 
 In C++, if your move assignment operator throws, Pottery aborts.
 
@@ -305,19 +292,17 @@ You can define a custom swap expression:
 
 ### `SWAP`
 
-- `SWAP`, expression matching `void(CONTEXT_TYPE context, REF_TYPE left, REF_TYPE right)`
+An expression matching `void(CONTEXT_TYPE context, REF_TYPE left, REF_TYPE right)`.
 
-Swaps the two given elements.
+Swaps the two given values.
 
-If this is not defined and `MOVE` and `VALUE_TYPE` are provided, elements are swapped through a temporary using the `MOVE` expression.
+If this is not defined and `MOVE` and `VALUE_TYPE` are provided, values are swapped through a temporary using the `MOVE` expression.
 
-Otherwise, if this is not defined and `MOVE_BY_VALUE` and `VALUE_TYPE` are defined: In C, or in C++ if `std::is_trivial<>::value` is true or `pottery::is_bitwise_movable<>::value` is true, elements are swapped bitwise. Otherwise (for non-trivial C++ types) elements are swapped with a `swap()` found by argument-dependent lookup or otherwise by `std::swap()`. 
+Otherwise, if this is not defined and `MOVE_BY_VALUE` and `VALUE_TYPE` are defined: In C, or in C++ if `std::is_trivial<>::value` is true or `pottery::is_bitwise_movable<>::value` is true, values are swapped bitwise. Otherwise (for non-trivial C++ types) values are swapped with a `swap()` found by argument-dependent lookup or otherwise by `std::swap()`. 
 
 ### `SWAP_BY_VALUE`
 
-- `SWAP_BY_VALUE`, a flag
-
-Indicates that the type is swappable by value.
+A flag indicating that the type is swappable by value.
 
 In C, this means `swap()` will happen by simple assignment or by `memcpy()` or equivalent.
 
@@ -350,31 +335,58 @@ These are 1 if the functionality is available or 0 otherwise. When these macros 
 
 
 
+## Allocated Pointers
+
+The lifecycle template does not define `new()` or `delete()` functions. Pottery's intrusive containers deal with externally allocated and externally owned values so they do not perform any lifecycle operations on them. All other Pottery containers and algorithms deal directly with flat values.
+
+If you are putting allocated pointers in a Pottery container and you want the container to be able to manage them, you can make the value type a pointer, and make the lifecycle init/destroy functions wrap your new/delete functions (since they init and destroy the pointer.) A minimal wrapping for a vector of pointers might look like this:
+
+```c
+#define POTTERY_LIFECYCLE_VALUE_TYPE foo_t*
+#define POTTERY_LIFECYCLE_DESTROY(x) foo_delete(*x)
+#define POTTERY_LIFECYCLE_MOVE_BY_VALUE 1
+```
+
+This will instantiate `destroy()`, `move()` and `swap()`, which is all you need to put allocated pointers in a container with nice `insert()` and `remove()` APIs. Note that this is `MOVE_BY_VALUE`, not `BY_VALUE`: it can move our pointers but we don't want it to assume it can trivially copy them!
+
+If your pointer type supports all lifecycle operations, you can forward them all to Pottery. You do have to correctly return errors from your expressions though. This is easy if your `new()` functions can't fail (for example if you are ignoring `malloc()` errors since `malloc()` doesn't fail gracefully on modern desktop platforms.) You might wrap all lifecycle operations for a pointer value like this:
+
+```c
+#define POTTERY_LIFECYCLE_VALUE_TYPE foo_t*
+#define POTTERY_LIFECYCLE_INIT(x) *x = foo_new(), POTTERY_OK
+#define POTTERY_LIFECYCLE_INIT_COPY(x, y) *x = foo_new_copy(*y), POTTERY_OK
+#define POTTERY_LIFECYCLE_INIT_STEAL(x, y) *x = foo_new_steal(*y), POTTERY_OK
+#define POTTERY_LIFECYCLE_COPY(x, y) foo_copy(*x, *y), POTTERY_OK
+#define POTTERY_LIFECYCLE_STEAL(x, y) foo_steal(*x, *y)
+#define POTTERY_LIFECYCLE_DESTROY(x) foo_delete(*x)
+#define POTTERY_LIFECYCLE_BY_VALUE 1 // for move and swap
+```
+
+Of course you only need to define those that are actually relevant for your container.
+
+
+
 # API Reference
 
 The following functions are defined if possible:
 
 ## Init
 
-### `init()`
-
 ```c
-pottery_error_t init(CONTEXT_TYPE context, REF_TYPE element);
+pottery_error_t init(CONTEXT_TYPE context, REF_TYPE value);
 ```
 
-Constructs and initializes the given element to a blank, empty, or default state.
+Constructs and initializes the given value to a blank, empty, or default state.
 
-If this succeeds, POTTERY_OK is returned; otherwise the element is not initialized and must not be destroyed.
-
-### `init_bulk()`
+If this succeeds, POTTERY_OK is returned; otherwise the value is not initialized and must not be destroyed.
 
 ```c
-pottery_error_t init_bulk(CONTEXT_TYPE context, VALUE_TYPE* element, size_t n);
+pottery_error_t init_bulk(CONTEXT_TYPE context, VALUE_TYPE* values, size_t n);
 ```
 
-Constructs and initializes the given array of elements to a blank, empty, or default state.
+Constructs and initializes the given array of values to a blank, empty, or default state.
 
-If this succeeds, POTTERY_OK is returned; otherwise any successfully initialized elements in the destination array are destroyed, leaving the entire array uninitialized.
+If this succeeds, POTTERY_OK is returned; otherwise any successfully initialized values in the destination array are destroyed, leaving the entire array uninitialized.
 
 This requires that a `VALUE_TYPE` be defined.
 
@@ -384,21 +396,17 @@ This requires that a `VALUE_TYPE` be defined.
 
 The following functions are defined if possible:
 
-### `destroy()`
-
 ```c
-void destroy(CONTEXT_TYPE context, REF_TYPE element);
+void destroy(CONTEXT_TYPE context, REF_TYPE ref);
 ```
 
-Destroys the given initialized element.
-
-### `destroy_bulk()`
+Destroys the given initialized value.
 
 ```c
-void destroy_bulk(CONTEXT_TYPE context, VALUE_TYPE* element, size_t n);
+void destroy_bulk(CONTEXT_TYPE context, VALUE_TYPE* values, size_t n);
 ```
 
-Destroys the given array of initialized elements.
+Destroys the given array of initialized values.
 
 This requires that a `VALUE_TYPE` be defined.
 
@@ -410,21 +418,21 @@ This requires that a `VALUE_TYPE` be defined.
 pottery_error_t init_copy(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from);
 ```
 
-Constructs and initializes an unconstructed element by copying the contents of an existing element.
+Constructs and initializes an unconstructed value by copying the contents of an existing value.
 
-The elements must be distinct. It is an error to pass the same element for both `to` and `from`.
+The values must be distinct. It is an error to pass the same value for both `to` and `from`.
 
-If this succeeds, POTTERY_OK is returned; otherwise the element is not initialized and must not be destroyed.
+If this succeeds, POTTERY_OK is returned; otherwise the value is not initialized and must not be destroyed.
 
 ```c
 pottery_error_t init_copy_bulk(CONTEXT_TYPE context, VALUE_TYPE* to, VALUE_TYPE* from, size_t n);
 ```
 
-Constructs and initializes a range of unconstructed elements by copying the contents of a non-overlapping range of existing elements.
+Constructs and initializes a range of unconstructed values by copying the contents of a non-overlapping range of existing values.
 
-The elements must be distinct. It is an error to pass overlapping ranges of elements.
+The values must be distinct. It is an error to pass overlapping ranges of values.
 
-If this succeeds, POTTERY_OK is returned; otherwise any successfully initialized elements in the destination array are destroyed, leaving the entire array uninitialized.
+If this succeeds, POTTERY_OK is returned; otherwise any successfully initialized values in the destination array are destroyed, leaving the entire array uninitialized.
 
 This requires that a `VALUE_TYPE` be defined.
 
@@ -436,21 +444,21 @@ This requires that a `VALUE_TYPE` be defined.
 pottery_error_t init_steal(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from);
 ```
 
-Constructs and initializes an unconstructed element by stealing the contents of another existing element, leaving the `from` element initialized but with junk contents.
+Constructs and initializes an unconstructed value by stealing the contents of another existing value, leaving the `from` value initialized but with junk contents.
 
-The elements must be distinct. It is an error to pass the same element for both `to` and `from`.
+The values must be distinct. It is an error to pass the same value for both `to` and `from`.
 
-If this succeeds, POTTERY_OK is returned; otherwise the destination element is not initialized and must not be destroyed, while the source element is initialized but in an indeterminate (junk) state. The contents of the source object are not preserved on error.
+If this succeeds, POTTERY_OK is returned; otherwise the destination value is not initialized and must not be destroyed, while the source value is initialized but in an indeterminate (junk) state. The contents of the source value are not preserved on error.
 
 ```c
 pottery_error_t init_steal_bulk(CONTEXT_TYPE context, VALUE_TYPE* to, VALUE_TYPE* from, size_t n);
 ```
 
-Constructs and initializes a range of unconstructed elements by stealing the contents of a non-overlapping range of existing elements, leaving the `from` elements initialized but with junk contents.
+Constructs and initializes a range of unconstructed values by stealing the contents of a non-overlapping range of existing values, leaving the `from` values initialized but with junk contents.
 
-The elements must be distinct. It is an error to pass overlapping ranges of elements.
+The values must be distinct. It is an error to pass overlapping ranges of values.
 
-If this succeeds, POTTERY_OK is returned; otherwise any successfully initialized elements in the destination array are destroyed leaving the entire array uninitialized, while the entire source array is initialized but in an indeterminate (junk) state. The contents of the source objects are not preserved on error.
+If this succeeds, POTTERY_OK is returned; otherwise any successfully initialized values in the destination array are destroyed leaving the entire array uninitialized, while the entire source array is initialized but in an indeterminate (junk) state. The contents of the source values are not preserved on error.
 
 This requires that a `VALUE_TYPE` be defined.
 
@@ -462,15 +470,15 @@ This requires that a `VALUE_TYPE` be defined.
 void move(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from);
 ```
 
-Moves the element to a new address, without creating or destroying any elements (if possible.) The `to` element must be uninitialized and unconstructed, and the `from` element will be left uninitialized and destructed.
+Moves the value to a new address, without creating or destroying any values (if possible.) The `to` value must be uninitialized and unconstructed, and the `from` value will be left uninitialized and destructed.
 
-The elements must be distinct. It is an error to pass the same element for both `to` and `from`.
+The values must be distinct. It is an error to pass the same value for both `to` and `from`.
 
 ```c
 void move_bulk_restrict(CONTEXT_TYPE context, VALUE_TYPE* restrict to, VALUE_TYPE* restrict from, size_t n);
 ```
 
-Moves `n` elements from non-overlapping addresses `from` to `to`.
+Moves `n` values from non-overlapping addresses `from` to `to`.
 
 This requires that a `VALUE_TYPE` be defined.
 
@@ -478,7 +486,7 @@ This requires that a `VALUE_TYPE` be defined.
 void move_bulk_up(CONTEXT_TYPE context, VALUE_TYPE* to, VALUE_TYPE* from, size_t n);
 ```
 
-Moves `n` elements up from `from` to `to`. The ranges may overlap as long as `to > from`.
+Moves `n` values up from `from` to `to`. The ranges may overlap as long as `to > from`.
 
 This requires that a `VALUE_TYPE` be defined.
 
@@ -486,7 +494,7 @@ This requires that a `VALUE_TYPE` be defined.
 void move_bulk_down(CONTEXT_TYPE context, VALUE_TYPE* to, VALUE_TYPE* from, size_t n);
 ```
 
-Moves `n` elements down from `from` to `to`. The ranges may overlap as long as `to < from`.
+Moves `n` values down from `from` to `to`. The ranges may overlap as long as `to < from`.
 
 This requires that a `VALUE_TYPE` be defined.
 
@@ -494,7 +502,7 @@ This requires that a `VALUE_TYPE` be defined.
 void move_bulk(CONTEXT_TYPE context, VALUE_TYPE* to, VALUE_TYPE* from, size_t n);
 ```
 
-Moves `n` elements from `from` to `to`. The ranges may overlap arbitrarily. (This may automatically call one of the other functions based on how the ranges overlap.)
+Moves `n` values from `from` to `to`. The ranges may overlap arbitrarily. (This may automatically call one of the other functions based on how the ranges overlap.)
 
 
 
@@ -506,11 +514,11 @@ The following functions are defined if possible.
 pottery_error_t copy(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from);
 ```
 
-Replaces the contents of `to` by copying the contents of `from`. Both elements must already be initialized.
+Replaces the contents of `to` by copying the contents of `from`. Both values must already be initialized.
 
-The elements must be distinct. It is an error to pass the same element for both `to` and `from`.
+The values must be distinct. It is an error to pass the same value for both `to` and `from`.
 
-If this succeeds, POTTERY_OK is returned. If this fails an error code is returned, and it is up to the configured `COPY` expression whether the destination object is unmodified or whether it contains junk. Either way, the destination is in an initialized state and must be destroyed.
+If this succeeds, POTTERY_OK is returned. If this fails an error code is returned, and it is up to the configured `COPY` expression whether the destination value is unmodified or whether it contains junk. Either way, the destination is in an initialized state and must be destroyed.
 
 
 
@@ -523,9 +531,9 @@ The following functions are defined if possible.
 void steal(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from);
 ```
 
-Replaces the contents of `to` by replacing it with the contents of `from`, leaving `from` initialized with junk. Both elements must already be initialized.
+Replaces the contents of `to` by replacing it with the contents of `from`, leaving `from` initialized with junk. Both values must already be initialized.
 
-The elements must be distinct. It is an error to pass the same element for both `to` and `from`.
+The values must be distinct. It is an error to pass the same value for both `to` and `from`.
 
 
 
@@ -537,15 +545,15 @@ The following functions are defined if possible.
 void swap(CONTEXT_TYPE context, REF_TYPE left, REF_TYPE right);
 ```
 
-Swaps two elements.
+Swaps two values.
 
-The elements must be distinct (as implied by `restrict`.)
+The values must be distinct (as implied by `restrict`.)
 
 ```c
 void swap_bulk_restrict(CONTEXT_TYPE context, VALUE_TYPE* restrict left, VALUE_TYPE* restrict right, size_t n);
 ```
 
-Swaps two non-overlapping ranges of elements.
+Swaps two non-overlapping ranges of values.
 
 This requires that a `VALUE_TYPE` be defined.
 
