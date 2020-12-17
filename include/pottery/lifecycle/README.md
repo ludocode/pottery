@@ -106,7 +106,7 @@ The following configuration parameter can be defined to declare that all lifecyc
 
 ### `BY_VALUE`
 
-A flag indicating that the value is automatically initialized and destroyed, and assignable by value for both moves and copies. Defining this to 1 has the same behaviour as defining all of the following (except overrides, see the next section) to 1:
+A flag indicating that the value is automatically initialized and destroyed, and assignable by value for both moves and copies. Defining this to 1 has the same behaviour as defining all of the following to 1:
 
 - `MOVE_BY_VALUE`
 - `DESTROY_BY_VALUE`
@@ -331,7 +331,7 @@ Additional operations:
 
 - `CAN_PASS`
 
-These are 1 if the functionality is available or 0 otherwise. When these macros are no longer needed, you must include `pottery_lifecycle_cleanup.t.h" to clean them up (templates that use the lifecycle template do this for you.)
+These are 1 if the functionality is available or 0 otherwise. When these macros are no longer needed, you must include `pottery_lifecycle_cleanup.t.h` to clean them up. Other templates that use the lifecycle template do this internally so they do not expose any of these macros.
 
 
 
@@ -561,10 +561,6 @@ This requires that a `VALUE_TYPE` be defined.
 
 ## Pass
 
-The lifecycle template defines `POTTERY_LIFECYCLE_CAN_PASS` if the type can be passed by value. This allows containers to define `insert()` and `extract()` functions that accept the type as an argument or return it.
+If a value type can be moved by value (i.e. `BY_VALUE` or `MOVE_BY_VALUE` is 1), passing is enabled. This allows containers to define `insert()` and `extract()` functions that accept the type as an argument or return it.
 
-Without the ability to pass types by value, you must insert them with a method like `emplace()`. This creates an uninitialized entry in which you initialize the value.
-
-Currently this is only allowed if the type can be both copied by value and destroyed by value (in other words it is trivial in C and copy-constructible and destructible in C++.) This is fairly restrictive so it may be relaxed later if I can figure out a good way to make it work.
-
-For example with a vector of allocated `char*` it would be nice to pass `strdup()` straight to `insert()`. However such a type is neither copy-by-value nor destroy-by-value; the vector needs to make sure it is carefully moving it into place and needs to properly dispose of it if the insertion fails. Ideally I'd like to make `CAN_PASS` depend on move-by-value and destroyable but this is not yet implemented and may not be possible.
+Without the ability to pass types by value, you must insert them yourself with `emplace()`. This creates an uninitialized entry in which you initialize a value or to which you move one.

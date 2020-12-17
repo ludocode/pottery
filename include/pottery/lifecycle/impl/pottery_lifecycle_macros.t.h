@@ -271,7 +271,7 @@
  *
  * This is currently allowed if we can move by value.
  */
-#if POTTERY_LIFECYCLE_MOVE_BY_VALUE
+#if POTTERY_LIFECYCLE_MOVE_BY_VALUE && !defined(POTTERY_LIFECYCLE_MOVE)
     #define POTTERY_LIFECYCLE_CAN_PASS 1
 #else
     #define POTTERY_LIFECYCLE_CAN_PASS 0
