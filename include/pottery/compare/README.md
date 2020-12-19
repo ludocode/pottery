@@ -38,6 +38,7 @@ The Compare template is meant as a helper for other Pottery templates so there i
 #define POTTERY_COMPARE_REF_TYPE const char*
 #define POTTERY_COMPARE_THREE_WAY strcmp
 #include "pottery/compare/pottery_compare_static.t.h"
+#include "pottery/compare/pottery_compare_cleanup.t.h"
 ```
 
 This generates `string_equal()`, `string_less()`, `string_greater()`, `string_less_or_equal()`, `string_min()`, `string_max()`, `string_clamp()`, `string_median()`, etc. all as wrappers to `strcmp()`.
