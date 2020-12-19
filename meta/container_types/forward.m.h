@@ -23,28 +23,32 @@
  */
 
 //!!! END_LICENSE
-// Forwards container type configuration from {SRC} to {DEST}
+// Forwards container_types configuration from {SRC} to {DEST}
 
-// Forward the value or ref
-#if defined({SRC}_REF_TYPE) && !defined({SRC}_VALUE_TYPE)
-    #define {DEST}_REF_TYPE {SRC}_REF_TYPE
-#elif defined({SRC}_VALUE_TYPE) && !defined({SRC}_REF_TYPE)
+// Forward the types
+#if defined({SRC}_VALUE_TYPE)
     #define {DEST}_VALUE_TYPE {SRC}_VALUE_TYPE
-#else
-    #error "Exactly one of {SRC}_REF_TYPE or {SRC}_VALUE_TYPE must be defined."
 #endif
-
-// Forward the entry
+#if defined({SRC}_REF_TYPE)
+    #define {DEST}_REF_TYPE {SRC}_REF_TYPE
+#endif
 #if defined({SRC}_ENTRY_TYPE)
     #define {DEST}_ENTRY_TYPE {SRC}_ENTRY_TYPE
 #endif
+#if defined({SRC}_KEY_TYPE)
+    #define {DEST}_KEY_TYPE {SRC}_KEY_TYPE
+#endif
+#ifdef {SRC}_CONTEXT_TYPE
+    #define {DEST}_CONTEXT_TYPE {SRC}_CONTEXT_TYPE
+#endif
 
-// Forward the entry dereference mechanism
+// Forward the conversion and comparison expressions
 #if defined({SRC}_ENTRY_REF)
     #define {DEST}_ENTRY_REF {SRC}_ENTRY_REF
 #endif
-
-// Forward the context
-#ifdef {SRC}_CONTEXT_TYPE
-    #define {DEST}_CONTEXT_TYPE {SRC}_CONTEXT_TYPE
+#if defined({SRC}_REF_KEY)
+    #define {DEST}_REF_KEY {SRC}_REF_KEY
+#endif
+#if defined({SRC}_REF_EQUAL)
+    #define {DEST}_REF_EQUAL {SRC}_REF_EQUAL
 #endif
