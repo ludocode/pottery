@@ -113,36 +113,6 @@ void* pottery_alloc_impl_malloc_array_at_least_ea(POTTERY_ALLOC_CONTEXT_ARG
             *count = new_size / element_size;
             return pottery_alloc_impl_malloc_ea(POTTERY_ALLOC_CONTEXT_VAL alignment, new_size);
 
-        #elif defined(POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE) && defined(POTTERY_ALLOC_ALIGNED_MALLOC_EXPAND)
-            // Allocate, then expand to fill the space.
-            void* ptr = pottery_alloc_impl_malloc_ea(POTTERY_ALLOC_CONTEXT_VAL alignment, *size);
-
-            #ifdef POTTERY_ALLOC_CONTEXT_TYPE
-                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE((context), (alignment), (ptr));
-            #else
-                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE((alignment), (ptr));
-            #endif
-
-            // It's common that the usable size is larger but not enough for
-            // more elements. We only bother to expand if we'll actually get
-            // more elements out of it.
-            size_t new_count = new_size / element_size;
-            if (new_count > *count) {
-                void* new_ptr = ptr;
-                #ifdef POTTERY_ALLOC_CONTEXT_TYPE
-                    POTTERY_ALLOC_ALIGNED_MALLOC_EXPAND((context), (&ptr), (size));
-                #else
-                    POTTERY_ALLOC_ALIGNED_MALLOC_EXPAND((&ptr), (size));
-                #endif
-
-                // Make sure the pointer didn't change and the size didn't shrink.
-                pottery_assert(*size >= old_size);
-                pottery_assert(old_ptr == ptr);
-                *count = new_count;
-                ptr = new_ptr;
-            }
-            return ptr;
-
         #else
             // No support for at_least.
             return pottery_alloc_impl_malloc_ea(POTTERY_ALLOC_CONTEXT_VAL alignment, size);
@@ -167,32 +137,6 @@ void* pottery_alloc_impl_malloc_array_at_least_ea(POTTERY_ALLOC_CONTEXT_ARG
 
         char* ptr = pottery_cast(char*,
                 pottery_alloc_impl_malloc_fa(POTTERY_ALLOC_CONTEXT_VAL alignment, alloc_size));
-
-        #if !defined(POTTERY_ALLOC_ALIGNED_MALLOC_GOOD_SIZE) && \
-                defined(POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE) && \
-                defined(POTTERY_ALLOC_ALIGNED_MALLOC_EXPAND)
-            // Expand ptr to fill the usable space
-
-            #ifdef POTTERY_ALLOC_CONTEXT_TYPE
-                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE((context), (alignment), (ptr));
-            #else
-                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE((alignment), (ptr));
-            #endif
-
-            if (new_size > alloc_size) {
-                void* new_ptr = ptr;
-                #ifdef POTTERY_ALLOC_CONTEXT_TYPE
-                    POTTERY_ALLOC_ALIGNED_MALLOC_EXPAND((context), (&new_ptr), (&new_size));
-                #else
-                    POTTERY_ALLOC_ALIGNED_MALLOC_EXPAND((&new_ptr), (&new_size));
-                #endif
-
-                // Make sure the pointer didn't change and the size didn't shrink.
-                pottery_assert(new_size >= alloc_size);
-                pottery_assert(ptr == new_ptrptr);
-                alloc_size = new_size;
-            }
-        #endif
 
         uintptr_t alloc_address = pottery_cast(uintptr_t, ptr);
         uintptr_t aligned_address = (alloc_address + sizeof(void*) + offset) & ~offset;
@@ -234,36 +178,6 @@ void* pottery_alloc_impl_malloc_array_at_least_fa(POTTERY_ALLOC_CONTEXT_ARG
             pottery_assert(new_size >= size);
             *count = new_size / element_size;
             return pottery_alloc_impl_malloc_fa(POTTERY_ALLOC_CONTEXT_VAL alignment, new_size);
-
-        #elif defined(POTTERY_ALLOC_MALLOC_USABLE_SIZE) && defined(POTTERY_ALLOC_MALLOC_EXPAND)
-            // Allocate, then expand to fill the space.
-            void* ptr = pottery_alloc_impl_malloc_fa(POTTERY_ALLOC_CONTEXT_VAL alignment, size);
-
-            #ifdef POTTERY_ALLOC_CONTEXT_TYPE
-                size_t new_size = POTTERY_ALLOC_MALLOC_USABLE_SIZE((context), (ptr));
-            #else
-                size_t new_size = POTTERY_ALLOC_MALLOC_USABLE_SIZE((ptr));
-            #endif
-
-            // It's common that the usable size is larger but not enough for
-            // more elements. We only bother to expand if we'll actually get
-            // more elements out of it.
-            size_t new_count = new_size / element_size;
-            if (new_count > *count) {
-                void* new_ptr = ptr;
-                #ifdef POTTERY_ALLOC_CONTEXT_TYPE
-                    POTTERY_ALLOC_MALLOC_EXPAND((context), (&new_ptr), (&new_size));
-                #else
-                    POTTERY_ALLOC_MALLOC_EXPAND((&new_ptr), (&new_size));
-                #endif
-
-                // Make sure the pointer didn't change and the size didn't shrink.
-                pottery_assert(new_size >= size);
-                pottery_assert(new_ptr == ptr);
-                *count = new_count;
-                ptr = new_ptr;
-            }
-            return ptr;
 
         #else
             // No support for at_least.

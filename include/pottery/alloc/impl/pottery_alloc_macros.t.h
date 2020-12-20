@@ -58,13 +58,6 @@
     #error "MALLOC_GOOD_SIZE is defined but no corresponding MALLOC, ZALLOC or REALLOC is defined."
 #endif
 
-#if defined(POTTERY_ALLOC_MALLOC_USABLE_SIZE) && \
-        !defined(POTTERY_ALLOC_MALLOC) && \
-        !defined(POTTERY_ALLOC_ZALLOC) && \
-        !defined(POTTERY_ALLOC_REALLOC)
-    #error "MALLOC_USABLE_SIZE is defined but no corresponding MALLOC, ZALLOC or REALLOC is defined."
-#endif
-
 #if !defined(POTTERY_ALLOC_ALIGNED_FREE) && ( \
         defined(POTTERY_ALLOC_ALIGNED_MALLOC) || \
         defined(POTTERY_ALLOC_ALIGNED_ZALLOC) || \
@@ -84,13 +77,6 @@
         !defined(POTTERY_ALLOC_ALIGNED_ZALLOC) && \
         !defined(POTTERY_ALLOC_ALIGNED_REALLOC)
     #error "ALIGNED_MALLOC_GOOD_SIZE is defined but no corresponding ALIGNED_MALLOC, ALIGNED_ZALLOC or ALIGNED_REALLOC is defined."
-#endif
-
-#if defined(POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE) && \
-        !defined(POTTERY_ALLOC_ALIGNED_MALLOC) && \
-        !defined(POTTERY_ALLOC_ALIGNED_ZALLOC) && \
-        !defined(POTTERY_ALLOC_ALIGNED_REALLOC)
-    #error "ALIGNED_MALLOC_USABLE_SIZE is defined but no corresponding ALIGNED_MALLOC, ALIGNED_ZALLOC or ALIGNED_REALLOC is defined."
 #endif
 
 // If we have no custom allocators defined, use the defaults.
@@ -117,14 +103,8 @@
     #ifdef POTTERY_REALLOC
         #define POTTERY_ALLOC_REALLOC POTTERY_REALLOC
     #endif
-    #ifdef POTTERY_MALLOC_EXPAND
-        #define POTTERY_ALLOC_MALLOC_EXPAND POTTERY_MALLOC_EXPAND
-    #endif
     #ifdef POTTERY_MALLOC_GOOD_SIZE
         #define POTTERY_ALLOC_MALLOC_GOOD_SIZE POTTERY_MALLOC_GOOD_SIZE
-    #endif
-    #ifdef POTTERY_MALLOC_USABLE_SIZE
-        #define POTTERY_ALLOC_MALLOC_USABLE_SIZE POTTERY_MALLOC_USABLE_SIZE
     #endif
 
     #ifdef POTTERY_ALIGNED_FREE
@@ -139,14 +119,8 @@
     #ifdef POTTERY_ALIGNED_REALLOC
         #define POTTERY_ALLOC_ALIGNED_REALLOC POTTERY_ALIGNED_REALLOC
     #endif
-    #ifdef POTTERY_ALIGNED_MALLOC_EXPAND
-        #define POTTERY_ALLOC_ALIGNED_MALLOC_EXPAND POTTERY_ALIGNED_MALLOC_EXPAND
-    #endif
     #ifdef POTTERY_ALIGNED_MALLOC_GOOD_SIZE
         #define POTTERY_ALLOC_ALIGNED_MALLOC_GOOD_SIZE POTTERY_ALIGNED_MALLOC_GOOD_SIZE
-    #endif
-    #ifdef POTTERY_ALIGNED_MALLOC_USABLE_SIZE
-        #define POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE POTTERY_ALIGNED_MALLOC_USABLE_SIZE
     #endif
 #endif
 

@@ -229,15 +229,15 @@ static size_t pottery_knuth_hash_s(size_t value, size_t bits) {
 #if POTTERY_DEFAULT_MALLOC
 
 #ifndef POTTERY_GENERATE_CODE
-#if defined(__linux__) || defined(_WIN32)
-#include <malloc.h>
-#elif defined(__FreeBSD__)
-#include <malloc_np.h>
-#elif defined(__APPLE__)
-#include <malloc/malloc.h>
-#else
-#include <stdlib.h>
-#endif
+    #if defined(__linux__) || defined(_WIN32)
+        #include <malloc.h>
+    #elif defined(__FreeBSD__)
+        #include <malloc_np.h>
+    #elif defined(__APPLE__)
+        #include <malloc/malloc.h>
+    #else
+        #include <stdlib.h>
+    #endif
 #endif
 
 // You can define POTTERY_JEMALLOC to 1 if you're using it.
@@ -248,8 +248,10 @@ static size_t pottery_knuth_hash_s(size_t value, size_t bits) {
         #define POTTERY_JEMALLOC 0
     #endif
 #endif
-#if POTTERY_JEMALLOC && !defined(__FreeBSD__)
-    #include <jemalloc/jemalloc.h>
+#ifndef POTTERY_GENERATE_CODE
+    #if POTTERY_JEMALLOC && !defined(__FreeBSD__)
+        #include <jemalloc/jemalloc.h>
+    #endif
 #endif
 
 #ifndef POTTERY_FREE
@@ -270,66 +272,6 @@ static size_t pottery_knuth_hash_s(size_t value, size_t bits) {
 
 #ifndef POTTERY_REALLOC
     #define POTTERY_REALLOC realloc
-#endif
-
-// Expand is similar to realloc except it is only used to expand in-place to
-// usable size without moving the allocation. it takes a pointer to both ptr
-// and size since the underlying platform may need them. It can change the size
-// but not the pointer.
-#ifndef POTTERY_MALLOC_EXPAND
-    // void POTTERY_MALLOC_EXPAND(void** ptr, size_t* size)
-    #if POTTERY_JEMALLOC
-        // This isn't actually used since we have MALLOC_GOOD_SIZE but this is
-        // how it should be implemented.
-        #define POTTERY_MALLOC_EXPAND(ptr, size) *size = xallocx(*ptr, *size, 0, 0)
-    #elif defined(_WIN32)
-        // On Win32 we can expand but we don't have an equivalent of
-        // malloc_usable_size() so this doesn't get used either :( Currently
-        // the allocate-then-expand code is pretty much useless.
-        #define POTTERY_MALLOC_EXPAND(ptr, size) *ptr = _expand(*ptr, *size)
-    #endif
-    // Note that we don't use realloc() since it can move even if we're
-    // resizing to malloc_usable_size(). e.g. under glibc, try:
-    //     void* p = malloc(188856);
-    //     void* q = realloc(p, malloc_usable_size(p));
-    // You end up with q != p, the allocation moved! We also can't just do
-    // nothing and use the extra space because it doesn't get moved on a
-    // realloc(). So, malloc_usable_size() is basically useless under glibc (as
-    // you might expect, since the documentation says it's just for debugging.
-    // This is really unfortunate.)
-#endif
-
-#ifndef POTTERY_MALLOC_USABLE_SIZE
-    // In order to support POTTERY_MALLOC_USABLE_SIZE, we need a usable size
-    // function that is fast, and we need to be able to POTTERY_REALLOC() to the
-    // usable size without it relocating the data. (This could potentially be
-    // improved by adding a MALLOC_AT_LEAST macro. At least FreeBSD could use
-    // it and custom user allocators could as well. It's not worth implementing
-    // right now.)
-
-    // We assume this is true on Linux. Both glibc and musl support
-    // malloc_usable_size(). Other libc may not; in this case we can detect
-    // them here. Jemalloc (and therefore FreeBSD) also supports this although
-    // the alloc template will prefer nallocx() via MALLOC_GOOD_SIZE instead.
-    // This is pretty much useless though without a way to expand in-place; see
-    // EXPAND above.
-    #if defined(__linux__) || POTTERY_JEMALLOC
-        #define POTTERY_MALLOC_USABLE_SIZE malloc_usable_size
-
-    // On macOS and iOS malloc_size() exists but it may be slow. At least this
-    // blog post claims it is:
-    //     https://lemire.me/blog/2017/09/15/how-fast-are-malloc_size-and-malloc_usable_size-in-c/
-    // We have malloc_good_size() so this won't actually be used but we define
-    // it anyway for completeness.
-    #elif defined(__APPLE__)
-        #define POTTERY_MALLOC_USABLE_SIZE malloc_size
-    #endif
-
-    // Windows has _msize() but it returns the exact size requested, not the
-    // usable size. There's no point in using it.
-
-    // Other BSDs as far as we know don't support something like
-    // malloc_usable_size(), and we know nothing about other platforms.
 #endif
 
 // On platforms where we don't have an equivalent of malloc_good_size() and we
@@ -381,7 +323,7 @@ static inline size_t pottery_malloc_estimate_good_size(size_t size) {
         #define POTTERY_MALLOC_GOOD_SIZE(size) nallocx(size, 0)
     #elif defined(__APPLE__)
         #define POTTERY_MALLOC_GOOD_SIZE malloc_good_size
-    #elif !defined(POTTERY_MALLOC_USABLE_SIZE) || !defined(POTTERY_MALLOC_EXPAND)
+    #else
         #define POTTERY_MALLOC_GOOD_SIZE pottery_malloc_estimate_good_size
     #endif
 #endif
@@ -455,35 +397,13 @@ static inline size_t pottery_malloc_estimate_good_size(size_t size) {
     #endif
 #endif
 
-#ifndef POTTERY_ALIGNED_MALLOC_EXPAND
-    // void POTTERY_ALIGNED_MALLOC_EXPAND(void** ptr, size_t alignment, size_t* size)
-    #if POTTERY_JEMALLOC
-        // This isn't actually used since we have ALIGNED_MALLOC_GOOD_SIZE but
-        // this is how it should be implemented.
-        #define POTTERY_ALIGNED_MALLOC_EXPAND(ptr, alignment, size) *size = xallocx(*ptr, *size, 0, MALLOCX_ALIGN(alignment))
-    #endif
-    // as above, we cannot rely on realloc() to not move the pointer.
-#endif
-
 #ifndef POTTERY_ALIGNED_MALLOC_GOOD_SIZE
     #if POTTERY_JEMALLOC
         #define POTTERY_ALIGNED_MALLOC_GOOD_SIZE(alignment, size) nallocx(size, MALLOCX_ALIGN(alignment))
-    #elif !defined(POTTERY_ALIGNED_MALLOC_USABLE_SIZE) || !defined(POTTERY_ALIGNED_MALLOC_EXPAND)
+    #else
         #define POTTERY_ALIGNED_MALLOC_GOOD_SIZE(alignment, size) \
                 ((void)(alignment), pottery_malloc_estimate_good_size(size))
     #endif
-#endif
-
-#ifndef POTTERY_ALIGNED_MALLOC_USABLE_SIZE
-    // See note above about POTTERY_ALIGNED_MALLOC_EXPAND. We assume malloc_usable_size()
-    // can be used on aligned allocations. If we discover platforms where this
-    // does not work we must disable them.
-    #if defined(__linux__) || POTTERY_JEMALLOC
-        #define POTTERY_MALLOC_ALIGNED_USABLE_SIZE(alignment, ptr) malloc_usable_size(ptr)
-    #endif
-
-    // Windows has _msize() but it returns the exact size requested, not the
-    // usable size. There's no point in using it.
 #endif
 
 #endif // !defined(POTTERY_NO_DEFAULT_MALLOC)
