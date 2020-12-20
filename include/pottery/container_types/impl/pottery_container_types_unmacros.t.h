@@ -32,6 +32,7 @@
  * Configuration
  */
 
+#undef POTTERY_CONTAINER_TYPES_PREFIX
 
 
 /*

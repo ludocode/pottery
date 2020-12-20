@@ -26,54 +26,6 @@
 #error "This is an internal header. Do not include it."
 #endif
 
-#if defined(POTTERY_COMPARE_VALUE_TYPE)
-typedef POTTERY_COMPARE_VALUE_TYPE pottery_compare_value_t;
-#endif
-
-#ifdef POTTERY_COMPARE_REF_TYPE
-typedef POTTERY_COMPARE_REF_TYPE pottery_compare_ref_t;
-#else
-typedef pottery_compare_value_t* pottery_compare_ref_t;
-#endif
-
-#ifdef POTTERY_COMPARE_ENTRY_TYPE
-typedef POTTERY_COMPARE_ENTRY_TYPE pottery_compare_entry_t;
-#else
-typedef pottery_compare_ref_t pottery_compare_entry_t;
-#endif
-
-#ifdef POTTERY_COMPARE_CONTEXT_TYPE
-typedef POTTERY_COMPARE_CONTEXT_TYPE pottery_compare_context_t;
-#endif
-
-
-
-/**
- * Returns a ref for an entry.
- *
- * The entry must exist.
- */
-static inline
-pottery_compare_ref_t pottery_compare_ref(POTTERY_COMPARE_CONTEXT_ARG
-        pottery_compare_entry_t entry)
-{
-    POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
-
-    #ifdef POTTERY_COMPARE_ENTRY_REF
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
-            return (POTTERY_COMPARE_ENTRY_REF((context), (entry)));
-        #else
-            return (POTTERY_COMPARE_ENTRY_REF((entry)));
-        #endif
-    #else
-        // Without an ENTRY_REF expression, the entry type must be implicitly
-        // convertible to the ref type (usually it's the same type.)
-        return entry;
-    #endif
-}
-
-
-
 #if POTTERY_COMPARE_CAN_EQUAL
 static inline
 bool pottery_compare_equal(POTTERY_COMPARE_CONTEXT_ARG

@@ -25,15 +25,8 @@
 //!!! END_LICENSE
 // Renames lifecycle identifiers from {SRC} to {DEST}
 
-// types
-#define {SRC}_value_t POTTERY_CONCAT({DEST}, _value_t)
-#define {SRC}_ref_t POTTERY_CONCAT({DEST}, _ref_t)
-#define {SRC}_entry_t POTTERY_CONCAT({DEST}, _entry_t)
-#define {SRC}_context_t POTTERY_CONCAT({DEST}, _context_t)
-
 #define {SRC}_const_ref_t POTTERY_CONCAT({DEST}, _const_ref_t)
 
-// fundamental operations
 #define {SRC}_init_steal POTTERY_CONCAT({DEST}, _init_steal)
 #define {SRC}_init_copy POTTERY_CONCAT({DEST}, _init_copy)
 #define {SRC}_init POTTERY_CONCAT({DEST}, _init)
@@ -43,7 +36,6 @@
 #define {SRC}_steal POTTERY_CONCAT({DEST}, _steal)
 #define {SRC}_copy POTTERY_CONCAT({DEST}, _copy)
 
-// bulk operations
 #define {SRC}_destroy_bulk POTTERY_CONCAT({DEST}, _destroy_bulk)
 #define {SRC}_move_bulk POTTERY_CONCAT({DEST}, _move_bulk)
 #define {SRC}_move_bulk_restrict POTTERY_CONCAT({DEST}, _move_bulk_restrict)

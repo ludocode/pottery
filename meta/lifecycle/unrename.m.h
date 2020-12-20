@@ -25,15 +25,8 @@
 //!!! END_LICENSE
 // Un-renames lifecycle identifiers with prefix "{PREFIX}"
 
-// types
-#undef {PREFIX}_value_t
-#undef {PREFIX}_ref_t
-#undef {PREFIX}_entry_t
-#undef {PREFIX}_context_t
-
 #undef {PREFIX}_const_ref_t
 
-// fundamental operations
 #undef {PREFIX}_init_steal
 #undef {PREFIX}_init_copy
 #undef {PREFIX}_init
@@ -43,7 +36,6 @@
 #undef {PREFIX}_steal
 #undef {PREFIX}_copy
 
-// bulk operations
 #undef {PREFIX}_move_bulk
 #undef {PREFIX}_move_bulk_restrict
 #undef {PREFIX}_move_bulk_restrict_impl

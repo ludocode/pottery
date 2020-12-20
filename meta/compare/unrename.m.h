@@ -25,13 +25,6 @@
 //!!! END_LICENSE
 // Un-renames compare identifiers with prefix "{PREFIX}"
 
-#undef {PREFIX}_value_t
-#undef {PREFIX}_ref_t
-#undef {PREFIX}_entry_t
-#undef {PREFIX}_context_t
-
-#undef {PREFIX}_ref
-
 #undef {PREFIX}_three_way
 #undef {PREFIX}_equal
 #undef {PREFIX}_not_equal

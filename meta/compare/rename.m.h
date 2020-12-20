@@ -25,13 +25,6 @@
 //!!! END_LICENSE
 // Renames compare identifiers from {SRC} to {DEST}
 
-#define {SRC}_value_t POTTERY_CONCAT({DEST}, _value_t)
-#define {SRC}_ref_t POTTERY_CONCAT({DEST}, _ref_t)
-#define {SRC}_entry_t POTTERY_CONCAT({DEST}, _entry_t)
-#define {SRC}_context_t POTTERY_CONCAT({DEST}, _context_t)
-
-#define {SRC}_ref POTTERY_CONCAT({DEST}, _ref)
-
 #define {SRC}_three_way POTTERY_CONCAT({DEST}, _three_way)
 #define {SRC}_equal POTTERY_CONCAT({DEST}, _equal)
 #define {SRC}_not_equal POTTERY_CONCAT({DEST}, _not_equal)

@@ -24,9 +24,18 @@
 
 #define POTTERY_COMPARE_INTERNAL
 
+#ifndef POTTERY_COMPARE_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/compare/impl/pottery_compare_config_types.t.h"
+    #include "pottery/container_types/pottery_container_types_static.t.h"
+#endif
+
 #include "pottery/compare/impl/pottery_compare_macros.t.h"
 #include "pottery/compare/impl/pottery_compare_declarations.t.h"
 // no definitions
 #include "pottery/compare/impl/pottery_compare_unmacros.t.h"
+
+#ifndef POTTERY_COMPARE_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/container_types/pottery_container_types_cleanup.t.h"
+#endif
 
 #undef POTTERY_COMPARE_INTERNAL
