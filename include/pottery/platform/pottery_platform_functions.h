@@ -259,7 +259,7 @@ static size_t pottery_knuth_hash_s(size_t value, size_t bits) {
 
 #ifndef POTTERY_ZALLOC
     #if POTTERY_JEMALLOC
-        #define POTTERY_ZALLOC(size) mallocx(size, ALLOCM_ZERO)
+        #define POTTERY_ZALLOC(size) mallocx(size, MALLOCX_ZERO)
     #else
         #define POTTERY_ZALLOC(size) calloc(size, 1)
     #endif
@@ -440,7 +440,7 @@ static inline size_t pottery_malloc_estimate_good_size(size_t size) {
 
 #ifndef POTTERY_ALIGNED_ZALLOC
     #if POTTERY_JEMALLOC
-        #define POTTERY_ALIGNED_ZALLOC(alignment, size) mallocx(size, ALLOCM_ZERO | MALLOCX_ALIGN(alignment));
+        #define POTTERY_ALIGNED_ZALLOC(alignment, size) mallocx(size, MALLOCX_ZERO | MALLOCX_ALIGN(alignment));
     #endif
 #endif
 
