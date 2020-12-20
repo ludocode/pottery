@@ -25,8 +25,6 @@
 //!!! END_LICENSE
 // Un-renames lifecycle identifiers with prefix "{PREFIX}"
 
-#undef {PREFIX}_const_ref_t
-
 #undef {PREFIX}_init_steal
 #undef {PREFIX}_init_copy
 #undef {PREFIX}_init

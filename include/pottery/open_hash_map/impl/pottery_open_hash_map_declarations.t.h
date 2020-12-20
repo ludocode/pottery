@@ -329,7 +329,7 @@ static inline
 void pottery_ohm_entry_move(pottery_ohm_t* map, pottery_ohm_entry_t to, pottery_ohm_entry_t from) {
     (void)map;
 
-    pottery_ohm_lifecycle_move(
+    pottery_ohm_lifecycle_move_restrict(
             #ifdef POTTERY_OPEN_HASH_MAP_CONTEXT_TYPE
             map->context,
             #endif

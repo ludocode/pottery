@@ -19,13 +19,7 @@ The Lifecycle template instantiates functions for as many of the following eight
 
 The first four of these are allowed to fail; they return an error code result. The last four cannot fail and return void. If an `init*()` function fails, the destination value is not initialized and must not be destroyed.
 
-In addition, the template instantiates functions to operate in bulk:
-
-- `destroy_bulk()` -- destroys a C array of values
-- `move_bulk()` -- moves a C array of values to a potentially overlapping address
-- `move_bulk_restrict()` -- moves a C array of values to a non-overlapping address
-- `move_bulk_up()` -- moves a C array of values to a potentially overlapping higher address
-- `move_bulk_down()` -- moves a C array of values to a potentially overlapping lower address
+In addition, the template instantiates various functions to operate in bulk (with a `_bulk` suffix), various functions to operate on restrict values (with a `_restrict` suffix), and combinations of these. For example call `move_bulk_restrict()` to move a C array of values to another storage location when the locations do not overlap.
 
 ### Reference Type
 
@@ -148,6 +142,8 @@ Moves the given value from storage at `from` to storage at `to`. The value point
 
 Another name for this is "relocate".
 
+Pottery will never call this with equal refs. You do not have to check whether the refs refer to the same value.
+
 ### `MOVE_BY_VALUE`
 
 A flag indicating that the type is movable by value. This is implied by `BY_VALUE`.
@@ -226,6 +222,8 @@ Initializes a value at a new storage location, copying an existing value into it
 
 In C++, the default constructor will be run first, which means the value must have a default constructor. To use copy construction, define `INIT_COPY_BY_VALUE` instead.
 
+Pottery will never call this with equal refs. You do not have to check whether the refs refer to the same value. (It is nonsensical for them to refer to the same value because _from_ must be initialized and _to_ must not be.)
+
 ### `INIT_COPY_BY_VALUE`
 
 A flag indicating that the type is initializable as a copy by value (bitwise for C types or by copy constructor for C++ types.) This is implied by `BY_VALUE`.
@@ -243,6 +241,8 @@ An expression matching `pottery_error_t(CONTEXT_TYPE context, REF_TYPE to, REF_T
 Copies the contents of an existing value into another existing value, replacing its contents. The values in `to` and `from` are already initialized and must remain initialized. In addition, `from` is `const` and must not be modified.
 
 If this fails, it you must leave the destination value initialized, but it is up to you whether its original contents are preserved or whether it contains junk. The generated `copy()` will have the same behaviour.
+
+Pottery will never call this with equal refs. You do not have to check whether the refs refer to the same value.
 
 ### `COPY_BY_VALUE`
 
@@ -262,6 +262,8 @@ Initializes a value at a new storage location, stealing an existing value into i
 
 In C++, the default constructor will be run first, which means the value must have a default constructor. To use move construction, define `INIT_STEAL_BY_VALUE` instead.
 
+Pottery will never call this with equal refs. You do not have to check whether the refs refer to the same value. (It is nonsensical for them to refer to the same value because _from_ must be initialized and _to_ must not be.)
+
 ### `INIT_STEAL_BY_VALUE`
 
 A flag indicating that the type is initializable as a steal by value (bitwise for C types or by steal constructor for C++ types.) This is implied by `BY_VALUE`.
@@ -277,6 +279,8 @@ At most one of the following steal parameters may be defined:
 An expression matching `void(CONTEXT_TYPE context, REF_TYPE to, REF_TYPE from)`.
 
 Moves the contents of an existing value into another existing value, replacing its contents. The value stolen `from` is left initialized but blank. The values in `to` and `from` are already initialized and must remain initialized.
+
+Pottery will never call this with equal refs. You do not have to check whether the refs refer to the same value.
 
 ### `STEAL_BY_VALUE`
 
@@ -299,6 +303,8 @@ Swaps the two given values.
 If this is not defined and `MOVE` and `VALUE_TYPE` are provided, values are swapped through a temporary using the `MOVE` expression.
 
 Otherwise, if this is not defined and `MOVE_BY_VALUE` and `VALUE_TYPE` are defined: In C, or in C++ if `std::is_trivial<>::value` is true or `pottery::is_bitwise_movable<>::value` is true, values are swapped bitwise. Otherwise (for non-trivial C++ types) values are swapped with a `swap()` found by argument-dependent lookup or otherwise by `std::swap()`. 
+
+Pottery will never call this with equal refs. You do not have to check whether the refs refer to the same value.
 
 ### `SWAP_BY_VALUE`
 

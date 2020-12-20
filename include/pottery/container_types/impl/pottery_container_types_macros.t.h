@@ -82,6 +82,7 @@
 
     #define pottery_container_types_value_t POTTERY_CONCAT(POTTERY_CONTAINER_TYPES_PREFIX, _value_t)
     #define pottery_container_types_ref_t POTTERY_CONCAT(POTTERY_CONTAINER_TYPES_PREFIX, _ref_t)
+    #define pottery_container_types_const_ref_t POTTERY_CONCAT(POTTERY_CONTAINER_TYPES_PREFIX, _const_ref_t)
     #define pottery_container_types_entry_t POTTERY_CONCAT(POTTERY_CONTAINER_TYPES_PREFIX, _entry_t)
     #define pottery_container_types_key_t POTTERY_CONCAT(POTTERY_CONTAINER_TYPES_PREFIX, _key_t)
     #define pottery_container_types_context_t POTTERY_CONCAT(POTTERY_CONTAINER_TYPES_PREFIX, _context_t)

@@ -31,10 +31,13 @@ typedef POTTERY_CONTAINER_TYPES_VALUE_TYPE pottery_container_types_value_t;
 #endif
 
 #ifdef POTTERY_CONTAINER_TYPES_REF_TYPE
+// With a custom ref type, const is disabled.
 typedef POTTERY_CONTAINER_TYPES_REF_TYPE pottery_container_types_ref_t;
+typedef pottery_container_types_ref_t pottery_container_types_const_ref_t;
 #else
 // If a value type is provided, the ref type is a pointer to it.
 typedef pottery_container_types_value_t* pottery_container_types_ref_t;
+typedef const pottery_container_types_ref_t pottery_container_types_const_ref_t;
 #endif
 
 #ifdef POTTERY_CONTAINER_TYPES_ENTRY_TYPE

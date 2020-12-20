@@ -195,7 +195,7 @@ pottery_error_t pottery_rehash(pottery_ohm_t* map, size_t new_log_2_size) {
                 pottery_ohm_table_key(&old_map, source),
                 pottery_null);
 
-        pottery_ohm_lifecycle_move(
+        pottery_ohm_lifecycle_move_restrict(
                 POTTERY_OPEN_HASH_MAP_CONTEXT_VAL
                 target, source);
 

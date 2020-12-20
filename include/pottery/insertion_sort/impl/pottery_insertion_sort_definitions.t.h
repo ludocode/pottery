@@ -52,8 +52,8 @@ void pottery_insertion_sort_range(
         pottery_insertion_sort_ref_t previous = pottery_insertion_sort_array_access_select(POTTERY_INSERTION_SORT_VALS i - 1);
 
         if (pottery_insertion_sort_compare_less(POTTERY_INSERTION_SORT_CONTEXT_VAL current, previous)) {
-            pottery_insertion_sort_lifecycle_move(POTTERY_INSERTION_SORT_CONTEXT_VAL temp, current);
-            pottery_insertion_sort_lifecycle_move(POTTERY_INSERTION_SORT_CONTEXT_VAL current, previous);
+            pottery_insertion_sort_lifecycle_move_restrict(POTTERY_INSERTION_SORT_CONTEXT_VAL temp, current);
+            pottery_insertion_sort_lifecycle_move_restrict(POTTERY_INSERTION_SORT_CONTEXT_VAL current, previous);
 
             size_t j = i - 1;
             for (;;) {
@@ -63,10 +63,10 @@ void pottery_insertion_sort_range(
                 previous = pottery_insertion_sort_array_access_select(POTTERY_INSERTION_SORT_VALS --j);
                 if (!pottery_insertion_sort_compare_less(POTTERY_INSERTION_SORT_CONTEXT_VAL temp, previous))
                     break;
-                pottery_insertion_sort_lifecycle_move(POTTERY_INSERTION_SORT_CONTEXT_VAL current, previous);
+                pottery_insertion_sort_lifecycle_move_restrict(POTTERY_INSERTION_SORT_CONTEXT_VAL current, previous);
             }
 
-            pottery_insertion_sort_lifecycle_move(POTTERY_INSERTION_SORT_CONTEXT_VAL current, temp);
+            pottery_insertion_sort_lifecycle_move_restrict(POTTERY_INSERTION_SORT_CONTEXT_VAL current, temp);
         }
     }
 }
@@ -88,7 +88,7 @@ void pottery_insertion_sort_range(
             pottery_insertion_sort_ref_t previous = pottery_insertion_sort_array_access_select(POTTERY_INSERTION_SORT_VALS j - 1);
             if (!pottery_insertion_sort_compare_less(POTTERY_INSERTION_SORT_CONTEXT_VAL current, previous))
                 break;
-            pottery_insertion_sort_lifecycle_swap(POTTERY_INSERTION_SORT_CONTEXT_VAL current, previous);
+            pottery_insertion_sort_lifecycle_swap_restrict(POTTERY_INSERTION_SORT_CONTEXT_VAL current, previous);
             current = previous;
         }
     }

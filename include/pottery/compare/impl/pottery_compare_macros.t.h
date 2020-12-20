@@ -95,6 +95,7 @@
 
     #define pottery_compare_value_t POTTERY_CONCAT(POTTERY_COMPARE_CONTAINER_TYPES_PREFIX, _value_t)
     #define pottery_compare_ref_t POTTERY_CONCAT(POTTERY_COMPARE_CONTAINER_TYPES_PREFIX, _ref_t)
+    #define pottery_compare_const_ref_t POTTERY_CONCAT(POTTERY_COMPARE_CONTAINER_TYPES_PREFIX, _const_ref_t)
     #define pottery_compare_entry_t POTTERY_CONCAT(POTTERY_COMPARE_CONTAINER_TYPES_PREFIX, _entry_t)
     #define pottery_compare_key_t POTTERY_CONCAT(POTTERY_COMPARE_CONTAINER_TYPES_PREFIX, _key_t)
     #define pottery_compare_context_t POTTERY_CONCAT(POTTERY_COMPARE_CONTAINER_TYPES_PREFIX, _context_t)

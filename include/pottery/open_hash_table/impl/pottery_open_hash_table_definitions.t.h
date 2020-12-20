@@ -387,7 +387,7 @@ void pottery_oht_displace(
             pottery_assert(empty);
 
             // this element must be moved back.
-            pottery_oht_lifecycle_move(
+            pottery_oht_lifecycle_move_restrict(
                     POTTERY_OPEN_HASH_TABLE_CONTEXT_VAL entry, test);
             pottery_oht_entry_set_empty(POTTERY_OPEN_HASH_TABLE_VALS test);
 

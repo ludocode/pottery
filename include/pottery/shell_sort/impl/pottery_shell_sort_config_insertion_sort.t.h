@@ -56,10 +56,10 @@
         defined(POTTERY_SHELL_SORT_LIFECYCLE_MOVE_BY_VALUE) || \
         defined(POTTERY_SHELL_SORT_LIFECYCLE_BY_VALUE)
     #define POTTERY_INSERTION_SORT_LIFECYCLE_MOVE(state, a, b) \
-            pottery_shell_sort_lifecycle_move(POTTERY_SHELL_SORT_CONTEXT_VAL(state) a, b)
+            pottery_shell_sort_lifecycle_move_restrict(POTTERY_SHELL_SORT_CONTEXT_VAL(state) a, b)
 #endif
 #define POTTERY_INSERTION_SORT_LIFECYCLE_SWAP(state, a, b) \
-        pottery_shell_sort_lifecycle_swap(POTTERY_SHELL_SORT_CONTEXT_VAL(state) a, b)
+        pottery_shell_sort_lifecycle_swap_restrict(POTTERY_SHELL_SORT_CONTEXT_VAL(state) a, b)
 #define POTTERY_INSERTION_SORT_COMPARE_LESS(state, a, b) \
         pottery_shell_sort_compare_less(POTTERY_SHELL_SORT_CONTEXT_VAL(state) a, b)
 #define POTTERY_INSERTION_SORT_COMPARE_THREE_WAY(state, a, b) \

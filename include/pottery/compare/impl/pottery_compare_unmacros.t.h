@@ -87,6 +87,7 @@
 
     #undef pottery_compare_value_t
     #undef pottery_compare_ref_t
+    #undef pottery_compare_const_ref_t
     #undef pottery_compare_entry_t
     #undef pottery_compare_key_t
     #undef pottery_compare_context_t

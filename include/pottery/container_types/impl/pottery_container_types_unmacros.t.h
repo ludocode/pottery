@@ -68,6 +68,7 @@
 
     #undef pottery_container_types_value_t
     #undef pottery_container_types_ref_t
+    #undef pottery_container_types_const_ref_t
     #undef pottery_container_types_entry_t
     #undef pottery_container_types_key_t
     #undef pottery_container_types_context_t

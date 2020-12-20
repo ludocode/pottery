@@ -110,7 +110,7 @@ void pottery_heap_sift_down(pottery_heap_state_t state, size_t count, size_t ind
 
         // Otherwise we swap ourselves with the child and loop around to keep
         // sifting.
-        pottery_heap_lifecycle_swap(POTTERY_HEAP_CONTEXT_VAL(state) current, child);
+        pottery_heap_lifecycle_swap_restrict(POTTERY_HEAP_CONTEXT_VAL(state) current, child);
         index = child_index;
     }
 }
@@ -128,7 +128,7 @@ void pottery_heap_sift_up(pottery_heap_state_t state, size_t index) {
         if (pottery_heap_compare_greater_or_equal(POTTERY_HEAP_CONTEXT_VAL(state) parent, current))
             break;
 
-        pottery_heap_lifecycle_swap(POTTERY_HEAP_CONTEXT_VAL(state) current, parent);
+        pottery_heap_lifecycle_swap_restrict(POTTERY_HEAP_CONTEXT_VAL(state) current, parent);
         index = parent_index;
     }
 }
@@ -189,7 +189,7 @@ void pottery_heap_contract_bulk_impl(pottery_heap_state_t state, size_t current_
             return;
         pottery_heap_ref_t first = pottery_heap_access(state, 0);
         pottery_heap_ref_t last = pottery_heap_access(state, new_count);
-        pottery_heap_lifecycle_swap(POTTERY_HEAP_CONTEXT_VAL(state) first, last);
+        pottery_heap_lifecycle_swap_restrict(POTTERY_HEAP_CONTEXT_VAL(state) first, last);
         pottery_heap_sift_down(state, new_count, 0);
     }
 }
@@ -212,7 +212,7 @@ void pottery_heap_contract_at_impl(pottery_heap_state_t state, size_t current_co
     // Replace the value with the last value in the heap
     pottery_heap_ref_t item_to_remove = pottery_heap_access(state, index_to_contract);
     pottery_heap_ref_t last = pottery_heap_access(state, new_count);
-    pottery_heap_lifecycle_swap(POTTERY_HEAP_CONTEXT_VAL(state) item_to_remove, last);
+    pottery_heap_lifecycle_swap_restrict(POTTERY_HEAP_CONTEXT_VAL(state) item_to_remove, last);
     pottery_heap_ref_t removed = pottery_heap_access(state, new_count);
     pottery_heap_ref_t replaced = pottery_heap_access(state, index_to_contract);
 

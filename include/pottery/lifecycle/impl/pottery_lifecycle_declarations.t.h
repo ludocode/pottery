@@ -30,14 +30,12 @@
  * types
  */
 
-// We can define restrict pointers and a const reference only if we have a
-// value type. If we don't, restrict and const are both disabled.
+// We can define restrict pointers only if we have a value type. If we don't,
+// restrict is disabled.
 #if POTTERY_CONTAINER_TYPES_HAS_VALUE
     #define POTTERY_LIFECYCLE_RESTRICT pottery_restrict
-    typedef const pottery_lifecycle_value_t* pottery_lifecycle_const_ref_t;
 #else
     #define POTTERY_LIFECYCLE_RESTRICT /*nothing*/
-    typedef pottery_lifecycle_ref_t pottery_lifecycle_const_ref_t;
 #endif
 
 
@@ -80,21 +78,13 @@ void pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_ARG
 #endif
 
 #if POTTERY_LIFECYCLE_CAN_MOVE
-/*
- * move()
- *
- * Moves a value to a different storage location.
- *
- * In C++, this performs a reconstructing move (also called a non-trivial
- * relocation): it constructs a new value in the unconstructed destination
- * space by move construction from the source (terminating if any exception is
- * thrown), then destructs the source.
- */
 static inline
-void pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_ARG
-        pottery_lifecycle_ref_t to, pottery_lifecycle_ref_t from) pottery_noexcept
+void pottery_lifecycle_move_restrict(POTTERY_LIFECYCLE_CONTEXT_ARG
+        pottery_lifecycle_ref_t POTTERY_LIFECYCLE_RESTRICT to,
+        pottery_lifecycle_ref_t POTTERY_LIFECYCLE_RESTRICT from) pottery_noexcept
 {
     POTTERY_LIFECYCLE_CONTEXT_MAYBE_UNUSED;
+    pottery_assert(!pottery_lifecycle_ref_equal(POTTERY_LIFECYCLE_CONTEXT_VAL to, from));
 
     #if defined(POTTERY_LIFECYCLE_MOVE)
         // move by given expression
@@ -131,6 +121,14 @@ void pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_ARG
         #error "Lifecycle template bug! No move() implementation but CAN_MOVE is 1"
     #endif
 }
+
+static inline
+void pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_ARG
+        pottery_lifecycle_ref_t to, pottery_lifecycle_ref_t from) pottery_noexcept
+{
+    if (!pottery_lifecycle_ref_equal(POTTERY_LIFECYCLE_CONTEXT_VAL to, from))
+        pottery_lifecycle_move_restrict(POTTERY_LIFECYCLE_CONTEXT_VAL to, from);
+}
 #endif
 
 /*
@@ -138,10 +136,12 @@ void pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_ARG
  */
 #if POTTERY_LIFECYCLE_CAN_SWAP
 static inline
-void pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_ARG
-        pottery_lifecycle_ref_t left, pottery_lifecycle_ref_t right) pottery_noexcept
+void pottery_lifecycle_swap_restrict(POTTERY_LIFECYCLE_CONTEXT_ARG
+        pottery_lifecycle_ref_t POTTERY_LIFECYCLE_RESTRICT left,
+        pottery_lifecycle_ref_t POTTERY_LIFECYCLE_RESTRICT right) pottery_noexcept
 {
     POTTERY_LIFECYCLE_CONTEXT_MAYBE_UNUSED;
+    pottery_assert(!pottery_lifecycle_ref_equal(POTTERY_LIFECYCLE_CONTEXT_VAL left, right));
 
     #ifdef POTTERY_LIFECYCLE_SWAP
 
@@ -198,6 +198,14 @@ void pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_ARG
         #error "Lifecycle template bug! No swap() implementation but CAN_SWAP is 1"
     #endif
 }
+
+static inline
+void pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_ARG
+        pottery_lifecycle_ref_t left, pottery_lifecycle_ref_t right) pottery_noexcept
+{
+    if (!pottery_lifecycle_ref_equal(POTTERY_LIFECYCLE_CONTEXT_VAL left, right))
+        pottery_lifecycle_swap_restrict(POTTERY_LIFECYCLE_CONTEXT_VAL left, right);
+}
 #endif
 
 /*
@@ -205,10 +213,12 @@ void pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_ARG
  */
 #if POTTERY_LIFECYCLE_CAN_STEAL
 static inline
-void pottery_lifecycle_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
-        pottery_lifecycle_ref_t to, pottery_lifecycle_ref_t from) pottery_noexcept
+void pottery_lifecycle_steal_restrict(POTTERY_LIFECYCLE_CONTEXT_ARG
+        pottery_lifecycle_ref_t POTTERY_LIFECYCLE_RESTRICT to,
+        pottery_lifecycle_ref_t POTTERY_LIFECYCLE_RESTRICT from) pottery_noexcept
 {
     POTTERY_LIFECYCLE_CONTEXT_MAYBE_UNUSED;
+    pottery_assert(!pottery_lifecycle_ref_equal(POTTERY_LIFECYCLE_CONTEXT_VAL to, from));
 
     #if defined(POTTERY_LIFECYCLE_STEAL)
         // steal by given expression
@@ -244,6 +254,14 @@ void pottery_lifecycle_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
     #else
         #error "Lifecycle template bug! No steal() implementation but CAN_STEAL is 1"
     #endif
+}
+
+static inline
+void pottery_lifecycle_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
+        pottery_lifecycle_ref_t to, pottery_lifecycle_ref_t from) pottery_noexcept
+{
+    if (!pottery_lifecycle_ref_equal(POTTERY_LIFECYCLE_CONTEXT_VAL to, from))
+        pottery_lifecycle_steal_restrict(POTTERY_LIFECYCLE_CONTEXT_VAL to, from);
 }
 #endif
 
@@ -288,10 +306,12 @@ pottery_error_t pottery_lifecycle_init(POTTERY_LIFECYCLE_CONTEXT_ARG
 #if POTTERY_LIFECYCLE_CAN_COPY
 pottery_nodiscard
 static inline
-pottery_error_t pottery_lifecycle_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
-        pottery_lifecycle_ref_t to, pottery_lifecycle_const_ref_t from) pottery_noexcept
+pottery_error_t pottery_lifecycle_copy_restrict(POTTERY_LIFECYCLE_CONTEXT_ARG
+        pottery_lifecycle_ref_t POTTERY_LIFECYCLE_RESTRICT to,
+        pottery_lifecycle_const_ref_t POTTERY_LIFECYCLE_RESTRICT from) pottery_noexcept
 {
     POTTERY_LIFECYCLE_CONTEXT_MAYBE_UNUSED;
+    pottery_assert(!pottery_lifecycle_ref_equal(POTTERY_LIFECYCLE_CONTEXT_VAL to, from));
 
     #if defined(POTTERY_LIFECYCLE_COPY)
         // copy by given expression
@@ -321,6 +341,15 @@ pottery_error_t pottery_lifecycle_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
         #error "Lifecycle template bug! No copy() implementation but CAN_COPY is 1"
     #endif
 }
+
+pottery_nodiscard
+static inline
+pottery_error_t pottery_lifecycle_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
+        pottery_lifecycle_ref_t to, pottery_lifecycle_const_ref_t from) pottery_noexcept
+{
+    if (!pottery_lifecycle_ref_equal(POTTERY_LIFECYCLE_CONTEXT_VAL to, from))
+        return pottery_lifecycle_copy_restrict(POTTERY_LIFECYCLE_CONTEXT_VAL to, from);
+}
 #endif
 
 /**
@@ -330,9 +359,11 @@ pottery_error_t pottery_lifecycle_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
 pottery_nodiscard
 static inline
 pottery_error_t pottery_lifecycle_init_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
-        pottery_lifecycle_ref_t to, pottery_lifecycle_const_ref_t from) pottery_noexcept
+        pottery_lifecycle_ref_t POTTERY_LIFECYCLE_RESTRICT to,
+        pottery_lifecycle_const_ref_t POTTERY_LIFECYCLE_RESTRICT from) pottery_noexcept
 {
     POTTERY_LIFECYCLE_CONTEXT_MAYBE_UNUSED;
+    pottery_assert(!pottery_lifecycle_ref_equal(POTTERY_LIFECYCLE_CONTEXT_VAL to, from));
 
     #if defined(POTTERY_LIFECYCLE_INIT_COPY)
         // init_copy by given expression
@@ -375,9 +406,11 @@ pottery_error_t pottery_lifecycle_init_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
 pottery_nodiscard
 static inline
 pottery_error_t pottery_lifecycle_init_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
-        pottery_lifecycle_ref_t to, pottery_lifecycle_ref_t from) pottery_noexcept
+        pottery_lifecycle_ref_t POTTERY_LIFECYCLE_RESTRICT to,
+        pottery_lifecycle_ref_t POTTERY_LIFECYCLE_RESTRICT from) pottery_noexcept
 {
     POTTERY_LIFECYCLE_CONTEXT_MAYBE_UNUSED;
+    pottery_assert(!pottery_lifecycle_ref_equal(POTTERY_LIFECYCLE_CONTEXT_VAL to, from));
 
     #if defined(POTTERY_LIFECYCLE_INIT_STEAL)
 
@@ -403,7 +436,7 @@ pottery_error_t pottery_lifecycle_init_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
         // synthesize init_steal by init then swap
         pottery_error_t error = pottery_lifecycle_init(POTTERY_LIFECYCLE_CONTEXT_VAL to);
         if (error == POTTERY_OK)
-            pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_VAL to, from);
+            pottery_lifecycle_swap_restrict(POTTERY_LIFECYCLE_CONTEXT_VAL to, from);
         return error;
 
     #elif POTTERY_LIFECYCLE_CAN_INIT_COPY
