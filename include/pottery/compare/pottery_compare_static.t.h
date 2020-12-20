@@ -24,10 +24,9 @@
 
 #define POTTERY_COMPARE_INTERNAL
 
-// no extern definitions! everything is inline.
-
 #include "pottery/compare/impl/pottery_compare_macros.t.h"
 #include "pottery/compare/impl/pottery_compare_declarations.t.h"
+// no definitions
 #include "pottery/compare/impl/pottery_compare_unmacros.t.h"
 
 #undef POTTERY_COMPARE_INTERNAL

@@ -29,10 +29,17 @@
     #include "pottery/lifecycle/pottery_lifecycle_define.t.h"
 #endif
 
-// no compare!
+#ifndef POTTERY_HEAP_EXTERNAL_COMPARE
+    #include "pottery/heap/impl/pottery_heap_config_compare.t.h"
+    #include "pottery/compare/pottery_compare_define.t.h"
+#endif
 
 #include "pottery/heap/impl/pottery_heap_macros.t.h"
 #include "pottery/heap/impl/pottery_heap_definitions.t.h"
+
+#ifndef POTTERY_HEAP_EXTERNAL_COMPARE
+    #include "pottery/compare/pottery_compare_cleanup.t.h"
+#endif
 
 #ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
     #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"

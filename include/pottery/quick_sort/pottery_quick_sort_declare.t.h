@@ -31,12 +31,12 @@
 
 #ifndef POTTERY_QUICK_SORT_EXTERNAL_COMPARE
     #include "pottery/quick_sort/impl/pottery_quick_sort_config_compare.t.h"
-    #include "pottery/compare/pottery_compare_static.t.h"
+    #include "pottery/compare/pottery_compare_declare.t.h"
 #endif
 
 #ifndef POTTERY_QUICK_SORT_EXTERNAL_ARRAY_ACCESS
     #include "pottery/quick_sort/impl/pottery_quick_sort_config_array_access.t.h"
-    #include "pottery/array_access/pottery_array_access_static.t.h"
+    #include "pottery/array_access/pottery_array_access_declare.t.h"
 #endif
 
 #include "pottery/quick_sort/impl/pottery_quick_sort_macros.t.h"

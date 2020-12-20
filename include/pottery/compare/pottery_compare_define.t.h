@@ -22,12 +22,10 @@
  * SOFTWARE.
  */
 
-#define POTTERY_ARRAY_ACCESS_INTERNAL
+#define POTTERY_COMPARE_INTERNAL
 
-#include "pottery/array_access/impl/pottery_array_access_macros.t.h"
-#include "pottery/array_access/impl/pottery_array_access_declarations.t.h"
-// No definitions file! Everything is inline. We still need macros though for
-// configuration purposes.
-#include "pottery/array_access/impl/pottery_array_access_unmacros.t.h"
+#include "pottery/compare/impl/pottery_compare_macros.t.h"
+// no definitions
+#include "pottery/compare/impl/pottery_compare_unmacros.t.h"
 
-#undef POTTERY_ARRAY_ACCESS_INTERNAL
+#undef POTTERY_COMPARE_INTERNAL

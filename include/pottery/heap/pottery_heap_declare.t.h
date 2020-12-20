@@ -31,7 +31,7 @@
 
 #ifndef POTTERY_HEAP_EXTERNAL_COMPARE
     #include "pottery/heap/impl/pottery_heap_config_compare.t.h"
-    #include "pottery/compare/pottery_compare_static.t.h"
+    #include "pottery/compare/pottery_compare_declare.t.h"
 #endif
 
 #include "pottery/heap/impl/pottery_heap_macros.t.h"

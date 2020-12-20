@@ -27,6 +27,12 @@
 #include "pottery/intro_sort/impl/pottery_intro_sort_config_lifecycle.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_define.t.h"
 
+#include "pottery/intro_sort/impl/pottery_intro_sort_config_compare.t.h"
+#include "pottery/compare/pottery_compare_define.t.h"
+
+#include "pottery/intro_sort/impl/pottery_intro_sort_config_array_access.t.h"
+#include "pottery/array_access/pottery_array_access_define.t.h"
+
 #include "pottery/intro_sort/impl/pottery_intro_sort_config_insertion_sort.t.h"
 #include "pottery/insertion_sort/pottery_insertion_sort_define.t.h"
 
@@ -36,6 +42,11 @@
 #include "pottery/intro_sort/impl/pottery_intro_sort_config_quick_sort.t.h"
 #include "pottery/quick_sort/pottery_quick_sort_define.t.h"
 
+#include "pottery/intro_sort/impl/pottery_intro_sort_macros.t.h"
+// no definitions
+#include "pottery/intro_sort/impl/pottery_intro_sort_unmacros.t.h"
+
+#include "pottery/array_access/pottery_array_access_cleanup.t.h"
 #include "pottery/compare/pottery_compare_cleanup.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
 

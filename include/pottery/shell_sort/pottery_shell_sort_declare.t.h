@@ -28,10 +28,10 @@
 #include "pottery/lifecycle/pottery_lifecycle_declare.t.h"
 
 #include "pottery/shell_sort/impl/pottery_shell_sort_config_compare.t.h"
-#include "pottery/compare/pottery_compare_static.t.h"
+#include "pottery/compare/pottery_compare_declare.t.h"
 
 #include "pottery/shell_sort/impl/pottery_shell_sort_config_array_access.t.h"
-#include "pottery/array_access/pottery_array_access_static.t.h"
+#include "pottery/array_access/pottery_array_access_declare.t.h"
 
 #include "pottery/shell_sort/impl/pottery_shell_sort_macros.t.h"
 #include "pottery/shell_sort/impl/pottery_shell_sort_forward.t.h"
