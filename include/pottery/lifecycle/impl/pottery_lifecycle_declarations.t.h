@@ -349,6 +349,7 @@ pottery_error_t pottery_lifecycle_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
 {
     if (!pottery_lifecycle_ref_equal(POTTERY_LIFECYCLE_CONTEXT_VAL to, from))
         return pottery_lifecycle_copy_restrict(POTTERY_LIFECYCLE_CONTEXT_VAL to, from);
+    return POTTERY_OK;
 }
 #endif
 
