@@ -105,9 +105,9 @@ void* pottery_alloc_impl_malloc_array_at_least_ea(POTTERY_ALLOC_CONTEXT_ARG
         #if defined(POTTERY_ALLOC_ALIGNED_MALLOC_GOOD_SIZE)
             // Calculate the right amount of space to use first.
             #ifdef POTTERY_ALLOC_CONTEXT_TYPE
-                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_GOOD_SIZE((context), (size));
+                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_GOOD_SIZE((context), (alignment), (size));
             #else
-                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_GOOD_SIZE((size));
+                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_GOOD_SIZE((alignment), (size));
             #endif
             pottery_assert(new_size >= size);
             *count = new_size / element_size;
@@ -118,9 +118,9 @@ void* pottery_alloc_impl_malloc_array_at_least_ea(POTTERY_ALLOC_CONTEXT_ARG
             void* ptr = pottery_alloc_impl_malloc_ea(POTTERY_ALLOC_CONTEXT_VAL alignment, *size);
 
             #ifdef POTTERY_ALLOC_CONTEXT_TYPE
-                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE((context), (ptr));
+                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE((context), (alignment), (ptr));
             #else
-                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE((ptr));
+                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE((alignment), (ptr));
             #endif
 
             // It's common that the usable size is larger but not enough for
@@ -159,9 +159,9 @@ void* pottery_alloc_impl_malloc_array_at_least_ea(POTTERY_ALLOC_CONTEXT_ARG
         #if defined(POTTERY_ALLOC_ALIGNED_MALLOC_GOOD_SIZE)
             // Calculate the right amount of space to use first.
             #ifdef POTTERY_ALLOC_CONTEXT_TYPE
-                alloc_size = POTTERY_ALLOC_ALIGNED_MALLOC_GOOD_SIZE((context), (size));
+                alloc_size = POTTERY_ALLOC_ALIGNED_MALLOC_GOOD_SIZE((context), (alignment), (size));
             #else
-                alloc_size = POTTERY_ALLOC_ALIGNED_MALLOC_GOOD_SIZE((size));
+                alloc_size = POTTERY_ALLOC_ALIGNED_MALLOC_GOOD_SIZE((alignment), (size));
             #endif
         #endif
 
@@ -174,9 +174,9 @@ void* pottery_alloc_impl_malloc_array_at_least_ea(POTTERY_ALLOC_CONTEXT_ARG
             // Expand ptr to fill the usable space
 
             #ifdef POTTERY_ALLOC_CONTEXT_TYPE
-                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE((context), (ptr));
+                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE((context), (alignment), (ptr));
             #else
-                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE((ptr));
+                size_t new_size = POTTERY_ALLOC_ALIGNED_MALLOC_USABLE_SIZE((alignment), (ptr));
             #endif
 
             if (new_size > alloc_size) {

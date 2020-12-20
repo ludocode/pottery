@@ -248,6 +248,9 @@ static size_t pottery_knuth_hash_s(size_t value, size_t bits) {
         #define POTTERY_JEMALLOC 0
     #endif
 #endif
+#if POTTERY_JEMALLOC && !defined(__FreeBSD__)
+    #include <jemalloc/jemalloc.h>
+#endif
 
 #ifndef POTTERY_FREE
     #define POTTERY_FREE free
@@ -466,7 +469,8 @@ static inline size_t pottery_malloc_estimate_good_size(size_t size) {
     #if POTTERY_JEMALLOC
         #define POTTERY_ALIGNED_MALLOC_GOOD_SIZE(alignment, size) nallocx(size, MALLOCX_ALIGN(alignment))
     #elif !defined(POTTERY_ALIGNED_MALLOC_USABLE_SIZE) || !defined(POTTERY_ALIGNED_MALLOC_EXPAND)
-        #define POTTERY_ALIGNED_MALLOC_GOOD_SIZE pottery_malloc_estimate_good_size
+        #define POTTERY_ALIGNED_MALLOC_GOOD_SIZE(alignment, size) \
+                ((void)(alignment), pottery_malloc_estimate_good_size(size))
     #endif
 #endif
 

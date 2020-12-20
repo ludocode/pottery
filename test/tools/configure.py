@@ -31,7 +31,7 @@
 # vsvarsall.bat for some version of the Visual Studio Build Tools.
 # ninja build file to build the unit test suite in a variety of configurations.
 
-import shutil, os, sys, subprocess, json, itertools
+import shutil, os, sys, subprocess, json, itertools, platform
 from os import path
 
 globalbuild = path.join("test", "build")
@@ -495,6 +495,12 @@ if compiler != "TinyCC" and compiler != "cproc" and compiler != "MSVC":
         if checkFlags(["-x", "c++", "-std=c++17", "-fno-exceptions"]):
             addDebugReleaseBuilds('c++17-noexcept', defaultCPPFlags + cxxFlagsNoVersion + ["-std=c++17", "-fno-exceptions"], [], [])
 
+# jemalloc variant
+# (We only enable this on Linux and only if jemalloc is installed in the system
+# headers. On FreeBSD jemalloc is already in the default build.)
+if platform.system() == "Linux" and path.exists("/usr/include/jemalloc/jemalloc.h"):
+    addDebugReleaseBuilds('jemalloc', defaultCPPFlags + ["-DPOTTERY_JEMALLOC=1"],
+            ldflags = defaultLDFlags + ["-ljemalloc"])
 
 
 ###################################################
