@@ -25,12 +25,12 @@
 //!!! END_LICENSE
 // Unrenames container_types template identifiers from {PREFIX}
 
-#undef {SRC}_value_t
-#undef {SRC}_ref_t
-#undef {SRC}_entry_t
-#undef {SRC}_key_t
-#undef {SRC}_context_t
+#undef {PREFIX}_value_t
+#undef {PREFIX}_ref_t
+#undef {PREFIX}_entry_t
+#undef {PREFIX}_key_t
+#undef {PREFIX}_context_t
 
-#undef {SRC}_entry_ref
-#undef {SRC}_ref_key
-#undef {SRC}_ref_equal
+#undef {PREFIX}_entry_ref
+#undef {PREFIX}_ref_key
+#undef {PREFIX}_ref_equal

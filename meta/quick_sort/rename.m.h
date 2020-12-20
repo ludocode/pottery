@@ -24,12 +24,6 @@
 
 //!!! END_LICENSE
 // Renames quick_sort identifiers from {SRC} to {DEST}
-
-#define {SRC}_value_t POTTERY_CONCAT({DEST}, _value_t)
-#define {SRC}_ref_t POTTERY_CONCAT({DEST}, _ref_t)
-#define {SRC}_entry_t POTTERY_CONCAT({DEST}, _entry_t)
-#define {SRC}_context_t POTTERY_CONCAT({DEST}, _context_t)
-
 #define {SRC} {DEST}
 #define {SRC}_range POTTERY_CONCAT({DEST}, _range)
 #define {SRC}_prepare_pivot POTTERY_CONCAT({DEST}, _prepare_pivot)

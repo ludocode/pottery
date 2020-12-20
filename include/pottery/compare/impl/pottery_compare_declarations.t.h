@@ -39,28 +39,28 @@ bool pottery_compare_equal(POTTERY_COMPARE_CONTEXT_ARG
                 *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL right);
 
     #elif defined(POTTERY_COMPARE_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_EQUAL((context), (left), (right)));
         #else
             return (POTTERY_COMPARE_EQUAL((left), (right)));
         #endif
 
     #elif defined(POTTERY_COMPARE_NOT_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return !(POTTERY_COMPARE_NOT_EQUAL((context), (left), (right)));
         #else
             return !(POTTERY_COMPARE_NOT_EQUAL((left), (right)));
         #endif
 
     #elif defined(POTTERY_COMPARE_THREE_WAY)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return 0 == (POTTERY_COMPARE_THREE_WAY((context), (left), (right)));
         #else
             return 0 == (POTTERY_COMPARE_THREE_WAY((left), (right)));
         #endif
 
     #elif defined(POTTERY_COMPARE_LESS)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return !(POTTERY_COMPARE_LESS((context), (left), (right))) &&
                     !(POTTERY_COMPARE_LESS((context), (right), (left)));
         #else
@@ -69,7 +69,7 @@ bool pottery_compare_equal(POTTERY_COMPARE_CONTEXT_ARG
         #endif
 
     #elif defined(POTTERY_COMPARE_GREATER)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return !(POTTERY_COMPARE_GREATER((context), (left), (right))) &&
                     !(POTTERY_COMPARE_GREATER((context), (right), (left)));
         #else
@@ -78,7 +78,7 @@ bool pottery_compare_equal(POTTERY_COMPARE_CONTEXT_ARG
         #endif
 
     #elif defined(POTTERY_COMPARE_LESS_OR_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_LESS_OR_EQUAL((context), (left), (right))) &&
                     (POTTERY_COMPARE_LESS_OR_EQUAL((context), (right), (left)));
         #else
@@ -87,7 +87,7 @@ bool pottery_compare_equal(POTTERY_COMPARE_CONTEXT_ARG
         #endif
 
     #elif defined(POTTERY_COMPARE_GREATER_OR_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_GREATER_OR_EQUAL((context), (left), (right))) &&
                     (POTTERY_COMPARE_GREATER_OR_EQUAL((context), (right), (left)));
         #else
@@ -113,28 +113,28 @@ bool pottery_compare_not_equal(POTTERY_COMPARE_CONTEXT_ARG
                 *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL right);
 
     #elif defined(POTTERY_COMPARE_NOT_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_NOT_EQUAL((context), (left), (right)));
         #else
             return (POTTERY_COMPARE_NOT_EQUAL((left), (right)));
         #endif
 
     #elif defined(POTTERY_COMPARE_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return !(POTTERY_COMPARE_EQUAL((context), (left), (right)));
         #else
             return !(POTTERY_COMPARE_EQUAL((left), (right)));
         #endif
 
     #elif defined(POTTERY_COMPARE_THREE_WAY)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return 0 != (POTTERY_COMPARE_THREE_WAY((context), (left), (right)));
         #else
             return 0 != (POTTERY_COMPARE_THREE_WAY((left), (right)));
         #endif
 
     #elif defined(POTTERY_COMPARE_LESS)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_LESS((context), (left), (right))) ||
                     (POTTERY_COMPARE_LESS((context), (right), (left)));
         #else
@@ -143,7 +143,7 @@ bool pottery_compare_not_equal(POTTERY_COMPARE_CONTEXT_ARG
         #endif
 
     #elif defined(POTTERY_COMPARE_GREATER)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_GREATER((context), (left), (right))) ||
                     (POTTERY_COMPARE_GREATER((context), (right), (left)));
         #else
@@ -152,7 +152,7 @@ bool pottery_compare_not_equal(POTTERY_COMPARE_CONTEXT_ARG
         #endif
 
     #elif defined(POTTERY_COMPARE_LESS_OR_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return !(POTTERY_COMPARE_LESS_OR_EQUAL((context), (left), (right))) ||
                     !(POTTERY_COMPARE_LESS_OR_EQUAL((context), (right), (left)));
         #else
@@ -161,7 +161,7 @@ bool pottery_compare_not_equal(POTTERY_COMPARE_CONTEXT_ARG
         #endif
 
     #elif defined(POTTERY_COMPARE_GREATER_OR_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return !(POTTERY_COMPARE_GREATER_OR_EQUAL((context), (left), (right))) ||
                     !(POTTERY_COMPARE_GREATER_OR_EQUAL((context), (right), (left)));
         #else
@@ -189,35 +189,35 @@ bool pottery_compare_less(POTTERY_COMPARE_CONTEXT_ARG
                 *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL right);
 
     #elif defined(POTTERY_COMPARE_LESS)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_LESS((context), (left), (right)));
         #else
             return (POTTERY_COMPARE_LESS((left), (right)));
         #endif
 
     #elif defined(POTTERY_COMPARE_GREATER)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_GREATER((context), (right), (left)));
         #else
             return (POTTERY_COMPARE_GREATER((right), (left)));
         #endif
 
     #elif defined(POTTERY_COMPARE_GREATER_OR_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return !(POTTERY_COMPARE_GREATER_OR_EQUAL((context), (left), (right)));
         #else
             return !(POTTERY_COMPARE_GREATER_OR_EQUAL((left), (right)));
         #endif
 
     #elif defined(POTTERY_COMPARE_LESS_OR_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return !(POTTERY_COMPARE_LESS_OR_EQUAL((context), (right), (left)));
         #else
             return !(POTTERY_COMPARE_LESS_OR_EQUAL((right), (left)));
         #endif
 
     #elif defined(POTTERY_COMPARE_THREE_WAY)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return 0 > (POTTERY_COMPARE_THREE_WAY((context), (left), (right)));
         #else
             return 0 > (POTTERY_COMPARE_THREE_WAY((left), (right)));
@@ -238,35 +238,35 @@ bool pottery_compare_greater(POTTERY_COMPARE_CONTEXT_ARG
                 *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL right);
 
     #elif defined(POTTERY_COMPARE_GREATER)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_GREATER((context), (left), (right)));
         #else
             return (POTTERY_COMPARE_GREATER((left), (right)));
         #endif
 
     #elif defined(POTTERY_COMPARE_LESS)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_LESS((context), (right), (left)));
         #else
             return (POTTERY_COMPARE_LESS((right), (left)));
         #endif
 
     #elif defined(POTTERY_COMPARE_LESS_OR_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return !(POTTERY_COMPARE_LESS_OR_EQUAL((context), (left), (right)));
         #else
             return !(POTTERY_COMPARE_LESS_OR_EQUAL((left), (right)));
         #endif
 
     #elif defined(POTTERY_COMPARE_GREATER_OR_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return !(POTTERY_COMPARE_GREATER_OR_EQUAL((context), (right), (left)));
         #else
             return !(POTTERY_COMPARE_GREATER_OR_EQUAL((right), (left)));
         #endif
 
     #elif defined(POTTERY_COMPARE_THREE_WAY)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return 0 < (POTTERY_COMPARE_THREE_WAY((context), (left), (right)));
         #else
             return 0 < (POTTERY_COMPARE_THREE_WAY((left), (right)));
@@ -287,35 +287,35 @@ bool pottery_compare_less_or_equal(POTTERY_COMPARE_CONTEXT_ARG
                 *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL right);
 
     #elif defined(POTTERY_COMPARE_LESS_OR_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_LESS_OR_EQUAL((context), (left), (right)));
         #else
             return (POTTERY_COMPARE_LESS_OR_EQUAL((left), (right)));
         #endif
 
     #elif defined(POTTERY_COMPARE_GREATER_OR_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_GREATER_OR_EQUAL((context), (right), (left)));
         #else
             return (POTTERY_COMPARE_GREATER_OR_EQUAL((right), (left)));
         #endif
 
     #elif defined(POTTERY_COMPARE_GREATER)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return !(POTTERY_COMPARE_GREATER((context), (left), (right)));
         #else
             return !(POTTERY_COMPARE_GREATER((left), (right)));
         #endif
 
     #elif defined(POTTERY_COMPARE_LESS)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return !(POTTERY_COMPARE_LESS((context), (right), (left)));
         #else
             return !(POTTERY_COMPARE_LESS((right), (left)));
         #endif
 
     #elif defined(POTTERY_COMPARE_THREE_WAY)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return 0 >= (POTTERY_COMPARE_THREE_WAY((context), (left), (right)));
         #else
             return 0 >= (POTTERY_COMPARE_THREE_WAY((left), (right)));
@@ -336,35 +336,35 @@ bool pottery_compare_greater_or_equal(POTTERY_COMPARE_CONTEXT_ARG
                 *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL right);
 
     #elif defined(POTTERY_COMPARE_GREATER_OR_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_GREATER_OR_EQUAL((context), (left), (right)));
         #else
             return (POTTERY_COMPARE_GREATER_OR_EQUAL((left), (right)));
         #endif
 
     #elif defined(POTTERY_COMPARE_LESS_OR_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_LESS_OR_EQUAL((context), (right), (left)));
         #else
             return (POTTERY_COMPARE_LESS_OR_EQUAL((right), (left)));
         #endif
 
     #elif defined(POTTERY_COMPARE_LESS)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return !(POTTERY_COMPARE_LESS((context), (left), (right)));
         #else
             return !(POTTERY_COMPARE_LESS((left), (right)));
         #endif
 
     #elif defined(POTTERY_COMPARE_GREATER)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return !(POTTERY_COMPARE_GREATER((context), (right), (left)));
         #else
             return !(POTTERY_COMPARE_GREATER((right), (left)));
         #endif
 
     #elif defined(POTTERY_COMPARE_THREE_WAY)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return 0 <= (POTTERY_COMPARE_THREE_WAY((context), (left), (right)));
         #else
             return 0 <= (POTTERY_COMPARE_THREE_WAY((left), (right)));
@@ -390,14 +390,14 @@ int pottery_compare_three_way(POTTERY_COMPARE_CONTEXT_ARG
                 1 : 0);
 
     #elif defined(POTTERY_COMPARE_THREE_WAY)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_THREE_WAY((context), (left), (right)));
         #else
             return (POTTERY_COMPARE_THREE_WAY((left), (right)));
         #endif
 
     #elif defined(POTTERY_COMPARE_LESS)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_LESS((context), (left), (right))) ? -1 :
                     ((POTTERY_COMPARE_LESS((context), (right), (left))) ? 1 : 0);
         #else
@@ -406,7 +406,7 @@ int pottery_compare_three_way(POTTERY_COMPARE_CONTEXT_ARG
         #endif
 
     #elif defined(POTTERY_COMPARE_GREATER)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_COMPARE_GREATER((context), (left), (right))) ? 1 :
                     ((POTTERY_COMPARE_GREATER((context), (right), (left))) ? -1 : 0);
         #else
@@ -415,7 +415,7 @@ int pottery_compare_three_way(POTTERY_COMPARE_CONTEXT_ARG
         #endif
 
     #elif defined(POTTERY_COMPARE_LESS_OR_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (!POTTERY_COMPARE_LESS_OR_EQUAL((context), (left), (right))) ? 1 :
                     (!(POTTERY_COMPARE_LESS_OR_EQUAL((context), (right), (left))) ? -1 : 0);
         #else
@@ -424,7 +424,7 @@ int pottery_compare_three_way(POTTERY_COMPARE_CONTEXT_ARG
         #endif
 
     #elif defined(POTTERY_COMPARE_GREATER_OR_EQUAL)
-        #ifdef POTTERY_COMPARE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (!POTTERY_COMPARE_GREATER_OR_EQUAL((context), (left), (right))) ? -1 :
                     (!(POTTERY_COMPARE_GREATER_OR_EQUAL((context), (right), (left))) ? 1 : 0);
         #else

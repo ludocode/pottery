@@ -25,11 +25,6 @@
 //!!! END_LICENSE
 // Undefines (forwardable/forwarded) compare configuration on {PREFIX}
 
-#undef {PREFIX}_REF_TYPE
-#undef {PREFIX}_VALUE_TYPE
-#undef {PREFIX}_CONTEXT_TYPE
-#undef {PREFIX}_STATE_TYPE
-#undef {PREFIX}_STATE_CONTEXT
 #undef {PREFIX}_BY_VALUE
 
 #undef {PREFIX}_EQUAL

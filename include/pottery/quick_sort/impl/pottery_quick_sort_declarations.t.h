@@ -26,26 +26,6 @@
 #error "This is an internal header. Do not include it."
 #endif
 
-#ifdef POTTERY_QUICK_SORT_VALUE_TYPE
-typedef POTTERY_QUICK_SORT_VALUE_TYPE pottery_quick_sort_value_t;
-#endif
-
-#ifdef POTTERY_QUICK_SORT_REF_TYPE
-typedef POTTERY_QUICK_SORT_REF_TYPE pottery_quick_sort_ref_t;
-#else
-typedef pottery_quick_sort_value_t* pottery_quick_sort_ref_t;
-#endif
-
-#ifdef POTTERY_QUICK_SORT_ENTRY_TYPE
-typedef POTTERY_QUICK_SORT_ENTRY_TYPE pottery_quick_sort_entry_t;
-#else
-typedef pottery_quick_sort_ref_t pottery_quick_sort_entry_t;
-#endif
-
-#ifdef POTTERY_QUICK_SORT_CONTEXT_TYPE
-typedef POTTERY_QUICK_SORT_CONTEXT_TYPE pottery_quick_sort_context_t;
-#endif
-
 /**
  * Sorts a sub-range of elements within an array.
  */

@@ -24,6 +24,11 @@
 
 #define POTTERY_QUICK_SORT_IMPL
 
+#ifndef POTTERY_QUICK_SORT_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/quick_sort/impl/pottery_quick_sort_config_types.t.h"
+    #include "pottery/container_types/pottery_container_types_declare.t.h"
+#endif
+
 #ifndef POTTERY_QUICK_SORT_EXTERNAL_LIFECYCLE
     #include "pottery/quick_sort/impl/pottery_quick_sort_config_lifecycle.t.h"
     #include "pottery/lifecycle/pottery_lifecycle_declare.t.h"
@@ -52,6 +57,10 @@
 
 #ifndef POTTERY_QUICK_SORT_EXTERNAL_LIFECYCLE
     #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
+#endif
+
+#ifndef POTTERY_QUICK_SORT_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/container_types/pottery_container_types_cleanup.t.h"
 #endif
 
 #include "pottery/quick_sort/impl/pottery_quick_sort_unmacros.t.h"

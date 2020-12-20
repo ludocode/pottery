@@ -58,7 +58,7 @@ void pottery_lifecycle_destroy(POTTERY_LIFECYCLE_CONTEXT_ARG
 
     #if defined(POTTERY_LIFECYCLE_DESTROY)
         // destroy by given expression
-        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             (POTTERY_LIFECYCLE_DESTROY((context), (element)));
         #else
             (POTTERY_LIFECYCLE_DESTROY((element)));
@@ -98,7 +98,7 @@ void pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_ARG
 
     #if defined(POTTERY_LIFECYCLE_MOVE)
         // move by given expression
-        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             (POTTERY_LIFECYCLE_MOVE((context), (to), (from)));
         #else
             (POTTERY_LIFECYCLE_MOVE((to), (from)));
@@ -146,7 +146,7 @@ void pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_ARG
     #ifdef POTTERY_LIFECYCLE_SWAP
 
         // swap by given expression
-        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             (POTTERY_LIFECYCLE_SWAP((context), (left), (right)));
         #else
             (POTTERY_LIFECYCLE_SWAP((left), (right)));
@@ -186,7 +186,7 @@ void pottery_lifecycle_swap(POTTERY_LIFECYCLE_CONTEXT_ARG
         #endif
 
     #elif (defined(POTTERY_LIFECYCLE_MOVE) || POTTERY_LIFECYCLE_MOVE_BY_VALUE) && \
-            defined(POTTERY_LIFECYCLE_VALUE_TYPE)
+            POTTERY_CONTAINER_TYPES_HAS_VALUE
 
         // swap by move through a temporary buffer
         POTTERY_DECLARE_UNCONSTRUCTED(pottery_lifecycle_value_t, temp);
@@ -212,7 +212,7 @@ void pottery_lifecycle_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
 
     #if defined(POTTERY_LIFECYCLE_STEAL)
         // steal by given expression
-        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             (POTTERY_LIFECYCLE_STEAL((context), (to), (from)));
         #else
             (POTTERY_LIFECYCLE_STEAL((to), (from)));
@@ -260,7 +260,7 @@ pottery_error_t pottery_lifecycle_init(POTTERY_LIFECYCLE_CONTEXT_ARG
 
     #if defined(POTTERY_LIFECYCLE_INIT)
         // init by given expression
-        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_LIFECYCLE_INIT((context), (element)));
         #else
             return (POTTERY_LIFECYCLE_INIT((element)));
@@ -295,7 +295,7 @@ pottery_error_t pottery_lifecycle_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
 
     #if defined(POTTERY_LIFECYCLE_COPY)
         // copy by given expression
-        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_LIFECYCLE_COPY((context), (to), (from)));
         #else
             return (POTTERY_LIFECYCLE_COPY((to), (from)));
@@ -336,7 +336,7 @@ pottery_error_t pottery_lifecycle_init_copy(POTTERY_LIFECYCLE_CONTEXT_ARG
 
     #if defined(POTTERY_LIFECYCLE_INIT_COPY)
         // init_copy by given expression
-        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_LIFECYCLE_INIT_COPY((context), (to), (from)));
         #else
             return (POTTERY_LIFECYCLE_INIT_COPY((to), (from)));
@@ -382,7 +382,7 @@ pottery_error_t pottery_lifecycle_init_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
     #if defined(POTTERY_LIFECYCLE_INIT_STEAL)
 
         // init_steal by given expression
-        #ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return (POTTERY_LIFECYCLE_INIT_STEAL((context), (to), (from)));
         #else
             return (POTTERY_LIFECYCLE_INIT_STEAL((to), (from)));
@@ -422,7 +422,7 @@ pottery_error_t pottery_lifecycle_init_steal(POTTERY_LIFECYCLE_CONTEXT_ARG
  * bulk functions
  */
 
-#if POTTERY_LIFECYCLE_CAN_MOVE && defined(POTTERY_LIFECYCLE_VALUE_TYPE)
+#if POTTERY_LIFECYCLE_CAN_MOVE && POTTERY_CONTAINER_TYPES_HAS_VALUE
 static inline
 void pottery_lifecycle_move_bulk_restrict(POTTERY_LIFECYCLE_CONTEXT_ARG
         pottery_lifecycle_ref_t POTTERY_LIFECYCLE_RESTRICT to,
@@ -558,7 +558,7 @@ void pottery_lifecycle_move_bulk(POTTERY_LIFECYCLE_CONTEXT_ARG
 }
 #endif
 
-#if POTTERY_LIFECYCLE_CAN_DESTROY && defined(POTTERY_LIFECYCLE_VALUE_TYPE)
+#if POTTERY_LIFECYCLE_CAN_DESTROY && POTTERY_CONTAINER_TYPES_HAS_VALUE
 static inline
 void pottery_lifecycle_destroy_bulk(POTTERY_LIFECYCLE_CONTEXT_ARG
         pottery_lifecycle_value_t* element, size_t count) pottery_noexcept
