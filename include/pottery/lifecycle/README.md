@@ -70,27 +70,7 @@ All below configuration options are prefixed by the configuration prefix of the 
 
 ## Types
 
-### `REF_TYPE`
-
-This is the abstract reference type for which lifecycle functions are being generated. Values of this type are passed to all configured lifecycle expressions and acceepted by all generated functions (after the optional context.)
-
-This is usually either a pointer to the real type allowing lifecycle operations on values in memory, or an abstract identifier to be used with the context to identify it. For example the context may be a database connection and the type may be the key for a row: in this case the `COPY` expression would copy data from one row to another.
-
-Note that `REF_TYPE` and `VALUE_TYPE` are mutually exclusive: you can only define one or the other.
-
-See the [glossary](../../../docs/glossary.md) for more information on the ref type.
-
-### `VALUE_TYPE`
-
-This is a concrete value type for performing lifecycle operations on values in memory. This is required for any of the `BY_VALUE` configuration options and for bulk operations on C arrays of values.
-
-If this is defined, `REF_TYPE` will be defined as a pointer to this. You cannot define both `VALUE_TYPE` and `REF_TYPE`.
-
-See the [glossary](../../../docs/glossary.md) for more information on the value type.
-
-### `CONTEXT_TYPE`
-
-An optional comparison context type. If configured, the context type is passed as the first argument to all configured comparison expressions and accepted as the first argument of all generated functions.
+Types are defined by the [container_types](../container_types/) template.
 
 
 

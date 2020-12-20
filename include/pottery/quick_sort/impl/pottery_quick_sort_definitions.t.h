@@ -49,38 +49,43 @@ void pottery_quick_sort_prepare_pivot(
 
     // choose elements for the median
     size_t middle_index = start_index + (end_index - start_index) / 2; // avoid overflow
-    pottery_quick_sort_entry_t start = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS start_index);
-    pottery_quick_sort_entry_t middle = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS middle_index);
-    pottery_quick_sort_entry_t end = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS end_index);
+
+    pottery_quick_sort_entry_t start_entry = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS start_index);
+    pottery_quick_sort_entry_t middle_entry = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS middle_index);
+    pottery_quick_sort_entry_t end_entry = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS end_index);
+
+    pottery_quick_sort_ref_t start_ref = pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL start_entry);
+    pottery_quick_sort_ref_t middle_ref = pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL middle_entry);
+    pottery_quick_sort_ref_t end_ref = pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL end_entry);
 
     // if there is at most some arbitrary threshold of elements, use median
     if (end_index - start_index + 1 <= 128) {
-        pottery_quick_sort_entry_t median = pottery_quick_sort_compare_median(
-                POTTERY_QUICK_SORT_CONTEXT_VAL start, middle, end);
-        if (!pottery_quick_sort_array_access_equal(POTTERY_QUICK_SORT_VALS median, start))
-            pottery_quick_sort_lifecycle_swap_restrict(POTTERY_QUICK_SORT_CONTEXT_VAL
-                    pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS start),
-                    pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS median));
+        pottery_quick_sort_ref_t median_ref = pottery_quick_sort_compare_median(
+                POTTERY_QUICK_SORT_CONTEXT_VAL start_ref, middle_ref, end_ref);
+        pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL start_ref, median_ref);
         return;
     }
 
     // use ninther
     size_t third_offset = (end_index - start_index) / 3;
     size_t sixth_offset = (end_index - start_index) / 6;
-    pottery_quick_sort_entry_t left_middle = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS start_index + sixth_offset);
-    pottery_quick_sort_entry_t left_end = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS start_index + third_offset);
-    pottery_quick_sort_entry_t right_start = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS middle_index + third_offset);
-    pottery_quick_sort_entry_t right_middle = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS middle_index + third_offset + sixth_offset);
 
-    pottery_quick_sort_entry_t median = pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL
-            pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL start, left_middle, left_end),
-            pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL left_end, middle, right_start),
-            pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL right_start, right_middle, end));
+    pottery_quick_sort_entry_t left_middle_entry = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS start_index + sixth_offset);
+    pottery_quick_sort_entry_t left_end_entry = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS start_index + third_offset);
+    pottery_quick_sort_entry_t right_start_entry = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS middle_index + third_offset);
+    pottery_quick_sort_entry_t right_middle_entry = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS middle_index + third_offset + sixth_offset);
 
-    if (!pottery_quick_sort_array_access_equal(POTTERY_QUICK_SORT_VALS median, start))
-        pottery_quick_sort_lifecycle_swap_restrict(POTTERY_QUICK_SORT_CONTEXT_VAL
-                pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS start),
-                pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS median));
+    pottery_quick_sort_ref_t left_middle_ref = pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL left_middle_entry);
+    pottery_quick_sort_ref_t left_end_ref = pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL left_end_entry);
+    pottery_quick_sort_ref_t right_start_ref = pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL right_start_entry);
+    pottery_quick_sort_ref_t right_middle_ref = pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL right_middle_entry);
+
+    pottery_quick_sort_ref_t median_ref = pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL
+            pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL start_ref, left_middle_ref, left_end_ref),
+            pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL left_end_ref, middle_ref, right_start_ref),
+            pottery_quick_sort_compare_median(POTTERY_QUICK_SORT_CONTEXT_VAL right_start_ref, right_middle_ref, end_ref));
+
+    pottery_quick_sort_lifecycle_swap(POTTERY_QUICK_SORT_CONTEXT_VAL start_ref, median_ref);
 }
 
 // There are two implementations of partitioning here, one that moves through a
@@ -107,17 +112,24 @@ size_t pottery_quick_sort_partition(
         size_t start_index, size_t end_index)
 {
     pottery_assert(end_index - start_index >= 1);
-    pottery_quick_sort_entry_t pivot = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS start_index);
+    pottery_quick_sort_entry_t pivot_entry = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS start_index);
+    pottery_quick_sort_ref_t pivot = pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL pivot_entry);
 
     size_t low_index = start_index;
+    pottery_quick_sort_entry_t low = pivot_entry;
+
     size_t high_index = end_index;
     pottery_quick_sort_entry_t high = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS high_index);
 
     // Start by finding an element from the right that belongs on the left (or
     // is equal to the pivot. It's critical that we don't skip equal elements.)
     while (low_index < high_index && pottery_quick_sort_compare_less(
-                POTTERY_QUICK_SORT_CONTEXT_VAL pivot, high)) {
+                POTTERY_QUICK_SORT_CONTEXT_VAL pivot,
+                pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL high))) {
         high = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS --high_index);
+        // TODO use next/previous here
+        //high = pottery_quick_sort_array_access_previous(POTTERY_QUICK_SORT_VALS high);
+        //--high_index;
     }
 
     // If we've found none, the pivot goes at the start. (Either this partition
@@ -133,18 +145,20 @@ size_t pottery_quick_sort_partition(
     pottery_quick_sort_value_t temp;
     pottery_quick_sort_lifecycle_move_restrict(POTTERY_QUICK_SORT_CONTEXT_VAL
             &temp,
-            pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS hole));
+            pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL hole));
 
     // Now we alternate between low_index and high_index, finding elements on the wrong
     // side and moving them into the hole
-    pottery_quick_sort_entry_t low;
     while (true) {
 
         // Scan from the left
         do {
             low = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS ++low_index);
+            //low = pottery_quick_sort_array_access_next(POTTERY_QUICK_SORT_VALS low);
+            //++low_index;
         } while (low_index < high_index && pottery_quick_sort_compare_greater(
-                    POTTERY_QUICK_SORT_CONTEXT_VAL pivot, low));
+                    POTTERY_QUICK_SORT_CONTEXT_VAL pivot,
+                    pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL low)));
 
         if (low_index == high_index) {
             break;
@@ -152,16 +166,19 @@ size_t pottery_quick_sort_partition(
 
         // Put this element in the hole; the hole is now on the left.
         pottery_quick_sort_lifecycle_move_restrict(POTTERY_QUICK_SORT_CONTEXT_VAL
-                pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS hole),
-                pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS low));
+                pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL hole),
+                pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL low));
         hole_index = low_index;
         hole = low;
 
         // Scan from the right
         do {
             high = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS --high_index);
+            //high = pottery_quick_sort_array_access_previous(POTTERY_QUICK_SORT_VALS high);
+            //--high_index;
         } while (low_index < high_index && pottery_quick_sort_compare_less(
-                    POTTERY_QUICK_SORT_CONTEXT_VAL pivot, high));
+                    POTTERY_QUICK_SORT_CONTEXT_VAL pivot,
+                    pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL high)));
 
         if (low_index == high_index) {
             break;
@@ -169,8 +186,8 @@ size_t pottery_quick_sort_partition(
 
         // Put this element in the hole; the hole is now on the right.
         pottery_quick_sort_lifecycle_move_restrict(POTTERY_QUICK_SORT_CONTEXT_VAL
-                pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS hole),
-                pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS high));
+                pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL hole),
+                pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL high));
         hole_index = high_index;
         hole = high;
     }
@@ -180,10 +197,10 @@ size_t pottery_quick_sort_partition(
     (void)hole_index;
     pottery_assert(hole_index == high_index);
     pottery_quick_sort_lifecycle_move_restrict(POTTERY_QUICK_SORT_CONTEXT_VAL
-            pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS hole),
-            pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS pivot));
+            pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL hole),
+            pivot);
     pottery_quick_sort_lifecycle_move_restrict(POTTERY_QUICK_SORT_CONTEXT_VAL
-            pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS pivot),
+            pivot,
             &temp);
     return high_index;
 }
@@ -197,7 +214,8 @@ size_t pottery_quick_sort_partition(
 {
     pottery_assert(end_index - start_index >= 1);
 
-    pottery_quick_sort_entry_t pivot = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS start_index);
+    pottery_quick_sort_entry_t pivot_entry = pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS start_index);
+    pottery_quick_sort_ref_t pivot = pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL pivot_entry);
 
     size_t low = start_index;
     size_t high = end_index + 1;
@@ -205,6 +223,7 @@ size_t pottery_quick_sort_partition(
         // Something to improve here later would be to eliminate some of these
         // redundant accesses. We should be able to hold on to the last access
         // to use in swap.
+        // TODO we also need to use next/previous, not select each time
 
         // This is Hoare paritioning, except that we've kept the pivot outside
         // of the array so that we can refer to it in our comparisons.
@@ -213,19 +232,23 @@ size_t pottery_quick_sort_partition(
         do {
             ++low;
         } while (low < high && pottery_quick_sort_compare_greater(
-                    POTTERY_QUICK_SORT_CONTEXT_VAL pivot, pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS low)));
+                    POTTERY_QUICK_SORT_CONTEXT_VAL pivot,
+                    pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL
+                        pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS low))));
         do {
             --high;
         } while (low < high && pottery_quick_sort_compare_less(
-                    POTTERY_QUICK_SORT_CONTEXT_VAL pivot, pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS high)));
+                    POTTERY_QUICK_SORT_CONTEXT_VAL pivot,
+                    pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL
+                        pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS high))));
 
         if (low >= high)
             break;
 
         pottery_quick_sort_lifecycle_swap_restrict(POTTERY_QUICK_SORT_CONTEXT_VAL
-                pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS 
+                pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL
                     pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS low)),
-                pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS 
+                pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL
                     pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS high)));
     }
 
@@ -233,15 +256,17 @@ size_t pottery_quick_sort_partition(
     // never compared with anything. We compare it to the pivot to decide where
     // the pivot should go.
     if (low > end_index || pottery_quick_sort_compare_less(POTTERY_QUICK_SORT_CONTEXT_VAL
-                pivot, pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS low)))
+                pivot,
+                pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL
+                    pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS low))))
         --low;
 
     // Unlike in normal Hoare partitioning, we now know where the pivot element
     // goes, so we swap it into place and skip it in the recursion.
     if (low != start_index) {
         pottery_quick_sort_lifecycle_swap_restrict(POTTERY_QUICK_SORT_CONTEXT_VAL
-                pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS pivot),
-                pottery_quick_sort_array_access_ref(POTTERY_QUICK_SORT_VALS 
+                pivot,
+                pottery_quick_sort_entry_ref(POTTERY_QUICK_SORT_CONTEXT_VAL
                     pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS low)));
     }
 

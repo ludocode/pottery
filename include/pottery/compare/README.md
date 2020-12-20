@@ -53,53 +53,11 @@ string_median("carrot", "apple", "banana"); // returns "banana"
 
 ### Types
 
-The compare template operates on an abstract reference type with an optional context. In the simplest case, the reference type is just a pointer to an element in memory, and the comparison expressions need no context to compare them.
+The compare template operates on an abstract ref type with an optional context. In the simplest case, the ref type is just a pointer to an element in memory, and the comparison expressions need no context to compare them.
 
-In more advanced usage, the reference type could be an entry in a container, so you can compare container elements. The compare template can even compare abstract values not in memory: a context could contain for example a database connection, the reference type could be the key type for rows to be compared, and configured compare expressions could perform database queries to compare elements.
+In more advanced usage, the compare template can even compare abstract values not in memory. A context could contain for example a database connection, the reference type could be the key type for rows to be compared, and configured compare expressions could perform database queries to compare elements.
 
-The reference type configuration follows the standard type rules. Their names are documented in the [glossary](../../../docs/glossary.md). Remember `REF_TYPE` and `VALUE_TYPE` are mutually exclusive, so must define one of these combinations:
-
-- Only `VALUE_TYPE` for primitives, structs and other value types;
-
-- Only `REF_TYPE` for pointers, abstract references, etc. (as in the `strcmp` example above);
-
-- `ENTRY_TYPE` and `VALUE_TYPE` for typical memory containers, such as Pottery containers;
-
-- `ENTRY_TYPE` and `REF_TYPE` for more abstract containers (like the database connection example earlier.)
-
-If `ENTRY_TYPE` is configured, `ENTRY_REF` must (usually) be as well to convert the entry to a ref.
-
-#### `VALUE_TYPE`
-
-A concrete value type for comparing objects in memory.
-
-This is optional. If this is configured, it is typedef'd to `value_t`, and `ref_t` is defined as a pointer to this. If this is not configured `REF_TYPE` must be configured instead.
-
-#### `REF_TYPE`
-
-An abstract reference for the type to be compared.
-
-`ref_t` is defined as a typedef to this, or to `value_t*` if this is not configured.
-
-#### `ENTRY_TYPE`
-
-An abstract reference type for the value to be compared, usually with the storage location of the value within its container. Two values of this type are passed to all configured comparison expressions (after the optional context.)
-
-`entry_t` is defined as a typedef to this, or to `ref_t` if this is not configured.
-
-#### `ENTRY_REF`
-
-An expression matching `ref_t(context_t context, entry_t entry)`.
-
-Returns a ref to the value contained in an entry. In other words it converts an entry to a ref.
-
-This is optional. If not configured, the entry type must be implicitly convertible to the ref type. This is often the case since they are usually the same type.
-
-If you are configuring a custom `ENTRY_TYPE`, you will almost certainly want to configure this as well (though technically you may not need to, for example if your ref type is implicitly convertible from entry by a non-explicit C++ constructor that takes the entry type as argument.)
-
-#### `CONTEXT_TYPE`
-
-An optional comparison context type. If configured, the context type is passed as the first argument to all configured comparison expressions and accepted as the first argument of all generated functions.
+Types are defined by the [container_types](../container_types/) template.
 
 ### Automatic By Value
 
@@ -115,43 +73,43 @@ If 1, the comparison template will use value comparisons on `VALUE_TYPE`, i.e. t
 
 #### `EQUAL`
 
-An expression matching `bool(context_t context, entry_t left, entry_t right)`.
+An expression matching `bool(context_t context, ref_t left, ref_t right)`.
 
 Evaluates to true if the given values are equal, false otherwise.
 
 #### `NOT_EQUAL`
 
-An expression matching `bool(context_t context, entry_t left, entry_t right)`.
+An expression matching `bool(context_t context, ref_t left, ref_t right)`.
 
 Evaluates to true if the given values are not equal, false otherwise.
 
 #### `LESS`
 
-An expression matching `bool(context_t context, entry_t left, entry_t right)`
+An expression matching `bool(context_t context, ref_t left, ref_t right)`
 
 Evaluates to true if left is less than right, false otherwise.
 
 #### `GREATER`
 
-An expression matching `bool(context_t context, entry_t left, entry_t right)`.
+An expression matching `bool(context_t context, ref_t left, ref_t right)`.
 
 Evaluates to true if left is greater than right, false otherwise.
 
 #### `LESS_OR_EQUAL`
 
-An expression matching `bool(context_t context, entry_t left, entry_t right)`.
+An expression matching `bool(context_t context, ref_t left, ref_t right)`.
 
 Evaluates to true if left is less than or equal to right, false otherwise.
 
 #### `GREATER_OR_EQUAL`
 
-An expression matching `bool(context_t context, entry_t left, entry_t right)`.
+An expression matching `bool(context_t context, ref_t left, ref_t right)`.
 
 Evaluates to true if left is greater than or equal to right, false otherwise.
 
 #### `THREE_WAY`
 
-An expression matching `int(context_t context, entry_t left, entry_t right)`.
+An expression matching `int(context_t context, ref_t left, ref_t right)`.
 
 Performs a [three-way comparison](https://en.wikipedia.org/wiki/Three-way_comparison). It must return less than 0 if left is less than right, greater than 0 if left is greater than right, and 0 if they are equal.
 
@@ -160,43 +118,43 @@ Performs a [three-way comparison](https://en.wikipedia.org/wiki/Three-way_compar
 ## API Reference
 
 ```c
-bool equal(context_t context, entry_t left, entry_t right)
+bool equal(context_t context, ref_t left, ref_t right)
 ```
 
 Returns true if left is equal to right, false otherwise.
 
 ```c
-bool not_equal(context_t context, entry_t left, entry_t right)
+bool not_equal(context_t context, ref_t left, ref_t right)
 ```
 
 Returns true if left is not equal to right, false otherwise. This returns the opposite of `equal()`.
 
 ```c
-bool less(context_t context, entry_t left, entry_t right)
+bool less(context_t context, ref_t left, ref_t right)
 ```
 
 Returns true if left is less than right, false otherwise.
 
 ```c
-bool greater(context_t context, entry_t left, entry_t right)
+bool greater(context_t context, ref_t left, ref_t right)
 ```
 
 Returns true if left is greater than right, false otherwise.
 
 ```c
-bool less_or_equal(context_t context, entry_t left, entry_t right)
+bool less_or_equal(context_t context, ref_t left, ref_t right)
 ```
 
 Returns true if left is less than or equal to right, false otherwise. This returns the opposite of `greater()`.
 
 ```c
-bool greater_or_equal(context_t context, entry_t left, entry_t right)
+bool greater_or_equal(context_t context, ref_t left, ref_t right)
 ```
 
 Returns true if left is greater than or equal to right, false otherwise. This returns the opposite of `less()`.
 
 ```c
-int three_way(context_t context, entry_t left, entry_t right)
+int three_way(context_t context, ref_t left, ref_t right)
 ```
 
 Performs a [three-way comparison](https://en.wikipedia.org/wiki/Three-way_comparison).
@@ -204,19 +162,19 @@ Performs a [three-way comparison](https://en.wikipedia.org/wiki/Three-way_compar
 Returns an integer less than 0 if left is less than right, an integer greater than 0 if left is greater than right, and 0 if they are equal.
 
 ```c
-entry_t min(context_t context, entry_t left, entry_t right)
+ref_t min(context_t context, ref_t left, ref_t right)
 ```
 
 Returns the lesser of left or right.
 
 ```c
-entry_t max(context_t context, entry_t left, entry_t right)
+ref_t max(context_t context, ref_t left, ref_t right)
 ```
 
 Returns the greater of left or right.
 
 ```c
-entry_t clamp(context_t context, entry_t value, entry_t min, entry_t max)
+ref_t clamp(context_t context, ref_t value, ref_t min, ref_t max)
 ```
 
 If value is less than min, returns min; otherwise if value is greater than max, returns max; otherwise returns value. In other words it limits the range of value to be between min and max.
@@ -224,7 +182,7 @@ If value is less than min, returns min; otherwise if value is greater than max, 
 The behaviour is undefined if min is greater than max.
 
 ```c
-entry_t median(context_t context, entry_t a, entry_t b, entry_t c)
+ref_t median(context_t context, ref_t a, ref_t b, ref_t c)
 ```
 
 Returns the median of a, b and c.

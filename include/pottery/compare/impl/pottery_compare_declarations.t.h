@@ -29,14 +29,12 @@
 #if POTTERY_COMPARE_CAN_EQUAL
 static inline
 bool pottery_compare_equal(POTTERY_COMPARE_CONTEXT_ARG
-        pottery_compare_entry_t left, pottery_compare_entry_t right)
+        pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
     POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
 
     #if POTTERY_COMPARE_BY_VALUE
-        return *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL left)
-                ==
-                *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL right);
+        return *left == *right;
 
     #elif defined(POTTERY_COMPARE_EQUAL)
         #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
@@ -103,14 +101,12 @@ bool pottery_compare_equal(POTTERY_COMPARE_CONTEXT_ARG
 
 static inline
 bool pottery_compare_not_equal(POTTERY_COMPARE_CONTEXT_ARG
-        pottery_compare_entry_t left, pottery_compare_entry_t right)
+        pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
     POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
 
     #if POTTERY_COMPARE_BY_VALUE
-        return *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL left)
-                !=
-                *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL right);
+        return *left != *right;
 
     #elif defined(POTTERY_COMPARE_NOT_EQUAL)
         #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
@@ -179,14 +175,12 @@ bool pottery_compare_not_equal(POTTERY_COMPARE_CONTEXT_ARG
 #if POTTERY_COMPARE_CAN_ORDER
 static inline
 bool pottery_compare_less(POTTERY_COMPARE_CONTEXT_ARG
-        pottery_compare_entry_t left, pottery_compare_entry_t right)
+        pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
     POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
 
     #if POTTERY_COMPARE_BY_VALUE
-        return *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL left)
-                <
-                *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL right);
+        return *left < *right;
 
     #elif defined(POTTERY_COMPARE_LESS)
         #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
@@ -228,14 +222,12 @@ bool pottery_compare_less(POTTERY_COMPARE_CONTEXT_ARG
 
 static inline
 bool pottery_compare_greater(POTTERY_COMPARE_CONTEXT_ARG
-        pottery_compare_entry_t left, pottery_compare_entry_t right)
+        pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
     POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
 
     #if POTTERY_COMPARE_BY_VALUE
-        return *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL left)
-                >
-                *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL right);
+        return *left > *right;
 
     #elif defined(POTTERY_COMPARE_GREATER)
         #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
@@ -277,14 +269,12 @@ bool pottery_compare_greater(POTTERY_COMPARE_CONTEXT_ARG
 
 static inline
 bool pottery_compare_less_or_equal(POTTERY_COMPARE_CONTEXT_ARG
-        pottery_compare_entry_t left, pottery_compare_entry_t right)
+        pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
     POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
 
     #if POTTERY_COMPARE_BY_VALUE
-        return *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL left)
-                <=
-                *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL right);
+        return *left <= *right;
 
     #elif defined(POTTERY_COMPARE_LESS_OR_EQUAL)
         #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
@@ -326,14 +316,12 @@ bool pottery_compare_less_or_equal(POTTERY_COMPARE_CONTEXT_ARG
 
 static inline
 bool pottery_compare_greater_or_equal(POTTERY_COMPARE_CONTEXT_ARG
-        pottery_compare_entry_t left, pottery_compare_entry_t right)
+        pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
     POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
 
     #if POTTERY_COMPARE_BY_VALUE
-        return *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL left)
-                >=
-                *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL right);
+        return *left >= *right;
 
     #elif defined(POTTERY_COMPARE_GREATER_OR_EQUAL)
         #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
@@ -375,19 +363,12 @@ bool pottery_compare_greater_or_equal(POTTERY_COMPARE_CONTEXT_ARG
 
 static inline
 int pottery_compare_three_way(POTTERY_COMPARE_CONTEXT_ARG
-        pottery_compare_entry_t left, pottery_compare_entry_t right)
+        pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
     POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
 
     #if POTTERY_COMPARE_BY_VALUE
-        return (*pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL left)
-                    <
-                    *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL right)) ?
-                -1 :
-                    (*pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL left)
-                    >
-                    *pottery_compare_ref(POTTERY_COMPARE_CONTEXT_VAL right) ?
-                1 : 0);
+        return (*left < *right) ? -1 : ((*left > *right) ? 1 : 0);
 
     #elif defined(POTTERY_COMPARE_THREE_WAY)
         #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
@@ -439,24 +420,24 @@ int pottery_compare_three_way(POTTERY_COMPARE_CONTEXT_ARG
 }
 
 static inline
-pottery_compare_entry_t pottery_compare_min(POTTERY_COMPARE_CONTEXT_ARG
-        pottery_compare_entry_t left, pottery_compare_entry_t right)
+pottery_compare_ref_t pottery_compare_min(POTTERY_COMPARE_CONTEXT_ARG
+        pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
     return pottery_compare_less(POTTERY_COMPARE_CONTEXT_VAL
             left, right) ? left : right;
 }
 
 static inline
-pottery_compare_entry_t pottery_compare_max(POTTERY_COMPARE_CONTEXT_ARG
-        pottery_compare_entry_t left, pottery_compare_entry_t right)
+pottery_compare_ref_t pottery_compare_max(POTTERY_COMPARE_CONTEXT_ARG
+        pottery_compare_ref_t left, pottery_compare_ref_t right)
 {
     return pottery_compare_greater(POTTERY_COMPARE_CONTEXT_VAL
             left, right) ? left : right;
 }
 
 static inline
-pottery_compare_entry_t pottery_compare_clamp(POTTERY_COMPARE_CONTEXT_ARG
-        pottery_compare_entry_t value, pottery_compare_entry_t min, pottery_compare_entry_t max)
+pottery_compare_ref_t pottery_compare_clamp(POTTERY_COMPARE_CONTEXT_ARG
+        pottery_compare_ref_t value, pottery_compare_ref_t min, pottery_compare_ref_t max)
 {
     return pottery_compare_less(POTTERY_COMPARE_CONTEXT_VAL
                 value, min) ? min :
@@ -465,8 +446,8 @@ pottery_compare_entry_t pottery_compare_clamp(POTTERY_COMPARE_CONTEXT_ARG
 }
 
 static inline
-pottery_compare_entry_t pottery_compare_median(POTTERY_COMPARE_CONTEXT_ARG
-        pottery_compare_entry_t a, pottery_compare_entry_t b, pottery_compare_entry_t c)
+pottery_compare_ref_t pottery_compare_median(POTTERY_COMPARE_CONTEXT_ARG
+        pottery_compare_ref_t a, pottery_compare_ref_t b, pottery_compare_ref_t c)
 {
     if (pottery_compare_less(POTTERY_COMPARE_CONTEXT_VAL a, b)) {
         if (pottery_compare_less(POTTERY_COMPARE_CONTEXT_VAL a, c))
