@@ -22,8 +22,15 @@
  * SOFTWARE.
  */
 
-#ifndef POTTERY_LIFECYCLE_INTERNAL
-#error "This is an internal header. Do not include it."
-#endif
+//!!! END_LICENSE
+// Renames container_types template identifiers from {SRC} to {DEST}
 
-// Nothing! Some larger bulk functions may end up here later.
+#define {SRC}_value_t POTTERY_CONCAT({DEST}, _value_t)
+#define {SRC}_ref_t POTTERY_CONCAT({DEST}, _ref_t)
+#define {SRC}_entry_t POTTERY_CONCAT({DEST}, _entry_t)
+#define {SRC}_key_t POTTERY_CONCAT({DEST}, _key_t)
+#define {SRC}_context_t POTTERY_CONCAT({DEST}, _context_t)
+
+#define {SRC}_entry_ref POTTERY_CONCAT({DEST}, _entry_ref)
+#define {SRC}_ref_key POTTERY_CONCAT({DEST}, _ref_key)
+#define {SRC}_ref_equal POTTERY_CONCAT({DEST}, _ref_equal)

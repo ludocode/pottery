@@ -23,7 +23,7 @@
  */
 
 //!!! END_LICENSE
-// Undefines (forwardable/forwarded) array_access configuration on {CONFIG}
+// Undefines (forwardable/forwarded) container_types configuration on {CONFIG}
 
 // types
 #undef {CONFIG}_VALUE_TYPE

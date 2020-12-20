@@ -23,7 +23,18 @@
  */
 
 #define POTTERY_LIFECYCLE_INTERNAL
+
+#ifndef POTTERY_LIFECYCLE_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/lifecycle/impl/pottery_lifecycle_config_types.t.h"
+    #include "pottery/container_types/pottery_container_types_declare.t.h"
+#endif
+
 #include "pottery/lifecycle/impl/pottery_lifecycle_macros.t.h"
 #include "pottery/lifecycle/impl/pottery_lifecycle_declarations.t.h"
 #include "pottery/lifecycle/impl/pottery_lifecycle_unmacros.t.h"
+
+#ifndef POTTERY_LIFECYCLE_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/container_types/pottery_container_types_cleanup.t.h"
+#endif
+
 #undef POTTERY_LIFECYCLE_INTERNAL

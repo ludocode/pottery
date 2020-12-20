@@ -22,19 +22,15 @@
  * SOFTWARE.
  */
 
-#define POTTERY_LIFECYCLE_INTERNAL
+//!!! END_LICENSE
+// Unrenames container_types template identifiers from {PREFIX}
 
-#ifndef POTTERY_LIFECYCLE_EXTERNAL_CONTAINER_TYPES
-    #include "pottery/lifecycle/impl/pottery_lifecycle_config_types.t.h"
-    #include "pottery/container_types/pottery_container_types_define.t.h"
-#endif
+#undef {SRC}_value_t
+#undef {SRC}_ref_t
+#undef {SRC}_entry_t
+#undef {SRC}_key_t
+#undef {SRC}_context_t
 
-#include "pottery/lifecycle/impl/pottery_lifecycle_macros.t.h"
-// no definitions file
-#include "pottery/lifecycle/impl/pottery_lifecycle_unmacros.t.h"
-
-#ifndef POTTERY_LIFECYCLE_EXTERNAL_CONTAINER_TYPES
-    #include "pottery/container_types/pottery_container_types_cleanup.t.h"
-#endif
-
-#undef POTTERY_LIFECYCLE_INTERNAL
+#undef {SRC}_entry_ref
+#undef {SRC}_ref_key
+#undef {SRC}_ref_equal

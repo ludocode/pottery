@@ -30,22 +30,14 @@
  * types
  */
 
-#if defined(POTTERY_LIFECYCLE_VALUE_TYPE)
-typedef POTTERY_LIFECYCLE_VALUE_TYPE pottery_lifecycle_value_t;
-#endif
-
-#ifdef POTTERY_LIFECYCLE_REF_TYPE
-#define POTTERY_LIFECYCLE_RESTRICT /*nothing*/
-typedef POTTERY_LIFECYCLE_REF_TYPE pottery_lifecycle_ref_t;
-typedef POTTERY_LIFECYCLE_REF_TYPE pottery_lifecycle_const_ref_t;
+// We can define restrict pointers and a const reference only if we have a
+// value type. If we don't, restrict and const are both disabled.
+#if POTTERY_CONTAINER_TYPES_HAS_VALUE
+    #define POTTERY_LIFECYCLE_RESTRICT pottery_restrict
+    typedef const pottery_lifecycle_value_t* pottery_lifecycle_const_ref_t;
 #else
-#define POTTERY_LIFECYCLE_RESTRICT pottery_restrict
-typedef pottery_lifecycle_value_t* pottery_lifecycle_ref_t;
-typedef const pottery_lifecycle_value_t* pottery_lifecycle_const_ref_t;
-#endif
-
-#ifdef POTTERY_LIFECYCLE_CONTEXT_TYPE
-typedef POTTERY_LIFECYCLE_CONTEXT_TYPE pottery_lifecycle_context_t;
+    #define POTTERY_LIFECYCLE_RESTRICT /*nothing*/
+    typedef pottery_lifecycle_ref_t pottery_lifecycle_const_ref_t;
 #endif
 
 

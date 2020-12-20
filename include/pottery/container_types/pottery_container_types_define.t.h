@@ -22,19 +22,11 @@
  * SOFTWARE.
  */
 
-#define POTTERY_LIFECYCLE_INTERNAL
+#define POTTERY_CONTAINER_TYPES_INTERNAL
 
-#ifndef POTTERY_LIFECYCLE_EXTERNAL_CONTAINER_TYPES
-    #include "pottery/lifecycle/impl/pottery_lifecycle_config_types.t.h"
-    #include "pottery/container_types/pottery_container_types_define.t.h"
-#endif
+#include "pottery/container_types/impl/pottery_container_types_macros.t.h"
+// No definitions file! Everything is inline. We still need macros though for
+// configuration purposes.
+#include "pottery/container_types/impl/pottery_container_types_unmacros.t.h"
 
-#include "pottery/lifecycle/impl/pottery_lifecycle_macros.t.h"
-// no definitions file
-#include "pottery/lifecycle/impl/pottery_lifecycle_unmacros.t.h"
-
-#ifndef POTTERY_LIFECYCLE_EXTERNAL_CONTAINER_TYPES
-    #include "pottery/container_types/pottery_container_types_cleanup.t.h"
-#endif
-
-#undef POTTERY_LIFECYCLE_INTERNAL
+#undef POTTERY_CONTAINER_TYPES_INTERNAL
