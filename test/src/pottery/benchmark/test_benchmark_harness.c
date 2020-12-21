@@ -33,6 +33,7 @@ void pottery_benchmark_quick_sort_wrapper(int* ints, size_t count);
 void pottery_benchmark_intro_sort_wrapper(int* ints, size_t count);
 void pottery_benchmark_heap_sort_wrapper(int* ints, size_t count);
 void pottery_qsort_simple_wrapper(int* ints, size_t count);
+void pottery_qsort_r_simple_wrapper(int* ints, size_t count);
 void pottery_qsort_wrapper(int* ints, size_t count);
 void pottery_gnu_qsort_r_wrapper(int* ints, size_t count);
 
@@ -54,6 +55,7 @@ void boost_flat_stable_sort_wrapper(int* ints, size_t count);
 #endif
 
 // miscellaneous
+void musl_qsort_wrapper(int* ints, size_t count);
 void stb_sort_wrapper(int* ints, size_t count);
 void pqsort_wrapper(int* ints, size_t count);
 void swenson_timsort_wrapper(int* ints, size_t count);
@@ -78,6 +80,7 @@ typedef struct result_t {
 
 static results_t results;
 
+pottery_noinline
 static void benchmark_sort(int* ref_ints, size_t count,
         void (*sort)(int*, size_t), const char* name)
 {
@@ -109,25 +112,47 @@ static void benchmark_sort(int* ref_ints, size_t count,
     free(ints);
 }
 
-static void benchmark_sorts(size_t count) {
+typedef enum variant_t {
+    variant_mostly_sorted,
+    variant_duplicates,
+    variant_random,
+} variant_t;
+
+static void benchmark_sorts_variant(size_t count, variant_t variant) {
     results_init(&results);
 
-    // generate some random ints with a fixed seed for reproducibility
+    // generate some random ints with a fixed seed for reproducibility.
     srand(0);
     int* ints = pottery_cast(int*, malloc(sizeof(int) * count));
     size_t i;
     for (i = 0; i < count; ++i) {
-        #if 0
-        // RAND_MAX is typically only around 65536, so use this to generate
-        // tons of duplicates to see how well algorithms handle them.
-        ints[i] = rand();
-        #else
-        // This generates mostly unique numbers.
-        ints[i] = (rand() << 16) ^ rand();
-        #endif
+
+        // In the mostly_sorted variant, we only use a random number 10% of
+        // the time, and the array index otherwise.
+        if (variant == variant_mostly_sorted && (rand() % 10 != 0)) {
+            ints[i] = pottery_cast(int, i);
+            continue;
+        }
+
+        // In the duplicates variant, we'll only select from 100 numbers.
+        if (variant == variant_duplicates) {
+            ints[i] = rand() % 100;
+            continue;
+        }
+
+        // RAND_MAX is typically only around 65536 so we call it twice. We
+        // limit the value to within count so that the numbers are mixed
+        // throughout the range when using mostly_sorted.
+        ints[i] = pottery_cast(int, pottery_cast(uint32_t, (rand() << 16) ^ rand()) % count);
     }
 
-    printf("\nSorting %zi random ints\n", count);
+    if (variant == variant_mostly_sorted) {
+        printf("\nSorting %zi ints which are already mostly sorted\n", count);
+    } else if (variant == variant_duplicates) {
+        printf("\nSorting %zi random ints with many duplicates\n", count);
+    } else {
+        printf("\nSorting %zi random ints\n", count);
+    }
 
     // This one is buggy, skip it
     //benchmark_sort(ints, count, justinow_introsort_c_wrapper, "justinow/introsort-c");
@@ -140,6 +165,7 @@ static void benchmark_sorts(size_t count) {
     benchmark_sort(ints, count, pottery_qsort_wrapper, "pottery_qsort");
     #if 1
     benchmark_sort(ints, count, pottery_qsort_simple_wrapper, "pottery_qsort_simple");
+    benchmark_sort(ints, count, pottery_qsort_r_simple_wrapper, "pottery_qsort_r_simple");
     benchmark_sort(ints, count, pottery_gnu_qsort_r_wrapper, "pottery_gnu_qsort_r");
     benchmark_sort(ints, count, pottery_benchmark_shell_sort_wrapper, "pottery_shell_sort");
     benchmark_sort(ints, count, pottery_benchmark_heap_sort_wrapper, "pottery_heap_sort");
@@ -168,6 +194,7 @@ static void benchmark_sorts(size_t count) {
     benchmark_sort(ints, count, swenson_quicksort_wrapper, "swenson/sort quicksort");
     benchmark_sort(ints, count, swenson_timsort_wrapper, "swenson/sort timsort");
     benchmark_sort(ints, count, stb_sort_wrapper, "nothings/stb quicksort");
+    benchmark_sort(ints, count, musl_qsort_wrapper, "musl qsort");
     #endif
 
     // sort results
@@ -181,6 +208,12 @@ static void benchmark_sorts(size_t count) {
 
     free(ints);
     results_destroy(&results);
+}
+
+static void benchmark_sorts(size_t count) {
+    benchmark_sorts_variant(count, variant_mostly_sorted);
+    benchmark_sorts_variant(count, variant_duplicates);
+    benchmark_sorts_variant(count, variant_random);
 }
 
 static void benchmark_all_sorts(void) {

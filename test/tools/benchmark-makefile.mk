@@ -9,8 +9,8 @@ CPPFLAGS :=
 CXXFLAGS := -std=gnu++17
 
 # We put each benchmark in its own translation unit and don't build with -flto.
-# With LTO, GCC figures out that it can inline the comparison function in our
-# qsort() implementation.
+# (With LTO, GCC figures out that it can inline the comparison function in our
+# qsort() implementations.)
 CPPFLAGS += -O3
 #CPPFLAGS += -Og -DDEBUG -g
 CPPFLAGS += -Wall -Wextra -Wpedantic -Werror -Wfatal-errors
