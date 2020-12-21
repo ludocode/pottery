@@ -9,19 +9,18 @@ The alloc template serves as a portable allocator wrapper that can zero, align, 
 You can configure it with custom allocation functions and a custom context to provide your own allocator, perform arena-specific allocations, etc. Usually you would configure this on the container and it will use it to instantiate this template.
 
 ```c
-// A vector of ints with a custom arena allocator
+// A vector of ints with a custom arena allocator using arena as context
 #define POTTERY_VECTOR_PREFIX my_arena_vector
 #define POTTERY_VECTOR_VALUE_TYPE int
 #define POTTERY_VECTOR_LIFECYCLE_BY_VALUE 1
-#define POTTERY_VECTOR_ALLOC_CONTEXT arena_t*
+#define POTTERY_VECTOR_CONTEXT_TYPE arena_t*
 #define POTTERY_VECTOR_ALLOC_MALLOC(arena, size) arena_malloc(arena, size)
 #define POTTERY_VECTOR_ALLOC_FREE(arena, ptr) arena_free(arena, ptr)
 #include "pottery/vector/pottery_vector_static.t.h"
 
-// You must set the arena before putting anything in the container
+// You must pass the arena context as an argument to init()
 my_arena_vector_t vector;
-my_arena_vector_init(&vector);
-my_arena_vector_set_alloc_context(&vector, some_arena);
+my_arena_vector_init(&vector, some_arena);
 ```
 
 See the Configuration section below for more information.
@@ -36,57 +35,61 @@ Alignment must always be a power of two.
 
 ## Using Alloc Directly
 
-Although this is mostly intended as a helper for other Pottery templates, it can be useful on its own to serve as a portable allocator wrapper that can zero, align, expand, relocate, multiply with overflow checks, etc. even where such features are not provided by the underlying allocator. You can instantiate it with no configuration other than `PREFIX` to use the default allocator of the platform.
+Although this is intended as a helper for other Pottery templates, it could be useful on its own to serve as a wrapper to an allocator that can provide additional features. You can instantiate it with no configuration other than `PREFIX` to use the default allocator of the platform, or additionally define `EXTENDED_ALIGNMENT` to 1 to enable extended alignment allocations.
 
-For example, in a header file:
+For example, in a common header file for your project:
 
 ```c
-#define POTTERY_ALLOC_PREFIX my_project
+#define POTTERY_ALLOC_PREFIX myproject
+#define POTTERY_ALLOC_EXTENDED_ALIGNMENT 1
 #include "pottery/alloc/pottery_alloc_declare.t.h"
 ```
 
 In one translation unit:
 
 ```c
-#define POTTERY_ALLOC_PREFIX my_project
+#define POTTERY_ALLOC_PREFIX myproject
+#define POTTERY_ALLOC_EXTENDED_ALIGNMENT 1
 #include "pottery/alloc/pottery_alloc_define.t.h"
 ```
 
 Allocate a `foo_t`, zeroing it and respecting whatever its alignment requirements may be. This will optimize directly to calloc() if it is not over-aligned:
 
 ```c
-foo_t* foo = (foo_t*) my_project_malloc_zero(alignof(foo_t), sizeof(foo_t));
+foo_t* foo = (foo_t*) myproject_malloc_zero(alignof(foo_t), sizeof(foo_t));
 /* use foo */
-my_project_free(foo, alignof(foo_t));
+myproject_free(foo, alignof(foo_t));
 ```
 
-Allocate an array of at least ten ints along an L1 cache line, expanding to fill the usable space of the allocation:
+Allocate an array of at least ten ints along an L1 cache line, expanding the given count to avoid wasting padding around the allocation:
 
 ```c
 #define L1_CACHE_LINE_SIZE 64
 size_t count = 10;
-int* ints = (int*) my_project_malloc_at_least(L1_CACHE_LINE_SIZE, &count, sizeof(int));
+int* ints = (int*) myproject_malloc_at_least(L1_CACHE_LINE_SIZE, &count, sizeof(int));
 /* count may have increased; use up to count ints */
-my_project_free(ints, L1_CACHE_LINE_SIZE);
+myproject_free(ints, L1_CACHE_LINE_SIZE);
 ```
 
 There are some important caveats with this though:
 
-### Strictness about zero and NULL
+### Strictness about Zero and NULL
 
 The Pottery allocation functions are very strict about zero and null. You cannot ever allocate zero bytes, and you cannot ever realloc or free NULL.
 
 The former restriction works around platform incompatibilities with allocating zero bytes. Some platforms return NULL, others allocate at least one byte, others still may return a non-NULL reserved pointer, and some allocators even consider it undefined behaviour (like jemalloc's `allocm()`.) By forbidding zero byte allocations we avoid all these problems.
 
-The latter restriction is purely for correctness and auditability. A `malloc()` is always paired with a `free()`, and a `realloc()` is not paired with anything.
+The latter restriction is purely for correctness and auditability. A `malloc()` is always paired with a `free()`, and a `realloc()` always goes between and is not paired with anything.
 
-### Non-Static
+### Non-Static Templates in Header Files
 
-It's important to not instantiate allocation functions `static` in a shared header file if you will compile different translation units with different language versions. For one thing this will this duplicate lots of code in every translation unit that uses it. More importantly, the instantiation of extended-alignment functions can depend on the source language and other platform-specific configuration that can vary between translation units.
+When `EXTENDED_ALIGNMENT` is enabled, it's important to not instantiate allocation functions `static` in a shared header file if you will compile different translation units with different language versions.
 
-For example when compiling this template in GCC on Linux, `-std=c11` will use `aligned_alloc()`; `-std=gnu89` will use `posix_memalign()`; and `-std=c99` will perform manual alignment. The first two can be freed directly with `free()` but the third cannot. By instantiating the template in only one translation unit these will always agree on implementation.
+In general it's bad form to instantiate templates static in header files since it duplicates all of the implementation code in each translation unit. You should always avoid this anyway to prevent code bloat. But with extended alignment functions it can cause serious incompatibilities.
 
-These issues also exist for all Pottery dynamic containers, so you should not be instantiating those static in a header file either. It's not a huge concern for them though because it's expected that these will almost always be used with types that do not have extended alignment requirements so it is unlikely to cause problems in practice.
+For example when compiling this template with GCC on Linux, `-std=c11` will use `aligned_alloc()`; `-std=gnu89` will use `posix_memalign()`; and `-std=c99` will perform manual alignment. The first two can be freed directly with `free()` but the third cannot. By instantiating the template in only one translation unit these will always agree on implementation.
+
+These issues also exist for all Pottery dynamic containers, so you should not be instantiating those static in a header file either. It's not a huge concern for them though because `EXTENDED_ALIGNMENT` is off by default. It's expected that these will almost always be used with types that do not have extended alignment requirements so it is unlikely to cause problems in practice.
 
 
 ## Configuration Options
@@ -101,7 +104,7 @@ In particular, if you define, say, only `MALLOC`, the template will manually per
 
 Allocates memory of the given size with fundamental alignment.
 
-- `void* ZALLOC(size_t count, size_t element_size)`
+- `void* ZALLOC(size_t size)`
 
 Allocates zeroed memory of the given size with fundamental alignment.
 
@@ -117,11 +120,15 @@ Allocates memory of extended alignment.
 
 Pottery will never call this with a size of zero or with an alignment less than or equal to `alignof(max_align_t)`.
 
-- `void* ALIGNED_ZALLOC(size_t alignment, size_t count, size_t element_size)`
+This is ignored unless `EXTENDED_ALIGNMENT` is 1.
+
+- `void* ALIGNED_ZALLOC(size_t alignment, size_t size)`
 
 Allocates zeroed memory of the given size with extended alignment.
 
 Pottery will never call this with dimensions zero or with an alignment less than or equal to `alignof(max_align_t)`.
+
+This is ignored unless `EXTENDED_ALIGNMENT` is 1.
 
 - `void* ALIGNED_REALLOC(void* ptr, size_t alignment, size_t size)`
 
@@ -130,6 +137,8 @@ Re-allocates memory of extended alignment to a new size, relocating it if necess
 The given alignment is the same as the alignment originally used to allocate the given memory. This cannot be used to change the alignment requirement of an allocation.
 
 Pottery will never call this with a size of zero, or with an alignment less than or equal to `alignof(max_align_t)`.
+
+This is ignored unless `EXTENDED_ALIGNMENT` is 1.
 
 ### Free
 
@@ -145,7 +154,23 @@ Frees a pointer allocated with one the the extended alignment allocation functio
 
 You must define `ALIGNED_FREE` if and only if you define one of `ALIGNED_MALLOC`, `ALIGNED_ZALLOC` or `ALIGNED_REALLOC`.
 
+This is ignored unless `EXTENDED_ALIGNMENT` is 1.
+
 ### Other
+
+- `EXTENDED_ALIGNMENT`
+
+A flag to enable extended alignment allocations.
+
+If 1, it enables the code that wraps extended alignment allocation functions such as `aligned_alloc()` or `posix_memalign()`.
+
+If 0, an attempt to allocate with extended alignment will abort at runtime.
+
+With most templates that use alloc, or if alloc is used directly, this is 0 by default since such code is rarely used. Even if you set this to 1 the code can usually be optimized away with proper compiler flags if unused. Extended alignment code is only used if you define a dynamic container (or other allocating template) containing values with a greater alignment requirement than that of the platform allocator (i.e. greater than [`max_align_t`](https://en.cppreference.com/w/cpp/types/max_align_t).)
+
+Some templates may enable this by default in the future if they need extended alignment for their internal implementation.
+
+**WARNING**: It's important to avoid instantiating any template static in a header file if `EXTENDED_ALIGNMENT` is enabled because this can cause incompatibilities depending on compiler flags. See the section above on Non-Static Templates in Header Files.
 
 - `size_t MALLOC_GOOD_SIZE(size_t size)`
 
@@ -155,18 +180,6 @@ This allows Pottery to minimize allocator space wasted on padding.
 
 You can only define this if you also define one of `MALLOC`, `ZALLOC` or `REALLOC`.
 
-- `size_t MALLOC_USABLE_SIZE(void* ptr)`
-
-Returns the actual size of an allocation of fundamental alignment, which may be larger than the requested size. This allows Pottery to determine the additional padding used for an allocation and use it.
-
-There is no point in defining this unless it is capable of returning the extra padding. (For example on Windows this does not wrap `_msize()` since that always just returns the requested number of bytes.)
-
-You can only define this if you also define one of `MALLOC`, `ZALLOC` or `REALLOC`.
-
-- `void EXPAND(void** ptr, size_t* size)`
-
-Expands an allocation of fundamental alignment to the given usable size. The pointer must not be modified but the size can be.
-
 - `size_t ALIGNED_MALLOC_GOOD_SIZE(size_t size)`
 
 Rounds the given size of an allocation of extended alignment up to a size the allocator can allocate without padding.
@@ -175,17 +188,7 @@ This allows Pottery to minimize allocator space wasted on padding.
 
 You can only define this if you also define one of `ALIGNED_MALLOC`, `ALIGNED_ZALLOC` or `ALIGNED_REALLOC`.
 
-- `size_t ALIGNED_MALLOC_USABLE_SIZE(void* ptr)`
-
-Returns the actual size of an allocation of extended alignment, which may be larger than the requested size. This allows Pottery to determine the additional padding used for an allocation and use it.
-
-There is no point in defining this unless it is capable of returning the extra padding. (For example on Windows this does not wrap `_aligned_msize()` since that always just returns the requested number of bytes.)
-
-You can only define this if you also define one of `ALIGNED_MALLOC`, `ALIGNED_ZALLOC` or `ALIGNED_REALLOC`.
-
-- `void ALIGNED_EXPAND(void** ptr, size_t alignment, size_t* size)`
-
-Expands an allocation of extended alignment to the given usable size. The pointer must not be modified but the size can be.
+This is ignored unless `EXTENDED_ALIGNMENT` is 1.
 
 
 

@@ -28,6 +28,12 @@
 
 
 
+// All definitions here are for extended alignment. Everything to do with
+// fundamental alignment is trivial so it's inline in declarations.
+#if POTTERY_ALLOC_EXTENDED_ALIGNMENT
+
+
+
 /*
  * free()
  */
@@ -157,42 +163,6 @@ void* pottery_alloc_impl_malloc_array_at_least_ea(POTTERY_ALLOC_CONTEXT_ARG
     #endif
 }
 
-POTTERY_ALLOC_EXTERN
-void* pottery_alloc_impl_malloc_array_at_least_fa(POTTERY_ALLOC_CONTEXT_ARG
-        size_t alignment, size_t* count, size_t element_size)
-{
-    size_t size;
-    if (pottery_unlikely(pottery_mul_overflow_s(*count, element_size, &size)))
-        return pottery_null;
-
-    #if (defined(POTTERY_ALLOC_MALLOC) || defined(POTTERY_ALLOC_ZALLOC) || \
-            defined(POTTERY_ALLOC_REALLOC))
-
-        #if defined(POTTERY_ALLOC_MALLOC_GOOD_SIZE)
-            // Calculate the right amount of space to use first.
-            #ifdef POTTERY_ALLOC_CONTEXT_TYPE
-                size_t new_size = POTTERY_ALLOC_MALLOC_GOOD_SIZE((context), (size));
-            #else
-                size_t new_size = POTTERY_ALLOC_MALLOC_GOOD_SIZE((size));
-            #endif
-            pottery_assert(new_size >= size);
-            *count = new_size / element_size;
-            return pottery_alloc_impl_malloc_fa(POTTERY_ALLOC_CONTEXT_VAL alignment, new_size);
-
-        #else
-            // No support for at_least.
-            return pottery_alloc_impl_malloc_fa(POTTERY_ALLOC_CONTEXT_VAL alignment, size);
-        #endif
-
-    #elif (defined(POTTERY_ALLOC_ALIGNED_MALLOC) || defined(POTTERY_ALLOC_ALIGNED_ZALLOC) || \
-            defined(POTTERY_ALLOC_ALIGNED_REALLOC))
-        return pottery_alloc_impl_malloc_array_at_least_ea(POTTERY_ALLOC_CONTEXT_VAL alignment, size);
-
-    #else
-        #error "A memory allocation expression is required."
-    #endif
-}
-
 
 
 // TODO realloc not done yet
@@ -222,3 +192,6 @@ void* pottery_alloc_realloc_array_at_least(POTTERY_ALLOC_CONTEXT_ARG
 }
 #endif
 
+
+
+#endif // POTTERY_ALLOC_EXTENDED_ALIGNMENT

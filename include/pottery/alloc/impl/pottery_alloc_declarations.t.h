@@ -35,15 +35,27 @@ typedef POTTERY_ALLOC_CONTEXT_TYPE pottery_alloc_context_t;
 #endif
 
 
+// Functions ending in _fa() deal with fundamental alignment: types with
+// alignment at most pottery_alignmax, which is the default alignment of the
+// system malloc().) All such functions are (mostly) trivial so they are
+// implemented here in declarations.
+//
+// Functions ending in _ea() deal with extended alignment: types with alignment
+// greater than pottery_alignmax. These use an aligned allocation function like
+// aligned_malloc(). All such functions are implemented in definitions to avoid
+// incompatibilities. (Their implementation could be affected by compiler
+// flags.)
 
 
 /*
  * free()
  */
 
+#if POTTERY_ALLOC_EXTENDED_ALIGNMENT
 #if POTTERY_FORWARD_DECLARATIONS
 POTTERY_ALLOC_EXTERN
 void pottery_alloc_impl_free_ea(POTTERY_ALLOC_CONTEXT_ARG void* ptr);
+#endif
 #endif
 
 static pottery_always_inline
@@ -56,7 +68,7 @@ void pottery_alloc_impl_free_fa(POTTERY_ALLOC_CONTEXT_ARG void* ptr) {
             POTTERY_ALLOC_FREE((ptr));
         #endif
 
-    #elif defined(POTTERY_ALLOC_ALIGNED_FREE)
+    #elif POTTERY_ALLOC_EXTENDED_ALIGNMENT && defined(POTTERY_ALLOC_ALIGNED_FREE)
         pottery_alloc_impl_free_ea(POTTERY_ALLOC_CONTEXT_VAL ptr);
 
     #else
@@ -74,8 +86,14 @@ void pottery_alloc_free(POTTERY_ALLOC_CONTEXT_ARG size_t alignment, void* ptr) {
     pottery_assert(pottery_ispow2_s(alignment)); // Alignment must be power-of-two.
 
     if (alignment > pottery_alignmax) {
+        #if POTTERY_ALLOC_EXTENDED_ALIGNMENT
         pottery_alloc_impl_free_ea(POTTERY_ALLOC_CONTEXT_VAL ptr);
         return;
+        #else
+        // Cannot free memory with extended alignment! Define
+        // EXTENDED_ALIGNMENT to 1 to enable extended alignment allocations.
+        pottery_abort();
+        #endif
     }
 
     pottery_alloc_impl_free_fa(POTTERY_ALLOC_CONTEXT_VAL ptr);
@@ -87,9 +105,11 @@ void pottery_alloc_free(POTTERY_ALLOC_CONTEXT_ARG size_t alignment, void* ptr) {
  * malloc()
  */
 
+#if POTTERY_ALLOC_EXTENDED_ALIGNMENT
 #if POTTERY_FORWARD_DECLARATIONS
 POTTERY_ALLOC_EXTERN
 void* pottery_alloc_impl_malloc_ea(POTTERY_ALLOC_CONTEXT_ARG size_t alignment, size_t size);
+#endif
 #endif
 
 static pottery_always_inline
@@ -118,9 +138,10 @@ void* pottery_alloc_impl_malloc_fa(POTTERY_ALLOC_CONTEXT_ARG size_t alignment, s
             return POTTERY_ALLOC_ZALLOC((size));
         #endif
 
-    #elif defined(POTTERY_ALLOC_ALIGNED_MALLOC) || \
+    #elif POTTERY_ALLOC_EXTENDED_ALIGNMENT && ( \
+            defined(POTTERY_ALLOC_ALIGNED_MALLOC) || \
             defined(POTTERY_ALLOC_ALIGNED_ZALLOC) || \
-            defined(POTTERY_ALLOC_ALIGNED_REALLOC)
+            defined(POTTERY_ALLOC_ALIGNED_REALLOC))
         return pottery_alloc_impl_malloc_ea(POTTERY_ALLOC_CONTEXT_VAL alignment, size);
 
     #else
@@ -136,7 +157,13 @@ void* pottery_alloc_malloc(POTTERY_ALLOC_CONTEXT_ARG size_t alignment, size_t si
     pottery_assert(pottery_ispow2_s(alignment)); // Alignment must be power-of-two.
 
     if (alignment > pottery_alignmax) {
+        #if POTTERY_ALLOC_EXTENDED_ALIGNMENT
         return pottery_alloc_impl_malloc_ea(POTTERY_ALLOC_CONTEXT_VAL alignment, size);
+        #else
+        // Cannot allocate memory with extended alignment! Define
+        // EXTENDED_ALIGNMENT to 1 to enable extended alignment allocations.
+        pottery_abort();
+        #endif
     }
 
     return pottery_alloc_impl_malloc_fa(POTTERY_ALLOC_CONTEXT_VAL alignment, size);
@@ -148,6 +175,7 @@ void* pottery_alloc_malloc(POTTERY_ALLOC_CONTEXT_ARG size_t alignment, size_t si
  * malloc_zero()
  */
 
+#if POTTERY_ALLOC_EXTENDED_ALIGNMENT
 // extended alignment allocation with zeroing
 static inline
 void* pottery_alloc_impl_malloc_zero_ea(POTTERY_ALLOC_CONTEXT_ARG size_t alignment, size_t size) {
@@ -155,6 +183,7 @@ void* pottery_alloc_impl_malloc_zero_ea(POTTERY_ALLOC_CONTEXT_ARG size_t alignme
     pottery_memset(ptr, 0, size);
     return ptr;
 }
+#endif
 
 #if !defined(POTTERY_ALLOC_ZALLOC) && ( \
             (defined(POTTERY_ALLOC_MALLOC) || defined(POTTERY_ALLOC_REALLOC)) || \
@@ -208,7 +237,13 @@ void* pottery_alloc_malloc_zero(POTTERY_ALLOC_CONTEXT_ARG size_t alignment, size
     pottery_assert(pottery_ispow2_s(alignment)); // Alignment must be power-of-two.
 
     if (alignment > pottery_alignmax) {
+        #if POTTERY_ALLOC_EXTENDED_ALIGNMENT
         return pottery_alloc_impl_malloc_zero_ea(POTTERY_ALLOC_CONTEXT_VAL alignment, size);
+        #else
+        // Cannot allocate memory with extended alignment! Define
+        // EXTENDED_ALIGNMENT to 1 to enable extended alignment allocations.
+        pottery_abort();
+        #endif
     }
 
     return pottery_alloc_impl_malloc_zero_fa(POTTERY_ALLOC_CONTEXT_VAL alignment, size);
@@ -220,15 +255,52 @@ void* pottery_alloc_malloc_zero(POTTERY_ALLOC_CONTEXT_ARG size_t alignment, size
  * malloc_array_at_least()
  */
 
+#if POTTERY_ALLOC_EXTENDED_ALIGNMENT
 #if POTTERY_FORWARD_DECLARATIONS
 POTTERY_ALLOC_EXTERN
 void* pottery_alloc_impl_malloc_array_at_least_ea(POTTERY_ALLOC_CONTEXT_ARG
         size_t alignment, size_t* count, size_t element_size);
-
-POTTERY_ALLOC_EXTERN
-void* pottery_alloc_impl_malloc_array_at_least_fa(POTTERY_ALLOC_CONTEXT_ARG
-        size_t alignment, size_t* count, size_t element_size);
 #endif
+#endif
+
+static inline
+void* pottery_alloc_impl_malloc_array_at_least_fa(POTTERY_ALLOC_CONTEXT_ARG
+        size_t alignment, size_t* count, size_t element_size)
+{
+    #if (defined(POTTERY_ALLOC_MALLOC) || \
+            defined(POTTERY_ALLOC_ZALLOC) || \
+            defined(POTTERY_ALLOC_REALLOC))
+        size_t size;
+        if (pottery_unlikely(pottery_mul_overflow_s(*count, element_size, &size)))
+            return pottery_null;
+
+        #if defined(POTTERY_ALLOC_MALLOC_GOOD_SIZE)
+            // Calculate the right amount of space to use first.
+            #ifdef POTTERY_ALLOC_CONTEXT_TYPE
+                size_t new_size = POTTERY_ALLOC_MALLOC_GOOD_SIZE((context), (size));
+            #else
+                size_t new_size = POTTERY_ALLOC_MALLOC_GOOD_SIZE((size));
+            #endif
+            pottery_assert(new_size >= size);
+            *count = new_size / element_size;
+            return pottery_alloc_impl_malloc_fa(POTTERY_ALLOC_CONTEXT_VAL alignment, new_size);
+
+        #else
+            // No support for at_least.
+            return pottery_alloc_impl_malloc_fa(POTTERY_ALLOC_CONTEXT_VAL alignment, size);
+        #endif
+
+    #elif POTTERY_ALLOC_EXTENDED_ALIGNMENT && ( \
+            defined(POTTERY_ALLOC_ALIGNED_MALLOC) || \
+            defined(POTTERY_ALLOC_ALIGNED_ZALLOC) || \
+            defined(POTTERY_ALLOC_ALIGNED_REALLOC))
+        return pottery_alloc_impl_malloc_array_at_least_ea(POTTERY_ALLOC_CONTEXT_VAL
+                alignment, count, element_size);
+
+    #else
+        #error "A memory allocation expression is required."
+    #endif
+}
 
 static pottery_always_inline
 void* pottery_alloc_malloc_array_at_least(POTTERY_ALLOC_CONTEXT_ARG
@@ -244,8 +316,14 @@ void* pottery_alloc_malloc_array_at_least(POTTERY_ALLOC_CONTEXT_ARG
     pottery_assert(pottery_ispow2_s(alignment));
 
     if (alignment > pottery_alignmax) {
+        #if POTTERY_ALLOC_EXTENDED_ALIGNMENT
         return pottery_alloc_impl_malloc_array_at_least_ea(POTTERY_ALLOC_CONTEXT_VAL
                 alignment, count, element_size);
+        #else
+        // Cannot allocate memory with extended alignment! Define
+        // EXTENDED_ALIGNMENT to 1 to enable extended alignment allocations.
+        pottery_abort();
+        #endif
     }
 
     return pottery_alloc_impl_malloc_array_at_least_fa(POTTERY_ALLOC_CONTEXT_VAL

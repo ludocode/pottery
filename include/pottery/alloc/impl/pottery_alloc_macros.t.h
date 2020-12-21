@@ -124,6 +124,17 @@
     #endif
 #endif
 
+// Extended alignment is off by default.
+#ifndef POTTERY_ALLOC_EXTENDED_ALIGNMENT
+    #define POTTERY_ALLOC_EXTENDED_ALIGNMENT 0
+#endif
+
+// If extended alignment is disabled, we need fundamental alignment
+// expressions.
+#if !POTTERY_ALLOC_EXTENDED_ALIGNMENT && !defined(POTTERY_ALLOC_FREE)
+    #error "Fundamental alignment allocation expressions are required when extended alignment is disabled. (Extended alignment expressions are ignored unless EXTENDED_ALIGNMENT is 1.)"
+#endif
+
 
 
 // Context
