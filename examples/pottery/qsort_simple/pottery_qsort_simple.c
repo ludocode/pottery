@@ -26,9 +26,17 @@
 
 #include <string.h>
 
+// When using a compare callback without a context, we set user_context to this
+// special sentinel address. This lets us detect it in qsort_compare().
+static char qsort_compare_without_context;
+
 typedef struct qsort_context_t {
     size_t element_size;
-    int (*compare)(const void* left, const void* right);
+    union {
+        int (*with_context)(const void* left, const void* right, void* user_context);
+        int (*without_context)(const void* left, const void* right);
+    } compare;
+    void* user_context;
 } qsort_context_t;
 
 static inline
@@ -43,28 +51,23 @@ size_t qsort_array_access_index(qsort_context_t context, void* base, void* ref) 
 
 static inline
 int qsort_compare(qsort_context_t context, void* left, void* right) {
-    return context.compare(left, right);
+    if (context.user_context == &qsort_compare_without_context)
+        return context.compare.without_context(left, right);
+    return context.compare.with_context(left, right, context.user_context);
 }
 
-static
+static inline
 void qsort_swap(qsort_context_t context, void* vleft, void* vright) {
     char* left = (char*)vleft;
     char* right = (char*)vright;
-    size_t remaining = context.element_size;
-    char buffer[128];
-
-    while (remaining > sizeof(buffer)) {
-        memcpy(buffer, left, sizeof(buffer));
-        memcpy(left, right, sizeof(buffer));
-        memcpy(right, buffer, sizeof(buffer));
-        left += sizeof(buffer);
-        right += sizeof(buffer);
-        remaining -= sizeof(buffer);
+    char* end = right + context.element_size;
+    while (right != end) {
+        char temp = *left;
+        *left = *right;
+        *right = temp;
+        ++left;
+        ++right;
     }
-
-    memcpy(buffer, left, remaining);
-    memcpy(left, right, remaining);
-    memcpy(right, buffer, remaining);
 }
 
 #define POTTERY_INTRO_SORT_PREFIX qsort_run
@@ -76,9 +79,23 @@ void qsort_swap(qsort_context_t context, void* vleft, void* vright) {
 #define POTTERY_INTRO_SORT_LIFECYCLE_SWAP qsort_swap
 #include "pottery/intro_sort/pottery_intro_sort_static.t.h"
 
+void pottery_qsort_r_simple(void* first, size_t count, size_t element_size,
+            int (*compare)(const void* left, const void* right, void* user_context),
+            void* user_context)
+{
+    qsort_context_t context;
+    context.element_size = element_size;
+    context.compare.with_context = compare;
+    context.user_context = user_context;
+    qsort_run(context, first, count);
+}
+
 void pottery_qsort_simple(void* first, size_t count, size_t element_size,
             int (*compare)(const void* left, const void* right))
 {
-    qsort_context_t context = {element_size, compare};
+    qsort_context_t context;
+    context.element_size = element_size;
+    context.compare.without_context = compare;
+    context.user_context = &qsort_compare_without_context;
     qsort_run(context, first, count);
 }

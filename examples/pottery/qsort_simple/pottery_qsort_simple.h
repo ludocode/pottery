@@ -35,4 +35,13 @@
 void pottery_qsort_simple(void* first, size_t count, size_t element_size,
             int (*compare)(const void* left, const void* right));
 
+/**
+ * Sorts an array with a context.
+ *
+ * (This is GNU-style qsort_r() implemented with Pottery.)
+ */
+void pottery_qsort_r_simple(void* first, size_t count, size_t element_size,
+            int (*compare)(const void* left, const void* right, void* context),
+            void* context);
+
 #endif
