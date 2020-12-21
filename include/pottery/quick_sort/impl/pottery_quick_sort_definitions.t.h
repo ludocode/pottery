@@ -414,40 +414,45 @@ void pottery_quick_sort_range(
             continue;
         }
 
-        // push the short side (if needed), loop around to the long side
+        // replace the top stack entry with the long side, push the small side
         #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
         size_t depth = stack[pos].depth + 1;
         #endif
         if (pivot - first < last - pivot) {
-            if (left_count > 1) {
-                stack[pos].first = first;
-                stack[pos].last = pivot - 1;
-                #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
-                stack[pos].depth = depth;
-                #endif
-                ++pos;
-                pottery_assert(pos != pottery_array_count(stack)); // not possible!
-            }
             stack[pos].first = pivot + 1;
             stack[pos].last = last;
             #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
             stack[pos].depth = depth;
             #endif
-        } else {
-            if (right_count > 1) {
-                stack[pos].first = pivot + 1;
-                stack[pos].last = last;
+
+            if (left_count > 1) {
+                ++pos;
+                pottery_assert(pos != pottery_array_count(stack)); // not possible!
+
+                stack[pos].first = first;
+                stack[pos].last = pivot - 1;
                 #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
                 stack[pos].depth = depth;
                 #endif
-                ++pos;
-                pottery_assert(pos != pottery_array_count(stack)); // not possible!
             }
+
+        } else {
             stack[pos].first = first;
             stack[pos].last = pivot - 1;
             #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
             stack[pos].depth = depth;
             #endif
+
+            if (right_count > 1) {
+                ++pos;
+                pottery_assert(pos != pottery_array_count(stack)); // not possible!
+
+                stack[pos].first = pivot + 1;
+                stack[pos].last = last;
+                #ifdef POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK
+                stack[pos].depth = depth;
+                #endif
+            }
         }
     }
 }
