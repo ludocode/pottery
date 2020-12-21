@@ -32,9 +32,6 @@
  * common stuff
  */
 
-// stack-allocated buffer for swapping elements
-#define POTTERY_QSORT_BUFFER_SIZE 128
-
 // some types
 typedef struct {int32_t a[3];} pottery_i32_3_t;
 typedef struct {int64_t a[2];} pottery_i64_2_t;
@@ -48,41 +45,18 @@ static inline bool pottery_qsort_is_aligned(void* p, size_t required_align) {
 }
 #define pottery_qsort_is_aligned_as(p, T) pottery_qsort_is_aligned((p), pottery_alignof(T))
 
-// small swap. we're guaranteed that the size is at most the small buffer size.
-static void pottery_qsort_swap_small(size_t element_size, void* vleft, void* vright) {
+// arbitrary size swap
+static void pottery_qsort_swap_any(size_t element_size, void* vleft, void* vright) {
     char* left = pottery_cast(char*, vleft);
     char* right = pottery_cast(char*, vright);
-
-    // pointer-aligned buffer for fast memcpy()
-    void* buffer[(POTTERY_QSORT_BUFFER_SIZE + sizeof(void*) - 1) / sizeof(void*)];
-
-    pottery_assert(element_size <= sizeof(buffer));
-    memcpy(buffer, left, element_size);
-    memcpy(left, right, element_size);
-    memcpy(right, buffer, element_size);
-}
-
-// large swap. we swap in a loop.
-static void pottery_qsort_swap_large(size_t element_size, void* vleft, void* vright) {
-    char* left = pottery_cast(char*, vleft);
-    char* right = pottery_cast(char*, vright);
-    size_t remaining = element_size;
-
-    // pointer-aligned buffer for fast memcpy()
-    void* buffer[(POTTERY_QSORT_BUFFER_SIZE + sizeof(void*) - 1) / sizeof(void*)];
-
-    while (remaining > sizeof(buffer)) {
-        memcpy(buffer, left, sizeof(buffer));
-        memcpy(left, right, sizeof(buffer));
-        memcpy(right, buffer, sizeof(buffer));
-        left += sizeof(buffer);
-        right += sizeof(buffer);
-        remaining -= sizeof(buffer);
+    char* end = right + element_size;
+    while (right != end) {
+        char temp = *left;
+        *left = *right;
+        *right = temp;
+        ++left;
+        ++right;
     }
-
-    memcpy(buffer, left, remaining);
-    memcpy(left, right, remaining);
-    memcpy(right, buffer, remaining);
 }
 
 

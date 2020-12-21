@@ -89,8 +89,8 @@
 #define POTTERY_INTRO_SORT_LIFECYCLE_MOVE_BY_VALUE 1
 #include "pottery/intro_sort/pottery_intro_sort_static.t.h"
 
-// small
-#define POTTERY_INTRO_SORT_PREFIX POTTERY_QSORT_RENAME(_small)
+// any
+#define POTTERY_INTRO_SORT_PREFIX POTTERY_QSORT_RENAME(_any)
 #define POTTERY_INTRO_SORT_REF_TYPE void*
 #define POTTERY_INTRO_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_VARIABLE
 #define POTTERY_INTRO_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_VARIABLE_TYPE
@@ -98,19 +98,7 @@
 #define POTTERY_INTRO_SORT_ARRAY_ACCESS_INDEX(context, base, ref) (size_t)((char*)ref - (char*)base) / context.element_size
 #define POTTERY_INTRO_SORT_ARRAY_ACCESS_NEXT(context, base, ref) (char*)ref + context.element_size
 #define POTTERY_INTRO_SORT_ARRAY_ACCESS_PREVIOUS(context, base, ref) (char*)ref - context.element_size
-#define POTTERY_INTRO_SORT_LIFECYCLE_SWAP(context, a, b) pottery_qsort_swap_small(context.element_size, a, b)
-#include "pottery/intro_sort/pottery_intro_sort_static.t.h"
-
-// large
-#define POTTERY_INTRO_SORT_PREFIX POTTERY_QSORT_RENAME(_large)
-#define POTTERY_INTRO_SORT_REF_TYPE void*
-#define POTTERY_INTRO_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_VARIABLE
-#define POTTERY_INTRO_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_VARIABLE_TYPE
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_SELECT(context, base, offset) (char*)base + offset * context.element_size
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_INDEX(context, base, ref) (size_t)((char*)ref - (char*)base) / context.element_size
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_NEXT(context, base, ref) (char*)ref + context.element_size
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_PREVIOUS(context, base, ref) (char*)ref - context.element_size
-#define POTTERY_INTRO_SORT_LIFECYCLE_SWAP(context, a, b) pottery_qsort_swap_large(context.element_size, a, b)
+#define POTTERY_INTRO_SORT_LIFECYCLE_SWAP(context, a, b) pottery_qsort_swap_any(context.element_size, a, b)
 #include "pottery/intro_sort/pottery_intro_sort_static.t.h"
 
 void POTTERY_QSORT_NAME(void* first, size_t count, size_t element_size,
@@ -168,10 +156,7 @@ void POTTERY_QSORT_NAME(void* first, size_t count, size_t element_size,
         #endif
     };
 
-    if (element_size <= POTTERY_QSORT_BUFFER_SIZE)
-        POTTERY_QSORT_RENAME(_small)(variable_context, first, count);
-    else
-        POTTERY_QSORT_RENAME(_large)(variable_context, first, count);
+    POTTERY_QSORT_RENAME(_any)(variable_context, first, count);
 }
 
 #undef POTTERY_QSORT_NAME
