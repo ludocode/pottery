@@ -25,14 +25,30 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <stdatomic.h>
 
-#pragma GCC diagnostic ignored "-Wsign-compare"
-#define a_ctz_l __builtin_ctzl
-#define qsort musl_qsort
-#include "musl_qsort.c"
+#pragma GCC diagnostic ignored "-Wcast-function-type"
+#pragma GCC diagnostic ignored "-Wpedantic"
+
+typedef int (*__compar_d_fn_t)(const void* left, const void* right, void* context);
+
+// Lots of stuff to work around in glibc's qsort...
+
+#define __mempcpy(d,s,n) (memcpy(d,s,n),(d)+(n))
+#define __alloca alloca
+#define __sysconf sysconf
+#define atomic_write_barrier() atomic_thread_fence(memory_order_seq_cst)
+#define qsort glibc_qsort
+#define __set_errno(x) (errno = (x))
+#define libc_hidden_def(x) /*nothing*/
+#define weak_alias(x,y) /*nothing*/
+
+#include "glibc_qsort.c"
+#include "glibc_msort.c"
 
 #include "pottery/benchmark/test_benchmark_sort_common.h"
 
-void musl_qsort_wrapper(int* ints, size_t count) {
-    musl_qsort(ints, count, sizeof(int), int_compare_pointers);
+void glibc_qsort_wrapper(int* ints, size_t count) {
+    glibc_qsort(ints, count, sizeof(int), int_compare_pointers);
 }

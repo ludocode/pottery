@@ -22,17 +22,16 @@
  * SOFTWARE.
  */
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wsign-compare"
-#define a_ctz_l __builtin_ctzl
-#define qsort musl_qsort
-#include "musl_qsort.c"
+
+#define __FBSDID(x) typedef int unused_fbsdid
+#define __unused /*nothing*/
+#define qsort freebsd_qsort
+#include "freebsd_qsort.c"
 
 #include "pottery/benchmark/test_benchmark_sort_common.h"
 
-void musl_qsort_wrapper(int* ints, size_t count) {
-    musl_qsort(ints, count, sizeof(int), int_compare_pointers);
+void freebsd_qsort_wrapper(int* ints, size_t count) {
+    freebsd_qsort(ints, count, sizeof(int), int_compare_pointers);
 }
