@@ -22,28 +22,20 @@
  * SOFTWARE.
  */
 
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wsign-compare"
+
+#define DEF_WEAK(x) typedef int unused_##x
+#define DEF_STRONG(x) typedef int unused_##x
+
+#define heapsort openbsd_heapsort
+#include "openbsd_heapsort.c"
+
+#define qsort openbsd_qsort
+#include "openbsd_qsort.c"
+
 #include "pottery/benchmark/test_benchmark_sort_common.h"
 
-// In order to match the definitions of the other qsort() algorithms the
-// pottery_qsort() code is inlined into this file. This doesn't appear to make
-// a difference but we want to be consistent.
-#define POTTERY_QSORT_BENCHMARK_INCLUDE_INLINE
-
-#ifdef POTTERY_QSORT_BENCHMARK_INCLUDE_INLINE
-#define pottery_qsort pottery_qsort_benchmark_qsort
-#define pottery_gnu_qsort_r pottery_qsort_benchmark_gnu_qsort_r
-#define pottery_bsd_qsort_r pottery_qsort_benchmark_bsd_qsort_r
-#define pottery_win_qsort_s pottery_qsort_benchmark_win_qsort_s
-#include "pottery/qsort/pottery_qsort.c"
-#else
-#include "pottery/qsort/pottery_qsort.h"
-#endif
-
-void pottery_qsort_wrapper(int* ints, size_t count) {
-    #ifdef POTTERY_QSORT_BENCHMARK_INCLUDE_INLINE
-    pottery_qsort_benchmark_qsort
-    #else
-    pottery_qsort
-    #endif
-        (ints, count, sizeof(int), int_compare_pointers);
+void openbsd_qsort_wrapper(int* ints, size_t count) {
+    openbsd_qsort(ints, count, sizeof(int), int_compare_pointers);
 }

@@ -28,8 +28,12 @@
 #include <unistd.h>
 #include <stdatomic.h>
 
+#ifdef __GNUC__
+#ifndef __clang__
 #pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif
 #pragma GCC diagnostic ignored "-Wpedantic"
+#endif
 
 typedef int (*__compar_d_fn_t)(const void* left, const void* right, void* context);
 

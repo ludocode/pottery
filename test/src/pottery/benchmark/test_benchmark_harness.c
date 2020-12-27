@@ -58,6 +58,9 @@ void boost_flat_stable_sort_wrapper(int* ints, size_t count);
 void musl_qsort_wrapper(int* ints, size_t count);
 void glibc_qsort_wrapper(int* ints, size_t count);
 void freebsd_qsort_wrapper(int* ints, size_t count);
+void openbsd_qsort_wrapper(int* ints, size_t count);
+void netbsd_qsort_wrapper(int* ints, size_t count);
+void dragonflybsd_qsort_wrapper(int* ints, size_t count);
 void stb_sort_wrapper(int* ints, size_t count);
 void pqsort_wrapper(int* ints, size_t count);
 void swenson_timsort_wrapper(int* ints, size_t count);
@@ -145,9 +148,9 @@ static void benchmark_sorts_variant(size_t count, variant_t variant) {
             continue;
         }
 
-        // In the duplicates variant, we'll select randomly from 100 numbers.
+        // In the duplicates variant, we'll select randomly from count/100 numbers.
         if (variant == variant_duplicates) {
-            ints[i] = rand() % 100;
+            ints[i] = rand() % (count/100);
             continue;
         }
 
@@ -170,25 +173,35 @@ static void benchmark_sorts_variant(size_t count, variant_t variant) {
     // run benchmarks
 
     // pottery
+    #if 1
     benchmark_sort(ints, count, pottery_benchmark_quick_sort_wrapper, "pottery_quick_sort");
     benchmark_sort(ints, count, pottery_benchmark_intro_sort_wrapper, "pottery_intro_sort");
+    #endif
+    #if 1
     benchmark_sort(ints, count, pottery_qsort_wrapper, "pottery_qsort");
+    #if 1
     benchmark_sort(ints, count, pottery_qsort_simple_wrapper, "pottery_qsort_simple");
     benchmark_sort(ints, count, pottery_qsort_r_simple_wrapper, "pottery_qsort_r_simple");
     benchmark_sort(ints, count, pottery_gnu_qsort_r_wrapper, "pottery_gnu_qsort_r");
+    #endif
+    #endif
     #if 1
     benchmark_sort(ints, count, pottery_benchmark_shell_sort_wrapper, "pottery_shell_sort");
     benchmark_sort(ints, count, pottery_benchmark_heap_sort_wrapper, "pottery_heap_sort");
     #endif
 
     // platform
+    #if 1
     benchmark_sort(ints, count, std_sort_wrapper, "platform std::sort");
+    #endif
+    #if 1
     benchmark_sort(ints, count, qsort_wrapper, "platform qsort");
     #if defined(__GLIBC__) || defined(__UCLIBC__)
     benchmark_sort(ints, count, gnu_qsort_r_wrapper, "platform qsort_r (GNU-style)");
     #endif
     #if defined(__FreeBSD__) || defined(__APPLE__)
     benchmark_sort(ints, count, bsd_qsort_r_wrapper, "platform qsort_r (BSD-style)");
+    #endif
     #endif
 
     // boost
@@ -199,13 +212,17 @@ static void benchmark_sorts_variant(size_t count, variant_t variant) {
     #endif
 
     // various libc qsort()
+    //
     // One of these probably matches the platform qsort() but it's likely to
     // have different performance because we're compiling with our own flags
     // plus some hacks to get them to compile standalone.
     #if 1
     benchmark_sort(ints, count, musl_qsort_wrapper, "musl qsort");
     benchmark_sort(ints, count, glibc_qsort_wrapper, "glibc qsort");
-    benchmark_sort(ints, count, freebsd_qsort_wrapper, "FreeBSD qsort (macOS, Bionic)");
+    benchmark_sort(ints, count, freebsd_qsort_wrapper, "FreeBSD qsort (also macOS, Bionic)");
+    benchmark_sort(ints, count, openbsd_qsort_wrapper, "OpenBSD qsort");
+    benchmark_sort(ints, count, netbsd_qsort_wrapper, "NetBSD qsort");
+    benchmark_sort(ints, count, dragonflybsd_qsort_wrapper, "DragonFlyBSD qsort (also ReactOS)");
     #endif
 
     // miscellaneous
