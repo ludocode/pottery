@@ -63,12 +63,14 @@
 #define POTTERY_QUICK_SORT_ARRAY_ACCESS_END int_deque_end
 #define POTTERY_QUICK_SORT_ARRAY_ACCESS_COUNT int_deque_count
 
-// SELECT and INDEX are required since our array is not contiguous. We also
-// pass NEXT and PREVIOUS to improve performance: they allow the sort algorithm
-// to iterate through values within pages without going through the deque's
-// page ring.
+// SELECT and INDEX are required since our array is not contiguous.
 #define POTTERY_QUICK_SORT_ARRAY_ACCESS_SELECT int_deque_select
 #define POTTERY_QUICK_SORT_ARRAY_ACCESS_INDEX int_deque_index
+
+// We also pass NEXT, PREVIOUS and EQUAL to improve performance. They allow the
+// sort algorithm to iterate through values within pages without going through
+// the deque's page ring.
+#define POTTERY_QUICK_SORT_ARRAY_ACCESS_EQUAL int_deque_entry_equal
 #define POTTERY_QUICK_SORT_ARRAY_ACCESS_NEXT int_deque_next
 #define POTTERY_QUICK_SORT_ARRAY_ACCESS_PREVIOUS int_deque_previous
 

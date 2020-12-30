@@ -210,33 +210,41 @@ pottery_deque_value_t pottery_deque_extract_last(pottery_deque_t* deque) {
 
 #if POTTERY_FORWARD_DECLARATIONS
 #if POTTERY_LIFECYCLE_CAN_PASS
+/**
+ * Pushes all values from the given array into the end of the deque. (The last
+ * value of the given array will be the last value of the deque.)
+ */
 POTTERY_DEQUE_EXTERN
 pottery_error_t pottery_deque_insert_last_bulk(pottery_deque_t* deque,
         const pottery_deque_value_t* values, size_t count);
 
 /**
- * Pushes each element from the given array in reverse order into the front of
- * the deque. (The first element of the given array will end up at the front
- * of the deque.)
+ * Pushes all values from the given array in reverse order into the front of
+ * the deque. (The first value of the given array will be the first value of
+ * the deque.)
  *
- * This is the opposite operation of
- * pottery_deque_extract_first_bulk(); inserting an array of bulk data and then extracting it
- * again is functionally idempotent.
+ * This is the opposite operation of pottery_deque_extract_first_bulk();
+ * inserting an array of bulk data and then extracting it again is functionally
+ * idempotent.
  */
 POTTERY_DEQUE_EXTERN
 pottery_error_t pottery_deque_insert_first_bulk(pottery_deque_t* deque, const pottery_deque_value_t* values, size_t count);
 
+/**
+ * Pops count values from the front of the deque into the given array. (The
+ * first value of the deque will be the first value of the given array.)
+ */
 POTTERY_DEQUE_EXTERN
 void pottery_deque_extract_first_bulk(pottery_deque_t* deque, pottery_deque_value_t* values, size_t count);
 
 /**
- * Pops elements from the back of the deque one-by-one in into the given array
- * in reverse order. (The element at the back of the deque will be placed at the
- * end of the array.)
+ * Pops values from the back of the deque one-by-one in into the given array in
+ * reverse order. (The value at the back of the deque will be placed at the end
+ * of the given array.)
  *
- * This is the opposite operation of
- * pottery_deque_insert_last_bulk(); inserting an array of bulk data and then extracting it
- * again is functionally idempotent.
+ * This is the opposite operation of pottery_deque_insert_last_bulk();
+ * inserting an array of bulk data and then extracting it again is functionally
+ * idempotent.
  */
 POTTERY_DEQUE_EXTERN
 void pottery_deque_extract_last_bulk(pottery_deque_t* deque, pottery_deque_value_t* values, size_t count);
@@ -324,5 +332,6 @@ bool pottery_deque_entry_equal(pottery_deque_t* deque,
 
 static inline
 bool pottery_deque_entry_exists(pottery_deque_t* deque, pottery_deque_entry_t entry) {
+    pottery_assert(pottery_deque_index(deque, entry) <= pottery_deque_count(deque));
     return !pottery_deque_entry_equal(deque, entry, pottery_deque_end(deque));
 }
