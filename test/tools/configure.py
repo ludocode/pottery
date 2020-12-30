@@ -151,14 +151,8 @@ flagtest_src = path.join(globalbuild, "flagtest.c")
 flagtest_exe = path.join(globalbuild, "flagtest" + exe_extension)
 with open(flagtest_src, "w") as out:
     out.write("""
-// include features.h to test _FORTIFY_SOURCE properly
-#ifdef __has_include
-    #if __has_include(<features.h>)
-        #include <features.h>
-    #endif
-#elif defined(__TINYC__)
-    #include <features.h>
-#endif
+// include features.h via stdlib.h to test _FORTIFY_SOURCE properly
+#include <stdlib.h>
 
 int main(int argc, char** argv) {
     // array dereference to test for the existence of
@@ -371,7 +365,7 @@ if compiler != "MSVC":
     #    defaultCPPFlags.append("-fsanitize=address");
     #    defaultLDFlags.append("-fsanitize=address");
 
-    hasDeps = checkFlags("-MD")
+    hasDeps = checkFlags(["-MD", "-MF", flagtest_exe + ".d"])
 
     defaultCFlags += flagsIfSupported("-Wmissing-prototypes")
     defaultCFlags += flagsIfSupported("-Wc++-compat")
@@ -600,16 +594,13 @@ with open(ninja, "w") as out:
             if src.startswith("examples"):
                 if compiler == "MSVC":
                     flags += [
-                        # MSVC searches /I even for angle bracket includes and
-                        # /external:I is not supported on older MSVC so we use
-                        # /I.
                         "/Itest/src/pottery/isystem",
                         "-DPOTTERY_EXAMPLE_NAME=" + src.replace("\\", "_").split(".")[0],
                         "/FIpottery\\unit\\test_pottery_example.h"
                     ]
                 else:
                     flags += [
-                        "-isystem test/src/pottery/isystem",
+                        "-Itest/src/pottery/isystem",
                         "-DPOTTERY_EXAMPLE_NAME=" + src.replace("/", "_").split(".")[0],
                         "-include pottery/unit/test_pottery_example.h"
                     ]
