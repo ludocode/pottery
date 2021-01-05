@@ -141,11 +141,15 @@ static inline void swap_ints(int* i, int* j) {
     *j = temp;
 }
 
+// Turn on PRINT_PERMUTATIONS to debug which one is failing. Lower the max size
+// if it's too slow. Anything higher than 8 is probably pointless and takes
+// forever to run.
 #define PRINT_PERMUTATIONS 0
+#define SORT_PERMUTATION_MAX_SIZE 8
 
-// Sorts a copy of the given array and tests that the sort is correct, leaving
-// the original array intact.
-static inline void sort_copy(const int* ints, size_t n) {
+// Sorts a copy of the given permutation and tests that the sort is correct,
+// leaving the original array intact.
+static inline void sort_permutation_copy(const int* ints, size_t n) {
     #if PRINT_PERMUTATIONS
     size_t i;
     printf("Sorting ");
@@ -154,9 +158,7 @@ static inline void sort_copy(const int* ints, size_t n) {
     printf("\n");
     #endif
 
-    // We only support up to this size, otherwise we fail the test, this way we
-    // don't have to allocate anything.
-    int copy[16];
+    int copy[SORT_PERMUTATION_MAX_SIZE];
     pottery_test_assert(n <= pottery_array_count(copy));
     memcpy(copy, ints, sizeof(int) * n);
     sort_ints(copy, n);
@@ -169,7 +171,7 @@ static inline void sort_permutations(int* ints, size_t n) {
     // https://en.wikipedia.org/wiki/Permutation#Generation_in_lexicographic_order
 
     while (true) {
-        sort_copy(ints, n);
+        sort_permutation_copy(ints, n);
 
         // Find the largest index k such that a[k] < a[k + 1].
         // If no such index exists, the permutation is the last permutation.
@@ -200,9 +202,8 @@ static inline void sort_permutations(int* ints, size_t n) {
 // up to a given size.
 //
 // This is a pretty exhaustive search of corner cases for sorting algorithms.
-// Turn on PRINT_PERMUTATIONS to see them all or to debug which one is failing.
 POTTERY_TEST_SORT_INT(permutations) {
-    int ints[8];
+    int ints[SORT_PERMUTATION_MAX_SIZE];
 
     // number of elements
     size_t n;
@@ -213,14 +214,14 @@ POTTERY_TEST_SORT_INT(permutations) {
 
         // bits that say whether we increment after adding an element
         // (generates all possible combinations of duplicates)
-        size_t max_bits = (n > 1) ? 1 << (n - 1) : 1;
+        size_t max_bits = (n > 1) ? pottery_cast(size_t, 1) << (n - 1) : 1;
         size_t bits;
         for (bits = 0; bits < max_bits; ++bits) {
             int v = 1;
             size_t i;
             for (i = 0; i < n; ++i) {
                 ints[i] = v;
-                if (bits & (1 << i))
+                if (bits & (pottery_cast(size_t, 1) << i))
                     ++v;
             }
 
