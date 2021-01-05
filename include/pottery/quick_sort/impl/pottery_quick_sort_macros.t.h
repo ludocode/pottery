@@ -138,7 +138,11 @@
     // Renames quick_sort identifiers from pottery_quick_sort to POTTERY_QUICK_SORT_PREFIX
     #define pottery_quick_sort POTTERY_QUICK_SORT_PREFIX
     #define pottery_quick_sort_range POTTERY_CONCAT(POTTERY_QUICK_SORT_PREFIX, _range)
-    #define pottery_quick_sort_prepare_pivot POTTERY_CONCAT(POTTERY_QUICK_SORT_PREFIX, _prepare_pivot)
+    #define pottery_quick_sort_choose_pivot POTTERY_CONCAT(POTTERY_QUICK_SORT_PREFIX, _choose_pivot)
+    #define pottery_quick_sort_partition_thin_move POTTERY_CONCAT(POTTERY_QUICK_SORT_PREFIX, _partition_thin_move)
+    #define pottery_quick_sort_partition_thin_swap POTTERY_CONCAT(POTTERY_QUICK_SORT_PREFIX, _partition_thin_swap)
+    #define pottery_quick_sort_partition_fat_move POTTERY_CONCAT(POTTERY_QUICK_SORT_PREFIX, _partition_fat_move)
+    #define pottery_quick_sort_partition_fat_swap POTTERY_CONCAT(POTTERY_QUICK_SORT_PREFIX, _partition_fat_swap)
     #define pottery_quick_sort_partition POTTERY_CONCAT(POTTERY_QUICK_SORT_PREFIX, _partition)
     #define pottery_quick_sort_fallback POTTERY_CONCAT(POTTERY_QUICK_SORT_PREFIX, _fallback)
     #define pottery_quick_sort_depth_fallback POTTERY_CONCAT(POTTERY_QUICK_SORT_PREFIX, _depth_fallback)

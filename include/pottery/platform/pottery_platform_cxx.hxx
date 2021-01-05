@@ -175,6 +175,25 @@ struct is_bitwise_copyable : std::is_trivially_copyable<T> {};
 template<typename T>
 struct is_bitwise_movable : pottery::is_bitwise_copyable<T> {};
 
+
+
+/**
+ * Detect whether the spaceship operator is implemented on a type
+ */
+
+template<typename T, typename U = void>
+struct has_spaceship_operator : std::false_type {};
+
+#if __cplusplus > 202002L
+// This is not yet implemented. It's not clear yet whether we should wrap
+// std::three_way_comparable; we're trying to detect whether operator<=> is
+// efficient. We may also need to require that it return std::strong_ordering
+// because our compare template doesn't support partial ordering. See potential
+// uses for this in quick_sort and compare templates.
+//template<typename T, typename U = void>
+//struct has_spaceship_operator<T, class = decltype(std::declval<T>() <=> std::declval<T>() )> : std::true_type {};
+#endif
+
 } // namespace pottery
 
 #endif

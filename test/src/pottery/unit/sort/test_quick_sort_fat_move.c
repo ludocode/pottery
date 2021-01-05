@@ -22,15 +22,17 @@
  * SOFTWARE.
  */
 
-//!!! END_LICENSE
-// Un-renames quick_sort identifiers with prefix "{PREFIX}"
-#undef {PREFIX}
-#undef {PREFIX}_range
-#undef {PREFIX}_choose_pivot
-#undef {PREFIX}_partition_thin_move
-#undef {PREFIX}_partition_thin_swap
-#undef {PREFIX}_partition_fat_move
-#undef {PREFIX}_partition_fat_swap
-#undef {PREFIX}_partition
-#undef {PREFIX}_fallback
-#undef {PREFIX}_depth_fallback
+#include "pottery/common/test_pottery_ufo.h"
+#include "pottery/unit/test_pottery_framework.h"
+
+// Instantiate quick_sort on an int array
+#define POTTERY_QUICK_SORT_PREFIX sort_ints
+#define POTTERY_QUICK_SORT_VALUE_TYPE int
+#define POTTERY_QUICK_SORT_LIFECYCLE_BY_VALUE 1 // move
+#define POTTERY_QUICK_SORT_USE_FAT_PARTITION 1 // fat
+#define POTTERY_QUICK_SORT_COMPARE_BY_VALUE 1 // boolean
+#include "pottery/quick_sort/pottery_quick_sort_static.t.h"
+
+// Instantiate sort_ints tests
+#define POTTERY_TEST_SORT_INT_PREFIX pottery_quick_sort_int_fat_move
+#include "pottery/unit/sort/test_sort_ints.t.h"

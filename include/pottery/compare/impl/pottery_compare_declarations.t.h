@@ -368,6 +368,17 @@ int pottery_compare_three_way(POTTERY_COMPARE_CONTEXT_ARG
     POTTERY_COMPARE_CONTEXT_MAYBE_UNUSED;
 
     #if POTTERY_COMPARE_BY_VALUE
+        #ifdef __cplusplus
+            #if __cplusplus > 202002L
+                // This is not yet implemented. We should probably only use
+                // this if it returns std::strong_ordering and we need to
+                // figure out how to efficiently convert it to int.
+                //if (pottery::has_spaceship_operator<pottery_compare_value_t>::value) {
+                //    return *left <=> *right;
+                //}
+            #endif
+        #endif
+
         return (*left < *right) ? -1 : ((*left > *right) ? 1 : 0);
 
     #elif defined(POTTERY_COMPARE_THREE_WAY)

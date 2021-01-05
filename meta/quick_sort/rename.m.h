@@ -26,7 +26,11 @@
 // Renames quick_sort identifiers from {SRC} to {DEST}
 #define {SRC} {DEST}
 #define {SRC}_range POTTERY_CONCAT({DEST}, _range)
-#define {SRC}_prepare_pivot POTTERY_CONCAT({DEST}, _prepare_pivot)
+#define {SRC}_choose_pivot POTTERY_CONCAT({DEST}, _choose_pivot)
+#define {SRC}_partition_thin_move POTTERY_CONCAT({DEST}, _partition_thin_move)
+#define {SRC}_partition_thin_swap POTTERY_CONCAT({DEST}, _partition_thin_swap)
+#define {SRC}_partition_fat_move POTTERY_CONCAT({DEST}, _partition_fat_move)
+#define {SRC}_partition_fat_swap POTTERY_CONCAT({DEST}, _partition_fat_swap)
 #define {SRC}_partition POTTERY_CONCAT({DEST}, _partition)
 #define {SRC}_fallback POTTERY_CONCAT({DEST}, _fallback)
 #define {SRC}_depth_fallback POTTERY_CONCAT({DEST}, _depth_fallback)

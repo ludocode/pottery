@@ -75,6 +75,13 @@
     #define POTTERY_COMPARE_CAN_EQUAL 0
 #endif
 
+// natural (user-defined) three-way comparison
+#if defined(POTTERY_COMPARE_THREE_WAY)
+    #define POTTERY_COMPARE_HAS_USER_THREE_WAY 1
+#else
+    #define POTTERY_COMPARE_HAS_USER_THREE_WAY 0
+#endif
+
 // temporary renaming hack. compare won't deal with entries soon
 #define pottery_compare_ref pottery_compare_entry_ref
 

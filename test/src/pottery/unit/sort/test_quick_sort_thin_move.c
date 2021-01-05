@@ -25,19 +25,14 @@
 #include "pottery/common/test_pottery_ufo.h"
 #include "pottery/unit/test_pottery_framework.h"
 
-// workarounds for MSVC C++/CLR not allowing different structs in different
-// translation units with the same name
-#ifdef __CLR_VER
-#define sort_ints_state_t quick_sort_ints_state_t
-#endif
-
 // Instantiate quick_sort on an int array
 #define POTTERY_QUICK_SORT_PREFIX sort_ints
 #define POTTERY_QUICK_SORT_VALUE_TYPE int
-#define POTTERY_QUICK_SORT_LIFECYCLE_BY_VALUE 1
+#define POTTERY_QUICK_SORT_LIFECYCLE_BY_VALUE 1 // move
+#define POTTERY_QUICK_SORT_USE_FAT_PARTITION 0 // thin
 #define POTTERY_QUICK_SORT_COMPARE_BY_VALUE 1
 #include "pottery/quick_sort/pottery_quick_sort_static.t.h"
 
 // Instantiate sort_ints tests
-#define POTTERY_TEST_SORT_INT_PREFIX pottery_quick_sort_int
+#define POTTERY_TEST_SORT_INT_PREFIX pottery_quick_sort_int_thin_move
 #include "pottery/unit/sort/test_sort_ints.t.h"
