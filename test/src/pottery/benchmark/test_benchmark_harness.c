@@ -22,30 +22,101 @@
  * SOFTWARE.
  */
 
+// Enable qsort_r() function if available. We check for __GLIBC__ below but we
+// can't check it before headers are included.
+#ifdef __linux__
+    #define _GNU_SOURCE
+#endif
+
 #include <time.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "pottery/benchmark/test_benchmark_sort_common.h"
+
+
+// qsort wrappers
+// These aren't allowed to inline the comparator so we define the wrappers
+// here. The benchmark implementation files compile the standalone qsort()
+// functions.
+
+static void platform_qsort_wrapper(int* ints, size_t count) {
+    qsort(ints, count, sizeof(int), benchmark_int_compare);
+}
+
+#if defined(__GLIBC__) || defined(__UCLIBC__)
+static void platform_gnu_qsort_r_wrapper(int* ints, size_t count) {
+    qsort_r(ints, count, sizeof(int), benchmark_int_compare_gnu_r, NULL);
+}
+#endif
+
+#if defined(__FreeBSD__) || defined(__APPLE__)
+static void platform_bsd_qsort_r_wrapper(int* ints, size_t count) {
+    qsort_r(ints, count, sizeof(int), NULL, benchmark_int_compare_bsd_r);
+}
+#endif
+
+#include "pottery/qsort/pottery_qsort.h"
+static void pottery_qsort_wrapper(int* ints, size_t count) {
+    pottery_qsort(ints, count, sizeof(int), benchmark_int_compare);
+}
+static void pottery_gnu_qsort_r_wrapper(int* ints, size_t count) {
+    pottery_gnu_qsort_r(ints, count, sizeof(int), benchmark_int_compare_gnu_r, NULL);
+}
+
+#include "pottery/qsort_simple/pottery_qsort_simple.h"
+static void pottery_qsort_simple_wrapper(int* ints, size_t count) {
+    pottery_qsort_simple(ints, count, sizeof(int), benchmark_int_compare);
+}
+static void pottery_qsort_r_simple_wrapper(int* ints, size_t count) {
+    pottery_qsort_r_simple(ints, count, sizeof(int), benchmark_int_compare_gnu_r, NULL);
+}
+
+static void openbsd_qsort_wrapper(int* ints, size_t count) {
+    extern void openbsd_qsort(void *base, size_t nmemb, size_t size,
+                    int (*compar)(const void *, const void *));
+    openbsd_qsort(ints, count, sizeof(int), benchmark_int_compare);
+}
+
+void netbsd_qsort_wrapper(int* ints, size_t count) {
+    extern void netbsd_qsort(void *base, size_t nmemb, size_t size,
+                    int (*compar)(const void *, const void *));
+    netbsd_qsort(ints, count, sizeof(int), benchmark_int_compare);
+}
+
+void musl_qsort_wrapper(int* ints, size_t count) {
+    extern void musl_qsort(void *base, size_t nmemb, size_t size,
+                    int (*compar)(const void *, const void *));
+    musl_qsort(ints, count, sizeof(int), benchmark_int_compare);
+}
+
+void dragonflybsd_qsort_wrapper(int* ints, size_t count) {
+    extern void dragonflybsd_qsort(void *base, size_t nmemb, size_t size,
+                    int (*compar)(const void *, const void *));
+    dragonflybsd_qsort(ints, count, sizeof(int), benchmark_int_compare);
+}
+
+void freebsd_qsort_wrapper(int* ints, size_t count) {
+    extern void freebsd_qsort(void *base, size_t nmemb, size_t size,
+                    int (*compar)(const void *, const void *));
+    freebsd_qsort(ints, count, sizeof(int), benchmark_int_compare);
+}
+
+void glibc_qsort_wrapper(int* ints, size_t count) {
+    extern void glibc_qsort(void *base, size_t nmemb, size_t size,
+                    int (*compar)(const void *, const void *));
+    glibc_qsort(ints, count, sizeof(int), benchmark_int_compare);
+}
+
 
 // pottery
 void pottery_benchmark_shell_sort_wrapper(int* ints, size_t count);
 void pottery_benchmark_quick_sort_wrapper(int* ints, size_t count);
 void pottery_benchmark_intro_sort_wrapper(int* ints, size_t count);
 void pottery_benchmark_heap_sort_wrapper(int* ints, size_t count);
-void pottery_qsort_simple_wrapper(int* ints, size_t count);
-void pottery_qsort_r_simple_wrapper(int* ints, size_t count);
-void pottery_qsort_wrapper(int* ints, size_t count);
-void pottery_gnu_qsort_r_wrapper(int* ints, size_t count);
 
 // c, c++
 void std_sort_wrapper(int* ints, size_t count);
-void qsort_wrapper(int* ints, size_t count);
-#if defined(__GLIBC__) || defined(__UCLIBC__)
-void gnu_qsort_r_wrapper(int* ints, size_t count);
-#endif
-#if defined(__FreeBSD__) || defined(__APPLE__)
-void bsd_qsort_r_wrapper(int* ints, size_t count);
-#endif
 
 // boost
 #if __has_include(<boost/sort/sort.hpp>)
@@ -133,10 +204,10 @@ static void benchmark_sorts_variant(size_t count, variant_t variant) {
     size_t i;
     for (i = 0; i < count; ++i) {
 
-        // In the mostly_sorted variant, we only use a random number 10% of
-        // the time, and the array index otherwise.
+        // In the mostly_sorted variant, we only use a random number in range
+        // a small percentage of the time, and the array index otherwise.
         if (variant == variant_mostly_sorted) {
-            if (rand() % 10 != 0) {
+            if (/*true||*/rand() % 100 != 0) {
                 ints[i] = pottery_cast(int, i);
             } else {
                 // RAND_MAX is typically only around 65536 so we call it twice.
@@ -148,9 +219,11 @@ static void benchmark_sorts_variant(size_t count, variant_t variant) {
             continue;
         }
 
-        // In the duplicates variant, we'll select randomly from count/100 numbers.
+        // In the duplicates variant, we'll select randomly from a small number
+        // of possible values.
         if (variant == variant_duplicates) {
-            ints[i] = rand() % (count/100);
+            ints[i] = rand() % (count/1000);
+            //ints[i]=4;
             continue;
         }
 
@@ -195,12 +268,12 @@ static void benchmark_sorts_variant(size_t count, variant_t variant) {
     benchmark_sort(ints, count, std_sort_wrapper, "platform std::sort");
     #endif
     #if 1
-    benchmark_sort(ints, count, qsort_wrapper, "platform qsort");
+    benchmark_sort(ints, count, platform_qsort_wrapper, "platform qsort");
     #if defined(__GLIBC__) || defined(__UCLIBC__)
-    benchmark_sort(ints, count, gnu_qsort_r_wrapper, "platform qsort_r (GNU-style)");
+    benchmark_sort(ints, count, platform_gnu_qsort_r_wrapper, "platform qsort_r (GNU-style)");
     #endif
     #if defined(__FreeBSD__) || defined(__APPLE__)
-    benchmark_sort(ints, count, bsd_qsort_r_wrapper, "platform qsort_r (BSD-style)");
+    benchmark_sort(ints, count, platform_bsd_qsort_r_wrapper, "platform qsort_r (BSD-style)");
     #endif
     #endif
 

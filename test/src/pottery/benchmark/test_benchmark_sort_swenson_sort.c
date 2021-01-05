@@ -28,7 +28,7 @@
 
 #define SORT_NAME benchmark_swenson
 #define SORT_TYPE int
-#define SORT_CMP int_compare_values
+#define SORT_CMP benchmark_int_compare_values
 #include "swenson_sort/sort.h"
 
 void swenson_timsort_wrapper(int* ints, size_t count) {

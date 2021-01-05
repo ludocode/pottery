@@ -29,9 +29,3 @@
 
 #define qsort dragonflybsd_qsort
 #include "dragonflybsd_qsort.c"
-
-#include "pottery/benchmark/test_benchmark_sort_common.h"
-
-void dragonflybsd_qsort_wrapper(int* ints, size_t count) {
-    dragonflybsd_qsort(ints, count, sizeof(int), int_compare_pointers);
-}

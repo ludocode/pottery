@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+#include "pottery/benchmark/test_benchmark_sort_common.h"
 
 #define POTTERY_INTRO_SORT_PREFIX pottery_benchmark_intro_sort
 #define POTTERY_INTRO_SORT_VALUE_TYPE int

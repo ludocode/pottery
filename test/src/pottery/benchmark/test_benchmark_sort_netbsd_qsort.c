@@ -29,9 +29,3 @@
 
 #define qsort netbsd_qsort
 #include "netbsd_qsort.c"
-
-#include "pottery/benchmark/test_benchmark_sort_common.h"
-
-void netbsd_qsort_wrapper(int* ints, size_t count) {
-    netbsd_qsort(ints, count, sizeof(int), int_compare_pointers);
-}

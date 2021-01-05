@@ -22,16 +22,24 @@
  * SOFTWARE.
  */
 
-// enable qsort_r()
-#define _GNU_SOURCE
-
 #include "pottery/benchmark/test_benchmark_sort_common.h"
 
-#if defined(__GLIBC__) || defined(__UCLIBC__)
-
-#include <stdlib.h>
-
-void gnu_qsort_r_wrapper(int* ints, size_t count) {
-    qsort_r(ints, count, sizeof(int), int_compare_pointers_gnu_r, NULL);
+int benchmark_int_compare(const void* left, const void* right) {
+    return benchmark_int_compare_values(
+            *(const int*)left,
+            *(const int*)right);
 }
-#endif
+
+int benchmark_int_compare_gnu_r(const void* left, const void* right, void* user_context) {
+    (void)user_context;
+    return benchmark_int_compare_values(
+            *(const int*)left,
+            *(const int*)right);
+}
+
+int benchmark_int_compare_bsd_r(void* user_context, const void* left, const void* right) {
+    (void)user_context;
+    return benchmark_int_compare_values(
+            *(const int*)left,
+            *(const int*)right);
+}

@@ -30,9 +30,3 @@
 #define a_ctz_l __builtin_ctzl
 #define qsort musl_qsort
 #include "musl_qsort.c"
-
-#include "pottery/benchmark/test_benchmark_sort_common.h"
-
-void musl_qsort_wrapper(int* ints, size_t count) {
-    musl_qsort(ints, count, sizeof(int), int_compare_pointers);
-}

@@ -33,9 +33,3 @@
 
 #define qsort openbsd_qsort
 #include "openbsd_qsort.c"
-
-#include "pottery/benchmark/test_benchmark_sort_common.h"
-
-void openbsd_qsort_wrapper(int* ints, size_t count) {
-    openbsd_qsort(ints, count, sizeof(int), int_compare_pointers);
-}

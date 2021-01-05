@@ -29,9 +29,3 @@
 #define __unused /*nothing*/
 #define qsort freebsd_qsort
 #include "freebsd_qsort.c"
-
-#include "pottery/benchmark/test_benchmark_sort_common.h"
-
-void freebsd_qsort_wrapper(int* ints, size_t count) {
-    freebsd_qsort(ints, count, sizeof(int), int_compare_pointers);
-}

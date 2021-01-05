@@ -17,25 +17,8 @@ CPPFLAGS += -Wall -Wextra -Wpedantic -Werror -Wfatal-errors
 CPPFLAGS += -Iinclude -Itest/src -Itest/build/lib -Iexamples
 CPPFLAGS += -MMD -MP
 
-# An unsafe three-way comparison of ints is sometimes done via "a - b". This
-# gives wrong results on large values. A safe comparison instead uses ordinary
-# comparison operators.
-#
-# Ironically, when the comparison function is inlined, the safe comparison is
-# marginally faster than the unsafe comparison (like swenson/sort quicksort).
-# However the unsafe comparison is faster on algorithms that cannot inline it
-# (like qsort() and pottery_qsort().)
-#
-# This does not affect algorithms that do not need to use three-way comparisons
-# (like Pottery templates.)
-#
-# Change this to see the difference in results.
-CPPFLAGS += -DSAFE_THREE_WAY_COMPARE=1
-
 SRC=test/src/pottery/benchmark
-C_SRCS := $(shell find $(SRC) -type f -name '*.c') \
-	examples/pottery/qsort/pottery_qsort.c \
-	examples/pottery/qsort_simple/pottery_qsort_simple.c
+C_SRCS := $(shell find $(SRC) -type f -name '*.c')
 CXX_SRCS := $(shell find $(SRC) -type f -name '*.cxx')
 
 C_OBJS := $(patsubst %, $(BUILD)/%.o, $(C_SRCS))
