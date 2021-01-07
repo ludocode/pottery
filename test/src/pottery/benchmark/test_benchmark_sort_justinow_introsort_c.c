@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-typedef int unused;
-
-// This one is buggy.
-#if 0
-
 #include "pottery/benchmark/test_benchmark_sort_common.h"
 
 // hack around use of variable-length arrays
@@ -34,10 +29,5 @@ typedef int unused;
 #define _malloca alloca
 #define _freea(x) /*nothing*/
 
+#define sort justinow_introsort_c
 #include "justinow_introsort_c/sort.c"
-
-void justinow_introsort_c_wrapper(int* ints, size_t count) {
-    sort(ints, count, sizeof(int), int_compare_pointers);
-}
-
-#endif

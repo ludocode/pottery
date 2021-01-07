@@ -22,12 +22,14 @@
  * SOFTWARE.
  */
 
+#include "pottery/benchmark/test_benchmark_sort_common.h"
+
 #define POTTERY_QUICK_SORT_PREFIX pottery_benchmark_quick_sort
-#define POTTERY_QUICK_SORT_VALUE_TYPE int
+#define POTTERY_QUICK_SORT_VALUE_TYPE benchmark_int_t
 #define POTTERY_QUICK_SORT_LIFECYCLE_BY_VALUE 1
 #define POTTERY_QUICK_SORT_COMPARE_BY_VALUE 1
 #include "pottery/quick_sort/pottery_quick_sort_static.t.h"
 
-void pottery_benchmark_quick_sort_wrapper(int* ints, size_t count) {
+void pottery_benchmark_quick_sort_wrapper(benchmark_int_t* ints, size_t count) {
     pottery_benchmark_quick_sort(ints, count);
 }

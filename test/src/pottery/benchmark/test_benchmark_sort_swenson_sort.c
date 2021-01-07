@@ -27,14 +27,14 @@
 #pragma GCC diagnostic ignored "-Wsign-compare"
 
 #define SORT_NAME benchmark_swenson
-#define SORT_TYPE int
+#define SORT_TYPE benchmark_int_t
 #define SORT_CMP benchmark_int_compare_values
 #include "swenson_sort/sort.h"
 
-void swenson_timsort_wrapper(int* ints, size_t count) {
+void swenson_timsort_wrapper(benchmark_int_t* ints, size_t count) {
     benchmark_swenson_tim_sort(ints, count);
 }
 
-void swenson_quicksort_wrapper(int* ints, size_t count) {
+void swenson_quicksort_wrapper(benchmark_int_t* ints, size_t count) {
     benchmark_swenson_quick_sort(ints, count);
 }

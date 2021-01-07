@@ -21,14 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 #include "pottery/benchmark/test_benchmark_sort_common.h"
 
 #define POTTERY_INTRO_SORT_PREFIX pottery_benchmark_intro_sort
-#define POTTERY_INTRO_SORT_VALUE_TYPE int
+#define POTTERY_INTRO_SORT_VALUE_TYPE benchmark_int_t
 #define POTTERY_INTRO_SORT_LIFECYCLE_BY_VALUE 1
 #define POTTERY_INTRO_SORT_COMPARE_BY_VALUE 1
 #include "pottery/intro_sort/pottery_intro_sort_static.t.h"
 
-void pottery_benchmark_intro_sort_wrapper(int* ints, size_t count) {
+void pottery_benchmark_intro_sort_wrapper(benchmark_int_t* ints, size_t count) {
     pottery_benchmark_intro_sort(ints, count);
 }

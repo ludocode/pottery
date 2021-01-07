@@ -30,6 +30,11 @@
 #include <features.h>
 #endif
 
+#include <stdint.h>
+
+// int type to sort
+typedef intptr_t benchmark_int_t;
+
 // The rules for comparator inlining are:
 //
 // - qsort() implementations that take a function pointer comparator are not
@@ -50,7 +55,7 @@
 
 // Three-way value comparator, inline for use in templates
 static inline
-int benchmark_int_compare_values(const int a, const int b) {
+int benchmark_int_compare_values(const benchmark_int_t a, const benchmark_int_t b) {
 
     // The ternary is faster than the alternative below, sometimes even faster
     // than the subtraction while being safe, as long as it gets inlined. This

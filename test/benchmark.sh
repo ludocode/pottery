@@ -33,7 +33,7 @@ fetch_lib stb https://github.com/nothings/stb/archive/b42009b3b9d4ca35bc703f5310
 fetch_lib pqsort https://github.com/Freaky/pqsort/archive/aba8f65af1839554ac8ed4fe2cb5a5a685e3564a.tar.gz
 fetch_lib swenson_sort https://github.com/swenson/sort/archive/749d33e4aea4cd5508edc5a13b8501dc1bc29bfa.tar.gz
 fetch_lib svpv_qsort https://github.com/svpv/qsort/archive/32667a20d3725f62ab2c3def00fcaa96ce2a5508.tar.gz
-#fetch_lib justinow_introsort_c https://github.com/justinow/introsort-c/archive/eee26ae2e95f959debe821f030159ac49851b3d6.tar.gz
+fetch_lib justinow_introsort_c https://github.com/justinow/introsort-c/archive/eee26ae2e95f959debe821f030159ac49851b3d6.tar.gz
 
 # qsort from various libc
 fetch_file newlib_qsort.c "https://raw.githubusercontent.com/bminor/newlib/ea275093c179fea636470173509615eb6bddad0f/newlib/libc/search/qsort.c"

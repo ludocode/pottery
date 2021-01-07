@@ -24,11 +24,13 @@
 
 // nothings/stb quicksort
 
+#include "pottery/benchmark/test_benchmark_sort_common.h"
+
 // this pollutes the namespace with lots of macros like "swap" :(
 #include "stb/stb.h"
 
-stb_define_sort_static(stb_sort_ints, int, *a < *b)
+stb_define_sort_static(stb_sort_ints, benchmark_int_t, *a < *b)
 
-void stb_sort_wrapper(int* ints, size_t count) {
-    stb_sort_ints(ints, (int)count);
+void stb_sort_wrapper(benchmark_int_t* ints, size_t count) {
+    stb_sort_ints(ints, (benchmark_int_t)count);
 }

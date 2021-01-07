@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
-typedef int unused;
+#include "pottery/benchmark/test_benchmark_sort_common.h"
 
 #if __has_include(<boost/sort/sort.hpp>)
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <boost/sort/sort.hpp>
 
 extern "C"
-void boost_pdqsort_wrapper(int* ints, size_t count) {
+void boost_pdqsort_wrapper(benchmark_int_t* ints, size_t count) {
     boost::sort::pdqsort(ints, ints + count);
 }
 

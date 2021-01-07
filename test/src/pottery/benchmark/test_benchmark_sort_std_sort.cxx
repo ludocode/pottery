@@ -24,7 +24,9 @@
 
 #include <algorithm>
 
+#include "pottery/benchmark/test_benchmark_sort_common.h"
+
 extern "C"
-void std_sort_wrapper(int* ints, size_t count) {
+void std_sort_wrapper(benchmark_int_t* ints, size_t count) {
     std::sort(ints, ints + count);
 }

@@ -26,20 +26,20 @@
 
 int benchmark_int_compare(const void* left, const void* right) {
     return benchmark_int_compare_values(
-            *(const int*)left,
-            *(const int*)right);
+            *(const benchmark_int_t*)left,
+            *(const benchmark_int_t*)right);
 }
 
 int benchmark_int_compare_gnu_r(const void* left, const void* right, void* user_context) {
     (void)user_context;
     return benchmark_int_compare_values(
-            *(const int*)left,
-            *(const int*)right);
+            *(const benchmark_int_t*)left,
+            *(const benchmark_int_t*)right);
 }
 
 int benchmark_int_compare_bsd_r(void* user_context, const void* left, const void* right) {
     (void)user_context;
     return benchmark_int_compare_values(
-            *(const int*)left,
-            *(const int*)right);
+            *(const benchmark_int_t*)left,
+            *(const benchmark_int_t*)right);
 }

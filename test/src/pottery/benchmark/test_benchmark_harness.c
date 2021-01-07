@@ -41,132 +41,138 @@
 // functions.
 
 __attribute__((__unused__))
-static void platform_qsort_wrapper(int* ints, size_t count) {
-    qsort(ints, count, sizeof(int), benchmark_int_compare);
+static void platform_qsort_wrapper(benchmark_int_t* ints, size_t count) {
+    qsort(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
 }
 
 #if defined(__GLIBC__) || defined(__UCLIBC__)
 __attribute__((__unused__))
-static void platform_gnu_qsort_r_wrapper(int* ints, size_t count) {
-    qsort_r(ints, count, sizeof(int), benchmark_int_compare_gnu_r, NULL);
+static void platform_gnu_qsort_r_wrapper(benchmark_int_t* ints, size_t count) {
+    qsort_r(ints, count, sizeof(benchmark_int_t), benchmark_int_compare_gnu_r, NULL);
 }
 #endif
 
 #if defined(__FreeBSD__) || defined(__APPLE__)
 __attribute__((__unused__))
-static void platform_bsd_qsort_r_wrapper(int* ints, size_t count) {
-    qsort_r(ints, count, sizeof(int), NULL, benchmark_int_compare_bsd_r);
+static void platform_bsd_qsort_r_wrapper(benchmark_int_t* ints, size_t count) {
+    qsort_r(ints, count, sizeof(benchmark_int_t), NULL, benchmark_int_compare_bsd_r);
 }
 #endif
 
 #include "pottery/qsort/pottery_qsort.h"
 __attribute__((__unused__))
-static void pottery_qsort_wrapper(int* ints, size_t count) {
-    pottery_qsort(ints, count, sizeof(int), benchmark_int_compare);
+static void pottery_qsort_wrapper(benchmark_int_t* ints, size_t count) {
+    pottery_qsort(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
 }
 __attribute__((__unused__))
-static void pottery_gnu_qsort_r_wrapper(int* ints, size_t count) {
-    pottery_gnu_qsort_r(ints, count, sizeof(int), benchmark_int_compare_gnu_r, NULL);
+static void pottery_gnu_qsort_r_wrapper(benchmark_int_t* ints, size_t count) {
+    pottery_gnu_qsort_r(ints, count, sizeof(benchmark_int_t), benchmark_int_compare_gnu_r, NULL);
 }
 
 #include "pottery/qsort_simple/pottery_qsort_simple.h"
 __attribute__((__unused__))
-static void pottery_qsort_simple_wrapper(int* ints, size_t count) {
-    pottery_qsort_simple(ints, count, sizeof(int), benchmark_int_compare);
+static void pottery_qsort_simple_wrapper(benchmark_int_t* ints, size_t count) {
+    pottery_qsort_simple(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
 }
 
 __attribute__((__unused__))
-static void pottery_qsort_r_simple_wrapper(int* ints, size_t count) {
-    pottery_qsort_r_simple(ints, count, sizeof(int), benchmark_int_compare_gnu_r, NULL);
+static void pottery_qsort_r_simple_wrapper(benchmark_int_t* ints, size_t count) {
+    pottery_qsort_r_simple(ints, count, sizeof(benchmark_int_t), benchmark_int_compare_gnu_r, NULL);
 }
 
 __attribute__((__unused__))
-static void openbsd_qsort_wrapper(int* ints, size_t count) {
+static void openbsd_qsort_wrapper(benchmark_int_t* ints, size_t count) {
     extern void openbsd_qsort(void *base, size_t nmemb, size_t size,
                     int (*compar)(const void *, const void *));
-    openbsd_qsort(ints, count, sizeof(int), benchmark_int_compare);
+    openbsd_qsort(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
 }
 
 __attribute__((__unused__))
-static void netbsd_qsort_wrapper(int* ints, size_t count) {
+static void netbsd_qsort_wrapper(benchmark_int_t* ints, size_t count) {
     extern void netbsd_qsort(void *base, size_t nmemb, size_t size,
                     int (*compar)(const void *, const void *));
-    netbsd_qsort(ints, count, sizeof(int), benchmark_int_compare);
+    netbsd_qsort(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
 }
 
 __attribute__((__unused__))
-static void uclibc_qsort_wrapper(int* ints, size_t count) {
+static void uclibc_qsort_wrapper(benchmark_int_t* ints, size_t count) {
     extern void uclibc_qsort(void *base, size_t nmemb, size_t size,
                     int (*compar)(const void *, const void *));
-    uclibc_qsort(ints, count, sizeof(int), benchmark_int_compare);
+    uclibc_qsort(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
 }
 
 __attribute__((__unused__))
-static void newlib_qsort_wrapper(int* ints, size_t count) {
+static void newlib_qsort_wrapper(benchmark_int_t* ints, size_t count) {
     extern void newlib_qsort(void *base, size_t nmemb, size_t size,
                     int (*compar)(const void *, const void *));
-    newlib_qsort(ints, count, sizeof(int), benchmark_int_compare);
+    newlib_qsort(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
 }
 
 __attribute__((__unused__))
-static void musl_qsort_wrapper(int* ints, size_t count) {
+static void musl_qsort_wrapper(benchmark_int_t* ints, size_t count) {
     extern void musl_qsort(void *base, size_t nmemb, size_t size,
                     int (*compar)(const void *, const void *));
-    musl_qsort(ints, count, sizeof(int), benchmark_int_compare);
+    musl_qsort(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
 }
 
 __attribute__((__unused__))
-static void wine_qsort_wrapper(int* ints, size_t count) {
+static void wine_qsort_wrapper(benchmark_int_t* ints, size_t count) {
     extern void wine_qsort(void *base, size_t nmemb, size_t size,
                     int (*compar)(const void *, const void *));
-    wine_qsort(ints, count, sizeof(int), benchmark_int_compare);
+    wine_qsort(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
 }
 
 __attribute__((__unused__))
-static void dragonflybsd_qsort_wrapper(int* ints, size_t count) {
+static void dragonflybsd_qsort_wrapper(benchmark_int_t* ints, size_t count) {
     extern void dragonflybsd_qsort(void *base, size_t nmemb, size_t size,
                     int (*compar)(const void *, const void *));
-    dragonflybsd_qsort(ints, count, sizeof(int), benchmark_int_compare);
+    dragonflybsd_qsort(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
 }
 
 __attribute__((__unused__))
-static void freebsd_qsort_wrapper(int* ints, size_t count) {
+static void freebsd_qsort_wrapper(benchmark_int_t* ints, size_t count) {
     extern void freebsd_qsort(void *base, size_t nmemb, size_t size,
                     int (*compar)(const void *, const void *));
-    freebsd_qsort(ints, count, sizeof(int), benchmark_int_compare);
+    freebsd_qsort(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
 }
 
 __attribute__((__unused__))
-static void glibc_qsort_wrapper(int* ints, size_t count) {
+static void glibc_qsort_wrapper(benchmark_int_t* ints, size_t count) {
     extern void glibc_qsort(void *base, size_t nmemb, size_t size,
                     int (*compar)(const void *, const void *));
-    glibc_qsort(ints, count, sizeof(int), benchmark_int_compare);
+    glibc_qsort(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
+}
+
+__attribute__((__unused__))
+static void justinow_introsort_c_wrapper(benchmark_int_t* ints, size_t count) {
+    extern void justinow_introsort_c(void *base, size_t nmemb, size_t size,
+                    int (*compar)(const void *, const void *));
+    justinow_introsort_c(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
 }
 
 
 // pottery
-void pottery_benchmark_shell_sort_wrapper(int* ints, size_t count);
-void pottery_benchmark_quick_sort_wrapper(int* ints, size_t count);
-void pottery_benchmark_intro_sort_wrapper(int* ints, size_t count);
-void pottery_benchmark_heap_sort_wrapper(int* ints, size_t count);
+void pottery_benchmark_shell_sort_wrapper(benchmark_int_t* ints, size_t count);
+void pottery_benchmark_quick_sort_wrapper(benchmark_int_t* ints, size_t count);
+void pottery_benchmark_intro_sort_wrapper(benchmark_int_t* ints, size_t count);
+void pottery_benchmark_heap_sort_wrapper(benchmark_int_t* ints, size_t count);
 
 // c, c++
-void std_sort_wrapper(int* ints, size_t count);
+void std_sort_wrapper(benchmark_int_t* ints, size_t count);
 
 // boost
 #if __has_include(<boost/sort/sort.hpp>)
-void boost_pdqsort_wrapper(int* ints, size_t count);
-void boost_spinsort_wrapper(int* ints, size_t count);
-void boost_flat_stable_sort_wrapper(int* ints, size_t count);
+void boost_pdqsort_wrapper(benchmark_int_t* ints, size_t count);
+void boost_spinsort_wrapper(benchmark_int_t* ints, size_t count);
+void boost_flat_stable_sort_wrapper(benchmark_int_t* ints, size_t count);
 #endif
 
 // miscellaneous
-void stb_sort_wrapper(int* ints, size_t count);
-void pqsort_wrapper(int* ints, size_t count);
-void swenson_timsort_wrapper(int* ints, size_t count);
-void swenson_quicksort_wrapper(int* ints, size_t count);
-void svpv_qsort_wrapper(int* ints, size_t count);
-//void justinow_introsort_c_wrapper(int* ints, size_t count);
+void stb_sort_wrapper(benchmark_int_t* ints, size_t count);
+void pqsort_wrapper(benchmark_int_t* ints, size_t count);
+void swenson_timsort_wrapper(benchmark_int_t* ints, size_t count);
+void swenson_quicksort_wrapper(benchmark_int_t* ints, size_t count);
+void svpv_qsort_wrapper(benchmark_int_t* ints, size_t count);
 
 typedef struct result_t {
     double duration;
@@ -187,11 +193,11 @@ typedef struct result_t {
 static results_t results;
 
 pottery_noinline
-static void benchmark_sort(int* ref_ints, size_t count,
-        void (*sort)(int*, size_t), const char* name)
+static void benchmark_sort(benchmark_int_t* ref_ints, size_t count,
+        void (*sort)(benchmark_int_t*, size_t), const char* name)
 {
-    int* ints = pottery_cast(int*, malloc(sizeof(int) * count));
-    memcpy(ints, ref_ints, sizeof(int) * count);
+    benchmark_int_t* ints = pottery_cast(benchmark_int_t*, malloc(sizeof(benchmark_int_t) * count));
+    memcpy(ints, ref_ints, sizeof(benchmark_int_t) * count);
 
     printf("Running %s\n", name);
 
@@ -229,7 +235,7 @@ static void benchmark_sorts_variant(size_t count, variant_t variant) {
 
     // generate some random ints with a fixed seed for reproducibility.
     srand(0);
-    int* ints = pottery_cast(int*, malloc(sizeof(int) * count));
+    benchmark_int_t* ints = pottery_cast(benchmark_int_t*, malloc(sizeof(benchmark_int_t) * count));
     size_t i;
     for (i = 0; i < count; ++i) {
 
@@ -237,13 +243,14 @@ static void benchmark_sorts_variant(size_t count, variant_t variant) {
         // a small percentage of the time, and the array index otherwise.
         if (variant == variant_mostly_sorted) {
             if (/*true||*/rand() % 100 != 0) {
-                ints[i] = pottery_cast(int, i);
+                ints[i] = pottery_cast(benchmark_int_t, i);
             } else {
                 // RAND_MAX is typically only around 65536 so we call it twice.
                 // Use a random number less than count so that random numbers
                 // are mixed throughout the range.
-                ints[i] = pottery_cast(int,
-                        pottery_cast(uint32_t, (rand() << 16) ^ rand()) % count);
+                ints[i] = pottery_cast(benchmark_int_t,
+                        ((pottery_cast(uint32_t, rand()) << 16) ^
+                            (pottery_cast(uint32_t, rand()))) % count);
             }
             continue;
         }
@@ -268,9 +275,6 @@ static void benchmark_sorts_variant(size_t count, variant_t variant) {
     } else {
         printf("\nSorting %zi random ints\n", count);
     }
-
-    // This one is buggy, skip it
-    //benchmark_sort(ints, count, justinow_introsort_c_wrapper, "justinow/introsort-c");
 
     // run benchmarks
 
@@ -337,6 +341,7 @@ static void benchmark_sorts_variant(size_t count, variant_t variant) {
     benchmark_sort(ints, count, swenson_timsort_wrapper, "swenson/sort timsort");
     benchmark_sort(ints, count, svpv_qsort_wrapper, "svpv/qsort");
     benchmark_sort(ints, count, stb_sort_wrapper, "nothings/stb quicksort");
+    benchmark_sort(ints, count, justinow_introsort_c_wrapper, "justinow/introsort-c");
     #endif
 
     // sort results

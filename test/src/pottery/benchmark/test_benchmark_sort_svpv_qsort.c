@@ -24,15 +24,15 @@
 
 #include "pottery/benchmark/test_benchmark_sort_common.h"
 
-// copy pasted straight from the first example in the README:
+// from the first example in the README:
 //     https://github.com/svpv/qsort/tree/32667a20d3725f62ab2c3def00fcaa96ce2a5508
 
 #include <stdlib.h>
 
 #include "svpv_qsort/qsort.h"
-void svpv_qsort_wrapper(int A[], size_t n)
+void svpv_qsort_wrapper(benchmark_int_t A[], size_t n)
 {
-    int tmp;
+    benchmark_int_t tmp;
 #define LESS(i, j) A[i] < A[j]
 #define SWAP(i, j) tmp = A[i], A[i] = A[j], A[j] = tmp
     QSORT(n, LESS, SWAP);

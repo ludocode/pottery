@@ -25,8 +25,8 @@
 #include "pottery/benchmark/test_benchmark_sort_common.h"
 #include "pqsort/pqsort.h"
 
-define_pqsort(ints, int, benchmark_int_compare_values)
+define_pqsort(ints, benchmark_int_t, benchmark_int_compare_values)
 
-void pqsort_wrapper(int* ints, size_t count) {
-    ints_pqsort(ints, (int)count, 0, (int)count);
+void pqsort_wrapper(benchmark_int_t* ints, size_t count) {
+    ints_pqsort(ints, (benchmark_int_t)count, 0, (benchmark_int_t)count);
 }
