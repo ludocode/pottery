@@ -40,69 +40,104 @@
 // here. The benchmark implementation files compile the standalone qsort()
 // functions.
 
+__attribute__((__unused__))
 static void platform_qsort_wrapper(int* ints, size_t count) {
     qsort(ints, count, sizeof(int), benchmark_int_compare);
 }
 
 #if defined(__GLIBC__) || defined(__UCLIBC__)
+__attribute__((__unused__))
 static void platform_gnu_qsort_r_wrapper(int* ints, size_t count) {
     qsort_r(ints, count, sizeof(int), benchmark_int_compare_gnu_r, NULL);
 }
 #endif
 
 #if defined(__FreeBSD__) || defined(__APPLE__)
+__attribute__((__unused__))
 static void platform_bsd_qsort_r_wrapper(int* ints, size_t count) {
     qsort_r(ints, count, sizeof(int), NULL, benchmark_int_compare_bsd_r);
 }
 #endif
 
 #include "pottery/qsort/pottery_qsort.h"
+__attribute__((__unused__))
 static void pottery_qsort_wrapper(int* ints, size_t count) {
     pottery_qsort(ints, count, sizeof(int), benchmark_int_compare);
 }
+__attribute__((__unused__))
 static void pottery_gnu_qsort_r_wrapper(int* ints, size_t count) {
     pottery_gnu_qsort_r(ints, count, sizeof(int), benchmark_int_compare_gnu_r, NULL);
 }
 
 #include "pottery/qsort_simple/pottery_qsort_simple.h"
+__attribute__((__unused__))
 static void pottery_qsort_simple_wrapper(int* ints, size_t count) {
     pottery_qsort_simple(ints, count, sizeof(int), benchmark_int_compare);
 }
+
+__attribute__((__unused__))
 static void pottery_qsort_r_simple_wrapper(int* ints, size_t count) {
     pottery_qsort_r_simple(ints, count, sizeof(int), benchmark_int_compare_gnu_r, NULL);
 }
 
+__attribute__((__unused__))
 static void openbsd_qsort_wrapper(int* ints, size_t count) {
     extern void openbsd_qsort(void *base, size_t nmemb, size_t size,
                     int (*compar)(const void *, const void *));
     openbsd_qsort(ints, count, sizeof(int), benchmark_int_compare);
 }
 
-void netbsd_qsort_wrapper(int* ints, size_t count) {
+__attribute__((__unused__))
+static void netbsd_qsort_wrapper(int* ints, size_t count) {
     extern void netbsd_qsort(void *base, size_t nmemb, size_t size,
                     int (*compar)(const void *, const void *));
     netbsd_qsort(ints, count, sizeof(int), benchmark_int_compare);
 }
 
-void musl_qsort_wrapper(int* ints, size_t count) {
+__attribute__((__unused__))
+static void uclibc_qsort_wrapper(int* ints, size_t count) {
+    extern void uclibc_qsort(void *base, size_t nmemb, size_t size,
+                    int (*compar)(const void *, const void *));
+    uclibc_qsort(ints, count, sizeof(int), benchmark_int_compare);
+}
+
+__attribute__((__unused__))
+static void newlib_qsort_wrapper(int* ints, size_t count) {
+    extern void newlib_qsort(void *base, size_t nmemb, size_t size,
+                    int (*compar)(const void *, const void *));
+    newlib_qsort(ints, count, sizeof(int), benchmark_int_compare);
+}
+
+__attribute__((__unused__))
+static void musl_qsort_wrapper(int* ints, size_t count) {
     extern void musl_qsort(void *base, size_t nmemb, size_t size,
                     int (*compar)(const void *, const void *));
     musl_qsort(ints, count, sizeof(int), benchmark_int_compare);
 }
 
-void dragonflybsd_qsort_wrapper(int* ints, size_t count) {
+__attribute__((__unused__))
+static void wine_qsort_wrapper(int* ints, size_t count) {
+    extern void wine_qsort(void *base, size_t nmemb, size_t size,
+                    int (*compar)(const void *, const void *));
+    wine_qsort(ints, count, sizeof(int), benchmark_int_compare);
+}
+
+__attribute__((__unused__))
+static void dragonflybsd_qsort_wrapper(int* ints, size_t count) {
     extern void dragonflybsd_qsort(void *base, size_t nmemb, size_t size,
                     int (*compar)(const void *, const void *));
     dragonflybsd_qsort(ints, count, sizeof(int), benchmark_int_compare);
 }
 
-void freebsd_qsort_wrapper(int* ints, size_t count) {
+__attribute__((__unused__))
+static void freebsd_qsort_wrapper(int* ints, size_t count) {
     extern void freebsd_qsort(void *base, size_t nmemb, size_t size,
                     int (*compar)(const void *, const void *));
     freebsd_qsort(ints, count, sizeof(int), benchmark_int_compare);
 }
 
-void glibc_qsort_wrapper(int* ints, size_t count) {
+__attribute__((__unused__))
+static void glibc_qsort_wrapper(int* ints, size_t count) {
     extern void glibc_qsort(void *base, size_t nmemb, size_t size,
                     int (*compar)(const void *, const void *));
     glibc_qsort(ints, count, sizeof(int), benchmark_int_compare);
@@ -126,12 +161,6 @@ void boost_flat_stable_sort_wrapper(int* ints, size_t count);
 #endif
 
 // miscellaneous
-void musl_qsort_wrapper(int* ints, size_t count);
-void glibc_qsort_wrapper(int* ints, size_t count);
-void freebsd_qsort_wrapper(int* ints, size_t count);
-void openbsd_qsort_wrapper(int* ints, size_t count);
-void netbsd_qsort_wrapper(int* ints, size_t count);
-void dragonflybsd_qsort_wrapper(int* ints, size_t count);
 void stb_sort_wrapper(int* ints, size_t count);
 void pqsort_wrapper(int* ints, size_t count);
 void swenson_timsort_wrapper(int* ints, size_t count);
@@ -251,11 +280,11 @@ static void benchmark_sorts_variant(size_t count, variant_t variant) {
     benchmark_sort(ints, count, pottery_benchmark_intro_sort_wrapper, "pottery_intro_sort");
     #endif
     #if 1
-    benchmark_sort(ints, count, pottery_qsort_wrapper, "pottery_qsort");
+    benchmark_sort(ints, count, pottery_qsort_wrapper, "pottery_qsort()");
     #if 1
-    benchmark_sort(ints, count, pottery_qsort_simple_wrapper, "pottery_qsort_simple");
-    benchmark_sort(ints, count, pottery_qsort_r_simple_wrapper, "pottery_qsort_r_simple");
-    benchmark_sort(ints, count, pottery_gnu_qsort_r_wrapper, "pottery_gnu_qsort_r");
+    benchmark_sort(ints, count, pottery_gnu_qsort_r_wrapper, "pottery_gnu_qsort_r()");
+    benchmark_sort(ints, count, pottery_qsort_simple_wrapper, "pottery_qsort_simple()");
+    benchmark_sort(ints, count, pottery_qsort_r_simple_wrapper, "pottery_qsort_r_simple()");
     #endif
     #endif
     #if 1
@@ -290,12 +319,15 @@ static void benchmark_sorts_variant(size_t count, variant_t variant) {
     // have different performance because we're compiling with our own flags
     // plus some hacks to get them to compile standalone.
     #if 1
-    benchmark_sort(ints, count, musl_qsort_wrapper, "musl qsort");
-    benchmark_sort(ints, count, glibc_qsort_wrapper, "glibc qsort");
-    benchmark_sort(ints, count, freebsd_qsort_wrapper, "FreeBSD qsort (also macOS, Bionic)");
-    benchmark_sort(ints, count, openbsd_qsort_wrapper, "OpenBSD qsort");
-    benchmark_sort(ints, count, netbsd_qsort_wrapper, "NetBSD qsort");
-    benchmark_sort(ints, count, dragonflybsd_qsort_wrapper, "DragonFlyBSD qsort (also ReactOS)");
+    benchmark_sort(ints, count, newlib_qsort_wrapper, "newlib qsort()");
+    benchmark_sort(ints, count, musl_qsort_wrapper, "musl qsort()");
+    benchmark_sort(ints, count, uclibc_qsort_wrapper, "uClibc qsort()");
+    benchmark_sort(ints, count, wine_qsort_wrapper, "Wine qsort()");
+    benchmark_sort(ints, count, glibc_qsort_wrapper, "glibc qsort()");
+    benchmark_sort(ints, count, freebsd_qsort_wrapper, "FreeBSD qsort() (also macOS, Bionic)");
+    benchmark_sort(ints, count, openbsd_qsort_wrapper, "OpenBSD qsort()");
+    benchmark_sort(ints, count, netbsd_qsort_wrapper, "NetBSD qsort()");
+    benchmark_sort(ints, count, dragonflybsd_qsort_wrapper, "DragonFlyBSD qsort() (also ReactOS)");
     #endif
 
     // miscellaneous
