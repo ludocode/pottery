@@ -24,13 +24,5 @@
 
 //!!! END_LICENSE
 // Renames insertion_sort identifiers from {SRC} to {DEST}
-
-#define {SRC}_value_t POTTERY_CONCAT({DEST}, _value_t)
-#define {SRC}_ref_t POTTERY_CONCAT({DEST}, _ref_t)
-#define {SRC}_entry_t POTTERY_CONCAT({DEST}, _entry_t)
-#define {SRC}_context_t POTTERY_CONCAT({DEST}, _context_t)
-
 #define {SRC} {DEST}
 #define {SRC}_range POTTERY_CONCAT({DEST}, _range)
-#define {SRC}_access POTTERY_CONCAT({DEST}, _access)
-#define {SRC}_impl POTTERY_CONCAT({DEST}, _impl)
