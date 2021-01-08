@@ -26,22 +26,6 @@
 #error "This is an internal header. Do not include it."
 #endif
 
-#ifdef POTTERY_INTRO_SORT_VALUE_TYPE
-typedef POTTERY_INTRO_SORT_VALUE_TYPE pottery_intro_sort_value_t;
-#endif
-
-#ifdef POTTERY_INTRO_SORT_REF_TYPE
-typedef POTTERY_INTRO_SORT_REF_TYPE pottery_intro_sort_ref_t;
-#else
-typedef pottery_intro_sort_value_t* pottery_intro_sort_ref_t;
-#endif
-
-#ifdef POTTERY_INTRO_SORT_CONTEXT_TYPE
-typedef POTTERY_INTRO_SORT_CONTEXT_TYPE pottery_intro_sort_context_t;
-#else
-typedef pottery_intro_sort_ref_t pottery_intro_sort_context_t;
-#endif
-
 static inline
 void pottery_intro_sort(
         #ifdef POTTERY_INTRO_SORT_CONTEXT_TYPE

@@ -24,6 +24,9 @@
 
 #define POTTERY_INTRO_SORT_IMPL
 
+#include "pottery/intro_sort/impl/pottery_intro_sort_config_types.t.h"
+#include "pottery/container_types/pottery_container_types_define.t.h"
+
 #include "pottery/intro_sort/impl/pottery_intro_sort_config_lifecycle.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_define.t.h"
 
@@ -49,5 +52,6 @@
 #include "pottery/array_access/pottery_array_access_cleanup.t.h"
 #include "pottery/compare/pottery_compare_cleanup.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
+#include "pottery/container_types/pottery_container_types_cleanup.t.h"
 
 #undef POTTERY_INTRO_SORT_IMPL
