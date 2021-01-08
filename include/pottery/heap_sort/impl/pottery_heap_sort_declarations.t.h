@@ -26,24 +26,10 @@
 #error "This is an internal header. Do not include it."
 #endif
 
-#ifdef POTTERY_HEAP_SORT_VALUE_TYPE
-typedef POTTERY_HEAP_SORT_VALUE_TYPE pottery_heap_sort_value_t;
-#endif
-
-#ifdef POTTERY_HEAP_SORT_REF_TYPE
-typedef POTTERY_HEAP_SORT_REF_TYPE pottery_heap_sort_ref_t;
-#else
-typedef pottery_heap_sort_value_t* pottery_heap_sort_ref_t;
-#endif
-
-#ifdef POTTERY_HEAP_SORT_CONTEXT_TYPE
-typedef POTTERY_HEAP_SORT_CONTEXT_TYPE pottery_heap_sort_context_t;
-#endif
-
 #if POTTERY_FORWARD_DECLARATIONS
 POTTERY_HEAP_SORT_EXTERN
 void pottery_heap_sort(
-        #ifdef POTTERY_HEAP_SORT_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         pottery_heap_sort_context_t context,
         #endif
         pottery_heap_sort_ref_t first,

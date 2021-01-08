@@ -35,7 +35,7 @@ pottery_heap_ref_t pottery_heap_access(pottery_heap_state_t state, size_t index)
     #ifndef POTTERY_HEAP_ACCESS
         // With no defined access expression, it's a simple array.
         return state.first + index;
-    #elif defined(POTTERY_HEAP_CONTEXT_TYPE)
+    #elif POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         return POTTERY_HEAP_ACCESS(state.context, state.first, index);
     #else
         return POTTERY_HEAP_ACCESS(state.first, index);
@@ -47,7 +47,7 @@ void pottery_heap_set_index(pottery_heap_state_t state, pottery_heap_ref_t value
     (void)state;
 
     #ifdef POTTERY_HEAP_SET_INDEX
-        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             (POTTERY_HEAP_SET_INDEX((state.context), (value), (index)));
         #else
             (POTTERY_HEAP_SET_INDEX((value), (index)));
@@ -144,6 +144,8 @@ void pottery_heap_build_impl(pottery_heap_state_t state, size_t count) {
     if (count > SIZE_MAX / 4)
         pottery_abort();
 
+    // Floyd's heap construction: sift the top half down, running backwards
+    // starting at half.
     size_t i;
     for (i = pottery_heap_parent(count - 1) + 1; i > 0;) {
         --i;

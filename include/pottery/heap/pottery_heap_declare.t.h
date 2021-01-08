@@ -24,6 +24,11 @@
 
 #define POTTERY_HEAP_IMPL
 
+#ifndef POTTERY_HEAP_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/heap/impl/pottery_heap_config_types.t.h"
+    #include "pottery/container_types/pottery_container_types_declare.t.h"
+#endif
+
 #ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
     #include "pottery/heap/impl/pottery_heap_config_lifecycle.t.h"
     #include "pottery/lifecycle/pottery_lifecycle_declare.t.h"
@@ -43,6 +48,10 @@
 
 #ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
     #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
+#endif
+
+#ifndef POTTERY_HEAP_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/container_types/pottery_container_types_cleanup.t.h"
 #endif
 
 #include "pottery/heap/impl/pottery_heap_unmacros.t.h"

@@ -24,11 +24,20 @@
 
 #define POTTERY_HEAP_SORT_IMPL
 
+#ifndef POTTERY_HEAP_SORT_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/heap_sort/impl/pottery_heap_sort_config_types.t.h"
+    #include "pottery/container_types/pottery_container_types_declare.t.h"
+#endif
+
 #include "pottery/heap_sort/impl/pottery_heap_sort_config_heap.t.h"
 #include "pottery/heap/pottery_heap_declare.t.h"
 
 #include "pottery/heap_sort/impl/pottery_heap_sort_macros.t.h"
 #include "pottery/heap_sort/impl/pottery_heap_sort_declarations.t.h"
 #include "pottery/heap_sort/impl/pottery_heap_sort_unmacros.t.h"
+
+#ifndef POTTERY_HEAP_SORT_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/container_types/pottery_container_types_cleanup.t.h"
+#endif
 
 #undef POTTERY_HEAP_SORT_IMPL

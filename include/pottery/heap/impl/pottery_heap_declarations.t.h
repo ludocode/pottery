@@ -30,22 +30,8 @@
  * types
  */
 
-#ifdef POTTERY_HEAP_VALUE_TYPE
-typedef POTTERY_HEAP_VALUE_TYPE pottery_heap_value_t;
-#endif
-
-#ifdef POTTERY_HEAP_REF_TYPE
-typedef POTTERY_HEAP_REF_TYPE pottery_heap_ref_t;
-#else
-typedef pottery_heap_value_t* pottery_heap_ref_t;
-#endif
-
-#ifdef POTTERY_HEAP_CONTEXT_TYPE
-typedef POTTERY_HEAP_CONTEXT_TYPE pottery_heap_context_t;
-#endif
-
 typedef struct pottery_heap_state_t {
-    #ifdef POTTERY_HEAP_CONTEXT_TYPE
+    #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
     pottery_heap_context_t context;
     #endif
     pottery_heap_ref_t first;
@@ -74,14 +60,14 @@ size_t pottery_heap_valid_count_impl(pottery_heap_state_t state, size_t count);
 
 static inline
 void pottery_heap_build(
-        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         pottery_heap_context_t context,
         #endif
         pottery_heap_ref_t first,
         size_t count
 ) {
     pottery_heap_state_t state = {
-        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         context,
         #endif
         first,
@@ -103,7 +89,7 @@ void pottery_heap_build(
  */
 static inline
 void pottery_heap_expand_bulk(
-        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         pottery_heap_context_t context,
         #endif
         pottery_heap_ref_t first,
@@ -111,7 +97,7 @@ void pottery_heap_expand_bulk(
         size_t expand_count
 ) {
     pottery_heap_state_t state = {
-        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         context,
         #endif
         first,
@@ -127,7 +113,7 @@ void pottery_heap_expand_bulk(
  */
 static inline
 void pottery_heap_contract_bulk(
-        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         pottery_heap_context_t context,
         #endif
         pottery_heap_ref_t first,
@@ -135,7 +121,7 @@ void pottery_heap_contract_bulk(
         size_t pop_count
 ) {
     pottery_heap_state_t state = {
-        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         context,
         #endif
         first,
@@ -151,7 +137,7 @@ void pottery_heap_contract_bulk(
  */
 static inline
 void pottery_heap_contract_at(
-        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         pottery_heap_context_t context,
         #endif
         pottery_heap_ref_t first,
@@ -159,7 +145,7 @@ void pottery_heap_contract_at(
         size_t index_to_contract
 ) {
     pottery_heap_state_t state = {
-        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         context,
         #endif
         first,
@@ -172,14 +158,14 @@ void pottery_heap_contract_at(
  */
 static inline
 size_t pottery_heap_valid_count(
-        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         pottery_heap_context_t context,
         #endif
         pottery_heap_ref_t first,
         size_t count
 ) {
     pottery_heap_state_t state = {
-        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         context,
         #endif
         first,
@@ -193,14 +179,14 @@ size_t pottery_heap_valid_count(
  */
 static inline
 bool pottery_heap_valid(
-        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         pottery_heap_context_t context,
         #endif
         pottery_heap_ref_t first,
         size_t count
 ) {
     return count == pottery_heap_valid_count(
-        #ifdef POTTERY_HEAP_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         context,
         #endif
         first,

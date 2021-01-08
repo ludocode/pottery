@@ -28,20 +28,20 @@
 
 POTTERY_HEAP_SORT_EXTERN
 void pottery_heap_sort(
-        #ifdef POTTERY_HEAP_SORT_CONTEXT_TYPE
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         pottery_heap_sort_context_t context,
         #endif
         pottery_heap_sort_ref_t first,
         size_t count)
 {
     pottery_heap_sort_heap_build(
-            #ifdef POTTERY_HEAP_SORT_CONTEXT_TYPE
+            #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             context,
             #endif
             first,
             count);
     pottery_heap_sort_heap_contract_bulk(
-            #ifdef POTTERY_HEAP_SORT_CONTEXT_TYPE
+            #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             context,
             #endif
             first,

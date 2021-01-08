@@ -25,11 +25,6 @@
 //!!! END_LICENSE
 // Renames heap identifiers from {SRC} to {DEST}
 
-#define {SRC}_value_t POTTERY_CONCAT({DEST}, _value_t)
-#define {SRC}_ref_t POTTERY_CONCAT({DEST}, _ref_t)
-#define {SRC}_entry_t POTTERY_CONCAT({DEST}, _entry_t)
-#define {SRC}_context_t POTTERY_CONCAT({DEST}, _context_t)
-
 #define {SRC}_state_t POTTERY_CONCAT({DEST}, _state_t)
 
 #define {SRC}_access POTTERY_CONCAT({DEST}, _access)
