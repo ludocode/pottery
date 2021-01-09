@@ -27,24 +27,13 @@
 #endif
 
 POTTERY_HEAP_SORT_EXTERN
-void pottery_heap_sort(
-        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-        pottery_heap_sort_context_t context,
-        #endif
-        pottery_heap_sort_ref_t first,
-        size_t count)
+void pottery_heap_sort_range(
+        POTTERY_HEAP_SORT_ARGS
+        size_t offset,
+        size_t range_count)
 {
-    pottery_heap_sort_heap_build(
-            #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-            context,
-            #endif
-            first,
-            count);
-    pottery_heap_sort_heap_contract_bulk(
-            #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-            context,
-            #endif
-            first,
-            count,
-            count);
+    pottery_heap_sort_heap_build_range(POTTERY_HEAP_SORT_VALS
+            offset, range_count);
+    pottery_heap_sort_heap_contract_bulk_range(POTTERY_HEAP_SORT_VALS
+            offset, range_count, range_count);
 }
