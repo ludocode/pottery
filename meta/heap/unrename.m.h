@@ -24,12 +24,7 @@
 
 //!!! END_LICENSE
 // Un-renames heap identifiers with prefix "{PREFIX}"
-
-#undef {PREFIX}_state_t
-
-#undef {PREFIX}_access
 #undef {PREFIX}_set_index
-
 #undef {PREFIX}_parent
 #undef {PREFIX}_child_left
 #undef {PREFIX}_child_right

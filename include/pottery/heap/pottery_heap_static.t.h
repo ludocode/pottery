@@ -39,6 +39,11 @@
     #include "pottery/compare/pottery_compare_static.t.h"
 #endif
 
+#ifndef POTTERY_HEAP_EXTERNAL_ARRAY_ACCESS
+    #include "pottery/heap/impl/pottery_heap_config_array_access.t.h"
+    #include "pottery/array_access/pottery_array_access_static.t.h"
+#endif
+
 #ifndef POTTERY_HEAP_EXTERN
     #define POTTERY_HEAP_EXTERN pottery_maybe_unused static
 #endif
@@ -46,6 +51,10 @@
 #include "pottery/heap/impl/pottery_heap_macros.t.h"
 #include "pottery/heap/impl/pottery_heap_declarations.t.h"
 #include "pottery/heap/impl/pottery_heap_definitions.t.h"
+
+#ifndef POTTERY_HEAP_EXTERNAL_ARRAY_ACCESS
+    #include "pottery/array_access/pottery_array_access_cleanup.t.h"
+#endif
 
 #ifndef POTTERY_HEAP_EXTERNAL_LIFECYCLE
     #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"

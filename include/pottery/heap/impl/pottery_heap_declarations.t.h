@@ -26,54 +26,14 @@
 #error "This is an internal header. Do not include it."
 #endif
 
-/*
- * types
- */
-
-typedef struct pottery_heap_state_t {
-    #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-    pottery_heap_context_t context;
-    #endif
-    pottery_heap_ref_t first;
-} pottery_heap_state_t;
-
-
-
 #if POTTERY_FORWARD_DECLARATIONS
+/**
+ * Builds a heap in the given array out of the given number of elements.
+ */
 POTTERY_HEAP_EXTERN
-void pottery_heap_build_impl(pottery_heap_state_t state, size_t count);
-
-POTTERY_HEAP_EXTERN
-void pottery_heap_expand_bulk_impl(pottery_heap_state_t state, size_t current_count, size_t expand_count);
-
-POTTERY_HEAP_EXTERN
-void pottery_heap_contract_bulk_impl(pottery_heap_state_t state, size_t current_count, size_t pop_count);
-
-POTTERY_HEAP_EXTERN
-void pottery_heap_contract_at_impl(pottery_heap_state_t state, size_t current_count, size_t index_to_contract);
-
-POTTERY_HEAP_EXTERN
-size_t pottery_heap_valid_count_impl(pottery_heap_state_t state, size_t count);
-#endif
-
-
-
-static inline
 void pottery_heap_build(
-        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-        pottery_heap_context_t context,
-        #endif
-        pottery_heap_ref_t first,
-        size_t count
-) {
-    pottery_heap_state_t state = {
-        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-        context,
-        #endif
-        first,
-    };
-    pottery_heap_build_impl(state, count);
-}
+        POTTERY_HEAP_ARGS
+        size_t count);
 
 /**
  * Expands a heap of size `current_count` to encompass an additional
@@ -87,23 +47,10 @@ void pottery_heap_build(
  * the current bounds of the heap before popping the largest element. Pottery
  * avoids this ambiguity by always taking the current count as the argument.
  */
-static inline
+POTTERY_HEAP_EXTERN
 void pottery_heap_expand_bulk(
-        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-        pottery_heap_context_t context,
-        #endif
-        pottery_heap_ref_t first,
-        size_t current_count,
-        size_t expand_count
-) {
-    pottery_heap_state_t state = {
-        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-        context,
-        #endif
-        first,
-    };
-    pottery_heap_expand_bulk_impl(state, current_count, expand_count);
-}
+        POTTERY_HEAP_ARGS
+        size_t current_count, size_t expand_count);
 
 /**
  * Contracts a heap of size `current_count` by the `pop_count` largest
@@ -111,23 +58,10 @@ void pottery_heap_expand_bulk(
  *
  * The resulting size of the heap will be (current_count - pop_count).
  */
-static inline
+POTTERY_HEAP_EXTERN
 void pottery_heap_contract_bulk(
-        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-        pottery_heap_context_t context,
-        #endif
-        pottery_heap_ref_t first,
-        size_t current_count,
-        size_t pop_count
-) {
-    pottery_heap_state_t state = {
-        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-        context,
-        #endif
-        first,
-    };
-    pottery_heap_contract_bulk_impl(state, current_count, pop_count);
-}
+        POTTERY_HEAP_ARGS
+        size_t current_count, size_t pop_count);
 
 /**
  * Contracts a heap of size `current_count` by moving a single element at the
@@ -135,43 +69,19 @@ void pottery_heap_contract_bulk(
  *
  * The resulting size of the heap will be (current_count - 1).
  */
-static inline
+POTTERY_HEAP_EXTERN
 void pottery_heap_contract_at(
-        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-        pottery_heap_context_t context,
-        #endif
-        pottery_heap_ref_t first,
-        size_t current_count,
-        size_t index_to_contract
-) {
-    pottery_heap_state_t state = {
-        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-        context,
-        #endif
-        first,
-    };
-    pottery_heap_contract_at_impl(state, current_count, index_to_contract);
-}
+        POTTERY_HEAP_ARGS
+        size_t current_count, size_t index_to_contract);
 
 /**
  * Returns the number of elements in the given range that form a valid heap.
  */
-static inline
+POTTERY_HEAP_EXTERN
 size_t pottery_heap_valid_count(
-        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-        pottery_heap_context_t context,
-        #endif
-        pottery_heap_ref_t first,
-        size_t count
-) {
-    pottery_heap_state_t state = {
-        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-        context,
-        #endif
-        first,
-    };
-    return pottery_heap_valid_count_impl(state, count);
-}
+        POTTERY_HEAP_ARGS
+        size_t count);
+#endif
 
 /**
  * Returns true if the heap is valid (i.e. every parent node is not less than
@@ -179,16 +89,10 @@ size_t pottery_heap_valid_count(
  */
 static inline
 bool pottery_heap_valid(
-        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-        pottery_heap_context_t context,
-        #endif
-        pottery_heap_ref_t first,
+        POTTERY_HEAP_ARGS
         size_t count
 ) {
     return count == pottery_heap_valid_count(
-        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-        context,
-        #endif
-        first,
+        POTTERY_HEAP_VALS
         count);
 }

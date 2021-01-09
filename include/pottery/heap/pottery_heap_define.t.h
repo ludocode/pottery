@@ -39,8 +39,17 @@
     #include "pottery/compare/pottery_compare_define.t.h"
 #endif
 
+#ifndef POTTERY_HEAP_EXTERNAL_ARRAY_ACCESS
+    #include "pottery/heap/impl/pottery_heap_config_array_access.t.h"
+    #include "pottery/array_access/pottery_array_access_define.t.h"
+#endif
+
 #include "pottery/heap/impl/pottery_heap_macros.t.h"
 #include "pottery/heap/impl/pottery_heap_definitions.t.h"
+
+#ifndef POTTERY_HEAP_EXTERNAL_ARRAY_ACCESS
+    #include "pottery/array_access/pottery_array_access_cleanup.t.h"
+#endif
 
 #ifndef POTTERY_HEAP_EXTERNAL_COMPARE
     #include "pottery/compare/pottery_compare_cleanup.t.h"
