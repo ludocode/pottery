@@ -31,7 +31,23 @@
 // SOLE means they are the only arguments to the function (so no trailing comma)
 // UNUSED casts them to void to silence unused parameter warnings
 
-#ifdef {CONFIG}_CONTEXT_TYPE
+// TODO this is a temporary workaround for container_types not being used
+// everywhere yet.
+#ifdef POTTERY_CONTAINER_TYPES_HAS_CONTEXT
+    #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
+        #define POTTERY_ARRAY_ACCESS_ARGS_HACK_HAS_CONTEXT 1
+    #else
+        #define POTTERY_ARRAY_ACCESS_ARGS_HACK_HAS_CONTEXT 0
+    #endif
+#else
+    #ifdef {CONFIG}_CONTEXT_TYPE
+        #define POTTERY_ARRAY_ACCESS_ARGS_HACK_HAS_CONTEXT 1
+    #else
+        #define POTTERY_ARRAY_ACCESS_ARGS_HACK_HAS_CONTEXT 0
+    #endif
+#endif
+
+#if POTTERY_ARRAY_ACCESS_ARGS_HACK_HAS_CONTEXT
     #if !POTTERY_ARRAY_ACCESS_INHERENT_BASE
         #define {CONFIG}_SOLE_ARGS {NAME}_context_t context, {NAME}_entry_t base
         #define {CONFIG}_SOLE_VALS context, base
@@ -52,10 +68,12 @@
         #define {CONFIG}_ARGS_UNUSED /*nothing*/
     #endif
 #endif
-#if defined({CONFIG}_CONTEXT_TYPE) || !POTTERY_ARRAY_ACCESS_INHERENT_BASE
+#if POTTERY_ARRAY_ACCESS_ARGS_HACK_HAS_CONTEXT || !POTTERY_ARRAY_ACCESS_INHERENT_BASE
     #define {CONFIG}_ARGS {CONFIG}_SOLE_ARGS ,
     #define {CONFIG}_VALS {CONFIG}_SOLE_VALS ,
 #else
     #define {CONFIG}_ARGS /*nothing*/
     #define {CONFIG}_VALS /*nothing*/
 #endif
+
+#undef POTTERY_ARRAY_ACCESS_ARGS_HACK_HAS_CONTEXT

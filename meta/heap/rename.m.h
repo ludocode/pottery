@@ -24,17 +24,24 @@
 
 //!!! END_LICENSE
 // Renames heap identifiers from {SRC} to {DEST}
+
+// internal
 #define {SRC}_set_index POTTERY_CONCAT({DEST}, _set_index)
 #define {SRC}_parent POTTERY_CONCAT({DEST}, _parent)
 #define {SRC}_child_left POTTERY_CONCAT({DEST}, _child_left)
 #define {SRC}_child_right POTTERY_CONCAT({DEST}, _child_right)
 #define {SRC}_sift_down POTTERY_CONCAT({DEST}, _sift_down)
 #define {SRC}_sift_up POTTERY_CONCAT({DEST}, _sift_up)
-#define {SRC}_build_impl POTTERY_CONCAT({DEST}, _build_impl)
-#define {SRC}_expand_bulk_impl POTTERY_CONCAT({DEST}, _expand_bulk_impl)
-#define {SRC}_contract_bulk_impl POTTERY_CONCAT({DEST}, _contract_bulk_impl)
-#define {SRC}_contract_at_impl POTTERY_CONCAT({DEST}, _contract_at_impl)
-#define {SRC}_valid_count_impl POTTERY_CONCAT({DEST}, _valid_count_impl)
+
+// public sub-range
+#define {SRC}_build_range POTTERY_CONCAT({DEST}, _build_range)
+#define {SRC}_expand_bulk_range POTTERY_CONCAT({DEST}, _expand_bulk_range)
+#define {SRC}_contract_bulk_range POTTERY_CONCAT({DEST}, _contract_bulk_range)
+#define {SRC}_contract_at_range POTTERY_CONCAT({DEST}, _contract_at_range)
+#define {SRC}_valid_count_range POTTERY_CONCAT({DEST}, _valid_count_range)
+#define {SRC}_valid_range POTTERY_CONCAT({DEST}, _valid_range)
+
+// public full-range
 #define {SRC}_build POTTERY_CONCAT({DEST}, _build)
 #define {SRC}_expand_bulk POTTERY_CONCAT({DEST}, _expand_bulk)
 #define {SRC}_contract_bulk POTTERY_CONCAT({DEST}, _contract_bulk)

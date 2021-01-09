@@ -24,17 +24,24 @@
 
 //!!! END_LICENSE
 // Un-renames heap identifiers with prefix "{PREFIX}"
+
+// internal
 #undef {PREFIX}_set_index
 #undef {PREFIX}_parent
 #undef {PREFIX}_child_left
 #undef {PREFIX}_child_right
 #undef {PREFIX}_sift_down
 #undef {PREFIX}_sift_up
-#undef {PREFIX}_build_impl
-#undef {PREFIX}_expand_bulk_impl
-#undef {PREFIX}_contract_bulk_impl
-#undef {PREFIX}_contract_at_impl
-#undef {PREFIX}_valid_count_impl
+
+// public sub-range
+#undef {PREFIX}_build_range
+#undef {PREFIX}_expand_bulk_range
+#undef {PREFIX}_contract_bulk_range
+#undef {PREFIX}_contract_at_range
+#undef {PREFIX}_valid_count_range
+#undef {PREFIX}_valid_range
+
+// public full-range
 #undef {PREFIX}_build
 #undef {PREFIX}_expand_bulk
 #undef {PREFIX}_contract_bulk
