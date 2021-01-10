@@ -47,6 +47,7 @@
 
 #include "pottery/intro_sort/impl/pottery_intro_sort_macros.t.h"
 #include "pottery/intro_sort/impl/pottery_intro_sort_declarations.t.h"
+// no definitions
 #include "pottery/intro_sort/impl/pottery_intro_sort_unmacros.t.h"
 
 #include "pottery/array_access/pottery_array_access_cleanup.t.h"

@@ -194,12 +194,9 @@ void pottery_quick_sort_depth_fallback(
         POTTERY_QUICK_SORT_ARGS
         size_t first, size_t count)
 {
-    POTTERY_QUICK_SORT_ARGS_UNUSED;
-
     POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK(
-            POTTERY_QUICK_SORT_CONTEXT_VAL
-            pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS first),
-            count);
+            POTTERY_QUICK_SORT_VALS
+            first, count);
 }
 #endif
 
@@ -223,9 +220,8 @@ bool pottery_quick_sort_fallback(
     size_t count_limit = 8;
     if (count <= count_limit) {
         POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK(
-                POTTERY_QUICK_SORT_CONTEXT_VAL
-                pottery_quick_sort_array_access_select(POTTERY_QUICK_SORT_VALS first),
-                count);
+                POTTERY_QUICK_SORT_VALS
+                first, count);
         return true;
     }
     #endif

@@ -40,42 +40,41 @@
 // so there is quite a large configuration here.
 
 // Since we're sorting an int_deque, we'll call it sort_int_deque().
-#define POTTERY_QUICK_SORT_PREFIX sort_int_deque
+#define POTTERY_INTRO_SORT_PREFIX sort_int_deque
 
 // The context for our sort algorithm is a pointer to the deque.
-#define POTTERY_QUICK_SORT_CONTEXT_TYPE int_deque_t*
+#define POTTERY_INTRO_SORT_CONTEXT_TYPE int_deque_t*
 
 // The entry type of the sort algorithm is the entry type of the deque. We need
 // to supply the deque's function for getting the value (ref) of an entry so
 // that the sort algorithm can do by-value lifecycle and compare operations on
 // deque values.
-#define POTTERY_QUICK_SORT_VALUE_TYPE int
-#define POTTERY_QUICK_SORT_ENTRY_TYPE int_deque_entry_t
-#define POTTERY_QUICK_SORT_ENTRY_REF int_deque_entry_value
-#define POTTERY_QUICK_SORT_LIFECYCLE_BY_VALUE 1
-#define POTTERY_QUICK_SORT_COMPARE_BY_VALUE 1
+#define POTTERY_INTRO_SORT_VALUE_TYPE int
+#define POTTERY_INTRO_SORT_ENTRY_TYPE int_deque_entry_t
+#define POTTERY_INTRO_SORT_ENTRY_REF int_deque_entry_value
+#define POTTERY_INTRO_SORT_LIFECYCLE_BY_VALUE 1
+#define POTTERY_INTRO_SORT_COMPARE_BY_VALUE 1
 
 // The deque is itself an array container, so we pass its begin, end and count.
 // These are not necessary but they make the API nicer because now
 // sort_int_deque() takes only the deque as argument. If we didn't configure
 // these, we would simply pass begin and count to sort_int_deque() instead.
-#define POTTERY_QUICK_SORT_ARRAY_ACCESS_BEGIN int_deque_begin
-#define POTTERY_QUICK_SORT_ARRAY_ACCESS_END int_deque_end
-#define POTTERY_QUICK_SORT_ARRAY_ACCESS_COUNT int_deque_count
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_BEGIN int_deque_begin
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_END int_deque_end
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_COUNT int_deque_count
 
 // SELECT and INDEX are required since our array is not contiguous.
-#define POTTERY_QUICK_SORT_ARRAY_ACCESS_SELECT int_deque_select
-#define POTTERY_QUICK_SORT_ARRAY_ACCESS_INDEX int_deque_index
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_SELECT int_deque_select
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_INDEX int_deque_index
 
 // We also pass NEXT, PREVIOUS and EQUAL to improve performance. They allow the
 // sort algorithm to iterate through values within pages without going through
 // the deque's page ring.
-#define POTTERY_QUICK_SORT_ARRAY_ACCESS_EQUAL int_deque_entry_equal
-#define POTTERY_QUICK_SORT_ARRAY_ACCESS_NEXT int_deque_next
-#define POTTERY_QUICK_SORT_ARRAY_ACCESS_PREVIOUS int_deque_previous
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_EQUAL int_deque_entry_equal
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_NEXT int_deque_next
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_PREVIOUS int_deque_previous
 
-#include "pottery/quick_sort/pottery_quick_sort_static.t.h"
-// TODO change above to intro_sort once heap is converted to array_access
+#include "pottery/intro_sort/pottery_intro_sort_static.t.h"
 
 
 

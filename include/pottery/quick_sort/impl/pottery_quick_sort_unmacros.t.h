@@ -218,7 +218,7 @@
 
 
 
-// compare
+// array_access
 
 #undef POTTERY_QUICK_SORT_ARRAY_ACCESS_PREFIX
 

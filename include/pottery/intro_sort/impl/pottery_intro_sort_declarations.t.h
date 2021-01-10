@@ -26,20 +26,39 @@
 #error "This is an internal header. Do not include it."
 #endif
 
+/**
+ * Sorts a sub-range of elements within an array.
+ */
 static inline
-void pottery_intro_sort(
-        #ifdef POTTERY_INTRO_SORT_CONTEXT_TYPE
-        pottery_intro_sort_context_t context,
-        #endif
-        pottery_intro_sort_ref_t first,
-        size_t count)
+void pottery_intro_sort_range(
+        POTTERY_INTRO_SORT_ARGS
+        size_t offset,
+        size_t range_count)
 {
     // Just call into quick_sort. We've configured it to fallback to
     // insertion_sort for small lists and heap_sort when too deep.
-    pottery_intro_sort_quick_sort(
-            #ifdef POTTERY_INTRO_SORT_CONTEXT_TYPE
-            context,
-            #endif
-            first,
-            count);
+    pottery_intro_sort_quick_sort_range(
+            POTTERY_INTRO_SORT_VALS
+            offset, range_count);
+}
+
+/**
+ * Sorts an array.
+ */
+static inline
+void pottery_intro_sort(
+        #if POTTERY_ARRAY_ACCESS_INHERENT_COUNT
+        POTTERY_INTRO_SORT_SOLE_ARGS
+        #else
+        POTTERY_INTRO_SORT_ARGS
+        size_t total_count
+        #endif
+) {
+    #if POTTERY_ARRAY_ACCESS_INHERENT_COUNT
+    size_t total_count = pottery_intro_sort_array_access_count(
+            POTTERY_INTRO_SORT_SOLE_VALS);
+    #endif
+
+    pottery_intro_sort_range(POTTERY_INTRO_SORT_VALS
+            0, total_count);
 }
