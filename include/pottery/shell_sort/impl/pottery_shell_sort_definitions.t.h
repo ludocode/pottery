@@ -27,21 +27,11 @@
 #endif
 
 POTTERY_SHELL_SORT_EXTERN
-void pottery_shell_sort(
-        #if POTTERY_SHELL_SORT_INHERENT_COUNT
-        POTTERY_SHELL_SORT_SOLE_ARGS
-        #else
+void pottery_shell_sort_range(
         POTTERY_SHELL_SORT_ARGS
-        size_t count
-        #endif
-) {
-    #if POTTERY_SHELL_SORT_INHERENT_BASE
-    pottery_shell_sort_ref_t base = pottery_shell_sort_array_access_begin(POTTERY_SHELL_SORT_SOLE_ARGS);
-    #endif
-    #if POTTERY_SHELL_SORT_INHERENT_COUNT
-    size_t count = pottery_shell_sort_array_access_count(POTTERY_SHELL_SORT_SOLE_ARGS);
-    #endif
-
+        size_t range_offset,
+        size_t range_count)
+{
     // Calculate gaps based on Ciura sequence extended by *2.25 (A102549).
     //     https://en.wikipedia.org/wiki/Shellsort#Gap_sequences
     // The Ciura gap sequence needs 20 elements on 32-bit or 47 elements on
@@ -65,7 +55,7 @@ void pottery_shell_sort(
         }
 
         // Limit the gap sequence arbitrarily
-        if (next_gap > count / 2)
+        if (next_gap > range_count / 2)
             break;
 
         // Make sure we don't overflow the gaps array (this isn't supposed to
@@ -80,22 +70,25 @@ void pottery_shell_sort(
     }
 
     pottery_shell_sort_state_t state;
-    #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
+    #if POTTERY_SHELL_SORT_HAS_CONTEXT
     state.context = context;
     #endif
     #if !POTTERY_SHELL_SORT_INHERENT_BASE
     state.base = base;
     #endif
 
+    pottery_shell_sort_entry_t offset_entry = pottery_shell_sort_array_access_select(
+                POTTERY_SHELL_SORT_VALS range_offset);
+
     // Perform successive insertion sorts based on gap sequence
     for (;;) {
         state.gap = gaps[i];
-        pottery_shell_sort_ref_t step_base = base;
+        pottery_shell_sort_entry_t step_base = offset_entry;
 
         size_t offset;
         for (offset = 0; offset < state.gap; ++offset) {
-            size_t step_count = count / state.gap;
-            if (offset + state.gap * step_count < count)
+            size_t step_count = range_count / state.gap;
+            if (offset + state.gap * step_count < range_count)
                 ++step_count;
 
             //printf("sorting %zi elements with offset %zi gap %zi step_count %zi\n", count, offset, state.gap, step_count);

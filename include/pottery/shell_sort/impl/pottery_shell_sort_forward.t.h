@@ -26,28 +26,8 @@
 #error "This is an internal header. Do not include it."
 #endif
 
-#ifdef POTTERY_SHELL_SORT_VALUE_TYPE
-typedef POTTERY_SHELL_SORT_VALUE_TYPE pottery_shell_sort_value_t;
-#endif
-
-#ifdef POTTERY_SHELL_SORT_REF_TYPE
-typedef POTTERY_SHELL_SORT_REF_TYPE pottery_shell_sort_ref_t;
-#else
-typedef pottery_shell_sort_value_t* pottery_shell_sort_ref_t;
-#endif
-
-#ifdef POTTERY_SHELL_SORT_ENTRY_TYPE
-typedef POTTERY_SHELL_SORT_ENTRY_TYPE pottery_shell_sort_entry_t;
-#else
-typedef pottery_shell_sort_ref_t pottery_shell_sort_entry_t;
-#endif
-
-#ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
-typedef POTTERY_SHELL_SORT_CONTEXT_TYPE pottery_shell_sort_context_t;
-#endif
-
 typedef struct pottery_shell_sort_state_t {
-    #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
+    #if POTTERY_SHELL_SORT_HAS_CONTEXT
     pottery_shell_sort_context_t context;
     #endif
     #if !POTTERY_SHELL_SORT_INHERENT_BASE
@@ -58,20 +38,29 @@ typedef struct pottery_shell_sort_state_t {
 
 #if POTTERY_FORWARD_DECLARATIONS
 static inline
-pottery_shell_sort_ref_t pottery_shell_sort_gap_select(
-        pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base, size_t index);
+pottery_shell_sort_ref_t pottery_shell_sort_wrapped_entry_ref(
+        pottery_shell_sort_state_t state, pottery_shell_sort_entry_t entry);
 
 static inline
-pottery_shell_sort_ref_t pottery_shell_sort_gap_shift(
-        pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base,
-        pottery_shell_sort_ref_t ref, ptrdiff_t offset);
+bool pottery_shell_sort_wrapped_ref_equal(
+        pottery_shell_sort_state_t state,
+        pottery_shell_sort_ref_t left, pottery_shell_sort_ref_t right);
+
+static inline
+pottery_shell_sort_entry_t pottery_shell_sort_gap_select(
+        pottery_shell_sort_state_t state, pottery_shell_sort_entry_t base, size_t index);
+
+static inline
+pottery_shell_sort_entry_t pottery_shell_sort_gap_shift(
+        pottery_shell_sort_state_t state, pottery_shell_sort_entry_t base,
+        pottery_shell_sort_entry_t entry, ptrdiff_t offset);
 
 static inline
 size_t pottery_shell_sort_gap_index(pottery_shell_sort_state_t state,
-        pottery_shell_sort_ref_t base, pottery_shell_sort_ref_t ref);
+        pottery_shell_sort_entry_t base, pottery_shell_sort_entry_t entry);
 
 static inline
 ptrdiff_t pottery_shell_sort_gap_offset(
-        pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base,
-        pottery_shell_sort_ref_t first, pottery_shell_sort_ref_t second);
+        pottery_shell_sort_state_t state, pottery_shell_sort_entry_t base,
+        pottery_shell_sort_entry_t first, pottery_shell_sort_entry_t second);
 #endif

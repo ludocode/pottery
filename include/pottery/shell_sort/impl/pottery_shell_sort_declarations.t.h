@@ -26,8 +26,23 @@
 #error "This is an internal header. Do not include it."
 #endif
 
+
+
+/**
+ * Sorts a sub-range of elements within an array.
+ */
 #if POTTERY_FORWARD_DECLARATIONS
 POTTERY_SHELL_SORT_EXTERN
+void pottery_shell_sort_range(
+        POTTERY_SHELL_SORT_ARGS
+        size_t offset,
+        size_t range_count);
+#endif
+
+/**
+ * Sorts an array.
+ */
+static inline
 void pottery_shell_sort(
         #if POTTERY_SHELL_SORT_INHERENT_COUNT
         POTTERY_SHELL_SORT_SOLE_ARGS
@@ -35,8 +50,48 @@ void pottery_shell_sort(
         POTTERY_SHELL_SORT_ARGS
         size_t total_count
         #endif
-        );
-#endif
+) {
+    #if POTTERY_SHELL_SORT_INHERENT_COUNT
+    size_t total_count = pottery_shell_sort_array_access_count(
+            POTTERY_SHELL_SORT_SOLE_VALS);
+    #endif
+
+    pottery_shell_sort_range(POTTERY_SHELL_SORT_VALS
+            0, total_count);
+}
+
+
+
+/*
+ * Context wrappers for insertion sort
+ */
+
+static inline
+pottery_shell_sort_ref_t pottery_shell_sort_wrapped_entry_ref(
+        pottery_shell_sort_state_t state, pottery_shell_sort_entry_t entry)
+{
+    (void)state;
+    return pottery_shell_sort_entry_ref(
+            #if POTTERY_SHELL_SORT_HAS_CONTEXT
+            state.context,
+            #endif
+            entry);
+}
+
+static inline
+bool pottery_shell_sort_wrapped_ref_equal(
+        pottery_shell_sort_state_t state,
+        pottery_shell_sort_ref_t left, pottery_shell_sort_ref_t right)
+{
+    (void)state;
+    return pottery_shell_sort_ref_equal(
+            #if POTTERY_SHELL_SORT_HAS_CONTEXT
+            state.context,
+            #endif
+            left, right);
+}
+
+
 
 /*
  * Gap sequence wrappers for insertion sort.
@@ -45,19 +100,18 @@ void pottery_shell_sort(
  * multiplying and dividing by the gap sequence.
  */
 
-// The first ref for an insertion_sort step is already shifted by the gap
+// The first entry for an insertion_sort step is already shifted by the gap
 // sequence offset. We therefore use shift for everything, not select, because
-// insertion_sort's indices are relative to the first offset ref, not the true
-// base of the sort.
-// Despite this, we still have to pass the real base to array_access, so it's
-// stored in the shell_sort state.
+// insertion_sort's indices are relative to the first offset entry, not the
+// true base of the sort. Despite this, we still have to pass the real base to
+// array_access, so it's stored in the shell_sort state.
 
 static inline
-pottery_shell_sort_ref_t pottery_shell_sort_gap_select(
-        pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base, size_t index)
+pottery_shell_sort_entry_t pottery_shell_sort_gap_select(
+        pottery_shell_sort_state_t state, pottery_shell_sort_entry_t base, size_t index)
 {
     return pottery_shell_sort_array_access_shift(
-            #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
+            #if POTTERY_SHELL_SORT_HAS_CONTEXT
             state.context,
             #endif
             #if !POTTERY_SHELL_SORT_INHERENT_BASE
@@ -68,46 +122,46 @@ pottery_shell_sort_ref_t pottery_shell_sort_gap_select(
 }
 
 static inline
-pottery_shell_sort_ref_t pottery_shell_sort_gap_shift(
-        pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base,
-        pottery_shell_sort_ref_t ref, ptrdiff_t offset)
+pottery_shell_sort_entry_t pottery_shell_sort_gap_shift(
+        pottery_shell_sort_state_t state, pottery_shell_sort_entry_t base,
+        pottery_shell_sort_entry_t entry, ptrdiff_t offset)
 {
     (void)base;
     return pottery_shell_sort_array_access_shift(
-            #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
+            #if POTTERY_SHELL_SORT_HAS_CONTEXT
             state.context,
             #endif
             #if !POTTERY_SHELL_SORT_INHERENT_BASE
             state.base,
             #endif
-            ref,
+            entry,
             offset * pottery_cast(ptrdiff_t, state.gap));
 }
 
 static inline
 size_t pottery_shell_sort_gap_index(pottery_shell_sort_state_t state,
-        pottery_shell_sort_ref_t base, pottery_shell_sort_ref_t ref)
+        pottery_shell_sort_entry_t base, pottery_shell_sort_entry_t entry)
 {
     ptrdiff_t offset = pottery_shell_sort_array_access_offset(
-            #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
+            #if POTTERY_SHELL_SORT_HAS_CONTEXT
             state.context,
             #endif
             #if !POTTERY_SHELL_SORT_INHERENT_BASE
             state.base,
             #endif
             base,
-            ref);
+            entry);
     return pottery_cast(size_t, offset / pottery_cast(ptrdiff_t, state.gap));
 }
 
 static inline
 ptrdiff_t pottery_shell_sort_gap_offset(
-        pottery_shell_sort_state_t state, pottery_shell_sort_ref_t base,
-        pottery_shell_sort_ref_t first, pottery_shell_sort_ref_t second)
+        pottery_shell_sort_state_t state, pottery_shell_sort_entry_t base,
+        pottery_shell_sort_entry_t first, pottery_shell_sort_entry_t second)
 {
     (void)base;
     return pottery_shell_sort_array_access_offset(
-            #ifdef POTTERY_SHELL_SORT_CONTEXT_TYPE
+            #if POTTERY_SHELL_SORT_HAS_CONTEXT
             state.context,
             #endif
             #if !POTTERY_SHELL_SORT_INHERENT_BASE

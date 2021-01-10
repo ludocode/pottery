@@ -24,6 +24,9 @@
 
 #define POTTERY_SHELL_SORT_IMPL
 
+#include "pottery/shell_sort/impl/pottery_shell_sort_config_types.t.h"
+#include "pottery/container_types/pottery_container_types_declare.t.h"
+
 #include "pottery/shell_sort/impl/pottery_shell_sort_config_lifecycle.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_declare.t.h"
 
@@ -37,10 +40,11 @@
 #include "pottery/shell_sort/impl/pottery_shell_sort_forward.t.h"
 
 // Cleanup before insertion_sort since we need insertion_sort to define its own
-// compare and lifecycle functions that wrap our context
+// compare, lifecycle and array_access functions that wrap ours
 #include "pottery/array_access/pottery_array_access_cleanup.t.h"
 #include "pottery/compare/pottery_compare_cleanup.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
+#include "pottery/container_types/pottery_container_types_cleanup.t.h"
 
 #include "pottery/shell_sort/impl/pottery_shell_sort_config_insertion_sort.t.h"
 #include "pottery/insertion_sort/pottery_insertion_sort_declare.t.h"

@@ -76,6 +76,9 @@ size_t pottery_array_access_count(
 
 
 
+// TODO this has been moved to container_types. This and the above typedefs
+// need to be removed since array_access should use container_types.
+#if 0
 /**
  * Returns a ref for an entry.
  *
@@ -100,6 +103,7 @@ pottery_array_access_ref_t pottery_array_access_ref(
         return entry;
     #endif
 }
+#endif
 
 
 
