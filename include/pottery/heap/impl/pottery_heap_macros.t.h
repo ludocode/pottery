@@ -94,23 +94,7 @@
     // SOLE means they are the only arguments to the function (so no trailing comma)
     // UNUSED casts them to void to silence unused parameter warnings
 
-    // TODO this is a temporary workaround for container_types not being used
-    // everywhere yet.
-    #ifdef POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-            #define POTTERY_ARRAY_ACCESS_ARGS_HACK_HAS_CONTEXT 1
-        #else
-            #define POTTERY_ARRAY_ACCESS_ARGS_HACK_HAS_CONTEXT 0
-        #endif
-    #else
-        #ifdef POTTERY_HEAP_CONTEXT_TYPE
-            #define POTTERY_ARRAY_ACCESS_ARGS_HACK_HAS_CONTEXT 1
-        #else
-            #define POTTERY_ARRAY_ACCESS_ARGS_HACK_HAS_CONTEXT 0
-        #endif
-    #endif
-
-    #if POTTERY_ARRAY_ACCESS_ARGS_HACK_HAS_CONTEXT
+    #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         #if !POTTERY_ARRAY_ACCESS_INHERENT_BASE
             #define POTTERY_HEAP_SOLE_ARGS pottery_heap_context_t context, pottery_heap_entry_t base
             #define POTTERY_HEAP_SOLE_VALS context, base
@@ -131,7 +115,7 @@
             #define POTTERY_HEAP_ARGS_UNUSED /*nothing*/
         #endif
     #endif
-    #if POTTERY_ARRAY_ACCESS_ARGS_HACK_HAS_CONTEXT || !POTTERY_ARRAY_ACCESS_INHERENT_BASE
+    #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT || !POTTERY_ARRAY_ACCESS_INHERENT_BASE
         #define POTTERY_HEAP_ARGS POTTERY_HEAP_SOLE_ARGS ,
         #define POTTERY_HEAP_VALS POTTERY_HEAP_SOLE_VALS ,
     #else
