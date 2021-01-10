@@ -54,7 +54,7 @@
 #endif
 
 // required configs in case standard C array fallback is not possible
-#if !defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE)
+#if !POTTERY_CONTAINER_TYPES_HAS_VALUE
     #if !defined(POTTERY_ARRAY_ACCESS_SELECT)
         #error "ARRAY_ACCESS_SELECT is required without a VALUE_TYPE."
     #endif

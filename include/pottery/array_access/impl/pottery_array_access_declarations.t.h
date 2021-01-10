@@ -163,7 +163,7 @@ pottery_array_access_entry_t pottery_array_access_select(
             #endif
         #endif
 
-    #elif defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE)
+    #elif POTTERY_CONTAINER_TYPES_HAS_VALUE
         // standard C array
         #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
         pottery_array_access_entry_t base = pottery_array_access_begin(
@@ -203,7 +203,7 @@ size_t pottery_array_access_index(
             #endif
         #endif
 
-    #elif defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE)
+    #elif POTTERY_CONTAINER_TYPES_HAS_VALUE
         // standard C array
         #if POTTERY_ARRAY_ACCESS_INHERENT_BASE
         pottery_array_access_entry_t base = pottery_array_access_begin(
@@ -252,7 +252,7 @@ ptrdiff_t pottery_array_access_offset(
             #endif
         #endif
 
-    #elif defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE) && \
+    #elif POTTERY_CONTAINER_TYPES_HAS_VALUE && \
                 !defined(POTTERY_ARRAY_ACCESS_SELECT) && !defined(POTTERY_ARRAY_ACCESS_INDEX)
         // standard C array
         return pottery_cast(ptrdiff_t, second - first);
@@ -293,7 +293,7 @@ pottery_array_access_entry_t pottery_array_access_shift(
             #endif
         #endif
 
-    #elif defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE) && \
+    #elif POTTERY_CONTAINER_TYPES_HAS_VALUE && \
                 !defined(POTTERY_ARRAY_ACCESS_SELECT) && !defined(POTTERY_ARRAY_ACCESS_INDEX)
         // standard C array
         return entry + offset;
@@ -407,7 +407,7 @@ bool pottery_array_access_equal(
             #endif
         #endif
 
-    #elif defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE) && \
+    #elif POTTERY_CONTAINER_TYPES_HAS_VALUE && \
                 !defined(POTTERY_ARRAY_ACCESS_SELECT) && !defined(POTTERY_ARRAY_ACCESS_INDEX)
         // standard C array
         return left == right;
@@ -448,7 +448,7 @@ bool pottery_array_access_exists(
             #endif
         #endif
 
-    #elif defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE) && \
+    #elif POTTERY_CONTAINER_TYPES_HAS_VALUE && \
                 !defined(POTTERY_ARRAY_ACCESS_SELECT) && !defined(POTTERY_ARRAY_ACCESS_INDEX)
         // standard C array
         #if POTTERY_ARRAY_ACCESS_INHERENT_BASE

@@ -110,7 +110,7 @@ void pottery_ohm_displace(pottery_ohm_t* map, pottery_ohm_entry_t entry);
 POTTERY_OPEN_HASH_MAP_EXTERN
 void pottery_ohm_displace_all(pottery_ohm_t* map);
 
-#if POTTERY_LIFECYCLE_CAN_DESTROY
+#if POTTERY_OPEN_HASH_MAP_CAN_DESTROY
 POTTERY_OPEN_HASH_MAP_EXTERN
 void pottery_ohm_remove(pottery_ohm_t* map, pottery_ohm_entry_t entry);
 
@@ -138,19 +138,6 @@ bool pottery_ohm_entry_exists(pottery_ohm_t* map, pottery_ohm_entry_t entry) {
 static inline
 bool pottery_ohm_contains_key(pottery_ohm_t* map, pottery_ohm_key_t key) {
     return pottery_ohm_table_contains_key(map, map->log_2_size, key);
-}
-
-static inline
-pottery_ohm_key_t pottery_ohm_entry_key(pottery_ohm_t* map, pottery_ohm_entry_t entry) {
-    (void)map;
-    #ifndef POTTERY_OPEN_HASH_MAP_REF_KEY
-        // with no defined key expression, the entry is the key
-        return entry;
-    #elif defined(POTTERY_OPEN_HASH_MAP_CONTEXT_TYPE)
-        return POTTERY_OPEN_HASH_MAP_REF_KEY(map->context, entry);
-    #else
-        return POTTERY_OPEN_HASH_MAP_REF_KEY(entry);
-    #endif
 }
 
 static inline
@@ -342,7 +329,7 @@ void pottery_ohm_entry_move(pottery_ohm_t* map, pottery_ohm_entry_t to, pottery_
     #endif
 }
 
-#if POTTERY_LIFECYCLE_CAN_DESTROY
+#if POTTERY_OPEN_HASH_MAP_CAN_DESTROY
 static inline
 void pottery_ohm_entry_destroy(pottery_ohm_t* map, pottery_ohm_entry_t entry)
 {

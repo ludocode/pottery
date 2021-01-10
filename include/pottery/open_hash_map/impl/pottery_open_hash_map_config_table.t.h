@@ -28,6 +28,9 @@
 
 #define POTTERY_OPEN_HASH_TABLE_PREFIX POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_PREFIX, _table)
 
+// The table will define its own container_types because we want our map as its
+// context.
+#define POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE pottery_ohm_t*
 #define POTTERY_OPEN_HASH_TABLE_VALUE_TYPE pottery_ohm_value_t
 #define POTTERY_OPEN_HASH_TABLE_KEY_TYPE pottery_ohm_key_t
 
@@ -37,7 +40,6 @@
 // functions.
 #define POTTERY_OPEN_HASH_TABLE_ARRAY_ACCESS_BEGIN pottery_ohm_impl_values
 #define POTTERY_OPEN_HASH_TABLE_ARRAY_ACCESS_COUNT pottery_ohm_bucket_count
-#define POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE pottery_ohm_t*
 
 // Note that we don't forward along lifecycle configuration because we need to
 // provide our map as context. Instead we give it our wrappers for move and

@@ -28,22 +28,32 @@
     #define POTTERY_OPEN_HASH_MAP_EXTERN pottery_maybe_unused static
 #endif
 
+#include "pottery/open_hash_map/impl/pottery_open_hash_map_config_types.t.h"
+#include "pottery/container_types/pottery_container_types_static.t.h"
+
+#include "pottery/open_hash_map/impl/pottery_open_hash_map_config_lifecycle.t.h"
+#include "pottery/lifecycle/pottery_lifecycle_static.t.h"
+
 #include "pottery/open_hash_map/impl/pottery_open_hash_map_macros.t.h"
 #include "pottery/open_hash_map/impl/pottery_open_hash_map_forward.t.h"
 
-#include "pottery/open_hash_map/impl/pottery_open_hash_map_config_alloc.t.h"
-#include "pottery/alloc/pottery_alloc_static.t.h"
+// We need to clean up before defining the table because it defines its own
+// container_types.
+#include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
+#include "pottery/container_types/pottery_container_types_cleanup.t.h"
 
 #include "pottery/open_hash_map/impl/pottery_open_hash_map_config_table.t.h"
 #include "pottery/open_hash_table/pottery_open_hash_table_static.t.h"
 
-#include "pottery/open_hash_map/impl/pottery_open_hash_map_config_lifecycle.t.h"
-#include "pottery/lifecycle/pottery_lifecycle_static.t.h"
+#include "pottery/open_hash_map/impl/pottery_open_hash_map_config_alloc.t.h"
+#include "pottery/alloc/pottery_alloc_static.t.h"
 
 #include "pottery/open_hash_map/impl/pottery_open_hash_map_declarations.t.h"
 #include "pottery/open_hash_map/impl/pottery_open_hash_map_definitions.t.h"
 #include "pottery/open_hash_map/impl/pottery_open_hash_map_unmacros.t.h"
 
-#include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
+#ifndef POTTERY_OPEN_HASH_MAP_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/container_types/pottery_container_types_cleanup.t.h"
+#endif
 
 #undef POTTERY_OPEN_HASH_MAP_IMPL

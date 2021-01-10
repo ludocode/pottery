@@ -152,7 +152,7 @@ void pottery_ohm_impl_free_allocs(pottery_ohm_t* map) {
 POTTERY_OPEN_HASH_MAP_EXTERN
 void pottery_ohm_destroy(pottery_ohm_t* map) {
 
-    #if POTTERY_LIFECYCLE_CAN_DESTROY
+    #if POTTERY_OPEN_HASH_MAP_CAN_DESTROY
     pottery_ohm_table_destroy_all(map, map->log_2_size);
     #else
     // If we don't have a destroy expression, you must manually empty the hash
@@ -285,7 +285,7 @@ void pottery_ohm_displace(pottery_ohm_t* map, pottery_ohm_entry_t entry) {
     pottery_ohm_shrink_if_needed(map);
 }
 
-#if POTTERY_LIFECYCLE_CAN_DESTROY
+#if POTTERY_OPEN_HASH_MAP_CAN_DESTROY
 POTTERY_OPEN_HASH_MAP_EXTERN
 void pottery_ohm_remove(pottery_ohm_t* map, pottery_ohm_entry_t entry) {
     pottery_ohm_table_remove(
@@ -351,7 +351,7 @@ void pottery_ohm_displace_all(pottery_ohm_t* map) {
     pottery_ohm_impl_free_allocs(&old_map);
 }
 
-#if POTTERY_LIFECYCLE_CAN_DESTROY
+#if POTTERY_OPEN_HASH_MAP_CAN_DESTROY
 POTTERY_OPEN_HASH_MAP_EXTERN
 void pottery_ohm_remove_all(pottery_ohm_t* map) {
     // destroy_all() followed by displace_all() could iterate twice over the
