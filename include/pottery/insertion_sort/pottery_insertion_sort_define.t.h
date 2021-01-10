@@ -26,6 +26,11 @@
 
 #ifndef POTTERY_INSERTION_SORT_EXTERNAL_CONTAINER_TYPES
     #include "pottery/insertion_sort/impl/pottery_insertion_sort_config_types.t.h"
+    #include "pottery/container_types/pottery_container_types_declare.t.h"
+#endif
+
+#ifndef POTTERY_INSERTION_SORT_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/insertion_sort/impl/pottery_insertion_sort_config_types.t.h"
     #include "pottery/container_types/pottery_container_types_define.t.h"
 #endif
 

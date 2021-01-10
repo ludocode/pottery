@@ -48,25 +48,30 @@ void pottery_insertion_sort_range(
 
     size_t i;
     for (i = offset + 1; i < offset + range_count; ++i) {
-        pottery_insertion_sort_ref_t current = pottery_insertion_sort_array_access_select(POTTERY_INSERTION_SORT_VALS i);
-        pottery_insertion_sort_ref_t previous = pottery_insertion_sort_array_access_select(POTTERY_INSERTION_SORT_VALS i - 1);
+        pottery_insertion_sort_entry_t current_entry = pottery_insertion_sort_array_access_select(POTTERY_INSERTION_SORT_VALS i);
+        pottery_insertion_sort_entry_t previous_entry = pottery_insertion_sort_array_access_select(POTTERY_INSERTION_SORT_VALS i - 1);
 
-        if (pottery_insertion_sort_compare_less(POTTERY_INSERTION_SORT_CONTEXT_VAL current, previous)) {
-            pottery_insertion_sort_lifecycle_move_restrict(POTTERY_INSERTION_SORT_CONTEXT_VAL temp, current);
-            pottery_insertion_sort_lifecycle_move_restrict(POTTERY_INSERTION_SORT_CONTEXT_VAL current, previous);
+        pottery_insertion_sort_ref_t current_ref = pottery_insertion_sort_entry_ref(POTTERY_INSERTION_SORT_CONTEXT_VAL current_entry);
+        pottery_insertion_sort_ref_t previous_ref = pottery_insertion_sort_entry_ref(POTTERY_INSERTION_SORT_CONTEXT_VAL previous_entry);
+
+        if (pottery_insertion_sort_compare_less(POTTERY_INSERTION_SORT_CONTEXT_VAL current_ref, previous_ref)) {
+            pottery_insertion_sort_lifecycle_move_restrict(POTTERY_INSERTION_SORT_CONTEXT_VAL temp, current_ref);
+            pottery_insertion_sort_lifecycle_move_restrict(POTTERY_INSERTION_SORT_CONTEXT_VAL current_ref, previous_ref);
 
             size_t j = i - 1;
             for (;;) {
-                current = previous;
+                current_entry = previous_entry;
+                current_ref = previous_ref;
                 if (j == 0)
                     break;
-                previous = pottery_insertion_sort_array_access_select(POTTERY_INSERTION_SORT_VALS --j);
-                if (!pottery_insertion_sort_compare_less(POTTERY_INSERTION_SORT_CONTEXT_VAL temp, previous))
+                previous_entry = pottery_insertion_sort_array_access_select(POTTERY_INSERTION_SORT_VALS --j);
+                previous_ref = pottery_insertion_sort_entry_ref(POTTERY_INSERTION_SORT_CONTEXT_VAL previous_entry);
+                if (!pottery_insertion_sort_compare_less(POTTERY_INSERTION_SORT_CONTEXT_VAL temp, previous_ref))
                     break;
-                pottery_insertion_sort_lifecycle_move_restrict(POTTERY_INSERTION_SORT_CONTEXT_VAL current, previous);
+                pottery_insertion_sort_lifecycle_move_restrict(POTTERY_INSERTION_SORT_CONTEXT_VAL current_ref, previous_ref);
             }
 
-            pottery_insertion_sort_lifecycle_move_restrict(POTTERY_INSERTION_SORT_CONTEXT_VAL current, temp);
+            pottery_insertion_sort_lifecycle_move_restrict(POTTERY_INSERTION_SORT_CONTEXT_VAL current_ref, temp);
         }
     }
 }
@@ -81,15 +86,18 @@ void pottery_insertion_sort_range(
 {
     size_t i;
     for (i = offset + 1; i < offset + range_count; ++i) {
-        pottery_insertion_sort_ref_t current = pottery_insertion_sort_array_access_select(POTTERY_INSERTION_SORT_VALS i);
+        pottery_insertion_sort_entry_t current_entry = pottery_insertion_sort_array_access_select(POTTERY_INSERTION_SORT_VALS i);
+        pottery_insertion_sort_ref_t current_ref = pottery_insertion_sort_entry_ref(POTTERY_INSERTION_SORT_CONTEXT_VAL current_entry);
 
         size_t j;
         for (j = i; j > 0; --j) {
-            pottery_insertion_sort_ref_t previous = pottery_insertion_sort_array_access_select(POTTERY_INSERTION_SORT_VALS j - 1);
-            if (!pottery_insertion_sort_compare_less(POTTERY_INSERTION_SORT_CONTEXT_VAL current, previous))
+            pottery_insertion_sort_entry_t previous_entry = pottery_insertion_sort_array_access_select(POTTERY_INSERTION_SORT_VALS j - 1);
+            pottery_insertion_sort_ref_t previous_ref = pottery_insertion_sort_entry_ref(POTTERY_INSERTION_SORT_CONTEXT_VAL previous_entry);
+            if (!pottery_insertion_sort_compare_less(POTTERY_INSERTION_SORT_CONTEXT_VAL current_ref, previous_ref))
                 break;
-            pottery_insertion_sort_lifecycle_swap_restrict(POTTERY_INSERTION_SORT_CONTEXT_VAL current, previous);
-            current = previous;
+            pottery_insertion_sort_lifecycle_swap_restrict(POTTERY_INSERTION_SORT_CONTEXT_VAL current_ref, previous_ref);
+            current_entry = previous_entry;
+            current_ref = previous_ref;
         }
     }
 }
