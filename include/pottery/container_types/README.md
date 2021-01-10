@@ -1,6 +1,8 @@
 # Container Types
 
-The container_types template is used to instantiate the various types used in Pottery containers and algorithms along with conversions and comparisons between them.
+This is a helper template for other Pottery containers. It is not intended to be used directly.
+
+The container\_types template is used to instantiate the various types used in Pottery containers and algorithms along with conversions and comparisons between them.
 
 This defines the folowing types if applicable:
 
@@ -40,19 +42,19 @@ Note in the below configuration, `REF_TYPE` and `VALUE_TYPE` are mutually exclus
 
 #### `VALUE_TYPE`
 
-A concrete value type for comparing objects in memory.
+A concrete type for a value in a container.
 
 This is optional. If this is configured, it is typedef'd to `value_t`, and `ref_t` is defined as a pointer to this. If this is not configured `REF_TYPE` must be configured instead.
 
 #### `REF_TYPE`
 
-An abstract reference for the type to be compared.
+An abstract reference type for a value in a container, where the value is not a concrete type.
 
 `ref_t` is defined as a typedef to this, or to `value_t*` if this is not configured.
 
 #### `ENTRY_TYPE`
 
-An abstract reference type for the value to be compared, usually with the storage location of the value within its container. Two values of this type are passed to all configured comparison expressions (after the optional context.)
+A type representing the storage location of a value within its container.
 
 `entry_t` is defined as a typedef to this, or to `ref_t` if this is not configured.
 

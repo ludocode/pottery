@@ -1,3 +1,11 @@
 This demonstrates how to instantiate a function to sort an array of C strings with Pottery.
 
-A walkthrough of this example is in the main [README](../../../#sort-strings).
+Suppose you want to sort an array of strings. You could use `qsort()` but it's not ideal: it uses void pointers; it has to `memcpy()` elements around; and you have to write a special compare function which it calls through a function pointer. This makes it slow and awkward to use.
+
+Instead we can instantiate a strongly-typed sort algorithm with Pottery. This template instantiation preprocesses into a full implementation of [introsort](https://en.wikipedia.org/wiki/Introsort). It takes `const char*[]` as argument, moves `const char*` values around with operator `=`, and calls `strcmp()` directly rather than through a function pointer. The performance (and code size!) is comparable to a typical implementation of C++ `std::sort<>()`.
+
+The [intro_sort](../../../include/pottery/intro_sort/) template uses several other Pottery templates which themselves use other templates: [quick_sort](../../../include/pottery/quick_sort/), [insertion_sort](../../../include/pottery/insertion_sort/), [heap_sort](../../../include/pottery/heap_sort/) which uses [heap](../../../include/pottery/heap/), and the [container_types](../../../include/pottery/container_types/), [lifecycle](../../../include/pottery/lifecycle/), [compare](../../../include/pottery/compare/) and [array_access](../../../include/pottery/array_access/) helpers. Pottery's templates are composable and its algorithms and containers are split up into small independent components.
+
+We've defined `MOVE_BY_VALUE` to 1 above because `const char*` can be moved by simple assignment. You could instead provide a custom move or swap expression if the type is not bitwise-movable. You could provide a boolean `LESS` expression or others instead of a three-way comparison. You could provide a custom context and access expressions in case the array is not contiguous in memory (so you could [sort a deque](../sort_deque/) for example.)
+
+You could even sort over an abstract reference type, so you could provide access, compare and swap functions that query a database, pull elements off a tape drive, make network requests, etc. Pottery's algorithms are not limited to operating on plain values in memory.

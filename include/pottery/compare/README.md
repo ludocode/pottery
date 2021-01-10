@@ -57,7 +57,7 @@ The compare template operates on an abstract ref type with an optional context. 
 
 In more advanced usage, the compare template can even compare abstract values not in memory. A context could contain for example a database connection, the reference type could be the key type for rows to be compared, and configured compare expressions could perform database queries to compare elements.
 
-Types are defined by the [container_types](../container_types/) template.
+Types are defined by the [container_types](../container_types/) template. Two refs are passed to all configured comparison expressions (after the optional context.)
 
 ### Automatic By Value
 

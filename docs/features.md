@@ -26,19 +26,19 @@ Want to make a vector of maps, or a priority queue of linked lists? No problem. 
 
 ### Configurable
 
-Pottery templates can be extensively configured. For example all of the array algorithms like [`heap`](../include/pottery/heap/) or [`intro_sort`](../include/pottery/intro_sort/) operate on a generalized array. This means you can configure arbitrary expressions to access the i'th element and to swap and compare elements. These expressions can do whatever you like: access a database, pull elements off a tape drive, make network requests, or simply manipulate a normal array in memory.
+Pottery templates can be extensively configured. For example all of the array algorithms like [`heap`](../include/pottery/heap/) or [`intro_sort`](../include/pottery/intro_sort/) operate on a generalized array. This means you can configure arbitrary expressions to access the i'th element and to swap and compare elements. These expressions can do whatever you like: access a non-contiguous array, query a database, make network requests, or simply manipulate a normal array in memory.
 
-The behaviour of dynamic containers is highly configurable as well. For example [`vector`](../include/pottery/heap/) can be configured as a double-ended vector, can be configured with some internal capacity to avoid allocations, and can be configured to disable its auto-shrink behaviour.
+The behaviour of dynamic containers is highly configurable as well. For example [`vector`](../include/pottery/heap/) can be configured as a double-ended vector, can be configured with some internal capacity to avoid allocations, can be configured to disable its auto-shrink behaviour, can be configured to use a custom allocator, and more.
 
 ### Documented
 
-Pottery is heavily documented. Take a look at the [documentation index](../README.md#documentation) in the project README to start.
+Pottery is heavily documented (or at least it will be soon; some documentation is still in progress.) Take a look at the [documentation index](../README.md#documentation) in the project README to start.
 
 Documentation for individual templates is inline in the [`include/`](../include/pottery/) folder. Click any template folder to see its documentation.
 
 ### Consistent
 
-Pottery uses highly predictable naming conventions for all of its containers and algorithms. All dynamic containers are described by a shared [API reference](docs/container_api.md) because they all share the same API. Names such as `insert()` and `extract()` mean the same in any container.
+Pottery uses highly predictable naming conventions for all of its containers and algorithms. These conventions are described by a common [glossary](glossary.md). Names such as `insert()` and `extract()` mean the same in any container.
 
 ### Fast
 
@@ -89,4 +89,4 @@ Pottery can optimize the moving of "[trivially relocatable](https://quuxplusone.
 
 There are some limitations. In particular, Pottery does not support exceptions from move constructors or from `std::swap()`. You are allowed to use a move constructor that may throw, but the program will terminate if it actually does throw. If the only possible exception is an out-of-memory error, it's fine to ignore this on platforms that don't gracefully handle out-of-memory situations (e.g. modern desktop operating systems.)
 
-Pottery's templates are instantiated into C++ templates under [`bindings/cxx`](bindings/cxx). These can serve as drop-in replacements for the STL. Yes, you really can just instantiate the C algorithms into C++ class templates and they "just work". This makes it possible to use Pottery's algorithms in C++, and it will hopefully make it easy to benchmark Pottery against C++ container libraries.
+Pottery's templates are instantiated into C++ templates under [`bindings/cxx`](../bindings/cxx). These can serve as drop-in replacements for the STL. Yes, you really can just instantiate the C algorithms into C++ class templates and they "just work". This makes it possible to use Pottery's algorithms in C++, and it will hopefully make it easy to benchmark Pottery against C++ container libraries.
