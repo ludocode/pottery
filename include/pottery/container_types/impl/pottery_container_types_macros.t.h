@@ -57,10 +57,22 @@
 #endif
 
 // has key
-#if defined(POTTERY_CONTAINER_TYPES_KEY_TYPE)
-    #define POTTERY_CONTAINER_TYPES_HAS_KEY 1
-#else
-    #define POTTERY_CONTAINER_TYPES_HAS_KEY 0
+// You can set whether keys are enabled with ENABLE_KEY. If ENABLE_KEY is not
+// set, keys are enabled if there is a key type. (ENABLE_KEY is used to allow
+// the key type to default to the ref type for sets.)
+#if defined(POTTERY_CONTAINER_TYPES_ENABLE_KEY)
+    #if POTTERY_CONTAINER_TYPES_ENABLE_KEY
+        #define POTTERY_CONTAINER_TYPES_HAS_KEY 1
+    #else
+        #define POTTERY_CONTAINER_TYPES_HAS_KEY 0
+    #endif
+#endif
+#if !defined(POTTERY_CONTAINER_TYPES_HAS_KEY)
+    #ifdef POTTERY_CONTAINER_TYPES_KEY_TYPE
+        #define POTTERY_CONTAINER_TYPES_HAS_KEY 1
+    #else
+        #define POTTERY_CONTAINER_TYPES_HAS_KEY 0
+    #endif
 #endif
 
 // has context

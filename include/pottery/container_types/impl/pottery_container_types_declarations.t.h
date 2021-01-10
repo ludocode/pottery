@@ -26,10 +26,13 @@
 #error "This is an internal header. Do not include it."
 #endif
 
+// The value is the concrete type for values in the container.
 #if defined(POTTERY_CONTAINER_TYPES_VALUE_TYPE)
 typedef POTTERY_CONTAINER_TYPES_VALUE_TYPE pottery_container_types_value_t;
 #endif
 
+// The ref is a pointer to a value if a concrete value type exists, or an
+// abstract reference to a value in the container.
 #ifdef POTTERY_CONTAINER_TYPES_REF_TYPE
 // With a custom ref type, const is disabled.
 typedef POTTERY_CONTAINER_TYPES_REF_TYPE pottery_container_types_ref_t;
@@ -40,6 +43,7 @@ typedef pottery_container_types_value_t* pottery_container_types_ref_t;
 typedef const pottery_container_types_ref_t pottery_container_types_const_ref_t;
 #endif
 
+// The entry is a handle to an entry in the container.
 #ifdef POTTERY_CONTAINER_TYPES_ENTRY_TYPE
 typedef POTTERY_CONTAINER_TYPES_ENTRY_TYPE pottery_container_types_entry_t;
 #else
@@ -47,8 +51,15 @@ typedef POTTERY_CONTAINER_TYPES_ENTRY_TYPE pottery_container_types_entry_t;
 typedef pottery_container_types_ref_t pottery_container_types_entry_t;
 #endif
 
+// The key type is an abstract handle to a key used for lookups in associative
+// arrays.
+#if POTTERY_CONTAINER_TYPES_HAS_KEY
 #ifdef POTTERY_CONTAINER_TYPES_KEY_TYPE
 typedef POTTERY_CONTAINER_TYPES_KEY_TYPE pottery_container_types_key_t;
+#else
+// Without a KEY_TYPE, the key type defaults to the ref type.
+typedef pottery_container_types_ref_t pottery_container_types_key_t;
+#endif
 #endif
 
 #ifdef POTTERY_CONTAINER_TYPES_CONTEXT_TYPE
@@ -115,7 +126,7 @@ bool pottery_container_types_ref_equal(
     #endif
 }
 
-#ifdef POTTERY_CONTAINER_TYPES_KEY_TYPE
+#if POTTERY_CONTAINER_TYPES_HAS_KEY
 /**
  * Returns the key for the given ref.
  */

@@ -24,6 +24,11 @@
 
 #define POTTERY_OPEN_HASH_TABLE_IMPL
 
+#ifndef POTTERY_OPEN_HASH_TABLE_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/open_hash_table/impl/pottery_open_hash_table_config_types.t.h"
+    #include "pottery/container_types/pottery_container_types_define.t.h"
+#endif
+
 #ifndef POTTERY_OPEN_HASH_TABLE_EXTERNAL_LIFECYCLE
     #include "pottery/open_hash_table/impl/pottery_open_hash_table_config_lifecycle.t.h"
     #include "pottery/lifecycle/pottery_lifecycle_define.t.h"
@@ -43,6 +48,10 @@
 
 #ifndef POTTERY_OPEN_HASH_TABLE_EXTERNAL_LIFECYCLE
     #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
+#endif
+
+#ifndef POTTERY_OPEN_HASH_TABLE_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/container_types/pottery_container_types_cleanup.t.h"
 #endif
 
 #include "pottery/open_hash_table/impl/pottery_open_hash_table_unmacros.t.h"

@@ -34,6 +34,8 @@
 
 #undef POTTERY_CONTAINER_TYPES_PREFIX
 
+#undef POTTERY_CONTAINER_TYPES_ENABLE_KEY
+
 
 /*
  * Common Function Arguments

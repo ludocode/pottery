@@ -27,42 +27,6 @@
 #endif
 
 /*
- * types
- */
-
-// The value is the concrete type for buckets and for elements in the table.
-#ifdef POTTERY_OPEN_HASH_TABLE_VALUE_TYPE
-typedef POTTERY_OPEN_HASH_TABLE_VALUE_TYPE pottery_oht_value_t;
-#endif
-
-// The ref is a pointer to a value or an abstract reference in the table.
-#ifdef POTTERY_OPEN_HASH_TABLE_REF_TYPE
-typedef POTTERY_OPEN_HASH_TABLE_REF_TYPE pottery_oht_ref_t;
-#else
-typedef pottery_oht_value_t* pottery_oht_ref_t;
-#endif
-
-// The entry is a handle to an entry in the generalized array of buckets.
-#ifdef POTTERY_OPEN_HASH_TABLE_ENTRY_TYPE
-typedef POTTERY_OPEN_HASH_TABLE_ENTRY_TYPE pottery_oht_entry_t;
-#else
-typedef pottery_oht_ref_t pottery_oht_entry_t;
-#endif
-
-// The key type is an abstract handle to a key used for lookups in the hash
-// table. Each element in the hash table has a unique key. If a key type is not
-// given, it's the same as the ref type (making this a set.)
-#ifdef POTTERY_OPEN_HASH_TABLE_KEY_TYPE
-typedef POTTERY_OPEN_HASH_TABLE_KEY_TYPE pottery_oht_key_t;
-#else
-typedef pottery_oht_ref_t pottery_oht_key_t;
-#endif
-
-#ifdef POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE
-typedef POTTERY_OPEN_HASH_TABLE_CONTEXT_TYPE pottery_oht_context_t;
-#endif
-
-/*
  * Helpers to wrap configuration
  */
 
