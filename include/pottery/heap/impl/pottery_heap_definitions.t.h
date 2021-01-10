@@ -27,7 +27,7 @@
 #endif
 
 static pottery_always_inline
-void pottery_heap_set_index(POTTERY_HEAP_ARGS pottery_heap_ref_t value, size_t index) {
+void pottery_heap_set_index(POTTERY_HEAP_ARGS pottery_heap_entry_t value, size_t index) {
     POTTERY_HEAP_ARGS_UNUSED;
 
     #ifdef POTTERY_HEAP_SET_INDEX
@@ -236,9 +236,11 @@ size_t pottery_heap_valid_count_range(POTTERY_HEAP_ARGS
     size_t index;
     for (index = offset + 1; index < offset + count; ++index) {
         size_t parent_index = pottery_heap_parent(offset, index);
-        pottery_heap_entry_t current = pottery_heap_array_access_select(POTTERY_HEAP_VALS index);
-        pottery_heap_entry_t parent = pottery_heap_array_access_select(POTTERY_HEAP_VALS parent_index);
-        if (pottery_heap_compare_less(POTTERY_HEAP_CONTEXT_VAL parent, current)) {
+        pottery_heap_entry_t current_entry = pottery_heap_array_access_select(POTTERY_HEAP_VALS index);
+        pottery_heap_entry_t parent_entry = pottery_heap_array_access_select(POTTERY_HEAP_VALS parent_index);
+        pottery_heap_ref_t current_ref = pottery_heap_entry_ref(POTTERY_HEAP_CONTEXT_VAL current_entry);
+        pottery_heap_ref_t parent_ref = pottery_heap_entry_ref(POTTERY_HEAP_CONTEXT_VAL parent_entry);
+        if (pottery_heap_compare_less(POTTERY_HEAP_CONTEXT_VAL parent_ref, current_ref)) {
             return index;
         }
     }
