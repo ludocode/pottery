@@ -27,31 +27,6 @@
 #endif
 
 
-/*
- * Types
- */
-
-#if defined(POTTERY_ARRAY_ACCESS_VALUE_TYPE)
-typedef POTTERY_ARRAY_ACCESS_VALUE_TYPE pottery_array_access_value_t;
-#endif
-
-#ifdef POTTERY_ARRAY_ACCESS_REF_TYPE
-typedef POTTERY_ARRAY_ACCESS_REF_TYPE pottery_array_access_ref_t;
-#else
-typedef pottery_array_access_value_t* pottery_array_access_ref_t;
-#endif
-
-#ifdef POTTERY_ARRAY_ACCESS_ENTRY_TYPE
-typedef POTTERY_ARRAY_ACCESS_ENTRY_TYPE pottery_array_access_entry_t;
-#else
-typedef pottery_array_access_ref_t pottery_array_access_entry_t;
-#endif
-
-#ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
-typedef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE pottery_array_access_context_t;
-#endif
-
-
 
 /*
  * Forward declarations
@@ -72,37 +47,6 @@ static inline
 size_t pottery_array_access_count(
         POTTERY_ARRAY_ACCESS_SOLE_ARGS);
 #endif
-#endif
-
-
-
-// TODO this has been moved to container_types. This and the above typedefs
-// need to be removed since array_access should use container_types.
-#if 0
-/**
- * Returns a ref for an entry.
- *
- * The entry must exist.
- */
-static inline
-pottery_array_access_ref_t pottery_array_access_ref(
-        POTTERY_ARRAY_ACCESS_ARGS
-        pottery_array_access_entry_t entry)
-{
-    POTTERY_ARRAY_ACCESS_ARGS_UNUSED;
-
-    #ifdef POTTERY_ARRAY_ACCESS_ENTRY_REF
-        #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
-            return (POTTERY_ARRAY_ACCESS_ENTRY_REF((context), (entry)));
-        #else
-            return (POTTERY_ARRAY_ACCESS_ENTRY_REF((entry)));
-        #endif
-    #else
-        // Without an ENTRY_REF expression, the entry type must implicitly
-        // convertible to the ref type (usually it's the same type.)
-        return entry;
-    #endif
-}
 #endif
 
 

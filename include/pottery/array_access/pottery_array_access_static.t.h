@@ -24,10 +24,19 @@
 
 #define POTTERY_ARRAY_ACCESS_INTERNAL
 
+#ifndef POTTERY_ARRAY_ACCESS_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/array_access/impl/pottery_array_access_config_types.t.h"
+    #include "pottery/container_types/pottery_container_types_static.t.h"
+#endif
+
 #include "pottery/array_access/impl/pottery_array_access_macros.t.h"
 #include "pottery/array_access/impl/pottery_array_access_declarations.t.h"
 // No definitions file! Everything is inline. We still need macros though for
 // configuration purposes.
 #include "pottery/array_access/impl/pottery_array_access_unmacros.t.h"
+
+#ifndef POTTERY_ARRAY_ACCESS_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/container_types/pottery_container_types_cleanup.t.h"
+#endif
 
 #undef POTTERY_ARRAY_ACCESS_INTERNAL
