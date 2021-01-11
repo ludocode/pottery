@@ -31,6 +31,7 @@
 #define POTTERY_QUICK_SORT_LIFECYCLE_BY_VALUE 1 // move
 #define POTTERY_QUICK_SORT_USE_FAT_PARTITION 1 // fat
 #define POTTERY_QUICK_SORT_COMPARE_BY_VALUE 1 // boolean
+#define POTTERY_QUICK_SORT_COUNT_LIMIT 0 // never use insertion sort: test small partitions
 #include "pottery/quick_sort/pottery_quick_sort_static.t.h"
 
 // Instantiate sort_ints tests

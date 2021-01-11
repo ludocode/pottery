@@ -212,12 +212,8 @@ bool pottery_quick_sort_fallback(
     (void)first;
     (void)count;
 
-    // Switch to the count limit fallback if we don't have enough elements.
-    // This is a hardcoded limit based on some ad-hoc experimental testing.
-    // It depends highly on the cost of comparing and swapping elements: the
-    // cheaper it is to compare and swap, the higher this can be. We could add
-    // a way to configure it later.
-    size_t count_limit = 8;
+    // Switch to the count limit fallback if we don't have enough elements
+    size_t count_limit = POTTERY_QUICK_SORT_COUNT_LIMIT;
     if (count <= count_limit) {
         POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK(
                 POTTERY_QUICK_SORT_VALS

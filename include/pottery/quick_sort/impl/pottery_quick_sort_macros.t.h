@@ -57,9 +57,17 @@
     #define POTTERY_QUICK_SORT_CONTEXT_VAL /*nothing*/
 #endif
 
-// The default count limit fallback is the included insertion_sort.
+// The default count limit fallback is the included insertion_sort
 #ifndef POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK
     #define POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK POTTERY_CONCAT(POTTERY_QUICK_SORT_PREFIX, _insertion_sort_range)
+#endif
+
+// Default count limit in which to use the count fallback
+// This is a hardcoded limit based on some ad-hoc experimental testing.
+// It depends highly on the cost of comparing and swapping elements: the
+// cheaper it is to compare and swap, the higher this can be.
+#ifndef POTTERY_QUICK_SORT_COUNT_LIMIT
+    #define POTTERY_QUICK_SORT_COUNT_LIMIT 8
 #endif
 
 
