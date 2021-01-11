@@ -39,7 +39,7 @@ typedef struct {int64_t a[3];} pottery_qsort_i64_3_t;
 typedef struct {int64_t a[4];} pottery_qsort_i64_4_t;
 
 // little helper to check alignment
-static inline pottery_maybe_unused
+static inline
 bool pottery_qsort_is_aligned(void* p, size_t required_align) {
     uintptr_t u = pottery_reinterpret_cast(uintptr_t, p);
     return u == (u & ~required_align);
@@ -135,7 +135,7 @@ int pottery_qsort_heap_sort_compare(pottery_qsort_heap_sort_state_t* state, void
  * Heap sort fallback variant wrappers
  */
 
-static pottery_maybe_unused
+static
 void pottery_qsort_heap_sort_c(size_t element_size, pottery_qsort_compare_t compare,
         void* base, size_t offset, size_t count)
 {
@@ -146,7 +146,7 @@ void pottery_qsort_heap_sort_c(size_t element_size, pottery_qsort_compare_t comp
     pottery_qsort_heap_sort_range(&state, base, offset, count);
 }
 
-static pottery_maybe_unused
+static
 void pottery_qsort_heap_sort_gnu(size_t element_size, pottery_gnu_qsort_r_compare_t compare,
         void* user_context, void* base, size_t offset, size_t count)
 {
@@ -158,7 +158,7 @@ void pottery_qsort_heap_sort_gnu(size_t element_size, pottery_gnu_qsort_r_compar
     pottery_qsort_heap_sort_range(&state, base, offset, count);
 }
 
-static pottery_maybe_unused
+static
 void pottery_qsort_heap_sort_bsd(size_t element_size, pottery_bsd_qsort_r_compare_t compare,
         void* user_context, void* base, size_t offset, size_t count)
 {
