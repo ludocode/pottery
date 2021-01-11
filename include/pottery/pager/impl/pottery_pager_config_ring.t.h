@@ -22,22 +22,14 @@
  * SOFTWARE.
  */
 
-#define POTTERY_DEQUE_IMPL
+// pager uses an internal ring to store its page list.
+#define POTTERY_RING_PREFIX POTTERY_PAGER_NAME(_page_ring)
+#define POTTERY_RING_VALUE_TYPE pottery_pager_page_t
 
-#include "pottery/deque/impl/pottery_deque_macros.t.h"
+// The ring will use the same allocator as the pager (but not lifecycle
+// since it's storing a different type.)
+#define POTTERY_RING_EXTERNAL_ALLOC POTTERY_PAGER_NAME(_alloc)
+#define POTTERY_RING_LIFECYCLE_BY_VALUE 1
 
-#include "pottery/deque/impl/pottery_deque_config_ring.t.h"
-#include "pottery/ring/pottery_ring_define.t.h"
-
-#include "pottery/deque/impl/pottery_deque_config_alloc.t.h"
-#include "pottery/alloc/pottery_alloc_define.t.h"
-
-#include "pottery/deque/impl/pottery_deque_config_lifecycle.t.h"
-#include "pottery/lifecycle/pottery_lifecycle_define.t.h"
-
-#include "pottery/deque/impl/pottery_deque_definitions.t.h"
-#include "pottery/deque/impl/pottery_deque_unmacros.t.h"
-
-#include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
-
-#undef POTTERY_DEQUE_IMPL
+// This makes pager not bitwise movable. Maybe this should be configurable.
+#define POTTERY_RING_INTERNAL_CAPACITY 4

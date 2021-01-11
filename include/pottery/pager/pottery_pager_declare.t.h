@@ -22,19 +22,23 @@
  * SOFTWARE.
  */
 
-#include "pottery/common/test_pottery_ufo.h"
+#define POTTERY_PAGER_IMPL
 
-#define POTTERY_DEQUE_PREFIX pottery_deque_fuzz_ufo
-#define POTTERY_DEQUE_VALUE_TYPE ufo_t
-#define POTTERY_DEQUE_LIFECYCLE_INIT_COPY ufo_init_copy
-#define POTTERY_DEQUE_LIFECYCLE_MOVE ufo_move
-#define POTTERY_DEQUE_LIFECYCLE_DESTROY ufo_destroy
-// Use a small page size to make it easier to test page boundary behaviour
-#define POTTERY_DEQUE_PER_PAGE 29
-#include "pottery/deque/pottery_deque_static.t.h"
+#include "pottery/pager/impl/pottery_pager_macros.t.h"
+#include "pottery/pager/impl/pottery_pager_forward.t.h"
 
-#define TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX pottery_deque_fuzz_ufo
-#define TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_AT 0
-#define TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_SHRINK 0
-#define TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_RESERVE 0
-#include "pottery/fuzz/array/test_pottery_fuzz_array_ufo.t.h"
+#include "pottery/pager/impl/pottery_pager_config_alloc.t.h"
+#include "pottery/alloc/pottery_alloc_declare.t.h"
+
+#include "pottery/pager/impl/pottery_pager_config_ring.t.h"
+#include "pottery/ring/pottery_ring_declare.t.h"
+
+#include "pottery/pager/impl/pottery_pager_config_lifecycle.t.h"
+#include "pottery/lifecycle/pottery_lifecycle_declare.t.h"
+
+#include "pottery/pager/impl/pottery_pager_declarations.t.h"
+#include "pottery/pager/impl/pottery_pager_unmacros.t.h"
+
+#include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
+
+#undef POTTERY_PAGER_IMPL

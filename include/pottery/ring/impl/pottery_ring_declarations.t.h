@@ -37,14 +37,14 @@ typedef pottery_ring_value_t* pottery_ring_entry_t;
 /**
  * A double-ended queue of values implemented as a circular array.
  *
- * This has nearly the same interface as the paged deque, but it has different
+ * This has nearly the same interface as the pager, but it has different
  * performance characteristics and invalidation rules.
  *
  * When the ring changes for any reason (insert, extract, commit, drop, etc.), all
  * pointers to any elements in the ring are invalidated and any ongoing
  * emplace or access is invalidated at both ends. This is because the ring
  * may shrink or grow which may move all elements. This is different from the
- * paged deque; see the documentation on deque for more details.
+ * pager; see the documentation on pager for more details.
  *
  * The ring is (by default) growable. When the ring needs to grow, all
  * values are copied.

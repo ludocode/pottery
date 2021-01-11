@@ -22,28 +22,28 @@
  * SOFTWARE.
  */
 
-#define POTTERY_DEQUE_IMPL
+#define POTTERY_PAGER_IMPL
 
-#ifndef POTTERY_DEQUE_EXTERN
-    #define POTTERY_DEQUE_EXTERN pottery_maybe_unused static
+#ifndef POTTERY_PAGER_EXTERN
+    #define POTTERY_PAGER_EXTERN pottery_maybe_unused static
 #endif
 
-#include "pottery/deque/impl/pottery_deque_macros.t.h"
-#include "pottery/deque/impl/pottery_deque_forward.t.h"
+#include "pottery/pager/impl/pottery_pager_macros.t.h"
+#include "pottery/pager/impl/pottery_pager_forward.t.h"
 
-#include "pottery/deque/impl/pottery_deque_config_alloc.t.h"
+#include "pottery/pager/impl/pottery_pager_config_alloc.t.h"
 #include "pottery/alloc/pottery_alloc_static.t.h"
 
-#include "pottery/deque/impl/pottery_deque_config_ring.t.h"
+#include "pottery/pager/impl/pottery_pager_config_ring.t.h"
 #include "pottery/ring/pottery_ring_static.t.h"
 
-#include "pottery/deque/impl/pottery_deque_config_lifecycle.t.h"
+#include "pottery/pager/impl/pottery_pager_config_lifecycle.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_static.t.h"
 
-#include "pottery/deque/impl/pottery_deque_declarations.t.h"
-#include "pottery/deque/impl/pottery_deque_definitions.t.h"
-#include "pottery/deque/impl/pottery_deque_unmacros.t.h"
+#include "pottery/pager/impl/pottery_pager_declarations.t.h"
+#include "pottery/pager/impl/pottery_pager_definitions.t.h"
+#include "pottery/pager/impl/pottery_pager_unmacros.t.h"
 
 #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
 
-#undef POTTERY_DEQUE_IMPL
+#undef POTTERY_PAGER_IMPL

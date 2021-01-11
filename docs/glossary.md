@@ -49,7 +49,7 @@ A few other terms are used for templates, but they are not reflected in the name
 
 - **Array** is used for a user-ordered container that supports direct value indexing. These typically support not only `at()` for looking up values directly, but also `emplace_at()`, `displace_at()` and others. An example is [`vector`](../include/pottery/vector/).
 
-- **Queue** is used for a container that efficiently supports mutations on at least one end of the values in the container based on its ordering. These can be user-ordered (such as [`ring`](../include/pottery/vector/) and [`deque`](../include/pottery/vector/)) or unordered (such as [`heap`](../include/pottery/vector/).)
+- **Queue** is used for a container that efficiently supports mutations on at least one end of the values in the container based on its ordering. These can be user-ordered (such as [`ring`](../include/pottery/ring/), [`vector`](../include/pottery/vector/) and [`pager`](../include/pottery/pager/)) or unordered (such as [`heap`](../include/pottery/vector/).) (If the container efficiently supports mutations on both ends, it is a **double-ended queue**.
 
 - **Helper** is used to refer to a template that is meant mostly to be used by other templates. These generally implement functionality internal to Pottery. Examples are [`alloc`](../include/pottery/alloc/) and [`compare`](../include/pottery/compare/). These can nevertheless be used on their own if desired.
 
@@ -90,7 +90,7 @@ An **entry** is an abstract reference to the storage location of a value within 
 
 For some containers this is the same as ref. For example in a [vector](../include/pottery/vector/), an entry is just a pointer to a value in the vector's buffer. This is called a "trivial entry type".
 
-In other containers, this is a struct containing additional data needed to locate the value. For example in a paged [deque](../include/pottery/deque/), the entry is a small struct containing the value as well as the page in which it's contained.
+In other containers, this is a struct containing additional data needed to locate the value. For example in a [pager](../include/pottery/pager/), the entry is a small struct containing the value as well as the page in which it's contained.
 
 An entry type is configured by `ENTRY_TYPE` and defined templates as `entry_t`. If an `ENTRY_TYPE` is not given, `entry_t` is defined to be the same as `ref_t`.
 
@@ -217,7 +217,7 @@ Entries in a container are semantically ordered as per one of the following orde
 
 - For **unordered containers** (like [`open_hash_map`](../include/pottery/open_hash_map/) or [`heap`](../include/pottery/heap/)), the values are accessible in an arbitrary order internal to the container. The order can change arbitrarily as the container is mutated.
 
-- For **user-ordered containers** (like [`vector`](../include/pottery/vector/) or [`deque`](../include/pottery/deque/)), the values are accessible in the order inserted and managed by the user of the container. A user-ordered container preserves insertion order.
+- For **user-ordered containers** (like [`vector`](../include/pottery/vector/) or [`pager`](../include/pottery/pager/)), the values are accessible in the order inserted and managed by the user of the container. A user-ordered container preserves insertion order.
 
 Note in particular, array containers are not unordered; they are user-ordered.
 
@@ -257,7 +257,7 @@ The following operations deal directly with the index of values. The container m
 
 - **`index()`**: Gets the index of an entry within the container. This ranges from `0` to `count`, where `count` is the index of the end entry.
 
-- **`select()`**: Gets the container entry at a given index, including potentially the end entry. This ranges from `0` to `count`. This is almost identical to `at()`; the only difference is that it can also return the end entry. Usually you would not call this directly, although you would configure `ARRAY_ACCESS_SELECT` on a template that uses [`array_access`](../include/pottery/array_access/) (for example when [sorting a deque](../examples/pottery/sort_deque/).)
+- **`select()`**: Gets the container entry at a given index, including potentially the end entry. This ranges from `0` to `count`. This is almost identical to `at()`; the only difference is that it can also return the end entry. Usually you would not call this directly, although you would configure `ARRAY_ACCESS_SELECT` on a template that uses [`array_access`](../include/pottery/array_access/) (for example when [sorting a pager](../examples/pottery/sort_pager/).)
 
 - **`offset()`**: Calculate the signed difference in index between two entries.
 

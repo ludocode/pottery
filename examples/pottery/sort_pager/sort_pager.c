@@ -26,63 +26,63 @@
 
 
 
-// First we define our deque. We use a small per-page count to test page
+// First we define our pager. We use a small per-page count to test page
 // boundary behaviour.
-#define POTTERY_DEQUE_PREFIX int_deque
-#define POTTERY_DEQUE_VALUE_TYPE int
-#define POTTERY_DEQUE_PER_PAGE 9
-#define POTTERY_DEQUE_LIFECYCLE_BY_VALUE 1
-#include "pottery/deque/pottery_deque_static.t.h"
+#define POTTERY_PAGER_PREFIX int_pager
+#define POTTERY_PAGER_VALUE_TYPE int
+#define POTTERY_PAGER_PER_PAGE 9
+#define POTTERY_PAGER_LIFECYCLE_BY_VALUE 1
+#include "pottery/pager/pottery_pager_static.t.h"
 
 
 
-// Next we define our sort algorithm. We wrap as much of our deque as possible
+// Next we define our sort algorithm. We wrap as much of our pager as possible
 // so there is quite a large configuration here.
 
-// Since we're sorting an int_deque, we'll call it sort_int_deque().
-#define POTTERY_INTRO_SORT_PREFIX sort_int_deque
+// Since we're sorting an int_pager, we'll call it sort_int_pager().
+#define POTTERY_INTRO_SORT_PREFIX sort_int_pager
 
-// The context for our sort algorithm is a pointer to the deque.
-#define POTTERY_INTRO_SORT_CONTEXT_TYPE int_deque_t*
+// The context for our sort algorithm is a pointer to the pager.
+#define POTTERY_INTRO_SORT_CONTEXT_TYPE int_pager_t*
 
-// The entry type of the sort algorithm is the entry type of the deque. We need
-// to supply the deque's function for getting the value (ref) of an entry so
+// The entry type of the sort algorithm is the entry type of the pager. We need
+// to supply the pager's function for getting the value (ref) of an entry so
 // that the sort algorithm can do by-value lifecycle and compare operations on
-// deque values.
+// pager values.
 #define POTTERY_INTRO_SORT_VALUE_TYPE int
-#define POTTERY_INTRO_SORT_ENTRY_TYPE int_deque_entry_t
-#define POTTERY_INTRO_SORT_ENTRY_REF int_deque_entry_value
+#define POTTERY_INTRO_SORT_ENTRY_TYPE int_pager_entry_t
+#define POTTERY_INTRO_SORT_ENTRY_REF int_pager_entry_value
 #define POTTERY_INTRO_SORT_LIFECYCLE_BY_VALUE 1
 #define POTTERY_INTRO_SORT_COMPARE_BY_VALUE 1
 
-// The deque is itself an array container, so we pass its begin, end and count.
+// The pager is itself an array container, so we pass its begin, end and count.
 // These are not necessary but they make the API nicer because now
-// sort_int_deque() takes only the deque as argument. If we didn't configure
-// these, we would simply pass begin and count to sort_int_deque() instead.
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_BEGIN int_deque_begin
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_END int_deque_end
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_COUNT int_deque_count
+// sort_int_pager() takes only the pager as argument. If we didn't configure
+// these, we would simply pass begin and count to sort_int_pager() instead.
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_BEGIN int_pager_begin
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_END int_pager_end
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_COUNT int_pager_count
 
 // SELECT and INDEX are required since our array is not contiguous.
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_SELECT int_deque_select
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_INDEX int_deque_index
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_SELECT int_pager_select
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_INDEX int_pager_index
 
 // We also pass NEXT, PREVIOUS and EQUAL to improve performance. They allow the
 // sort algorithm to iterate through values within pages without going through
-// the deque's page ring.
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_EQUAL int_deque_entry_equal
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_NEXT int_deque_next
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_PREVIOUS int_deque_previous
+// the pager's page ring.
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_EQUAL int_pager_entry_equal
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_NEXT int_pager_next
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_PREVIOUS int_pager_previous
 
 #include "pottery/intro_sort/pottery_intro_sort_static.t.h"
 
 
 
 int main(void) {
-    int_deque_t deque;
-    int_deque_init(&deque);
+    int_pager_t pager;
+    int_pager_init(&pager);
 
-    // Insert a bunch of values into the deque
+    // Insert a bunch of values into the pager
     int values[] = {
         46, 45, 32, 3, 34, 24, 9, 21, 5, 40,
         29, 18, 19, 14, 23, 38, 30, 33, 26, 50,
@@ -92,14 +92,14 @@ int main(void) {
     };
     size_t i;
     for (i = 0; i < sizeof(values) / sizeof(*values); ++i)
-        int_deque_insert_last(&deque, values[i]);
+        int_pager_insert_last(&pager, values[i]);
 
-    // Sort the deque!
-    sort_int_deque(&deque);
+    // Sort the pager!
+    sort_int_pager(&pager);
 
     // Print its contents
-    for (i = 0; i < int_deque_count(&deque); ++i) {
-        printf("%i\n", *int_deque_entry_value(&deque, int_deque_at(&deque, i)));
+    for (i = 0; i < int_pager_count(&pager); ++i) {
+        printf("%i\n", *int_pager_entry_value(&pager, int_pager_at(&pager, i)));
     }
 
     return EXIT_SUCCESS;

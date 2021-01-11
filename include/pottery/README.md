@@ -9,7 +9,7 @@ Here's a more hierarchical index:
 - Dynamic Containers, i.e. containers that own and manage memory for their contents
     - [Vector](vector/), a contiguous dynamically growing array
     - [Ring](ring/), a dynamically growing circular buffer
-    - [Deque](deque/), a paged double-ended queue
+    - [Pager](pager/), a paged double-ended queue
     - [Open Hash Map](open_hash_map/), a dynamically growing open-addressed hash table
 
 - Intrusive/External Containers, i.e. container algorithms that work on external memory

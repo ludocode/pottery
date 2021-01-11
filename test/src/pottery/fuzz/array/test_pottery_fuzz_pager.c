@@ -22,14 +22,19 @@
  * SOFTWARE.
  */
 
-// deque uses an internal ring to store its page list.
-#define POTTERY_RING_PREFIX POTTERY_DEQUE_NAME(_page_ring)
-#define POTTERY_RING_VALUE_TYPE pottery_deque_page_t
+#include "pottery/common/test_pottery_ufo.h"
 
-// The ring will use the same allocator as the deque (but not lifecycle
-// since it's storing a different type.)
-#define POTTERY_RING_EXTERNAL_ALLOC POTTERY_DEQUE_NAME(_alloc)
-#define POTTERY_RING_LIFECYCLE_BY_VALUE 1
+#define POTTERY_PAGER_PREFIX pottery_pager_fuzz_ufo
+#define POTTERY_PAGER_VALUE_TYPE ufo_t
+#define POTTERY_PAGER_LIFECYCLE_INIT_COPY ufo_init_copy
+#define POTTERY_PAGER_LIFECYCLE_MOVE ufo_move
+#define POTTERY_PAGER_LIFECYCLE_DESTROY ufo_destroy
+// Use a small page size to make it easier to test page boundary behaviour
+#define POTTERY_PAGER_PER_PAGE 29
+#include "pottery/pager/pottery_pager_static.t.h"
 
-// This makes deque not bitwise movable. Maybe this should be configurable.
-#define POTTERY_RING_INTERNAL_CAPACITY 4
+#define TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX pottery_pager_fuzz_ufo
+#define TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_AT 0
+#define TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_SHRINK 0
+#define TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_RESERVE 0
+#include "pottery/fuzz/array/test_pottery_fuzz_array_ufo.t.h"

@@ -22,23 +22,38 @@
  * SOFTWARE.
  */
 
-#define POTTERY_DEQUE_IMPL
+typedef POTTERY_PAGER_VALUE_TYPE pottery_pager_value_t;
 
-#include "pottery/deque/impl/pottery_deque_macros.t.h"
-#include "pottery/deque/impl/pottery_deque_forward.t.h"
+// TODO maybe don't bother with this, it just makes it confusing.
+typedef pottery_pager_value_t* pottery_pager_page_t;
 
-#include "pottery/deque/impl/pottery_deque_config_alloc.t.h"
-#include "pottery/alloc/pottery_alloc_declare.t.h"
+typedef struct pottery_pager_entry_t {
+    pottery_pager_page_t* page;
+    pottery_pager_value_t* value;
+} pottery_pager_entry_t;
 
-#include "pottery/deque/impl/pottery_deque_config_ring.t.h"
-#include "pottery/ring/pottery_ring_declare.t.h"
+typedef struct pottery_pager_t pottery_pager_t;
 
-#include "pottery/deque/impl/pottery_deque_config_lifecycle.t.h"
-#include "pottery/lifecycle/pottery_lifecycle_declare.t.h"
+#if POTTERY_FORWARD_DECLARATIONS
+static inline
+bool pottery_pager_entry_exists(pottery_pager_t* pager, pottery_pager_entry_t entry);
+#endif
 
-#include "pottery/deque/impl/pottery_deque_declarations.t.h"
-#include "pottery/deque/impl/pottery_deque_unmacros.t.h"
+static inline
+pottery_pager_entry_t pottery_pager_entry_make(
+        pottery_pager_page_t* page,
+        pottery_pager_value_t* value)
+{
+    pottery_pager_entry_t entry = {page, value};
+    return entry;
+}
 
-#include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
-
-#undef POTTERY_DEQUE_IMPL
+static inline
+pottery_pager_value_t* pottery_pager_entry_value(
+        pottery_pager_t* pager,
+        pottery_pager_entry_t entry)
+{
+    (void)pager;
+    pottery_assert(pottery_pager_entry_exists(pager, entry));
+    return entry.value;
+}

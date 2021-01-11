@@ -46,7 +46,7 @@ When building the examples as unit tests, Pottery converts the `main()` function
 
 When building the fuzz tests as unit tests, Pottery just generates a few kilobytes of random input to each of them over a number of rounds. The random seed is printed so you can reproduce bugs. See the [Fuzz Tests](#fuzz-tests) section below.
 
-The unit test suite is itself made up of a bunch of test templates. For example the template [`test_pottery_array_ufo.t.h`](test/src/pottery/unit/test_pottery_array_ufo.t.h) tests a generalized array of `ufo_t`, a common test object. This template is instantiated to test vector, ring, deque, etc.
+The unit test suite is itself made up of a bunch of test templates. For example the template [`test_pottery_array_ufo.t.h`](test/src/pottery/unit/test_pottery_array_ufo.t.h) tests a generalized array of `ufo_t`, a common test object. This template is instantiated to test vector, ring, pager, etc.
 
 
 
