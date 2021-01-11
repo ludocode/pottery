@@ -34,7 +34,7 @@
 // No definitions file! Everything is inline. We still need macros though for
 // configuration purposes.
 #include "pottery/array_access/impl/pottery_array_access_unmacros.t.h"
-#ifndef POTTERY_ARRAY_ACCESS_NO_CLEANUP
+#if POTTERY_ARRAY_ACCESS_CLEANUP
     #include "pottery/array_access/pottery_array_access_cleanup.t.h"
 #endif
 

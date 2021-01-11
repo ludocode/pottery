@@ -41,6 +41,11 @@
 
 // configuration
 
+// cleanup
+#ifndef POTTERY_LIFECYCLE_CLEANUP
+    #define POTTERY_LIFECYCLE_CLEANUP 1
+#endif
+
 
 
 // collapse configuration options

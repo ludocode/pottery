@@ -39,6 +39,11 @@
  * Configuration
  */
 
+// cleanup
+#ifndef POTTERY_ARRAY_ACCESS_CLEANUP
+    #define POTTERY_ARRAY_ACCESS_CLEANUP 1
+#endif
+
 // inherent base is enabled by defining BEGIN
 #if defined(POTTERY_ARRAY_ACCESS_BEGIN)
     #define POTTERY_ARRAY_ACCESS_INHERENT_BASE 1

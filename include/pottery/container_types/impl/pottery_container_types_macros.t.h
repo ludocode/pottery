@@ -39,6 +39,11 @@
  * Configuration
  */
 
+// cleanup
+#ifndef POTTERY_CONTAINER_TYPES_CLEANUP
+    #define POTTERY_CONTAINER_TYPES_CLEANUP 1
+#endif
+
 // must have exactly one of value or ref type
 #if !defined(POTTERY_CONTAINER_TYPES_VALUE_TYPE) && \
     !defined(POTTERY_CONTAINER_TYPES_REF_TYPE)

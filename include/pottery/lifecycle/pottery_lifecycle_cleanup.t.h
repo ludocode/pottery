@@ -26,7 +26,7 @@
 #error "The Lifecycle template was either not instantiated or was already cleaned up."
 #endif
 
-#undef POTTERY_LIFECYCLE_NO_CLEANUP
+#undef POTTERY_LIFECYCLE_CLEANUP
 #undef POTTERY_LIFECYCLE_CAN_DESTROY
 #undef POTTERY_LIFECYCLE_CAN_INIT
 #undef POTTERY_LIFECYCLE_CAN_INIT_COPY

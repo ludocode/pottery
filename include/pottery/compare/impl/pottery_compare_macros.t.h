@@ -35,6 +35,11 @@
  * Configuration
  */
 
+// cleanup
+#ifndef POTTERY_COMPARE_CLEANUP
+    #define POTTERY_COMPARE_CLEANUP 1
+#endif
+
 // context
 #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
 #define POTTERY_COMPARE_CONTEXT_ARG pottery_compare_context_t context,

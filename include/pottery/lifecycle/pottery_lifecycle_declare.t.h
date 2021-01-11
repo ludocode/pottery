@@ -32,7 +32,7 @@
 #include "pottery/lifecycle/impl/pottery_lifecycle_macros.t.h"
 #include "pottery/lifecycle/impl/pottery_lifecycle_declarations.t.h"
 #include "pottery/lifecycle/impl/pottery_lifecycle_unmacros.t.h"
-#ifndef POTTERY_LIFECYCLE_NO_CLEANUP
+#if POTTERY_LIFECYCLE_CLEANUP
     #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
 #endif
 
