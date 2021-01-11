@@ -30,7 +30,6 @@
 #define POTTERY_COMPARE_REF_TYPE const char*
 #define POTTERY_COMPARE_THREE_WAY strcmp
 #include "pottery/compare/pottery_compare_static.t.h"
-#include "pottery/compare/pottery_compare_cleanup.t.h"
 
 POTTERY_TEST(pottery_compare_strcmp) {
     pottery_test_assert(string_equal("hello", "hello"));
@@ -76,7 +75,6 @@ POTTERY_TEST(pottery_compare_strcmp) {
 #define POTTERY_COMPARE_VALUE_TYPE float
 #define POTTERY_COMPARE_BY_VALUE 1
 #include "pottery/compare/pottery_compare_static.t.h"
-#include "pottery/compare/pottery_compare_cleanup.t.h"
 
 POTTERY_TEST(pottery_compare_floats) {
     // Note that because float is the value type, the generated compare
@@ -100,7 +98,6 @@ POTTERY_TEST(pottery_compare_floats) {
 #define POTTERY_COMPARE_LESS(array, left, right) 0 > ufo_compare(array + left, array + right)
 #define POTTERY_COMPARE_LESS_OR_EQUAL(array, left, right) 0 >= ufo_compare(array + left, array + right)
 #include "pottery/compare/pottery_compare_static.t.h"
-#include "pottery/compare/pottery_compare_cleanup.t.h"
 
 // Obviously this would have been more efficient, but the above tests out one
 // particular combination of two non-opposite expressions that generates all

@@ -32,6 +32,9 @@
 #include "pottery/lifecycle/impl/pottery_lifecycle_macros.t.h"
 // no definitions file
 #include "pottery/lifecycle/impl/pottery_lifecycle_unmacros.t.h"
+#ifndef POTTERY_LIFECYCLE_NO_CLEANUP
+    #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
+#endif
 
 #ifndef POTTERY_LIFECYCLE_EXTERNAL_CONTAINER_TYPES
     #include "pottery/container_types/pottery_container_types_cleanup.t.h"

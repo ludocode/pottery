@@ -52,8 +52,4 @@
 #include "pottery/open_hash_map/impl/pottery_open_hash_map_definitions.t.h"
 #include "pottery/open_hash_map/impl/pottery_open_hash_map_unmacros.t.h"
 
-#ifndef POTTERY_OPEN_HASH_MAP_EXTERNAL_CONTAINER_TYPES
-    #include "pottery/container_types/pottery_container_types_cleanup.t.h"
-#endif
-
 #undef POTTERY_OPEN_HASH_MAP_IMPL

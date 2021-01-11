@@ -15,16 +15,20 @@ To understand the basics, follow along with the source code to Pottery's [compar
 #define POTTERY_COMPARE_REF_TYPE const char*
 #define POTTERY_COMPARE_THREE_WAY strcmp
 #include "pottery/compare/pottery_compare_static.t.h"
-#include "pottery/compare/pottery_compare_cleanup.t.h"
 ```
 
-A template instantiation here is performed by [`pottery_compare_static.t.h`](../include/pottery/compare/pottery_compare_static.t.h). This performs three steps, separated into different headers:
+A template instantiation here is performed by [`pottery_compare_static.t.h`](../include/pottery/compare/pottery_compare_static.t.h). This performs the following steps separated into different headers:
 
 - Configuring and renaming identifiers. This is [`impl/pottery_compare_macros.t.h`](../include/pottery/compare/impl/pottery_compare_macros.t.h). It checks the user's configuration, then performs a set of simple `#define`s to rename all of the template's types and functions.
 
-- Instantiating the code. The code is in [`impl/pottery_compare_declarations.t.h`](../include/pottery/compare/impl/pottery_compare_declarations.t.h). The compare template mostly just wraps the user's configuration so it's not very interesting. However you can see the `min()`, `max()`, `clamp()`  and `median()` functions at the bottom look somewhat like idiomatic C.
+- Instantiating the code. The code is in [`impl/pottery_compare_declarations.t.h`](../include/pottery/compare/impl/pottery_compare_declarations.t.h). The compare template mostly just wraps the user's configuration so it's not very interesting. However you can see the `min()`, `max()`, `clamp()`  and `median()` functions at the bottom look somewhat like idiomatic C (the only oddity is an optional context parameter.)
 
-- Cleaning up. This is in [`impl/pottery_compare_unmacros.t.h`](../include/pottery/compare/impl/pottery_compare_unmacros.t.h). This undefines all macros used to instantiate the template, including the renaming macros and user's configuration macros. The template can be instantiated again with a different configuration (after cleanup; see [Exported Configuration](#exported-configuration) below.)
+- Undefining renaming and configuration macros. This is in [`impl/pottery_compare_unmacros.t.h`](../include/pottery/compare/impl/pottery_compare_unmacros.t.h). This undefines all macros used to instantiate the template, including the renaming macros and the user's configuration macros. The only macros left after this are the capabilities of the template: for example `POTTERY_COMPARE_CAN_ORDER` is defined to 1 to indicate that we have ordering capabilities so we can expect `string_less()` and friends to be defined.
+
+- Undefining exported capability macros. This is in [`pottery_compare_cleanup.t.h`](../include/pottery/compare/pottery_compare_cleanup.t.h). In this case it happens automatically because we haven't defined `POTTERY_COMPARE_NO_CLEANUP`. See [Exported Configuration](#exported-configuration) below.
+
+The template can now be instantiated again with a different configuration.
+
 
 
 ## Separate Header and Source Files
@@ -64,13 +68,13 @@ Some templates can depend on external instantiations of its child templates. For
 
 Some templates export macros to allow parent templates to detect their capabilities after they are instantiated. For example the lifecycle template can instantiate a `swap()` function if given a `SWAP` expression. But it can also instantiate a `swap()` function if given a `MOVE` expression and a `VALUE_TYPE`: it will swap by moving through a temporary.
 
-In order to allow the parent to detect whether swap is possible, the lifecycle template exports the macro `POTTERY_LIFECYCLE_CAN_SWAP`. This is defined to either 1 or 0, corresponding to whether or not `swap()` exists.
+In order to allow the parent to detect whether swap is possible, the lifecycle template can export the macro `POTTERY_LIFECYCLE_CAN_SWAP`. This is defined to either 1 or 0, corresponding to whether or not `swap()` exists.
 
-When these identifiers are no longer needed, they must be cleaned up. This is done by including the corresponding `cleanup` header. For example the lifecycle template provides [`pottery_lifecycle_cleanup.t.h`](../include/pottery/lifecycle/pottery_lifecycle_cleanup.t.h) to undefine these macros. All templates that instantiate lifecycle perform its cleanup after they are done.
+Templates by default automatically cleanup these macros. If you want them to be exported, you must define `NO_CLEANUP` on the template before instantiating it, and you must clean them up yourself when no longer needed by including the corresponding `cleanup` header. For example the lifecycle template supports `POTTERY_LIFECYCLE_NO_CLEANUP` to export its capabilities and provides [`pottery_lifecycle_cleanup.t.h`](../include/pottery/lifecycle/pottery_lifecycle_cleanup.t.h) to clean them up. All templates that instantiate lifecycle use this to detect its capabilities.
 
-See for example [`pottery_insertion_sort_static.t.h`](../include/pottery/insertion_sort/pottery_insertion_sort_static.t.h). If it is not using some other template's instantiation of lifecycle functions (via `EXTERNAL_LIFECYCLE`), it instantiates lifecycle functions, instantiates its own functions based on the capabilities of the lifecycle template, then includes the lifecycle cleanup header to clean up. In [`impl/pottery_insertion_sort_definitions.t.h`](../include/pottery/insertion_sort/impl/pottery_insertion_sort_definitions.t.h) you can see where it checks `POTTERY_LIFECYCLE_CAN_MOVE` to decide whether to move or swap.
+See for example [`pottery_insertion_sort_static.t.h`](../include/pottery/insertion_sort/pottery_insertion_sort_static.t.h). If it is not using some other template's instantiation of lifecycle functions (via `EXTERNAL_LIFECYCLE`), it instantiates the lifecycle template with `NO_CLEANUP`, instantiates its own functions based on the capabilities of the lifecycle template, then includes the lifecycle cleanup header to clean up. In [`impl/pottery_insertion_sort_definitions.t.h`](../include/pottery/insertion_sort/impl/pottery_insertion_sort_definitions.t.h) you can see where it checks `POTTERY_LIFECYCLE_CAN_MOVE` to decide whether to move or swap.
 
-`POTTERY_LIFECYCLE_CAN_DESTROY` and `POTTERY_LIFECYCLE_CAN_PASS` are some other macros that are checked often. You can see these macros throughout the implementation of [vector](../include/pottery/vector/) for example. These change the vector's behaviour and capabilities based on whether it can destroy or pass the values it contains. For example `displace_at()` is always implemented, but `remove_at()` is only implemented if the vector can destroy its values, and `extract_at()` is only implemented if the vector's values can be passed (as function arguments or return values.)
+`POTTERY_LIFECYCLE_CAN_DESTROY` and `POTTERY_LIFECYCLE_CAN_PASS` are some other macros that are checked often. You can see these macros throughout the implementation of [vector](../include/pottery/vector/) for example. These change the vector's behaviour and capabilities based on whether it can destroy or pass the values it contains. For example `displace_at()` is always implemented, but `remove_at()` is only implemented if the vector can destroy its values, and `extract_at()` is only implemented if the vector's values can be passed as function arguments or return values.
 
 
 

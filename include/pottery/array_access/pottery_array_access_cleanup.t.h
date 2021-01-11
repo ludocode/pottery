@@ -26,8 +26,7 @@
 #error "The array_access template was either not instantiated or was already cleaned up."
 #endif
 
-#ifndef POTTERY_ARRAY_ACCESS_NO_CLEANUP
+#undef POTTERY_ARRAY_ACCESS_NO_CLEANUP
 #undef POTTERY_ARRAY_ACCESS_INHERENT_BASE
 #undef POTTERY_ARRAY_ACCESS_INHERENT_COUNT
 #undef POTTERY_ARRAY_ACCESS_EXTERNAL_CONTAINER_TYPES
-#endif

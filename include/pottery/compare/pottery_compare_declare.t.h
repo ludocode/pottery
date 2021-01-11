@@ -32,6 +32,9 @@
 #include "pottery/compare/impl/pottery_compare_macros.t.h"
 #include "pottery/compare/impl/pottery_compare_declarations.t.h"
 #include "pottery/compare/impl/pottery_compare_unmacros.t.h"
+#ifndef POTTERY_COMPARE_NO_CLEANUP
+    #include "pottery/compare/pottery_compare_cleanup.t.h"
+#endif
 
 #ifndef POTTERY_COMPARE_EXTERNAL_CONTAINER_TYPES
     #include "pottery/container_types/pottery_container_types_cleanup.t.h"

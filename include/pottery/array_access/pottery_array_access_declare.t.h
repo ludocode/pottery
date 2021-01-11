@@ -32,6 +32,9 @@
 #include "pottery/array_access/impl/pottery_array_access_macros.t.h"
 #include "pottery/array_access/impl/pottery_array_access_declarations.t.h"
 #include "pottery/array_access/impl/pottery_array_access_unmacros.t.h"
+#ifndef POTTERY_ARRAY_ACCESS_NO_CLEANUP
+    #include "pottery/array_access/pottery_array_access_cleanup.t.h"
+#endif
 
 #ifndef POTTERY_ARRAY_ACCESS_EXTERNAL_CONTAINER_TYPES
     #include "pottery/container_types/pottery_container_types_cleanup.t.h"

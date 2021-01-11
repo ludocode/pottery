@@ -26,10 +26,9 @@
 #error "The Compare template was either not instantiated or was already cleaned up."
 #endif
 
-#ifndef POTTERY_COMPARE_NO_CLEANUP
+#undef POTTERY_COMPARE_NO_CLEANUP
 #undef POTTERY_COMPARE_CAN_EQUAL
 #undef POTTERY_COMPARE_CAN_ORDER
 #undef POTTERY_COMPARE_HAS_USER_THREE_WAY
 #undef POTTERY_COMPARE_BY_VALUE
 #undef POTTERY_COMPARE_EXTERNAL_CONTAINER_TYPES
-#endif

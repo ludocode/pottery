@@ -22,6 +22,11 @@
  * SOFTWARE.
  */
 
+#ifndef POTTERY_CONTAINER_TYPES_HAS_VALUE
+#error "The container_types template was either not instantiated or was already cleaned up."
+#endif
+
+#undef POTTERY_CONTAINER_TYPES_NO_CLEANUP
 #undef POTTERY_CONTAINER_TYPES_HAS_VALUE
 #undef POTTERY_CONTAINER_TYPES_HAS_KEY
 #undef POTTERY_CONTAINER_TYPES_HAS_CONTEXT
