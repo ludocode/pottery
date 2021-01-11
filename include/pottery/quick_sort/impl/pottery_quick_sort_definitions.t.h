@@ -194,9 +194,21 @@ void pottery_quick_sort_depth_fallback(
         POTTERY_QUICK_SORT_ARGS
         size_t first, size_t count)
 {
-    POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK(
-            POTTERY_QUICK_SORT_VALS
-            first, count);
+    // We have to expand POTTERY_QUICK_SORT_VALS manually because the
+    // fallback might be a macro.
+    #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
+        #if !POTTERY_ARRAY_ACCESS_INHERENT_BASE
+            POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK(context, base, first, count);
+        #else
+            POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK(context, first, count);
+        #endif
+    #else
+        #if !POTTERY_ARRAY_ACCESS_INHERENT_BASE
+            POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK(base, first, count);
+        #else
+            POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK(first, count);
+        #endif
+    #endif
 }
 #endif
 
@@ -215,9 +227,21 @@ bool pottery_quick_sort_fallback(
     // Switch to the count limit fallback if we don't have enough elements
     size_t count_limit = POTTERY_QUICK_SORT_COUNT_LIMIT;
     if (count <= count_limit) {
-        POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK(
-                POTTERY_QUICK_SORT_VALS
-                first, count);
+        // We have to expand POTTERY_QUICK_SORT_VALS manually because
+        // the fallback might be a macro.
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
+            #if !POTTERY_ARRAY_ACCESS_INHERENT_BASE
+                POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK(context, base, first, count);
+            #else
+                POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK(context, first, count);
+            #endif
+        #else
+            #if !POTTERY_ARRAY_ACCESS_INHERENT_BASE
+                POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK(base, first, count);
+            #else
+                POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK(first, count);
+            #endif
+        #endif
         return true;
     }
 

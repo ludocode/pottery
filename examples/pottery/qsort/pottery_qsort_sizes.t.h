@@ -34,76 +34,87 @@
 #define POTTERY_QSORT_RENAME(x) POTTERY_CONCAT(POTTERY_QSORT_NAME, x)
 
 // int16_t
-#define POTTERY_INTRO_SORT_PREFIX POTTERY_QSORT_RENAME(_i16)
-#define POTTERY_INTRO_SORT_VALUE_TYPE int16_t
-#define POTTERY_INTRO_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_FIXED_TYPE
-#define POTTERY_INTRO_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_FIXED
-#define POTTERY_INTRO_SORT_LIFECYCLE_MOVE_BY_VALUE 1
-#include "pottery/intro_sort/pottery_intro_sort_static.t.h"
+#define POTTERY_QUICK_SORT_PREFIX POTTERY_QSORT_RENAME(_i16)
+#define POTTERY_QUICK_SORT_VALUE_TYPE int16_t
+#define POTTERY_QUICK_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_FIXED_TYPE
+#define POTTERY_QUICK_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_FIXED
+#define POTTERY_QUICK_SORT_LIFECYCLE_MOVE_BY_VALUE 1
+#define POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK POTTERY_QSORT_FIXED_DEPTH_LIMIT_FALLBACK
+#include "pottery/quick_sort/pottery_quick_sort_static.t.h"
 
 // int32_t
-#define POTTERY_INTRO_SORT_PREFIX POTTERY_QSORT_RENAME(_i32)
-#define POTTERY_INTRO_SORT_VALUE_TYPE int32_t
-#define POTTERY_INTRO_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_FIXED_TYPE
-#define POTTERY_INTRO_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_FIXED
-#define POTTERY_INTRO_SORT_LIFECYCLE_MOVE_BY_VALUE 1
-#include "pottery/intro_sort/pottery_intro_sort_static.t.h"
+#define POTTERY_QUICK_SORT_PREFIX POTTERY_QSORT_RENAME(_i32)
+#define POTTERY_QUICK_SORT_VALUE_TYPE int32_t
+#define POTTERY_QUICK_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_FIXED_TYPE
+#define POTTERY_QUICK_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_FIXED
+#define POTTERY_QUICK_SORT_LIFECYCLE_MOVE_BY_VALUE 1
+#define POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK POTTERY_QSORT_FIXED_DEPTH_LIMIT_FALLBACK
+#include "pottery/quick_sort/pottery_quick_sort_static.t.h"
 
 // int64_t
-#define POTTERY_INTRO_SORT_PREFIX POTTERY_QSORT_RENAME(_i64)
-#define POTTERY_INTRO_SORT_VALUE_TYPE int64_t
-#define POTTERY_INTRO_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_FIXED_TYPE
-#define POTTERY_INTRO_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_FIXED
-#define POTTERY_INTRO_SORT_LIFECYCLE_MOVE_BY_VALUE 1
-#include "pottery/intro_sort/pottery_intro_sort_static.t.h"
+#define POTTERY_QUICK_SORT_PREFIX POTTERY_QSORT_RENAME(_i64)
+#define POTTERY_QUICK_SORT_VALUE_TYPE int64_t
+#define POTTERY_QUICK_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_FIXED_TYPE
+#define POTTERY_QUICK_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_FIXED
+#define POTTERY_QUICK_SORT_LIFECYCLE_MOVE_BY_VALUE 1
+#define POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK POTTERY_QSORT_FIXED_DEPTH_LIMIT_FALLBACK
+#include "pottery/quick_sort/pottery_quick_sort_static.t.h"
 
 // int32_t[3]
-#define POTTERY_INTRO_SORT_PREFIX POTTERY_QSORT_RENAME(_i32_3)
-#define POTTERY_INTRO_SORT_VALUE_TYPE pottery_i32_3_t
-#define POTTERY_INTRO_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_FIXED_TYPE
-#define POTTERY_INTRO_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_FIXED
-#define POTTERY_INTRO_SORT_LIFECYCLE_MOVE_BY_VALUE 1
-#include "pottery/intro_sort/pottery_intro_sort_static.t.h"
+#define POTTERY_QUICK_SORT_PREFIX POTTERY_QSORT_RENAME(_i32_3)
+#define POTTERY_QUICK_SORT_VALUE_TYPE pottery_qsort_i32_3_t
+#define POTTERY_QUICK_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_FIXED_TYPE
+#define POTTERY_QUICK_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_FIXED
+#define POTTERY_QUICK_SORT_LIFECYCLE_MOVE_BY_VALUE 1
+#define POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK POTTERY_QSORT_FIXED_DEPTH_LIMIT_FALLBACK
+#include "pottery/quick_sort/pottery_quick_sort_static.t.h"
 
 // int64_t[2]
-#define POTTERY_INTRO_SORT_PREFIX POTTERY_QSORT_RENAME(_i64_2)
-#define POTTERY_INTRO_SORT_VALUE_TYPE pottery_i64_2_t
-#define POTTERY_INTRO_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_FIXED_TYPE
-#define POTTERY_INTRO_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_FIXED
-#define POTTERY_INTRO_SORT_LIFECYCLE_MOVE_BY_VALUE 1
-#include "pottery/intro_sort/pottery_intro_sort_static.t.h"
+#define POTTERY_QUICK_SORT_PREFIX POTTERY_QSORT_RENAME(_i64_2)
+#define POTTERY_QUICK_SORT_VALUE_TYPE pottery_qsort_i64_2_t
+#define POTTERY_QUICK_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_FIXED_TYPE
+#define POTTERY_QUICK_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_FIXED
+#define POTTERY_QUICK_SORT_LIFECYCLE_MOVE_BY_VALUE 1
+#define POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK POTTERY_QSORT_FIXED_DEPTH_LIMIT_FALLBACK
+#include "pottery/quick_sort/pottery_quick_sort_static.t.h"
 
 // int64_t[3]
-#define POTTERY_INTRO_SORT_PREFIX POTTERY_QSORT_RENAME(_i64_3)
-#define POTTERY_INTRO_SORT_VALUE_TYPE pottery_i64_3_t
-#define POTTERY_INTRO_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_FIXED_TYPE
-#define POTTERY_INTRO_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_FIXED
-#define POTTERY_INTRO_SORT_LIFECYCLE_MOVE_BY_VALUE 1
-#include "pottery/intro_sort/pottery_intro_sort_static.t.h"
+#define POTTERY_QUICK_SORT_PREFIX POTTERY_QSORT_RENAME(_i64_3)
+#define POTTERY_QUICK_SORT_VALUE_TYPE pottery_qsort_i64_3_t
+#define POTTERY_QUICK_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_FIXED_TYPE
+#define POTTERY_QUICK_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_FIXED
+#define POTTERY_QUICK_SORT_LIFECYCLE_MOVE_BY_VALUE 1
+#define POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK POTTERY_QSORT_FIXED_DEPTH_LIMIT_FALLBACK
+#include "pottery/quick_sort/pottery_quick_sort_static.t.h"
 
 // int64_t[4]
-#define POTTERY_INTRO_SORT_PREFIX POTTERY_QSORT_RENAME(_i64_4)
-#define POTTERY_INTRO_SORT_VALUE_TYPE pottery_i64_4_t
-#define POTTERY_INTRO_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_FIXED_TYPE
-#define POTTERY_INTRO_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_FIXED
-#define POTTERY_INTRO_SORT_LIFECYCLE_MOVE_BY_VALUE 1
-#include "pottery/intro_sort/pottery_intro_sort_static.t.h"
+#define POTTERY_QUICK_SORT_PREFIX POTTERY_QSORT_RENAME(_i64_4)
+#define POTTERY_QUICK_SORT_VALUE_TYPE pottery_qsort_i64_4_t
+#define POTTERY_QUICK_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_FIXED_TYPE
+#define POTTERY_QUICK_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_FIXED
+#define POTTERY_QUICK_SORT_LIFECYCLE_MOVE_BY_VALUE 1
+#define POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK POTTERY_QSORT_FIXED_DEPTH_LIMIT_FALLBACK
+#include "pottery/quick_sort/pottery_quick_sort_static.t.h"
 
 // any
-#define POTTERY_INTRO_SORT_PREFIX POTTERY_QSORT_RENAME(_any)
-#define POTTERY_INTRO_SORT_REF_TYPE void*
-#define POTTERY_INTRO_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_VARIABLE
-#define POTTERY_INTRO_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_VARIABLE_TYPE
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_SELECT(context, base, offset) (char*)base + offset * context.element_size
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_INDEX(context, base, ref) (size_t)((char*)ref - (char*)base) / context.element_size
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_NEXT(context, base, ref) (char*)ref + context.element_size
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_PREVIOUS(context, base, ref) (char*)ref - context.element_size
-#define POTTERY_INTRO_SORT_LIFECYCLE_SWAP(context, a, b) pottery_qsort_swap_any(context.element_size, a, b)
-#include "pottery/intro_sort/pottery_intro_sort_static.t.h"
+#define POTTERY_QUICK_SORT_PREFIX POTTERY_QSORT_RENAME(_any)
+#define POTTERY_QUICK_SORT_REF_TYPE void*
+#define POTTERY_QUICK_SORT_COMPARE_THREE_WAY POTTERY_QSORT_COMPARE_VARIABLE
+#define POTTERY_QUICK_SORT_CONTEXT_TYPE POTTERY_QSORT_CONTEXT_VARIABLE_TYPE
+#define POTTERY_QUICK_SORT_ARRAY_ACCESS_SELECT(context, base, offset) (char*)base + offset * context.element_size
+#define POTTERY_QUICK_SORT_ARRAY_ACCESS_INDEX(context, base, ref) (size_t)((char*)ref - (char*)base) / context.element_size
+#define POTTERY_QUICK_SORT_ARRAY_ACCESS_EQUAL(context, base, left, right) left == right
+#define POTTERY_QUICK_SORT_ARRAY_ACCESS_NEXT(context, base, ref) (char*)ref + context.element_size
+#define POTTERY_QUICK_SORT_ARRAY_ACCESS_PREVIOUS(context, base, ref) (char*)ref - context.element_size
+#define POTTERY_QUICK_SORT_LIFECYCLE_SWAP(context, a, b) pottery_qsort_swap_any(context.element_size, a, b)
+#define POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK POTTERY_QSORT_VARIABLE_DEPTH_LIMIT_FALLBACK
+#include "pottery/quick_sort/pottery_quick_sort_static.t.h"
 
 void POTTERY_QSORT_NAME(void* first, size_t count, size_t element_size,
         POTTERY_QSORT_COMPARE_ARGS
 ) {
+// Toggle this off to disable all size specializations.
+#if 1
     #if POTTERY_QSORT_USER_CONTEXT
     POTTERY_QSORT_CONTEXT_FIXED_TYPE fixed_context;
     fixed_context.compare = compare;
@@ -128,25 +139,26 @@ void POTTERY_QSORT_NAME(void* first, size_t count, size_t element_size,
         return;
     }
 
-    if (element_size == sizeof(pottery_i32_3_t) && pottery_qsort_is_aligned_as(first, pottery_i32_3_t)) {
-        POTTERY_QSORT_RENAME(_i32_3)(fixed_context, (pottery_i32_3_t*)first, count);
+    if (element_size == sizeof(pottery_qsort_i32_3_t) && pottery_qsort_is_aligned_as(first, pottery_qsort_i32_3_t)) {
+        POTTERY_QSORT_RENAME(_i32_3)(fixed_context, (pottery_qsort_i32_3_t*)first, count);
         return;
     }
 
-    if (element_size == sizeof(pottery_i64_2_t) && pottery_qsort_is_aligned_as(first, pottery_i64_2_t)) {
-        POTTERY_QSORT_RENAME(_i64_2)(fixed_context, (pottery_i64_2_t*)first, count);
+    if (element_size == sizeof(pottery_qsort_i64_2_t) && pottery_qsort_is_aligned_as(first, pottery_qsort_i64_2_t)) {
+        POTTERY_QSORT_RENAME(_i64_2)(fixed_context, (pottery_qsort_i64_2_t*)first, count);
         return;
     }
 
-    if (element_size == sizeof(pottery_i64_3_t) && pottery_qsort_is_aligned_as(first, pottery_i64_3_t)) {
-        POTTERY_QSORT_RENAME(_i64_3)(fixed_context, (pottery_i64_3_t*)first, count);
+    if (element_size == sizeof(pottery_qsort_i64_3_t) && pottery_qsort_is_aligned_as(first, pottery_qsort_i64_3_t)) {
+        POTTERY_QSORT_RENAME(_i64_3)(fixed_context, (pottery_qsort_i64_3_t*)first, count);
         return;
     }
 
-    if (element_size == sizeof(pottery_i64_4_t) && pottery_qsort_is_aligned_as(first, pottery_i64_4_t)) {
-        POTTERY_QSORT_RENAME(_i64_4)(fixed_context, (pottery_i64_4_t*)first, count);
+    if (element_size == sizeof(pottery_qsort_i64_4_t) && pottery_qsort_is_aligned_as(first, pottery_qsort_i64_4_t)) {
+        POTTERY_QSORT_RENAME(_i64_4)(fixed_context, (pottery_qsort_i64_4_t*)first, count);
         return;
     }
+#endif
 
     POTTERY_QSORT_CONTEXT_VARIABLE_TYPE variable_context = {
         element_size,
@@ -168,3 +180,5 @@ void POTTERY_QSORT_NAME(void* first, size_t count, size_t element_size,
 #undef POTTERY_QSORT_COMPARE_TYPE
 #undef POTTERY_QSORT_COMPARE_ARGS
 #undef POTTERY_QSORT_USER_CONTEXT
+#undef POTTERY_QSORT_FIXED_DEPTH_LIMIT_FALLBACK
+#undef POTTERY_QSORT_VARIABLE_DEPTH_LIMIT_FALLBACK

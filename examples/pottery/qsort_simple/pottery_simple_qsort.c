@@ -24,7 +24,7 @@
 
 #include "pottery_simple_qsort.h"
 
-typedef enum {
+typedef enum variant_t {
     variant_c,
     variant_gnu,
     variant_bsd,

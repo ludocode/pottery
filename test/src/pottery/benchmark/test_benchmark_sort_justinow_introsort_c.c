@@ -24,6 +24,10 @@
 
 #include "pottery/benchmark/test_benchmark_sort_common.h"
 
+#ifdef __clang__
+#pragma GCC diagnostic ignored "-Wnewline-eof"
+#endif
+
 // hack around use of variable-length arrays
 #define WINDOWS 1
 #define _malloca alloca

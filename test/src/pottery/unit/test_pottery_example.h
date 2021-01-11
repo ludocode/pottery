@@ -122,20 +122,23 @@ static inline char* strcpy_workaround(char* to, const char* from) {
  */
 
 #if 1
+#undef printf
+
 #ifdef __CLR_VER
-// C++/CLR doesn't support varargs functions but we can do this hack instead.
-#define printf(...) ( __VA_ARGS__ , (void)0)
+    // C++/CLR doesn't support varargs functions but we can do this hack instead.
+    #define printf(...) ( __VA_ARGS__ , (void)0)
 #else
-static inline int pottery_example_disable_printf(const char *format, ...) {
-    return (int)strlen(format); // close enough
-}
-#define printf pottery_example_disable_printf
+    static inline int pottery_example_disable_printf(const char *format, ...) {
+        return (int)strlen(format); // close enough
+    }
+    #define printf pottery_example_disable_printf
 #endif
 
 static inline int pottery_example_disable_puts(const char* s) {
     (void)s;
     return 1;
 }
+#undef puts
 #define puts pottery_example_disable_puts
 #endif
 
