@@ -29,12 +29,16 @@
 #include "pottery/vector/impl/pottery_vector_config_alloc.t.h"
 #include "pottery/alloc/pottery_alloc_define.t.h"
 
-#include "pottery/vector/impl/pottery_vector_config_lifecycle.t.h"
-#include "pottery/lifecycle/pottery_lifecycle_define.t.h"
+#ifndef POTTERY_VECTOR_EXTERNAL_LIFECYCLE
+    #include "pottery/vector/impl/pottery_vector_config_lifecycle.t.h"
+    #include "pottery/lifecycle/pottery_lifecycle_define.t.h"
+#endif
 
 #include "pottery/vector/impl/pottery_vector_definitions.t.h"
 #include "pottery/vector/impl/pottery_vector_unmacros.t.h"
 
-#include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
+#ifndef POTTERY_VECTOR_EXTERNAL_LIFECYCLE
+    #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
+#endif
 
 #undef POTTERY_VECTOR_IMPL
