@@ -57,6 +57,11 @@
     #define POTTERY_QUICK_SORT_CONTEXT_VAL /*nothing*/
 #endif
 
+// The default count limit fallback is the included insertion_sort.
+#ifndef POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK
+    #define POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK POTTERY_CONCAT(POTTERY_QUICK_SORT_PREFIX, _insertion_sort_range)
+#endif
+
 
 
 /*

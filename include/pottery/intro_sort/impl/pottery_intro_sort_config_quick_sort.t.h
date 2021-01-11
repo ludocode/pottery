@@ -36,11 +36,9 @@
 #define POTTERY_QUICK_SORT_EXTERNAL_COMPARE POTTERY_CONCAT(POTTERY_INTRO_SORT_PREFIX, _compare)
 #define POTTERY_QUICK_SORT_EXTERNAL_ARRAY_ACCESS POTTERY_CONCAT(POTTERY_INTRO_SORT_PREFIX, _array_access)
 
-// Switch to insertion_sort when partition is too small
-#define POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK POTTERY_CONCAT(POTTERY_INTRO_SORT_PREFIX, _insertion_sort_range)
-
 // Switch to heap_sort when recursion is too deep
 #define POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK POTTERY_CONCAT(POTTERY_INTRO_SORT_PREFIX, _heap_sort_range)
+
 
 
 // Forward types

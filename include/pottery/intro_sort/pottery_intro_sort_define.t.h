@@ -36,9 +36,6 @@
 #include "pottery/intro_sort/impl/pottery_intro_sort_config_array_access.t.h"
 #include "pottery/array_access/pottery_array_access_define.t.h"
 
-#include "pottery/intro_sort/impl/pottery_intro_sort_config_insertion_sort.t.h"
-#include "pottery/insertion_sort/pottery_insertion_sort_define.t.h"
-
 #include "pottery/intro_sort/impl/pottery_intro_sort_config_heap_sort.t.h"
 #include "pottery/heap_sort/pottery_heap_sort_define.t.h"
 

@@ -44,6 +44,11 @@
     #include "pottery/array_access/pottery_array_access_static.t.h"
 #endif
 
+#ifndef POTTERY_QUICK_SORT_COUNT_LIMIT_FALLBACK
+    #include "pottery/quick_sort/impl/pottery_quick_sort_config_insertion_sort.t.h"
+    #include "pottery/insertion_sort/pottery_insertion_sort_static.t.h"
+#endif
+
 #ifndef POTTERY_QUICK_SORT_EXTERN
     #define POTTERY_QUICK_SORT_EXTERN pottery_maybe_unused static
 #endif
