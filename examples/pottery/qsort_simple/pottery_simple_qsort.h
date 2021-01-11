@@ -28,20 +28,31 @@
 #include <stddef.h>
 
 /**
- * Sorts an array.
+ * Sorts an array with a custom comparator.
  *
- * (This is the standard qsort() function implemented with Pottery.)
+ * This is the standard C qsort() function implemented with Pottery.
  */
-void pottery_qsort_simple(void* first, size_t count, size_t element_size,
-            int (*compare)(const void* left, const void* right));
+void pottery_simple_qsort(void* first, size_t count, size_t element_size,
+        int (*compare)(const void* left, const void* right));
 
 /**
- * Sorts an array with a context.
+ * Sorts an array with a custom comparator that takes a user context, where the
+ * context parameter comes last.
  *
- * (This is GNU-style qsort_r() implemented with Pottery.)
+ * This is GNU-style qsort_r() implemented with Pottery.
  */
-void pottery_qsort_r_simple(void* first, size_t count, size_t element_size,
-            int (*compare)(const void* left, const void* right, void* context),
-            void* context);
+void pottery_simple_gnu_qsort_r(void* first, size_t count, size_t element_size,
+        int (*compare)(const void* left, const void* right, void* user_context),
+        void* user_context);
+
+/**
+ * Sorts an array with a custom comparator that takes a user context, where the
+ * context parameter comes first.
+ *
+ * This is BSD-style qsort_r() implemented with Pottery.
+ */
+void pottery_simple_bsd_qsort_r(void* first, size_t count, size_t element_size,
+        void* user_context,
+        int (*compare)(void* user_context, const void* left, const void* right));
 
 #endif

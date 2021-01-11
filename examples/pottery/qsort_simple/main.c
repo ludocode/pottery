@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "pottery_qsort_simple.h"
+
+#include "pottery_simple_qsort.h"
 
 static inline int strcmp_wrapper(const void* left, const void* right) {
-    return strcmp((const char*)left, (const char*)right);
+    return strcmp(*(const char* const*)left, *(const char* const*)right);
 }
 
 int main(void) {
@@ -15,7 +16,7 @@ int main(void) {
     };
     size_t count = sizeof(players) / sizeof(*players);
 
-    pottery_qsort_simple((void*)players, count, sizeof(players[0]), strcmp_wrapper);
+    pottery_simple_qsort((void*)players, count, sizeof(players[0]), strcmp_wrapper);
 
     size_t i;
     for (i = 0; i < count; ++i)

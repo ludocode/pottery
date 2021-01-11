@@ -1,11 +1,23 @@
-### Simple `qsort()` implementation using Pottery
+## Simple `qsort()` with Pottery
 
-This is an implementation of the standard C `qsort()` and GNU-style `qsort_r()` using Pottery's introsort. This implementation is intended to be simple for demonstration purposes. Despite this, it provides great performance with safe worst-case time complexity and no memory allocation. For an even faster and more fully-featured implementation, see [qsort](../qsort/).
+This is an implementation of the standard C `qsort()` and several extensions using Pottery's [intro_sort](../../../include/pottery/intro_sort/`) template. It defines the following functions:
 
-Like many Pottery algorithms, Pottery's introsort supports custom array access expressions over an abstract reference type. In the case of `qsort()`, we can use `void*` as a reference type and use the user's element size to offset our pointers and move elements around.
+- `pottery_simple_qsort()` - Standard C `qsort()`
+- `pottery_simple_gnu_qsort_r()` - GNU glibc (and uClibc) `qsort_r()`
+- `pottery_simple_bsd_qsort_r()` - BSD (and macOS) `qsort_r()`
 
-The custom swap function performs a swap byte-by-byte, and a custom compare function calls the user's comparator through a function pointer (with the optional user context.) This is all we need to configure introsort to build `qsort()`.
+This implementation is intended to be simple for demonstration purposes. Despite this, it provides great performance with safe worst-case time complexity, small optimized code size, no memory allocation and strictly bounded stack usage (it does not use recursion.)
 
-To pass our arguments around, we store them in a context. We pass this to introsort and it passes it back to our configured expressions. Our context is small so we pass it by value.
+This would be suitable for a minimal libc. For an even faster implementation, see [qsort](../qsort/).
 
-The above would be suitable for a minimal libc. Check out the other [qsort](../qsort/) example to see more.
+
+
+### How It Works
+
+Most templated C sort algorithms (such as the excellent [swensort/sort](https://github.com/swenson/sort) templates) cannot be used to implement `qsort()`. This is because they only operate on strongly typed C arrays: they use operator `[]` to access values. But `qsort()` takes an element size at runtime so operator `[]` can't be used.
+
+Pottery's templates are different: they operate on generalized arrays over an abstract reference type. You can define your own array access expressions for accessing array elements. This means you can implement `qsort()` with Pottery by offsetting pointers by the element size at runtime.
+
+This is demonstrated by this example. Instead of defining a `VALUE_TYPE`, we define a `REF_TYPE` of `void*`, and we define `CONTEXT_TYPE` to a struct containing our arguments. These types are passed back to our configured expressions. The custom array access functions offset by the element size, the swap function swaps bitwise, and a custom compare function calls the user's comparator through a function pointer. This is all we need to configure Pottery's `intro_sort` to build `qsort()`.
+
+Read the [How It Works](../../../docs/how_it_works.md) documentation for more information on the inner workings of Pottery's templates.

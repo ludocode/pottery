@@ -69,15 +69,18 @@ static void pottery_gnu_qsort_r_wrapper(benchmark_int_t* ints, size_t count) {
     pottery_gnu_qsort_r(ints, count, sizeof(benchmark_int_t), benchmark_int_compare_gnu_r, NULL);
 }
 
-#include "pottery/qsort_simple/pottery_qsort_simple.h"
+#include "pottery/qsort_simple/pottery_simple_qsort.h"
 __attribute__((__unused__))
-static void pottery_qsort_simple_wrapper(benchmark_int_t* ints, size_t count) {
-    pottery_qsort_simple(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
+static void pottery_simple_qsort_wrapper(benchmark_int_t* ints, size_t count) {
+    pottery_simple_qsort(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
 }
-
 __attribute__((__unused__))
-static void pottery_qsort_r_simple_wrapper(benchmark_int_t* ints, size_t count) {
-    pottery_qsort_r_simple(ints, count, sizeof(benchmark_int_t), benchmark_int_compare_gnu_r, NULL);
+static void pottery_simple_gnu_qsort_r_wrapper(benchmark_int_t* ints, size_t count) {
+    pottery_simple_gnu_qsort_r(ints, count, sizeof(benchmark_int_t), benchmark_int_compare_gnu_r, NULL);
+}
+__attribute__((__unused__))
+static void pottery_simple_bsd_qsort_r_wrapper(benchmark_int_t* ints, size_t count) {
+    pottery_simple_bsd_qsort_r(ints, count, sizeof(benchmark_int_t), NULL, benchmark_int_compare_bsd_r);
 }
 
 __attribute__((__unused__))
@@ -287,8 +290,9 @@ static void benchmark_sorts_variant(size_t count, variant_t variant) {
     benchmark_sort(ints, count, pottery_qsort_wrapper, "pottery_qsort()");
     #if 1
     benchmark_sort(ints, count, pottery_gnu_qsort_r_wrapper, "pottery_gnu_qsort_r()");
-    benchmark_sort(ints, count, pottery_qsort_simple_wrapper, "pottery_qsort_simple()");
-    benchmark_sort(ints, count, pottery_qsort_r_simple_wrapper, "pottery_qsort_r_simple()");
+    benchmark_sort(ints, count, pottery_simple_qsort_wrapper, "pottery_simple_qsort()");
+    benchmark_sort(ints, count, pottery_simple_gnu_qsort_r_wrapper, "pottery_simple_gnu_qsort_r()");
+    benchmark_sort(ints, count, pottery_simple_bsd_qsort_r_wrapper, "pottery_simple_bsd_qsort_r()");
     #endif
     #endif
     #if 1
