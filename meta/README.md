@@ -6,7 +6,7 @@ Many of Pottery's `macros` and `unmacros` headers contain sections that say `AUT
 
 Meta-templates are used only for renaming identifiers. They emit only preprocessor defines for this purpose; they do not actually generate any non-preprocessor code.
 
-Functions and types are renamed by concatenating the user prefix with the suffix of the identifier. For example if the user defines `POTTERY_VECTOR_PREFIX` to foo, `pottery_vector_init` is renamed to `foo_init`. Since these macros are the same across many container templates, they are generated from [`array/rename.m.h`](array/rename.m.h).
+Functions and types are renamed by concatenating the user prefix with the suffix of the identifier. For example if the user defines `POTTERY_VECTOR_PREFIX` to foo, `pottery_vector_init` is renamed to `foo_init`. Since these macros are the same across many container templates, they are generated from [`container/rename.m.h`](container/rename.m.h).
 
 Macros are renamed by meta-templates as well. This is called "forwarding". For example when you instantiate a [vector](../include/pottery/vector/), you configure lifecycle expressions on the vector template, like `POTTERY_VECTOR_LIFECYCLE_DESTROY`. But vector uses the [lifecycle](../include/pottery/lifecycle/) template to actually implement this, so it needs to rename (or forward along) this configuration to `POTTERY_LIFECYCLE_DESTROY`. Since these macros are the same across many containers, they are generated from [`lifecycle/forward.m.h`](lifecycle/forward.m.h).
 
