@@ -27,7 +27,7 @@
 #endif
 
 #if !POTTERY_LIFECYCLE_CAN_MOVE
-    #error "Pottery vector requires a move expression. Define POTTERY_VECTOR_LIFECYCLE_MOVE, POTTERY_VECTOR_LIFECYCLE_MOVE_BY_VALUE or POTTERY_VECTOR_LIFECYCLE_BY_VALUE. See the documentation for details."
+    #error "Pottery vector requires a move expression. Define LIFECYCLE_MOVE, LIFECYCLE_MOVE_BY_VALUE or LIFECYCLE_BY_VALUE. See the documentation for details."
 #endif
 
 

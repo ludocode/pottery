@@ -24,6 +24,11 @@
 
 #define POTTERY_VECTOR_IMPL
 
+#ifndef POTTERY_VECTOR_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/vector/impl/pottery_vector_config_types.t.h"
+    #include "pottery/container_types/pottery_container_types_define.t.h"
+#endif
+
 #include "pottery/vector/impl/pottery_vector_macros.t.h"
 
 #include "pottery/vector/impl/pottery_vector_config_alloc.t.h"
@@ -35,10 +40,15 @@
 #endif
 
 #include "pottery/vector/impl/pottery_vector_definitions.t.h"
-#include "pottery/vector/impl/pottery_vector_unmacros.t.h"
 
 #ifndef POTTERY_VECTOR_EXTERNAL_LIFECYCLE
     #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
 #endif
+
+#ifndef POTTERY_VECTOR_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/container_types/pottery_container_types_cleanup.t.h"
+#endif
+
+#include "pottery/vector/impl/pottery_vector_unmacros.t.h"
 
 #undef POTTERY_VECTOR_IMPL

@@ -30,13 +30,6 @@
     #define POTTERY_VECTOR_INTERNAL_CAPACITY 0
 #endif
 
-typedef POTTERY_VECTOR_VALUE_TYPE pottery_vector_value_t;
-typedef pottery_vector_value_t* pottery_vector_entry_t;
-
-#ifdef POTTERY_VECTOR_CONTEXT_TYPE
-typedef POTTERY_VECTOR_CONTEXT_TYPE pottery_vector_context_t;
-#endif
-
 typedef struct pottery_vector_t {
     pottery_vector_value_t* storage;
     #if POTTERY_VECTOR_DOUBLE_ENDED

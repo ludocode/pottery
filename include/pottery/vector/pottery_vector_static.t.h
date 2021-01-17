@@ -28,6 +28,11 @@
     #define POTTERY_VECTOR_EXTERN pottery_maybe_unused static
 #endif
 
+#ifndef POTTERY_VECTOR_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/vector/impl/pottery_vector_config_types.t.h"
+    #include "pottery/container_types/pottery_container_types_static.t.h"
+#endif
+
 #include "pottery/vector/impl/pottery_vector_macros.t.h"
 #include "pottery/vector/impl/pottery_vector_forward.t.h"
 
@@ -41,10 +46,15 @@
 
 #include "pottery/vector/impl/pottery_vector_declarations.t.h"
 #include "pottery/vector/impl/pottery_vector_definitions.t.h"
-#include "pottery/vector/impl/pottery_vector_unmacros.t.h"
 
 #ifndef POTTERY_VECTOR_EXTERNAL_LIFECYCLE
     #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
 #endif
+
+#ifndef POTTERY_VECTOR_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/container_types/pottery_container_types_cleanup.t.h"
+#endif
+
+#include "pottery/vector/impl/pottery_vector_unmacros.t.h"
 
 #undef POTTERY_VECTOR_IMPL
