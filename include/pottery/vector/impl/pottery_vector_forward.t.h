@@ -53,7 +53,7 @@ typedef struct pottery_vector_t {
         #endif
     #endif
 
-    #ifdef POTTERY_VECTOR_CONTEXT_TYPE
+    #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
         pottery_vector_context_t context;
     #endif
 } pottery_vector_t;

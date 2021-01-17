@@ -66,7 +66,11 @@ pottery_vector_entry_t pottery_vector_begin(const pottery_vector_t* vector);
  */
 
 static inline
-pottery_error_t pottery_vector_init(pottery_vector_t* vector) {
+pottery_error_t pottery_vector_init(pottery_vector_t* vector
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
+        , pottery_vector_context_t context
+        #endif
+) {
     pottery_vector_impl_reset(vector);
 
     #if POTTERY_DEBUG
@@ -77,6 +81,10 @@ pottery_error_t pottery_vector_init(pottery_vector_t* vector) {
             // Note that we don't use the configured allocator
             vector->leak_check = malloc(1);
         #endif
+    #endif
+
+    #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
+    vector->context = context;
     #endif
 
     return POTTERY_OK;
@@ -90,22 +98,16 @@ POTTERY_VECTOR_EXTERN
 void pottery_vector_move(pottery_vector_t* to, pottery_vector_t* from);
 #endif
 
-// TODO clean up context stuff. there should only be one context
-#ifdef POTTERY_VECTOR_ALLOC_CONTEXT_TYPE
-static inline pottery_vector_alloc_context(pottery_vector_t* vector) {
-    #if defined(POTTERY_VECTOR_ALLOC_CONTEXT)
-    return POTTERY_VECTOR_ALLOC_CONTEXT(vector);
-    #else
-    return vector->alloc_context;
-    #endif
+#if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
+static inline pottery_vector_context_t pottery_vector_context(pottery_vector_t* vector) {
+    return vector->context;
 }
 
-#if !defined(POTTERY_VECTOR_ALLOC_CONTEXT)
-static inline
-void pottery_vector_set_alloc_context(pottery_vector_t* vector, pottery_vector_alloc_context_t* context) {
-    vector->alloc_context = context;
+static inline void pottery_vector_set_context(pottery_vector_t* vector,
+        pottery_vector_context_t context)
+{
+    vector->context = pottery_move_if_cxx(context);
 }
-#endif
 #endif
 
 static inline

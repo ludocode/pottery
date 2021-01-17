@@ -35,9 +35,13 @@
 #define POTTERY_TEST_ARRAY_UFO(x) \
     POTTERY_TEST(POTTERY_CONCAT(POTTERY_CONCAT(POTTERY_TEST_ARRAY_UFO_PREFIX, _), x))
 
+#ifndef POTTERY_TEST_ARRAY_UFO_CONTEXT_VAL
+    #define POTTERY_TEST_ARRAY_UFO_CONTEXT_VAL /*nothing*/
+#endif
+
 POTTERY_TEST_ARRAY_UFO(init_destroy) {
     ufo_array_t array;
-    ufo_array_init(&array);
+    ufo_array_init(&array POTTERY_TEST_ARRAY_UFO_CONTEXT_VAL);
     pottery_test_assert(ufo_array_count(&array) == 0);
     ufo_array_destroy(&array);
 }
@@ -50,7 +54,7 @@ static inline void check_ufo_array(ufo_array_t* array) {
 
 POTTERY_TEST_ARRAY_UFO(remove) {
     ufo_array_t array;
-    ufo_array_init(&array);
+    ufo_array_init(&array POTTERY_TEST_ARRAY_UFO_CONTEXT_VAL);
 
     ufo_array_entry_t entry;
 
@@ -77,7 +81,7 @@ POTTERY_TEST_ARRAY_UFO(remove) {
 
 POTTERY_TEST_ARRAY_UFO(grow_and_shrink) {
     ufo_array_t array;
-    ufo_array_init(&array);
+    ufo_array_init(&array POTTERY_TEST_ARRAY_UFO_CONTEXT_VAL);
 
     #ifdef POTTERY_TEST_ARRAY_UFO_HAS_CAPACITY
     size_t capacity = ufo_array_capacity(&array);
@@ -140,3 +144,4 @@ POTTERY_TEST_ARRAY_UFO(grow_and_shrink) {
 
 #undef POTTERY_TEST_ARRAY_UFO_HAS_CAPACITY
 #undef POTTERY_TEST_ARRAY_UFO_PREFIX
+#undef POTTERY_TEST_ARRAY_UFO_CONTEXT_VAL

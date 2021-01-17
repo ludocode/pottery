@@ -202,8 +202,13 @@ void pottery_vector_move(pottery_vector_t* to, pottery_vector_t* from) {
     #if POTTERY_VECTOR_INTERNAL_CAPACITY > 0
     if (from->storage == from->u.internal) {
 
-        // initialize the vector, which gives us sufficient internal space
-        pottery_vector_init(to);
+        // initialize the vector (stealing the context). this gives us
+        // sufficient internal space
+        pottery_vector_init(to
+                #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
+                , pottery_move_if_cxx(from->context)
+                #endif
+                );
         pottery_assert(to->storage == to->u.internal);
         pottery_assert(pottery_vector_capacity(to) >= from->count);
 
@@ -217,11 +222,6 @@ void pottery_vector_move(pottery_vector_t* to, pottery_vector_t* from) {
         pottery_vector_lifecycle_move_bulk_restrict(POTTERY_VECTOR_CONTEXT_VAL(from)
                 pottery_vector_begin(to), pottery_vector_begin(from), to->count);
         from->count = 0;
-
-        // move the context
-        #ifdef POTTERY_VECTOR_CONTEXT_TYPE
-        to->context = pottery_move_if_cxx(from->context);
-        #endif
 
         // destroy the source vector
         pottery_vector_destroy(from);
@@ -249,8 +249,8 @@ void pottery_vector_move(pottery_vector_t* to, pottery_vector_t* from) {
         #endif
 
         // steal the context
-        #if defined(POTTERY_VECTOR_ALLOC_CONTEXT_TYPE) && !defined(POTTERY_VECTOR_ALLOC_CONTEXT)
-        to->alloc_context = pottery_move_if_cxx(from->alloc_context);
+        #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
+        to->context = pottery_move_if_cxx(from->context);
         #endif
 
         // As in destroy(), help detect double-destroy.
@@ -757,7 +757,11 @@ pottery_error_t pottery_vector_impl_copy(pottery_vector_t* vector, const pottery
 
 POTTERY_VECTOR_EXTERN
 pottery_error_t pottery_vector_init_copy(pottery_vector_t* vector, const pottery_vector_t* other) {
-    pottery_vector_init(vector);
+    pottery_vector_init(vector
+            #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
+            , other->context
+            #endif
+            );
     return pottery_vector_impl_copy(vector, other);
 }
 
@@ -789,7 +793,11 @@ pottery_error_t pottery_vector_copy(pottery_vector_t* vector, const pottery_vect
     // Copy to a temporary so that we don't damage the vector if an error
     // occurs.
     pottery_vector_t temp;
-    pottery_vector_init(&temp);
+    pottery_vector_init(&temp
+            #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
+            , other->context
+            #endif
+            );
     pottery_error_t error = pottery_vector_impl_copy(&temp, other);
     if (error == POTTERY_OK)
         pottery_vector_swap(&temp, vector);
@@ -804,7 +812,11 @@ void pottery_vector_init_steal(pottery_vector_t* vector, pottery_vector_t* other
     // TODO this could be implemented somewhat more efficiently, especially in
     // the case of internal storage since we don't need to move our values
     // back. This can be done later.
-    pottery_vector_init(vector);
+    pottery_vector_init(vector
+            #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
+            , other->context
+            #endif
+            );
     pottery_vector_swap(vector, other);
 }
 

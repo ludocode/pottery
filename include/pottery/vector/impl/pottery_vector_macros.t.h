@@ -48,7 +48,7 @@
 #endif
 
 // Context forwarding
-#ifdef POTTERY_VECTOR_CONTEXT_TYPE
+#if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
     #define POTTERY_VECTOR_CONTEXT_VAL(vector) vector->context,
 #else
     #define POTTERY_VECTOR_CONTEXT_VAL(vector) /*nothing*/
