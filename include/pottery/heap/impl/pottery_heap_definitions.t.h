@@ -141,8 +141,11 @@ void pottery_heap_sift_up(POTTERY_HEAP_ARGS size_t offset, size_t index) {
 
 POTTERY_HEAP_EXTERN
 void pottery_heap_build_range(POTTERY_HEAP_ARGS size_t offset, size_t count) {
-    if (count <= 1)
+    if (count <= 1) {
+        if (count == 1)
+            pottery_heap_update_index(POTTERY_HEAP_VALS offset);
         return;
+    }
 
     // We limit the heap size to eliminate overflow checks and prevent any
     // out-of-bounds accesses. It's probably not practically possible to have a
@@ -177,7 +180,6 @@ POTTERY_HEAP_EXTERN
 void pottery_heap_expand_bulk_range(POTTERY_HEAP_ARGS
         size_t offset, size_t current_count, size_t expand_count)
 {
-
     // bounds checks
     size_t new_total = current_count + expand_count;
     if (new_total < current_count)
@@ -229,7 +231,7 @@ void pottery_heap_contract_at_range(POTTERY_HEAP_ARGS
         size_t offset, size_t current_count, size_t index_to_contract)
 {
     if (current_count == 1) {
-        pottery_assert(index_to_contract == 0);
+        pottery_assert(index_to_contract == offset);
         return;
     }
 
