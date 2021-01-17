@@ -45,7 +45,7 @@
 #include "pottery/vector/pottery_vector_static.t.h"
 
 // Instantiate ufo_array tests on our ufo vector
-#define POTTERY_TEST_ARRAY_UFO_PREFIX pottery_vector_ufo
+#define POTTERY_TEST_ARRAY_UFO_PREFIX pottery_vector_ufo_with_context
 #define POTTERY_TEST_ARRAY_UFO_HAS_CAPACITY
 #define POTTERY_TEST_ARRAY_UFO_CONTEXT_VAL ,0xDEADC0DE
 #include "pottery/unit/array/test_pottery_unit_array_ufo.t.h"
