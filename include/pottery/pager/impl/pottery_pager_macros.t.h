@@ -87,6 +87,7 @@
     #define pottery_pager_count POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _count)
     #define pottery_pager_is_empty POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _is_empty)
     #define pottery_pager_at POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _at)
+    #define pottery_pager_find POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _find)
     #define pottery_pager_first POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _first)
     #define pottery_pager_last POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _last)
     #define pottery_pager_any POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _any)
@@ -106,11 +107,13 @@
     #define pottery_pager_shrink POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _shrink)
 
     // insert
+    #define pottery_pager_insert POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _insert)
     #define pottery_pager_insert_at POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _insert_at)
     #define pottery_pager_insert_first POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _insert_first)
     #define pottery_pager_insert_last POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _insert_last)
     #define pottery_pager_insert_before POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _insert_before)
     #define pottery_pager_insert_after POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _insert_after)
+    #define pottery_pager_insert_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _insert_bulk)
     #define pottery_pager_insert_at_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _insert_at_bulk)
     #define pottery_pager_insert_first_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _insert_first_bulk)
     #define pottery_pager_insert_last_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _insert_last_bulk)
@@ -118,11 +121,13 @@
     #define pottery_pager_insert_after_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _insert_after_bulk)
 
     // emplace
+    #define pottery_pager_emplace POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _emplace)
     #define pottery_pager_emplace_at POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _emplace_at)
     #define pottery_pager_emplace_first POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _emplace_first)
     #define pottery_pager_emplace_last POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _emplace_last)
     #define pottery_pager_emplace_before POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _emplace_before)
     #define pottery_pager_emplace_after POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _emplace_after)
+    #define pottery_pager_emplace_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _emplace_bulk)
     #define pottery_pager_emplace_at_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _emplace_at_bulk)
     #define pottery_pager_emplace_first_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _emplace_first_bulk)
     #define pottery_pager_emplace_last_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _emplace_last_bulk)
@@ -130,6 +135,7 @@
     #define pottery_pager_emplace_after_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _emplace_after_bulk)
 
     // construct
+    #define pottery_pager_construct POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _construct)
     #define pottery_pager_construct_at POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _construct_at)
     #define pottery_pager_construct_first POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _construct_first)
     #define pottery_pager_construct_last POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _construct_last)
@@ -154,10 +160,13 @@
     #define pottery_pager_remove_and_next POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _remove_and_next)
     #define pottery_pager_remove_and_previous POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _remove_and_previous)
     #define pottery_pager_remove_all POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _remove_all)
+    #define pottery_pager_remove_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _remove_bulk)
     #define pottery_pager_remove_at_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _remove_at_bulk)
     #define pottery_pager_remove_first_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _remove_first_bulk)
     #define pottery_pager_remove_last_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _remove_last_bulk)
     #define pottery_pager_remove_at_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _remove_at_bulk)
+    #define pottery_pager_remove_and_next_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _remove_and_next_bulk)
+    #define pottery_pager_remove_and_previous_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _remove_and_previous_bulk)
 
     // displace
     #define pottery_pager_displace POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _displace)
@@ -167,9 +176,12 @@
     #define pottery_pager_displace_and_next POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _displace_and_next)
     #define pottery_pager_displace_and_previous POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _displace_and_previous)
     #define pottery_pager_displace_all POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _displace_all)
+    #define pottery_pager_displace_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _displace_bulk)
     #define pottery_pager_displace_at_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _displace_at_bulk)
     #define pottery_pager_displace_first_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _displace_first_bulk)
     #define pottery_pager_displace_last_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _displace_last_bulk)
+    #define pottery_pager_displace_and_next_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _displace_and_next_bulk)
+    #define pottery_pager_displace_and_previous_bulk POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _displace_and_previous_bulk)
 //!!! END_AUTOGENERATED
 
 
@@ -204,6 +216,7 @@
     #define pottery_pager_page_ring_count POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _count)
     #define pottery_pager_page_ring_is_empty POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _is_empty)
     #define pottery_pager_page_ring_at POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _at)
+    #define pottery_pager_page_ring_find POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _find)
     #define pottery_pager_page_ring_first POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _first)
     #define pottery_pager_page_ring_last POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _last)
     #define pottery_pager_page_ring_any POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _any)
@@ -223,11 +236,13 @@
     #define pottery_pager_page_ring_shrink POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _shrink)
 
     // insert
+    #define pottery_pager_page_ring_insert POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _insert)
     #define pottery_pager_page_ring_insert_at POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _insert_at)
     #define pottery_pager_page_ring_insert_first POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _insert_first)
     #define pottery_pager_page_ring_insert_last POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _insert_last)
     #define pottery_pager_page_ring_insert_before POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _insert_before)
     #define pottery_pager_page_ring_insert_after POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _insert_after)
+    #define pottery_pager_page_ring_insert_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _insert_bulk)
     #define pottery_pager_page_ring_insert_at_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _insert_at_bulk)
     #define pottery_pager_page_ring_insert_first_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _insert_first_bulk)
     #define pottery_pager_page_ring_insert_last_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _insert_last_bulk)
@@ -235,11 +250,13 @@
     #define pottery_pager_page_ring_insert_after_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _insert_after_bulk)
 
     // emplace
+    #define pottery_pager_page_ring_emplace POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _emplace)
     #define pottery_pager_page_ring_emplace_at POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _emplace_at)
     #define pottery_pager_page_ring_emplace_first POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _emplace_first)
     #define pottery_pager_page_ring_emplace_last POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _emplace_last)
     #define pottery_pager_page_ring_emplace_before POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _emplace_before)
     #define pottery_pager_page_ring_emplace_after POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _emplace_after)
+    #define pottery_pager_page_ring_emplace_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _emplace_bulk)
     #define pottery_pager_page_ring_emplace_at_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _emplace_at_bulk)
     #define pottery_pager_page_ring_emplace_first_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _emplace_first_bulk)
     #define pottery_pager_page_ring_emplace_last_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _emplace_last_bulk)
@@ -247,6 +264,7 @@
     #define pottery_pager_page_ring_emplace_after_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _emplace_after_bulk)
 
     // construct
+    #define pottery_pager_page_ring_construct POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _construct)
     #define pottery_pager_page_ring_construct_at POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _construct_at)
     #define pottery_pager_page_ring_construct_first POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _construct_first)
     #define pottery_pager_page_ring_construct_last POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _construct_last)
@@ -271,10 +289,13 @@
     #define pottery_pager_page_ring_remove_and_next POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _remove_and_next)
     #define pottery_pager_page_ring_remove_and_previous POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _remove_and_previous)
     #define pottery_pager_page_ring_remove_all POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _remove_all)
+    #define pottery_pager_page_ring_remove_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _remove_bulk)
     #define pottery_pager_page_ring_remove_at_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _remove_at_bulk)
     #define pottery_pager_page_ring_remove_first_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _remove_first_bulk)
     #define pottery_pager_page_ring_remove_last_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _remove_last_bulk)
     #define pottery_pager_page_ring_remove_at_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _remove_at_bulk)
+    #define pottery_pager_page_ring_remove_and_next_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _remove_and_next_bulk)
+    #define pottery_pager_page_ring_remove_and_previous_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _remove_and_previous_bulk)
 
     // displace
     #define pottery_pager_page_ring_displace POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _displace)
@@ -284,9 +305,12 @@
     #define pottery_pager_page_ring_displace_and_next POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _displace_and_next)
     #define pottery_pager_page_ring_displace_and_previous POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _displace_and_previous)
     #define pottery_pager_page_ring_displace_all POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _displace_all)
+    #define pottery_pager_page_ring_displace_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _displace_bulk)
     #define pottery_pager_page_ring_displace_at_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _displace_at_bulk)
     #define pottery_pager_page_ring_displace_first_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _displace_first_bulk)
     #define pottery_pager_page_ring_displace_last_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _displace_last_bulk)
+    #define pottery_pager_page_ring_displace_and_next_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _displace_and_next_bulk)
+    #define pottery_pager_page_ring_displace_and_previous_bulk POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _displace_and_previous_bulk)
 //!!! END_AUTOGENERATED
 
 

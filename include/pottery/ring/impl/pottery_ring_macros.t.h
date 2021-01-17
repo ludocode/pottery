@@ -78,6 +78,7 @@
     #define pottery_ring_count POTTERY_CONCAT(POTTERY_RING_PREFIX, _count)
     #define pottery_ring_is_empty POTTERY_CONCAT(POTTERY_RING_PREFIX, _is_empty)
     #define pottery_ring_at POTTERY_CONCAT(POTTERY_RING_PREFIX, _at)
+    #define pottery_ring_find POTTERY_CONCAT(POTTERY_RING_PREFIX, _find)
     #define pottery_ring_first POTTERY_CONCAT(POTTERY_RING_PREFIX, _first)
     #define pottery_ring_last POTTERY_CONCAT(POTTERY_RING_PREFIX, _last)
     #define pottery_ring_any POTTERY_CONCAT(POTTERY_RING_PREFIX, _any)
@@ -97,11 +98,13 @@
     #define pottery_ring_shrink POTTERY_CONCAT(POTTERY_RING_PREFIX, _shrink)
 
     // insert
+    #define pottery_ring_insert POTTERY_CONCAT(POTTERY_RING_PREFIX, _insert)
     #define pottery_ring_insert_at POTTERY_CONCAT(POTTERY_RING_PREFIX, _insert_at)
     #define pottery_ring_insert_first POTTERY_CONCAT(POTTERY_RING_PREFIX, _insert_first)
     #define pottery_ring_insert_last POTTERY_CONCAT(POTTERY_RING_PREFIX, _insert_last)
     #define pottery_ring_insert_before POTTERY_CONCAT(POTTERY_RING_PREFIX, _insert_before)
     #define pottery_ring_insert_after POTTERY_CONCAT(POTTERY_RING_PREFIX, _insert_after)
+    #define pottery_ring_insert_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _insert_bulk)
     #define pottery_ring_insert_at_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _insert_at_bulk)
     #define pottery_ring_insert_first_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _insert_first_bulk)
     #define pottery_ring_insert_last_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _insert_last_bulk)
@@ -109,11 +112,13 @@
     #define pottery_ring_insert_after_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _insert_after_bulk)
 
     // emplace
+    #define pottery_ring_emplace POTTERY_CONCAT(POTTERY_RING_PREFIX, _emplace)
     #define pottery_ring_emplace_at POTTERY_CONCAT(POTTERY_RING_PREFIX, _emplace_at)
     #define pottery_ring_emplace_first POTTERY_CONCAT(POTTERY_RING_PREFIX, _emplace_first)
     #define pottery_ring_emplace_last POTTERY_CONCAT(POTTERY_RING_PREFIX, _emplace_last)
     #define pottery_ring_emplace_before POTTERY_CONCAT(POTTERY_RING_PREFIX, _emplace_before)
     #define pottery_ring_emplace_after POTTERY_CONCAT(POTTERY_RING_PREFIX, _emplace_after)
+    #define pottery_ring_emplace_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _emplace_bulk)
     #define pottery_ring_emplace_at_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _emplace_at_bulk)
     #define pottery_ring_emplace_first_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _emplace_first_bulk)
     #define pottery_ring_emplace_last_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _emplace_last_bulk)
@@ -121,6 +126,7 @@
     #define pottery_ring_emplace_after_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _emplace_after_bulk)
 
     // construct
+    #define pottery_ring_construct POTTERY_CONCAT(POTTERY_RING_PREFIX, _construct)
     #define pottery_ring_construct_at POTTERY_CONCAT(POTTERY_RING_PREFIX, _construct_at)
     #define pottery_ring_construct_first POTTERY_CONCAT(POTTERY_RING_PREFIX, _construct_first)
     #define pottery_ring_construct_last POTTERY_CONCAT(POTTERY_RING_PREFIX, _construct_last)
@@ -145,10 +151,13 @@
     #define pottery_ring_remove_and_next POTTERY_CONCAT(POTTERY_RING_PREFIX, _remove_and_next)
     #define pottery_ring_remove_and_previous POTTERY_CONCAT(POTTERY_RING_PREFIX, _remove_and_previous)
     #define pottery_ring_remove_all POTTERY_CONCAT(POTTERY_RING_PREFIX, _remove_all)
+    #define pottery_ring_remove_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _remove_bulk)
     #define pottery_ring_remove_at_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _remove_at_bulk)
     #define pottery_ring_remove_first_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _remove_first_bulk)
     #define pottery_ring_remove_last_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _remove_last_bulk)
     #define pottery_ring_remove_at_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _remove_at_bulk)
+    #define pottery_ring_remove_and_next_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _remove_and_next_bulk)
+    #define pottery_ring_remove_and_previous_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _remove_and_previous_bulk)
 
     // displace
     #define pottery_ring_displace POTTERY_CONCAT(POTTERY_RING_PREFIX, _displace)
@@ -158,9 +167,12 @@
     #define pottery_ring_displace_and_next POTTERY_CONCAT(POTTERY_RING_PREFIX, _displace_and_next)
     #define pottery_ring_displace_and_previous POTTERY_CONCAT(POTTERY_RING_PREFIX, _displace_and_previous)
     #define pottery_ring_displace_all POTTERY_CONCAT(POTTERY_RING_PREFIX, _displace_all)
+    #define pottery_ring_displace_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _displace_bulk)
     #define pottery_ring_displace_at_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _displace_at_bulk)
     #define pottery_ring_displace_first_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _displace_first_bulk)
     #define pottery_ring_displace_last_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _displace_last_bulk)
+    #define pottery_ring_displace_and_next_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _displace_and_next_bulk)
+    #define pottery_ring_displace_and_previous_bulk POTTERY_CONCAT(POTTERY_RING_PREFIX, _displace_and_previous_bulk)
 //!!! END_AUTOGENERATED
 
 

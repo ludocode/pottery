@@ -77,6 +77,7 @@
     #define ufo_array_count POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _count)
     #define ufo_array_is_empty POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _is_empty)
     #define ufo_array_at POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _at)
+    #define ufo_array_find POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _find)
     #define ufo_array_first POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _first)
     #define ufo_array_last POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _last)
     #define ufo_array_any POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _any)
@@ -96,11 +97,13 @@
     #define ufo_array_shrink POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _shrink)
 
     // insert
+    #define ufo_array_insert POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _insert)
     #define ufo_array_insert_at POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _insert_at)
     #define ufo_array_insert_first POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _insert_first)
     #define ufo_array_insert_last POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _insert_last)
     #define ufo_array_insert_before POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _insert_before)
     #define ufo_array_insert_after POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _insert_after)
+    #define ufo_array_insert_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _insert_bulk)
     #define ufo_array_insert_at_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _insert_at_bulk)
     #define ufo_array_insert_first_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _insert_first_bulk)
     #define ufo_array_insert_last_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _insert_last_bulk)
@@ -108,11 +111,13 @@
     #define ufo_array_insert_after_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _insert_after_bulk)
 
     // emplace
+    #define ufo_array_emplace POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _emplace)
     #define ufo_array_emplace_at POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _emplace_at)
     #define ufo_array_emplace_first POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _emplace_first)
     #define ufo_array_emplace_last POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _emplace_last)
     #define ufo_array_emplace_before POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _emplace_before)
     #define ufo_array_emplace_after POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _emplace_after)
+    #define ufo_array_emplace_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _emplace_bulk)
     #define ufo_array_emplace_at_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _emplace_at_bulk)
     #define ufo_array_emplace_first_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _emplace_first_bulk)
     #define ufo_array_emplace_last_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _emplace_last_bulk)
@@ -120,6 +125,7 @@
     #define ufo_array_emplace_after_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _emplace_after_bulk)
 
     // construct
+    #define ufo_array_construct POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _construct)
     #define ufo_array_construct_at POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _construct_at)
     #define ufo_array_construct_first POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _construct_first)
     #define ufo_array_construct_last POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _construct_last)
@@ -144,10 +150,13 @@
     #define ufo_array_remove_and_next POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _remove_and_next)
     #define ufo_array_remove_and_previous POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _remove_and_previous)
     #define ufo_array_remove_all POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _remove_all)
+    #define ufo_array_remove_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _remove_bulk)
     #define ufo_array_remove_at_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _remove_at_bulk)
     #define ufo_array_remove_first_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _remove_first_bulk)
     #define ufo_array_remove_last_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _remove_last_bulk)
     #define ufo_array_remove_at_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _remove_at_bulk)
+    #define ufo_array_remove_and_next_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _remove_and_next_bulk)
+    #define ufo_array_remove_and_previous_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _remove_and_previous_bulk)
 
     // displace
     #define ufo_array_displace POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _displace)
@@ -157,9 +166,12 @@
     #define ufo_array_displace_and_next POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _displace_and_next)
     #define ufo_array_displace_and_previous POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _displace_and_previous)
     #define ufo_array_displace_all POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _displace_all)
+    #define ufo_array_displace_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _displace_bulk)
     #define ufo_array_displace_at_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _displace_at_bulk)
     #define ufo_array_displace_first_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _displace_first_bulk)
     #define ufo_array_displace_last_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _displace_last_bulk)
+    #define ufo_array_displace_and_next_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _displace_and_next_bulk)
+    #define ufo_array_displace_and_previous_bulk POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _displace_and_previous_bulk)
 //!!! END_AUTOGENERATED
 
 // The shadow array. The contents of the real array much match this after every

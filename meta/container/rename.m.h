@@ -51,6 +51,7 @@
 #define {SRC}_count POTTERY_CONCAT({DEST}, _count)
 #define {SRC}_is_empty POTTERY_CONCAT({DEST}, _is_empty)
 #define {SRC}_at POTTERY_CONCAT({DEST}, _at)
+#define {SRC}_find POTTERY_CONCAT({DEST}, _find)
 #define {SRC}_first POTTERY_CONCAT({DEST}, _first)
 #define {SRC}_last POTTERY_CONCAT({DEST}, _last)
 #define {SRC}_any POTTERY_CONCAT({DEST}, _any)
@@ -70,11 +71,13 @@
 #define {SRC}_shrink POTTERY_CONCAT({DEST}, _shrink)
 
 // insert
+#define {SRC}_insert POTTERY_CONCAT({DEST}, _insert)
 #define {SRC}_insert_at POTTERY_CONCAT({DEST}, _insert_at)
 #define {SRC}_insert_first POTTERY_CONCAT({DEST}, _insert_first)
 #define {SRC}_insert_last POTTERY_CONCAT({DEST}, _insert_last)
 #define {SRC}_insert_before POTTERY_CONCAT({DEST}, _insert_before)
 #define {SRC}_insert_after POTTERY_CONCAT({DEST}, _insert_after)
+#define {SRC}_insert_bulk POTTERY_CONCAT({DEST}, _insert_bulk)
 #define {SRC}_insert_at_bulk POTTERY_CONCAT({DEST}, _insert_at_bulk)
 #define {SRC}_insert_first_bulk POTTERY_CONCAT({DEST}, _insert_first_bulk)
 #define {SRC}_insert_last_bulk POTTERY_CONCAT({DEST}, _insert_last_bulk)
@@ -82,11 +85,13 @@
 #define {SRC}_insert_after_bulk POTTERY_CONCAT({DEST}, _insert_after_bulk)
 
 // emplace
+#define {SRC}_emplace POTTERY_CONCAT({DEST}, _emplace)
 #define {SRC}_emplace_at POTTERY_CONCAT({DEST}, _emplace_at)
 #define {SRC}_emplace_first POTTERY_CONCAT({DEST}, _emplace_first)
 #define {SRC}_emplace_last POTTERY_CONCAT({DEST}, _emplace_last)
 #define {SRC}_emplace_before POTTERY_CONCAT({DEST}, _emplace_before)
 #define {SRC}_emplace_after POTTERY_CONCAT({DEST}, _emplace_after)
+#define {SRC}_emplace_bulk POTTERY_CONCAT({DEST}, _emplace_bulk)
 #define {SRC}_emplace_at_bulk POTTERY_CONCAT({DEST}, _emplace_at_bulk)
 #define {SRC}_emplace_first_bulk POTTERY_CONCAT({DEST}, _emplace_first_bulk)
 #define {SRC}_emplace_last_bulk POTTERY_CONCAT({DEST}, _emplace_last_bulk)
@@ -94,6 +99,7 @@
 #define {SRC}_emplace_after_bulk POTTERY_CONCAT({DEST}, _emplace_after_bulk)
 
 // construct
+#define {SRC}_construct POTTERY_CONCAT({DEST}, _construct)
 #define {SRC}_construct_at POTTERY_CONCAT({DEST}, _construct_at)
 #define {SRC}_construct_first POTTERY_CONCAT({DEST}, _construct_first)
 #define {SRC}_construct_last POTTERY_CONCAT({DEST}, _construct_last)
@@ -118,10 +124,13 @@
 #define {SRC}_remove_and_next POTTERY_CONCAT({DEST}, _remove_and_next)
 #define {SRC}_remove_and_previous POTTERY_CONCAT({DEST}, _remove_and_previous)
 #define {SRC}_remove_all POTTERY_CONCAT({DEST}, _remove_all)
+#define {SRC}_remove_bulk POTTERY_CONCAT({DEST}, _remove_bulk)
 #define {SRC}_remove_at_bulk POTTERY_CONCAT({DEST}, _remove_at_bulk)
 #define {SRC}_remove_first_bulk POTTERY_CONCAT({DEST}, _remove_first_bulk)
 #define {SRC}_remove_last_bulk POTTERY_CONCAT({DEST}, _remove_last_bulk)
 #define {SRC}_remove_at_bulk POTTERY_CONCAT({DEST}, _remove_at_bulk)
+#define {SRC}_remove_and_next_bulk POTTERY_CONCAT({DEST}, _remove_and_next_bulk)
+#define {SRC}_remove_and_previous_bulk POTTERY_CONCAT({DEST}, _remove_and_previous_bulk)
 
 // displace
 #define {SRC}_displace POTTERY_CONCAT({DEST}, _displace)
@@ -131,6 +140,9 @@
 #define {SRC}_displace_and_next POTTERY_CONCAT({DEST}, _displace_and_next)
 #define {SRC}_displace_and_previous POTTERY_CONCAT({DEST}, _displace_and_previous)
 #define {SRC}_displace_all POTTERY_CONCAT({DEST}, _displace_all)
+#define {SRC}_displace_bulk POTTERY_CONCAT({DEST}, _displace_bulk)
 #define {SRC}_displace_at_bulk POTTERY_CONCAT({DEST}, _displace_at_bulk)
 #define {SRC}_displace_first_bulk POTTERY_CONCAT({DEST}, _displace_first_bulk)
 #define {SRC}_displace_last_bulk POTTERY_CONCAT({DEST}, _displace_last_bulk)
+#define {SRC}_displace_and_next_bulk POTTERY_CONCAT({DEST}, _displace_and_next_bulk)
+#define {SRC}_displace_and_previous_bulk POTTERY_CONCAT({DEST}, _displace_and_previous_bulk)

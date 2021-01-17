@@ -32,7 +32,7 @@
 #undef {PREFIX}_entry_t
 #undef {PREFIX}_context_t
 
-// fundamental operations
+// lifecycle operations
 #undef {PREFIX}_copy
 #undef {PREFIX}_destroy
 #undef {PREFIX}_init
@@ -51,6 +51,7 @@
 #undef {PREFIX}_count
 #undef {PREFIX}_is_empty
 #undef {PREFIX}_at
+#undef {PREFIX}_find
 #undef {PREFIX}_first
 #undef {PREFIX}_last
 #undef {PREFIX}_any
@@ -70,11 +71,13 @@
 #undef {PREFIX}_shrink
 
 // insert
+#undef {PREFIX}_insert
 #undef {PREFIX}_insert_at
 #undef {PREFIX}_insert_first
 #undef {PREFIX}_insert_last
 #undef {PREFIX}_insert_before
 #undef {PREFIX}_insert_after
+#undef {PREFIX}_insert_bulk
 #undef {PREFIX}_insert_at_bulk
 #undef {PREFIX}_insert_first_bulk
 #undef {PREFIX}_insert_last_bulk
@@ -82,11 +85,13 @@
 #undef {PREFIX}_insert_after_bulk
 
 // emplace
+#undef {PREFIX}_emplace
 #undef {PREFIX}_emplace_at
 #undef {PREFIX}_emplace_first
 #undef {PREFIX}_emplace_last
 #undef {PREFIX}_emplace_before
 #undef {PREFIX}_emplace_after
+#undef {PREFIX}_emplace_bulk
 #undef {PREFIX}_emplace_at_bulk
 #undef {PREFIX}_emplace_first_bulk
 #undef {PREFIX}_emplace_last_bulk
@@ -94,6 +99,7 @@
 #undef {PREFIX}_emplace_after_bulk
 
 // construct
+#undef {PREFIX}_construct
 #undef {PREFIX}_construct_at
 #undef {PREFIX}_construct_first
 #undef {PREFIX}_construct_last
@@ -104,7 +110,9 @@
 #undef {PREFIX}_extract
 #undef {PREFIX}_extract_at
 #undef {PREFIX}_extract_first
+#undef {PREFIX}_extract_first_bulk
 #undef {PREFIX}_extract_last
+#undef {PREFIX}_extract_last_bulk
 #undef {PREFIX}_extract_and_next
 #undef {PREFIX}_extract_and_previous
 
@@ -116,10 +124,13 @@
 #undef {PREFIX}_remove_and_next
 #undef {PREFIX}_remove_and_previous
 #undef {PREFIX}_remove_all
+#undef {PREFIX}_remove_bulk
 #undef {PREFIX}_remove_at_bulk
 #undef {PREFIX}_remove_first_bulk
 #undef {PREFIX}_remove_last_bulk
 #undef {PREFIX}_remove_at_bulk
+#undef {PREFIX}_remove_and_next_bulk
+#undef {PREFIX}_remove_and_previous_bulk
 
 // displace
 #undef {PREFIX}_displace
@@ -129,6 +140,9 @@
 #undef {PREFIX}_displace_and_next
 #undef {PREFIX}_displace_and_previous
 #undef {PREFIX}_displace_all
+#undef {PREFIX}_displace_bulk
 #undef {PREFIX}_displace_at_bulk
 #undef {PREFIX}_displace_first_bulk
 #undef {PREFIX}_displace_last_bulk
+#undef {PREFIX}_displace_and_next_bulk
+#undef {PREFIX}_displace_and_previous_bulk
