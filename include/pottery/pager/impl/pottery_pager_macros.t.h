@@ -91,9 +91,11 @@
     #define pottery_pager_last POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _last)
     #define pottery_pager_any POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _any)
 
-    // iteration
+    // array access
     #define pottery_pager_select POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _select)
     #define pottery_pager_index POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _index)
+    #define pottery_pager_shift POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _shift)
+    #define pottery_pager_offset POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _offset)
     #define pottery_pager_begin POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _begin)
     #define pottery_pager_end POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _end)
     #define pottery_pager_next POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _next)
@@ -206,9 +208,11 @@
     #define pottery_pager_page_ring_last POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _last)
     #define pottery_pager_page_ring_any POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _any)
 
-    // iteration
+    // array access
     #define pottery_pager_page_ring_select POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _select)
     #define pottery_pager_page_ring_index POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _index)
+    #define pottery_pager_page_ring_shift POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _shift)
+    #define pottery_pager_page_ring_offset POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _offset)
     #define pottery_pager_page_ring_begin POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _begin)
     #define pottery_pager_page_ring_end POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _end)
     #define pottery_pager_page_ring_next POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _next)

@@ -55,9 +55,11 @@
 #undef {PREFIX}_last
 #undef {PREFIX}_any
 
-// iteration
+// array access
 #undef {PREFIX}_select
 #undef {PREFIX}_index
+#undef {PREFIX}_shift
+#undef {PREFIX}_offset
 #undef {PREFIX}_begin
 #undef {PREFIX}_end
 #undef {PREFIX}_next

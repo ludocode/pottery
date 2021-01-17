@@ -82,9 +82,11 @@
     #define pottery_ring_last POTTERY_CONCAT(POTTERY_RING_PREFIX, _last)
     #define pottery_ring_any POTTERY_CONCAT(POTTERY_RING_PREFIX, _any)
 
-    // iteration
+    // array access
     #define pottery_ring_select POTTERY_CONCAT(POTTERY_RING_PREFIX, _select)
     #define pottery_ring_index POTTERY_CONCAT(POTTERY_RING_PREFIX, _index)
+    #define pottery_ring_shift POTTERY_CONCAT(POTTERY_RING_PREFIX, _shift)
+    #define pottery_ring_offset POTTERY_CONCAT(POTTERY_RING_PREFIX, _offset)
     #define pottery_ring_begin POTTERY_CONCAT(POTTERY_RING_PREFIX, _begin)
     #define pottery_ring_end POTTERY_CONCAT(POTTERY_RING_PREFIX, _end)
     #define pottery_ring_next POTTERY_CONCAT(POTTERY_RING_PREFIX, _next)

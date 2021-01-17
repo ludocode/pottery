@@ -96,8 +96,12 @@
 #undef POTTERY_VECTOR_EXTERN
 #undef POTTERY_VECTOR_CONTEXT_VAL
 
+#undef POTTERY_VECTOR_EXTERNAL_CONTAINER_TYPES
 #undef POTTERY_VECTOR_EXTERNAL_LIFECYCLE
+#undef POTTERY_VECTOR_EXTERNAL_ALLOC
 #undef POTTERY_VECTOR_CONTAINER_TYPES_PREFIX
+#undef POTTERY_VECTOR_LIFECYCLE_PREFIX
+#undef POTTERY_VECTOR_ALLOC_PREFIX
 
 
 /*
@@ -158,9 +162,11 @@
     #undef pottery_vector_last
     #undef pottery_vector_any
 
-    // iteration
+    // array access
     #undef pottery_vector_select
     #undef pottery_vector_index
+    #undef pottery_vector_shift
+    #undef pottery_vector_offset
     #undef pottery_vector_begin
     #undef pottery_vector_end
     #undef pottery_vector_next

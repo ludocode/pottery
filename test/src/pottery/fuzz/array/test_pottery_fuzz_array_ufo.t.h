@@ -81,9 +81,11 @@
     #define ufo_array_last POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _last)
     #define ufo_array_any POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _any)
 
-    // iteration
+    // array access
     #define ufo_array_select POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _select)
     #define ufo_array_index POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _index)
+    #define ufo_array_shift POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _shift)
+    #define ufo_array_offset POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _offset)
     #define ufo_array_begin POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _begin)
     #define ufo_array_end POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _end)
     #define ufo_array_next POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _next)

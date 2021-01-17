@@ -80,9 +80,11 @@
     #undef pottery_pager_last
     #undef pottery_pager_any
 
-    // iteration
+    // array access
     #undef pottery_pager_select
     #undef pottery_pager_index
+    #undef pottery_pager_shift
+    #undef pottery_pager_offset
     #undef pottery_pager_begin
     #undef pottery_pager_end
     #undef pottery_pager_next
@@ -195,9 +197,11 @@
     #undef pottery_pager_page_ring_last
     #undef pottery_pager_page_ring_any
 
-    // iteration
+    // array access
     #undef pottery_pager_page_ring_select
     #undef pottery_pager_page_ring_index
+    #undef pottery_pager_page_ring_shift
+    #undef pottery_pager_page_ring_offset
     #undef pottery_pager_page_ring_begin
     #undef pottery_pager_page_ring_end
     #undef pottery_pager_page_ring_next

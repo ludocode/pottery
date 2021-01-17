@@ -198,6 +198,28 @@ pottery_error_t pottery_vector_shrink(pottery_vector_t* vector);
  */
 
 /**
+ * Returns the offset of indices between the two given entries.
+ */
+static inline
+ptrdiff_t pottery_vector_offset(pottery_vector_t* vector, pottery_vector_entry_t first,
+        pottery_vector_entry_t second) {
+    pottery_assert(first >= pottery_vector_begin(vector) && first <= pottery_vector_end(vector));
+    pottery_assert(second >= pottery_vector_begin(vector) && second <= pottery_vector_end(vector));
+    return pottery_cast(ptrdiff_t, second - first);
+}
+
+/**
+ * Shifts an entry by the given offset.
+ */
+static inline
+pottery_vector_entry_t pottery_vector_shift(pottery_vector_t* vector, pottery_vector_entry_t entry, ptrdiff_t offset) {
+    pottery_assert(entry >= pottery_vector_begin(vector) && entry <= pottery_vector_end(vector));
+    entry += offset;
+    pottery_assert(entry >= pottery_vector_begin(vector) && entry <= pottery_vector_end(vector));
+    return entry;
+}
+
+/**
  * Returns the index of the entry in the vector.
  */
 static inline

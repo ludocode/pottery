@@ -55,9 +55,11 @@
 #define {SRC}_last POTTERY_CONCAT({DEST}, _last)
 #define {SRC}_any POTTERY_CONCAT({DEST}, _any)
 
-// iteration
+// array access
 #define {SRC}_select POTTERY_CONCAT({DEST}, _select)
 #define {SRC}_index POTTERY_CONCAT({DEST}, _index)
+#define {SRC}_shift POTTERY_CONCAT({DEST}, _shift)
+#define {SRC}_offset POTTERY_CONCAT({DEST}, _offset)
 #define {SRC}_begin POTTERY_CONCAT({DEST}, _begin)
 #define {SRC}_end POTTERY_CONCAT({DEST}, _end)
 #define {SRC}_next POTTERY_CONCAT({DEST}, _next)

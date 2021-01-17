@@ -73,9 +73,11 @@
     #undef pottery_ring_last
     #undef pottery_ring_any
 
-    // iteration
+    // array access
     #undef pottery_ring_select
     #undef pottery_ring_index
+    #undef pottery_ring_shift
+    #undef pottery_ring_offset
     #undef pottery_ring_begin
     #undef pottery_ring_end
     #undef pottery_ring_next
