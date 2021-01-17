@@ -25,6 +25,7 @@
 #ifndef POTTERY_PLATFORM_FUNCTIONS_H
 #define POTTERY_PLATFORM_FUNCTIONS_H 1
 
+
 #ifndef POTTERY_PLATFORM_IMPL
 #error "This is header internal to Pottery. Do not include it."
 #endif
@@ -43,6 +44,7 @@ extern "C" {
  * Assertions
  */
 
+#ifndef POTTERY_GENERATE_CODE
 pottery_noreturn
 static inline void pottery_abort() {
     #if POTTERY_DEBUG && defined(POTTERY_UNIT_TEST)
@@ -51,6 +53,7 @@ static inline void pottery_abort() {
     #endif
     abort();
 }
+#endif
 
 #if POTTERY_DEBUG || defined(POTTERY_UNIT_TEST)
 #define pottery_assert(x) (pottery_unlikely(!(x)) ? pottery_abort() : ((void)0))
@@ -64,6 +67,7 @@ static inline void pottery_abort() {
  * Math
  */
 
+#ifndef POTTERY_GENERATE_CODE
 static inline size_t pottery_min_s(size_t left, size_t right) {
     return (left < right) ? left : right;
 }
@@ -105,6 +109,7 @@ static inline bool pottery_mul_overflow_s(size_t a, size_t b, size_t* out) {
     #undef POTTERY_MUL_OVERFLOW_S_DEFINED
     #endif
 }
+#endif
 
 
 
@@ -112,6 +117,7 @@ static inline bool pottery_mul_overflow_s(size_t a, size_t b, size_t* out) {
  * Hashing
  */
 
+#ifndef POTTERY_GENERATE_CODE
 /**
  * Performs a Knuth multiplicative hash and range reduction on the given 32-bit
  * value, returning the given number of most-significant bits.
@@ -168,6 +174,7 @@ static size_t pottery_knuth_hash_s(size_t value, size_t bits) {
     pottery_assert(sizeof(size_t) <= sizeof(uint64_t));
     return pottery_cast(size_t, pottery_knuth_hash_u64(pottery_cast(uint64_t, value), bits));
 }
+#endif
 
 
 
@@ -274,6 +281,7 @@ static size_t pottery_knuth_hash_s(size_t value, size_t bits) {
     #define POTTERY_REALLOC realloc
 #endif
 
+#ifndef POTTERY_GENERATE_CODE
 // On platforms where we don't have an equivalent of malloc_good_size() and we
 // can't expand in-place to a usable size, we make up our own good size. This
 // will hopefully waste less memory than just allocating directly. (This needs
@@ -317,6 +325,7 @@ static inline size_t pottery_malloc_estimate_good_size(size_t size) {
     }
     return (padded / page_size) * page_size - overhead;
 }
+#endif
 
 #ifndef POTTERY_MALLOC_GOOD_SIZE
     #if POTTERY_JEMALLOC

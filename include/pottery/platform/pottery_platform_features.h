@@ -198,7 +198,9 @@
  * See docs/features.md for a description of error handling.
  */
 
+#ifndef POTTERY_GENERATE_CODE
 typedef int pottery_error_t;
+#endif
 
 #define POTTERY_OK 0
 #define POTTERY_ERROR_ALLOC 1 // malloc() failed or std:bad_alloc was caught.
