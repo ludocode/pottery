@@ -68,6 +68,7 @@
 
     // internal
     #undef pottery_heap_set_index
+    #undef pottery_heap_update_index
     #undef pottery_heap_parent
     #undef pottery_heap_child_left
     #undef pottery_heap_child_right

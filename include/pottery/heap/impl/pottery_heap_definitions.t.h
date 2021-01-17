@@ -27,18 +27,31 @@
 #endif
 
 static pottery_always_inline
-void pottery_heap_set_index(POTTERY_HEAP_ARGS pottery_heap_entry_t value, size_t index) {
+void pottery_heap_set_index(POTTERY_HEAP_ARGS pottery_heap_ref_t ref, size_t index) {
     POTTERY_HEAP_ARGS_UNUSED;
 
     #ifdef POTTERY_HEAP_SET_INDEX
         #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
-            (POTTERY_HEAP_SET_INDEX((state.context), (value), (index)));
+            (POTTERY_HEAP_SET_INDEX((state.context), (ref), (index)));
         #else
-            (POTTERY_HEAP_SET_INDEX((value), (index)));
+            (POTTERY_HEAP_SET_INDEX((ref), (index)));
         #endif
     #else
-    (void)value;
+    (void)ref;
     (void)index;
+    #endif
+}
+
+static inline
+void pottery_heap_update_index(POTTERY_HEAP_ARGS size_t index) {
+    POTTERY_HEAP_ARGS_UNUSED;
+    (void)index;
+
+    #ifdef POTTERY_HEAP_SET_INDEX
+    pottery_heap_set_index(POTTERY_HEAP_VALS
+            pottery_heap_entry_ref(POTTERY_HEAP_CONTEXT_VAL
+                pottery_heap_array_access_select(POTTERY_HEAP_VALS index)),
+            index);
     #endif
 }
 
@@ -97,6 +110,8 @@ void pottery_heap_sift_down(POTTERY_HEAP_ARGS size_t offset, size_t count, size_
         // Otherwise we swap ourselves with the child and loop around to keep
         // sifting.
         pottery_heap_lifecycle_swap_restrict(POTTERY_HEAP_CONTEXT_VAL current_ref, child_ref);
+        pottery_heap_set_index(POTTERY_HEAP_VALS current_ref, index);
+        pottery_heap_set_index(POTTERY_HEAP_VALS child_ref, child_index);
         index = child_index;
     }
 }
@@ -118,6 +133,8 @@ void pottery_heap_sift_up(POTTERY_HEAP_ARGS size_t offset, size_t index) {
             break;
 
         pottery_heap_lifecycle_swap_restrict(POTTERY_HEAP_CONTEXT_VAL parent_ref, current_ref);
+        pottery_heap_set_index(POTTERY_HEAP_VALS current_ref, index);
+        pottery_heap_set_index(POTTERY_HEAP_VALS parent_ref, parent_index);
         index = parent_index;
     }
 }
@@ -135,9 +152,23 @@ void pottery_heap_build_range(POTTERY_HEAP_ARGS size_t offset, size_t count) {
 
     // Floyd's heap construction: sift the top half down, running backwards
     // starting at half (the parent of the last element.)
+
+    // First we set indices on the bottom half:
+    size_t half = pottery_heap_parent(offset, offset + count - 1) + 1;
     size_t index;
-    for (index = pottery_heap_parent(offset, offset + count - 1) + 1; index > offset;) {
+    #ifdef POTTERY_HEAP_SET_INDEX
+    for (index = offset + count - 1; index > half;) {
         --index;
+        pottery_heap_update_index(POTTERY_HEAP_VALS index);
+    }
+    #else
+    index = half;
+    #endif
+
+    // Then we sift the top half down setting indices as we go.
+    while (index > offset) {
+        --index;
+        pottery_heap_update_index(POTTERY_HEAP_VALS index);
         pottery_heap_sift_down(POTTERY_HEAP_VALS offset, count, index);
     }
 }
@@ -164,8 +195,7 @@ void pottery_heap_expand_bulk_range(POTTERY_HEAP_ARGS
     // Otherwise we insert one by one.
     for (; expand_count > 0; --expand_count) {
         size_t new_index = offset + current_count++;
-        pottery_heap_entry_t new_value = pottery_heap_array_access_select(POTTERY_HEAP_VALS new_index);
-        pottery_heap_set_index(POTTERY_HEAP_VALS new_value, new_index);
+        pottery_heap_update_index(POTTERY_HEAP_VALS new_index);
         pottery_heap_sift_up(POTTERY_HEAP_VALS offset, new_index);
     }
 }
@@ -188,6 +218,7 @@ void pottery_heap_contract_bulk_range(POTTERY_HEAP_ARGS
         pottery_heap_lifecycle_swap_restrict(POTTERY_HEAP_CONTEXT_VAL
                 first_ref,
                 pottery_heap_entry_ref(POTTERY_HEAP_CONTEXT_VAL last_entry));
+        pottery_heap_set_index(POTTERY_HEAP_VALS first_ref, offset);
         last_entry = pottery_heap_array_access_previous(POTTERY_HEAP_VALS last_entry);
         pottery_heap_sift_down(POTTERY_HEAP_VALS offset, current_count, offset);
     }
@@ -207,7 +238,7 @@ void pottery_heap_contract_at_range(POTTERY_HEAP_ARGS
     pottery_assert(index_to_contract < current_count);
 
     size_t new_count = current_count - 1;
-    if (index_to_contract == new_count)
+    if (index_to_contract == offset + new_count)
         return;
 
     // Replace the value with the last value in the heap
@@ -216,6 +247,7 @@ void pottery_heap_contract_at_range(POTTERY_HEAP_ARGS
     pottery_heap_ref_t remove_ref = pottery_heap_entry_ref(POTTERY_HEAP_CONTEXT_VAL remove_entry);
     pottery_heap_ref_t last_ref = pottery_heap_entry_ref(POTTERY_HEAP_CONTEXT_VAL last_entry);
     pottery_heap_lifecycle_swap_restrict(POTTERY_HEAP_CONTEXT_VAL remove_ref, last_ref);
+    pottery_heap_set_index(POTTERY_HEAP_VALS remove_ref, index_to_contract);
 
     // Sift it up or down depending on what we've replaced it with
     if (pottery_heap_compare_greater(POTTERY_HEAP_CONTEXT_VAL last_ref, remove_ref))

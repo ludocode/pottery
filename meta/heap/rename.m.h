@@ -27,6 +27,7 @@
 
 // internal
 #define {SRC}_set_index POTTERY_CONCAT({DEST}, _set_index)
+#define {SRC}_update_index POTTERY_CONCAT({DEST}, _update_index)
 #define {SRC}_parent POTTERY_CONCAT({DEST}, _parent)
 #define {SRC}_child_left POTTERY_CONCAT({DEST}, _child_left)
 #define {SRC}_child_right POTTERY_CONCAT({DEST}, _child_right)

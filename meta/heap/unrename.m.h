@@ -27,6 +27,7 @@
 
 // internal
 #undef {PREFIX}_set_index
+#undef {PREFIX}_update_index
 #undef {PREFIX}_parent
 #undef {PREFIX}_child_left
 #undef {PREFIX}_child_right

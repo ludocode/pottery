@@ -138,6 +138,7 @@
 
     // internal
     #define pottery_heap_set_index POTTERY_CONCAT(POTTERY_HEAP_PREFIX, _set_index)
+    #define pottery_heap_update_index POTTERY_CONCAT(POTTERY_HEAP_PREFIX, _update_index)
     #define pottery_heap_parent POTTERY_CONCAT(POTTERY_HEAP_PREFIX, _parent)
     #define pottery_heap_child_left POTTERY_CONCAT(POTTERY_HEAP_PREFIX, _child_left)
     #define pottery_heap_child_right POTTERY_CONCAT(POTTERY_HEAP_PREFIX, _child_right)
