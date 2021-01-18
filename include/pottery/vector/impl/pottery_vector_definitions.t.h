@@ -46,7 +46,8 @@ static inline void pottery_vector_impl_free(pottery_vector_t* vector,
     pottery_vector_alloc_free(
             POTTERY_VECTOR_CONTEXT_VAL(vector)
             pottery_alignof(pottery_vector_value_t),
-            values);
+            // cast manually to void* to silence incorrect MSVC const warning C4090
+            pottery_cast(void*, values));
 }
 
 // minimum capacity for an allocation. internal space can be smaller than this.
