@@ -26,10 +26,6 @@
 #error "This is an internal header. Do not include it."
 #endif
 
-#ifndef POTTERY_VECTOR_INTERNAL_CAPACITY
-    #define POTTERY_VECTOR_INTERNAL_CAPACITY 0
-#endif
-
 typedef struct pottery_vector_t {
     pottery_vector_value_t* storage;
     #if POTTERY_VECTOR_DOUBLE_ENDED

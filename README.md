@@ -99,8 +99,46 @@ for (size_t i = 0; i < count; ++i)
 See the full example [here](examples/pottery/sort_strings/) for more explanation and customization options.
 
 
+### Request Queue
+
+Suppose you want a growable priority queue of request pointers:
+
+```c
+typedef struct request_t {
+    double priority;
+    // other stuff
+} request_t;
+
+#define POTTERY_PRIORITY_QUEUE_PREFIX request_queue
+#define POTTERY_PRIORITY_QUEUE_VALUE_TYPE request_t*
+#define POTTERY_PRIORITY_QUEUE_LIFECYCLE_MOVE_BY_VALUE 1
+#define POTTERY_PRIORITY_QUEUE_COMPARE_GREATER(x, y) (*x)->priority > (*y)->priority
+#include "pottery/priority_queue/pottery_priority_queue_declare.t.h"
+```
+
+This gives us a type `request_queue_t`:
+
+```c
+request_queue_t queue;
+request_queue_init(&queue);
+
+// insert some requests
+request_queue_insert(&queue, request_new(/*...*/));
+request_queue_insert(&queue, request_new(/*...*/));
+request_queue_insert(&queue, request_new(/*...*/));
+
+// handle requests in priority order
+while (!request_queue_is_empty(&queue))
+    request_handle(request_queue_extract_first(&queue));
+
+request_queue_destroy(&queue);
+```
+
+See the [priority_queue](include/pottery/priority_queue/) documentation for more explanation and customization options.
+
+
 ### Additional Examples
 
-There are more examples in the [`examples/`](examples/pottery/) folder and many more that stll need to be written. Have a look at what's there so far to learn more ways you can use Pottery.
+There are more examples in the [`examples/`](examples/pottery/) folder and many more that still need to be written. Have a look at what's there so far to learn more ways you can use Pottery.
 
 In particular, take a look at [Clayfish](examples/pottery/clayfish/) to see various uses of Pottery in a "real" application.

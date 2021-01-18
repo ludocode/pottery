@@ -47,6 +47,10 @@
 #define POTTERY_VECTOR_EXTERN /*nothing*/
 #endif
 
+#ifndef POTTERY_VECTOR_INTERNAL_CAPACITY
+    #define POTTERY_VECTOR_INTERNAL_CAPACITY 0
+#endif
+
 // Context forwarding
 #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
     #define POTTERY_VECTOR_CONTEXT_VAL(vector) vector->context,
