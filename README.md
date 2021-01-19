@@ -48,7 +48,7 @@ Suppose you want a growable array of `int`. Let's call it `int_vector`. Instanti
 #include "pottery/vector/pottery_vector_static.t.h"
 ```
 
-This gives you a type `int_vector_t`. Use it like this:
+This gives you a type `int_vector_t`:
 
 ```c
 int_vector_t vector;
@@ -65,12 +65,49 @@ for (size_t i = 0; i < int_vector_count(&vector); ++i)
 int_vector_destroy(&vector);
 ```
 
-See the full example [here](examples/pottery/int_vector/) for more explanation and customization options.
+See the full example [here](examples/pottery/int_vector/).
+
+
+### String➔Object Map
+
+Suppose you want a map of string names to person pointers, i.e. `const char*` to `person_t*`:
+
+```c
+typedef struct person_t {
+    char* name;
+    // other stuff
+} person_t;
+
+#define POTTERY_ARRAY_MAP_PREFIX person_map
+#define POTTERY_ARRAY_MAP_KEY_TYPE const char*
+#define POTTERY_ARRAY_MAP_COMPARE_THREE_WAY strcmp
+#define POTTERY_ARRAY_MAP_VALUE_TYPE person_t*
+#define POTTERY_ARRAY_MAP_REF_KEY(person) (*person)->name
+#define POTTERY_ARRAY_MAP_LIFECYCLE_MOVE_BY_VALUE 1
+#include "pottery/array_map/pottery_array_map_static.t.h"
+```
+
+This gives you a `person_map_t`:
+
+```c
+person_map_t map;
+person_map_init(&map);
+
+person_map_insert(&map, person_new("alice"));
+person_map_insert(&map, person_new("bob"));
+
+person_t** eve = person_map_find(&map, "eve");
+if (!person_map_entry_exists(&map, eve)) {
+    // not found!
+}
+```
+
+See the full example [here](examples/pottery/person_map/).
 
 
 ### Sort Strings
 
-Suppose you want to sort an array of C strings. Instantiate a sort template like this:
+Suppose you want to sort an array of C strings:
 
 ```c
 #define POTTERY_INTRO_SORT_PREFIX sort_strings
@@ -96,7 +133,7 @@ for (size_t i = 0; i < count; ++i)
     puts(players[i]);
 ```
 
-See the full example [here](examples/pottery/sort_strings/) for more explanation and customization options.
+See the full example [here](examples/pottery/sort_strings/).
 
 
 ### Request Queue
@@ -113,7 +150,7 @@ typedef struct request_t {
 #define POTTERY_PRIORITY_QUEUE_VALUE_TYPE request_t*
 #define POTTERY_PRIORITY_QUEUE_LIFECYCLE_MOVE_BY_VALUE 1
 #define POTTERY_PRIORITY_QUEUE_COMPARE_GREATER(x, y) (*x)->priority > (*y)->priority
-#include "pottery/priority_queue/pottery_priority_queue_declare.t.h"
+#include "pottery/priority_queue/pottery_priority_queue_static.t.h"
 ```
 
 This gives us a type `request_queue_t`:
@@ -134,7 +171,7 @@ while (!request_queue_is_empty(&queue))
 request_queue_destroy(&queue);
 ```
 
-See the [priority_queue](include/pottery/priority_queue/) documentation for more explanation and customization options.
+See the [priority_queue](include/pottery/priority_queue/) documentation for more.
 
 
 ### Additional Examples
