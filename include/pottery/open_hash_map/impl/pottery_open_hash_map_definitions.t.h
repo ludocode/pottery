@@ -247,7 +247,7 @@ void pottery_ohm_shrink_if_needed(pottery_ohm_t* map) {
 
 POTTERY_OPEN_HASH_MAP_EXTERN
 pottery_error_t pottery_ohm_emplace(pottery_ohm_t* map, pottery_ohm_key_t key,
-        pottery_ohm_entry_t* entry, bool* /*nullable*/ created)
+        pottery_ohm_entry_t* entry, bool* /*nullable*/ out_created)
 {
     // If we're full we grow regardless of whether the element already exists
     // in order to make sure there's enough room for it.
@@ -255,6 +255,7 @@ pottery_error_t pottery_ohm_emplace(pottery_ohm_t* map, pottery_ohm_key_t key,
     if (error != POTTERY_OK)
         return error;
 
+    bool created;
     *entry = pottery_ohm_table_emplace(
             map,
             map->log_2_size,
@@ -262,13 +263,16 @@ pottery_error_t pottery_ohm_emplace(pottery_ohm_t* map, pottery_ohm_key_t key,
             &map->tombstones,
             #endif
             key,
-            created);
+            &created);
 
     #if POTTERY_OPEN_HASH_MAP_HAS_METADATA
     pottery_ohm_entry_set_other(map, *entry);
     #endif
 
-    ++map->count;
+    if (created)
+        ++map->count;
+    if (out_created)
+        *out_created = created;
     return POTTERY_OK;
 }
 
