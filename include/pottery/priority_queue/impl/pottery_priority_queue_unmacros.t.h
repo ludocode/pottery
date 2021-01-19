@@ -203,6 +203,7 @@
     #undef pottery_pq_is_empty
     #undef pottery_pq_at
     #undef pottery_pq_find
+    #undef pottery_pq_contains_key
     #undef pottery_pq_first
     #undef pottery_pq_last
     #undef pottery_pq_any
@@ -218,6 +219,7 @@
     #undef pottery_pq_previous
 
     // misc
+    #undef pottery_pq_capacity
     #undef pottery_pq_reserve
     #undef pottery_pq_shrink
 
@@ -238,6 +240,7 @@
     // emplace
     #undef pottery_pq_emplace
     #undef pottery_pq_emplace_at
+    #undef pottery_pq_emplace_key
     #undef pottery_pq_emplace_first
     #undef pottery_pq_emplace_last
     #undef pottery_pq_emplace_before
@@ -252,6 +255,7 @@
     // construct
     #undef pottery_pq_construct
     #undef pottery_pq_construct_at
+    #undef pottery_pq_construct_key
     #undef pottery_pq_construct_first
     #undef pottery_pq_construct_last
     #undef pottery_pq_construct_before
@@ -260,6 +264,7 @@
     // extract
     #undef pottery_pq_extract
     #undef pottery_pq_extract_at
+    #undef pottery_pq_extract_key
     #undef pottery_pq_extract_first
     #undef pottery_pq_extract_first_bulk
     #undef pottery_pq_extract_last
@@ -270,6 +275,7 @@
     // remove
     #undef pottery_pq_remove
     #undef pottery_pq_remove_at
+    #undef pottery_pq_remove_key
     #undef pottery_pq_remove_first
     #undef pottery_pq_remove_last
     #undef pottery_pq_remove_and_next
@@ -286,6 +292,7 @@
     // displace
     #undef pottery_pq_displace
     #undef pottery_pq_displace_at
+    #undef pottery_pq_displace_key
     #undef pottery_pq_displace_first
     #undef pottery_pq_displace_last
     #undef pottery_pq_displace_and_next
@@ -334,6 +341,7 @@
     #undef pottery_pq_array_is_empty
     #undef pottery_pq_array_at
     #undef pottery_pq_array_find
+    #undef pottery_pq_array_contains_key
     #undef pottery_pq_array_first
     #undef pottery_pq_array_last
     #undef pottery_pq_array_any
@@ -349,6 +357,7 @@
     #undef pottery_pq_array_previous
 
     // misc
+    #undef pottery_pq_array_capacity
     #undef pottery_pq_array_reserve
     #undef pottery_pq_array_shrink
 
@@ -369,6 +378,7 @@
     // emplace
     #undef pottery_pq_array_emplace
     #undef pottery_pq_array_emplace_at
+    #undef pottery_pq_array_emplace_key
     #undef pottery_pq_array_emplace_first
     #undef pottery_pq_array_emplace_last
     #undef pottery_pq_array_emplace_before
@@ -383,6 +393,7 @@
     // construct
     #undef pottery_pq_array_construct
     #undef pottery_pq_array_construct_at
+    #undef pottery_pq_array_construct_key
     #undef pottery_pq_array_construct_first
     #undef pottery_pq_array_construct_last
     #undef pottery_pq_array_construct_before
@@ -391,6 +402,7 @@
     // extract
     #undef pottery_pq_array_extract
     #undef pottery_pq_array_extract_at
+    #undef pottery_pq_array_extract_key
     #undef pottery_pq_array_extract_first
     #undef pottery_pq_array_extract_first_bulk
     #undef pottery_pq_array_extract_last
@@ -401,6 +413,7 @@
     // remove
     #undef pottery_pq_array_remove
     #undef pottery_pq_array_remove_at
+    #undef pottery_pq_array_remove_key
     #undef pottery_pq_array_remove_first
     #undef pottery_pq_array_remove_last
     #undef pottery_pq_array_remove_and_next
@@ -417,6 +430,7 @@
     // displace
     #undef pottery_pq_array_displace
     #undef pottery_pq_array_displace_at
+    #undef pottery_pq_array_displace_key
     #undef pottery_pq_array_displace_first
     #undef pottery_pq_array_displace_last
     #undef pottery_pq_array_displace_and_next

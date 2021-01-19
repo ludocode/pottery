@@ -77,6 +77,7 @@
     #undef pottery_pager_is_empty
     #undef pottery_pager_at
     #undef pottery_pager_find
+    #undef pottery_pager_contains_key
     #undef pottery_pager_first
     #undef pottery_pager_last
     #undef pottery_pager_any
@@ -92,6 +93,7 @@
     #undef pottery_pager_previous
 
     // misc
+    #undef pottery_pager_capacity
     #undef pottery_pager_reserve
     #undef pottery_pager_shrink
 
@@ -112,6 +114,7 @@
     // emplace
     #undef pottery_pager_emplace
     #undef pottery_pager_emplace_at
+    #undef pottery_pager_emplace_key
     #undef pottery_pager_emplace_first
     #undef pottery_pager_emplace_last
     #undef pottery_pager_emplace_before
@@ -126,6 +129,7 @@
     // construct
     #undef pottery_pager_construct
     #undef pottery_pager_construct_at
+    #undef pottery_pager_construct_key
     #undef pottery_pager_construct_first
     #undef pottery_pager_construct_last
     #undef pottery_pager_construct_before
@@ -134,6 +138,7 @@
     // extract
     #undef pottery_pager_extract
     #undef pottery_pager_extract_at
+    #undef pottery_pager_extract_key
     #undef pottery_pager_extract_first
     #undef pottery_pager_extract_first_bulk
     #undef pottery_pager_extract_last
@@ -144,6 +149,7 @@
     // remove
     #undef pottery_pager_remove
     #undef pottery_pager_remove_at
+    #undef pottery_pager_remove_key
     #undef pottery_pager_remove_first
     #undef pottery_pager_remove_last
     #undef pottery_pager_remove_and_next
@@ -160,6 +166,7 @@
     // displace
     #undef pottery_pager_displace
     #undef pottery_pager_displace_at
+    #undef pottery_pager_displace_key
     #undef pottery_pager_displace_first
     #undef pottery_pager_displace_last
     #undef pottery_pager_displace_and_next
@@ -208,6 +215,7 @@
     #undef pottery_pager_page_ring_is_empty
     #undef pottery_pager_page_ring_at
     #undef pottery_pager_page_ring_find
+    #undef pottery_pager_page_ring_contains_key
     #undef pottery_pager_page_ring_first
     #undef pottery_pager_page_ring_last
     #undef pottery_pager_page_ring_any
@@ -223,6 +231,7 @@
     #undef pottery_pager_page_ring_previous
 
     // misc
+    #undef pottery_pager_page_ring_capacity
     #undef pottery_pager_page_ring_reserve
     #undef pottery_pager_page_ring_shrink
 
@@ -243,6 +252,7 @@
     // emplace
     #undef pottery_pager_page_ring_emplace
     #undef pottery_pager_page_ring_emplace_at
+    #undef pottery_pager_page_ring_emplace_key
     #undef pottery_pager_page_ring_emplace_first
     #undef pottery_pager_page_ring_emplace_last
     #undef pottery_pager_page_ring_emplace_before
@@ -257,6 +267,7 @@
     // construct
     #undef pottery_pager_page_ring_construct
     #undef pottery_pager_page_ring_construct_at
+    #undef pottery_pager_page_ring_construct_key
     #undef pottery_pager_page_ring_construct_first
     #undef pottery_pager_page_ring_construct_last
     #undef pottery_pager_page_ring_construct_before
@@ -265,6 +276,7 @@
     // extract
     #undef pottery_pager_page_ring_extract
     #undef pottery_pager_page_ring_extract_at
+    #undef pottery_pager_page_ring_extract_key
     #undef pottery_pager_page_ring_extract_first
     #undef pottery_pager_page_ring_extract_first_bulk
     #undef pottery_pager_page_ring_extract_last
@@ -275,6 +287,7 @@
     // remove
     #undef pottery_pager_page_ring_remove
     #undef pottery_pager_page_ring_remove_at
+    #undef pottery_pager_page_ring_remove_key
     #undef pottery_pager_page_ring_remove_first
     #undef pottery_pager_page_ring_remove_last
     #undef pottery_pager_page_ring_remove_and_next
@@ -291,6 +304,7 @@
     // displace
     #undef pottery_pager_page_ring_displace
     #undef pottery_pager_page_ring_displace_at
+    #undef pottery_pager_page_ring_displace_key
     #undef pottery_pager_page_ring_displace_first
     #undef pottery_pager_page_ring_displace_last
     #undef pottery_pager_page_ring_displace_and_next

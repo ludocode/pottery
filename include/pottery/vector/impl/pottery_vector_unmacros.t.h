@@ -110,7 +110,6 @@
 
 #undef pottery_vector_data
 #undef pottery_vector_const_data
-#undef pottery_vector_capacity
 #undef pottery_vector_minimum_capacity
 
 #undef pottery_vector_insert_vector
@@ -159,6 +158,7 @@
     #undef pottery_vector_is_empty
     #undef pottery_vector_at
     #undef pottery_vector_find
+    #undef pottery_vector_contains_key
     #undef pottery_vector_first
     #undef pottery_vector_last
     #undef pottery_vector_any
@@ -174,6 +174,7 @@
     #undef pottery_vector_previous
 
     // misc
+    #undef pottery_vector_capacity
     #undef pottery_vector_reserve
     #undef pottery_vector_shrink
 
@@ -194,6 +195,7 @@
     // emplace
     #undef pottery_vector_emplace
     #undef pottery_vector_emplace_at
+    #undef pottery_vector_emplace_key
     #undef pottery_vector_emplace_first
     #undef pottery_vector_emplace_last
     #undef pottery_vector_emplace_before
@@ -208,6 +210,7 @@
     // construct
     #undef pottery_vector_construct
     #undef pottery_vector_construct_at
+    #undef pottery_vector_construct_key
     #undef pottery_vector_construct_first
     #undef pottery_vector_construct_last
     #undef pottery_vector_construct_before
@@ -216,6 +219,7 @@
     // extract
     #undef pottery_vector_extract
     #undef pottery_vector_extract_at
+    #undef pottery_vector_extract_key
     #undef pottery_vector_extract_first
     #undef pottery_vector_extract_first_bulk
     #undef pottery_vector_extract_last
@@ -226,6 +230,7 @@
     // remove
     #undef pottery_vector_remove
     #undef pottery_vector_remove_at
+    #undef pottery_vector_remove_key
     #undef pottery_vector_remove_first
     #undef pottery_vector_remove_last
     #undef pottery_vector_remove_and_next
@@ -242,6 +247,7 @@
     // displace
     #undef pottery_vector_displace
     #undef pottery_vector_displace_at
+    #undef pottery_vector_displace_key
     #undef pottery_vector_displace_first
     #undef pottery_vector_displace_last
     #undef pottery_vector_displace_and_next

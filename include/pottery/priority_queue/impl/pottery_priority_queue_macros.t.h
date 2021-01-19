@@ -124,6 +124,7 @@
     #define pottery_pq_is_empty POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _is_empty)
     #define pottery_pq_at POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _at)
     #define pottery_pq_find POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _find)
+    #define pottery_pq_contains_key POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _contains_key)
     #define pottery_pq_first POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _first)
     #define pottery_pq_last POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _last)
     #define pottery_pq_any POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _any)
@@ -139,6 +140,7 @@
     #define pottery_pq_previous POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _previous)
 
     // misc
+    #define pottery_pq_capacity POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _capacity)
     #define pottery_pq_reserve POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _reserve)
     #define pottery_pq_shrink POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _shrink)
 
@@ -159,6 +161,7 @@
     // emplace
     #define pottery_pq_emplace POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _emplace)
     #define pottery_pq_emplace_at POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _emplace_at)
+    #define pottery_pq_emplace_key POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _emplace_key)
     #define pottery_pq_emplace_first POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _emplace_first)
     #define pottery_pq_emplace_last POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _emplace_last)
     #define pottery_pq_emplace_before POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _emplace_before)
@@ -173,6 +176,7 @@
     // construct
     #define pottery_pq_construct POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _construct)
     #define pottery_pq_construct_at POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _construct_at)
+    #define pottery_pq_construct_key POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _construct_key)
     #define pottery_pq_construct_first POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _construct_first)
     #define pottery_pq_construct_last POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _construct_last)
     #define pottery_pq_construct_before POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _construct_before)
@@ -181,6 +185,7 @@
     // extract
     #define pottery_pq_extract POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _extract)
     #define pottery_pq_extract_at POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _extract_at)
+    #define pottery_pq_extract_key POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _extract_key)
     #define pottery_pq_extract_first POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _extract_first)
     #define pottery_pq_extract_first_bulk POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _extract_first_bulk)
     #define pottery_pq_extract_last POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _extract_last)
@@ -191,6 +196,7 @@
     // remove
     #define pottery_pq_remove POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _remove)
     #define pottery_pq_remove_at POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _remove_at)
+    #define pottery_pq_remove_key POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _remove_key)
     #define pottery_pq_remove_first POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _remove_first)
     #define pottery_pq_remove_last POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _remove_last)
     #define pottery_pq_remove_and_next POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _remove_and_next)
@@ -207,6 +213,7 @@
     // displace
     #define pottery_pq_displace POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _displace)
     #define pottery_pq_displace_at POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _displace_at)
+    #define pottery_pq_displace_key POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _displace_key)
     #define pottery_pq_displace_first POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _displace_first)
     #define pottery_pq_displace_last POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _displace_last)
     #define pottery_pq_displace_and_next POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _displace_and_next)
@@ -317,6 +324,7 @@
     #define pottery_pq_array_is_empty POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _is_empty)
     #define pottery_pq_array_at POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _at)
     #define pottery_pq_array_find POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _find)
+    #define pottery_pq_array_contains_key POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _contains_key)
     #define pottery_pq_array_first POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _first)
     #define pottery_pq_array_last POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _last)
     #define pottery_pq_array_any POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _any)
@@ -332,6 +340,7 @@
     #define pottery_pq_array_previous POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _previous)
 
     // misc
+    #define pottery_pq_array_capacity POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _capacity)
     #define pottery_pq_array_reserve POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _reserve)
     #define pottery_pq_array_shrink POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _shrink)
 
@@ -352,6 +361,7 @@
     // emplace
     #define pottery_pq_array_emplace POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _emplace)
     #define pottery_pq_array_emplace_at POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _emplace_at)
+    #define pottery_pq_array_emplace_key POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _emplace_key)
     #define pottery_pq_array_emplace_first POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _emplace_first)
     #define pottery_pq_array_emplace_last POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _emplace_last)
     #define pottery_pq_array_emplace_before POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _emplace_before)
@@ -366,6 +376,7 @@
     // construct
     #define pottery_pq_array_construct POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _construct)
     #define pottery_pq_array_construct_at POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _construct_at)
+    #define pottery_pq_array_construct_key POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _construct_key)
     #define pottery_pq_array_construct_first POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _construct_first)
     #define pottery_pq_array_construct_last POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _construct_last)
     #define pottery_pq_array_construct_before POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _construct_before)
@@ -374,6 +385,7 @@
     // extract
     #define pottery_pq_array_extract POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _extract)
     #define pottery_pq_array_extract_at POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _extract_at)
+    #define pottery_pq_array_extract_key POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _extract_key)
     #define pottery_pq_array_extract_first POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _extract_first)
     #define pottery_pq_array_extract_first_bulk POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _extract_first_bulk)
     #define pottery_pq_array_extract_last POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _extract_last)
@@ -384,6 +396,7 @@
     // remove
     #define pottery_pq_array_remove POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _remove)
     #define pottery_pq_array_remove_at POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _remove_at)
+    #define pottery_pq_array_remove_key POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _remove_key)
     #define pottery_pq_array_remove_first POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _remove_first)
     #define pottery_pq_array_remove_last POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _remove_last)
     #define pottery_pq_array_remove_and_next POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _remove_and_next)
@@ -400,6 +413,7 @@
     // displace
     #define pottery_pq_array_displace POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _displace)
     #define pottery_pq_array_displace_at POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _displace_at)
+    #define pottery_pq_array_displace_key POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _displace_key)
     #define pottery_pq_array_displace_first POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _displace_first)
     #define pottery_pq_array_displace_last POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _displace_last)
     #define pottery_pq_array_displace_and_next POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _displace_and_next)

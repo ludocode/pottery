@@ -52,6 +52,7 @@
 #undef {PREFIX}_is_empty
 #undef {PREFIX}_at
 #undef {PREFIX}_find
+#undef {PREFIX}_contains_key
 #undef {PREFIX}_first
 #undef {PREFIX}_last
 #undef {PREFIX}_any
@@ -67,6 +68,7 @@
 #undef {PREFIX}_previous
 
 // misc
+#undef {PREFIX}_capacity
 #undef {PREFIX}_reserve
 #undef {PREFIX}_shrink
 
@@ -87,6 +89,7 @@
 // emplace
 #undef {PREFIX}_emplace
 #undef {PREFIX}_emplace_at
+#undef {PREFIX}_emplace_key
 #undef {PREFIX}_emplace_first
 #undef {PREFIX}_emplace_last
 #undef {PREFIX}_emplace_before
@@ -101,6 +104,7 @@
 // construct
 #undef {PREFIX}_construct
 #undef {PREFIX}_construct_at
+#undef {PREFIX}_construct_key
 #undef {PREFIX}_construct_first
 #undef {PREFIX}_construct_last
 #undef {PREFIX}_construct_before
@@ -109,6 +113,7 @@
 // extract
 #undef {PREFIX}_extract
 #undef {PREFIX}_extract_at
+#undef {PREFIX}_extract_key
 #undef {PREFIX}_extract_first
 #undef {PREFIX}_extract_first_bulk
 #undef {PREFIX}_extract_last
@@ -119,6 +124,7 @@
 // remove
 #undef {PREFIX}_remove
 #undef {PREFIX}_remove_at
+#undef {PREFIX}_remove_key
 #undef {PREFIX}_remove_first
 #undef {PREFIX}_remove_last
 #undef {PREFIX}_remove_and_next
@@ -135,6 +141,7 @@
 // displace
 #undef {PREFIX}_displace
 #undef {PREFIX}_displace_at
+#undef {PREFIX}_displace_key
 #undef {PREFIX}_displace_first
 #undef {PREFIX}_displace_last
 #undef {PREFIX}_displace_and_next

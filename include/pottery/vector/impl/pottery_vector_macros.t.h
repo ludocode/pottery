@@ -81,7 +81,6 @@
 
 #define pottery_vector_data POTTERY_VECTOR_NAME(_data)
 #define pottery_vector_const_data POTTERY_VECTOR_NAME(_const_data)
-#define pottery_vector_capacity POTTERY_VECTOR_NAME(_capacity)
 #define pottery_vector_minimum_capacity POTTERY_VECTOR_NAME(_minimum_capacity)
 
 #define pottery_vector_insert_vector POTTERY_VECTOR_NAME(_insert_vector)
@@ -129,6 +128,7 @@
     #define pottery_vector_is_empty POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _is_empty)
     #define pottery_vector_at POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _at)
     #define pottery_vector_find POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _find)
+    #define pottery_vector_contains_key POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _contains_key)
     #define pottery_vector_first POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _first)
     #define pottery_vector_last POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _last)
     #define pottery_vector_any POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _any)
@@ -144,6 +144,7 @@
     #define pottery_vector_previous POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _previous)
 
     // misc
+    #define pottery_vector_capacity POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _capacity)
     #define pottery_vector_reserve POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _reserve)
     #define pottery_vector_shrink POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _shrink)
 
@@ -164,6 +165,7 @@
     // emplace
     #define pottery_vector_emplace POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _emplace)
     #define pottery_vector_emplace_at POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _emplace_at)
+    #define pottery_vector_emplace_key POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _emplace_key)
     #define pottery_vector_emplace_first POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _emplace_first)
     #define pottery_vector_emplace_last POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _emplace_last)
     #define pottery_vector_emplace_before POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _emplace_before)
@@ -178,6 +180,7 @@
     // construct
     #define pottery_vector_construct POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _construct)
     #define pottery_vector_construct_at POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _construct_at)
+    #define pottery_vector_construct_key POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _construct_key)
     #define pottery_vector_construct_first POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _construct_first)
     #define pottery_vector_construct_last POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _construct_last)
     #define pottery_vector_construct_before POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _construct_before)
@@ -186,6 +189,7 @@
     // extract
     #define pottery_vector_extract POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _extract)
     #define pottery_vector_extract_at POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _extract_at)
+    #define pottery_vector_extract_key POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _extract_key)
     #define pottery_vector_extract_first POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _extract_first)
     #define pottery_vector_extract_first_bulk POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _extract_first_bulk)
     #define pottery_vector_extract_last POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _extract_last)
@@ -196,6 +200,7 @@
     // remove
     #define pottery_vector_remove POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _remove)
     #define pottery_vector_remove_at POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _remove_at)
+    #define pottery_vector_remove_key POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _remove_key)
     #define pottery_vector_remove_first POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _remove_first)
     #define pottery_vector_remove_last POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _remove_last)
     #define pottery_vector_remove_and_next POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _remove_and_next)
@@ -212,6 +217,7 @@
     // displace
     #define pottery_vector_displace POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _displace)
     #define pottery_vector_displace_at POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _displace_at)
+    #define pottery_vector_displace_key POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _displace_key)
     #define pottery_vector_displace_first POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _displace_first)
     #define pottery_vector_displace_last POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _displace_last)
     #define pottery_vector_displace_and_next POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _displace_and_next)
