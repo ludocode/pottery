@@ -40,12 +40,24 @@
     #define POTTERY_TEST_MAP_UFO_NO_DESTROY 0
 #endif
 
+#ifndef POTTERY_TEST_MAP_UFO_INIT_CAN_FAIL
+    #define POTTERY_TEST_MAP_UFO_INIT_CAN_FAIL 1
+#endif
+
 #define POTTERY_TEST_MAP_UFO(x) \
     POTTERY_TEST(POTTERY_CONCAT(POTTERY_CONCAT(POTTERY_TEST_MAP_UFO_PREFIX, _), x))
 
+static inline void test_ufo_map_init(ufo_map_t* map) {
+    #if POTTERY_TEST_MAP_UFO_INIT_CAN_FAIL
+    pottery_test_assert(POTTERY_OK == ufo_map_init(map));
+    #else
+    ufo_map_init(map);
+    #endif
+}
+
 POTTERY_TEST_MAP_UFO(init_destroy) {
     ufo_map_t map;
-    pottery_test_assert(POTTERY_OK == ufo_map_init(&map));
+    test_ufo_map_init(&map);
     pottery_test_assert(ufo_map_count(&map) == 0);
     ufo_map_destroy(&map);
 }
@@ -62,7 +74,7 @@ static inline void check_ufo_map(ufo_map_t* map) {
 
 POTTERY_TEST_MAP_UFO(remove) {
     ufo_map_t map;
-    pottery_test_assert(POTTERY_OK == ufo_map_init(&map));
+    test_ufo_map_init(&map);
 
     ufo_map_entry_t entry;
     bool created;
@@ -113,7 +125,7 @@ POTTERY_TEST_MAP_UFO(remove) {
 
 POTTERY_TEST_MAP_UFO(remove_all) {
     ufo_map_t map;
-    pottery_test_assert(POTTERY_OK == ufo_map_init(&map));
+    test_ufo_map_init(&map);
 
     ufo_map_entry_t entry;
 
@@ -145,7 +157,7 @@ POTTERY_TEST_MAP_UFO(remove_all) {
 
 POTTERY_TEST_MAP_UFO(grow_and_shrink) {
     ufo_map_t map;
-    pottery_test_assert(POTTERY_OK == ufo_map_init(&map));
+    test_ufo_map_init(&map);
 
     #if POTTERY_TEST_MAP_UFO_HAS_CAPACITY
     size_t capacity = ufo_map_capacity(&map);
@@ -161,7 +173,6 @@ POTTERY_TEST_MAP_UFO(grow_and_shrink) {
 
         bool created = false;
         ufo_map_entry_t entry;
-        //printf("inserting %i\n", i);
         pottery_test_assert(ufo_map_emplace(&map, key, &entry, &created) == POTTERY_OK);
         pottery_test_assert(created);
         ufo_init(entry, key, i);
@@ -221,3 +232,4 @@ POTTERY_TEST_MAP_UFO(grow_and_shrink) {
 
 #undef POTTERY_TEST_MAP_UFO_HAS_CAPACITY
 #undef POTTERY_TEST_MAP_UFO_PREFIX
+#undef POTTERY_TEST_MAP_UFO_INIT_CAN_FAIL

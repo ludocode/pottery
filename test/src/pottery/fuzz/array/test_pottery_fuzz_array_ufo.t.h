@@ -186,6 +186,7 @@
 typedef struct shadow_t {
     ufo_t* array;
     size_t count;
+    size_t salt;
 } shadow_t;
 
 static void ufo_move_bulk_up(ufo_t* to, ufo_t* from, size_t count) {
@@ -273,7 +274,7 @@ static void fuzz_emplace_at(ufo_array_t* array, fuzz_input_t* input, shadow_t* s
 
     // create the ufo
     ufo_t ufo;
-    if (!fuzz_ufo_init(&ufo, input))
+    if (!fuzz_ufo_init(&ufo, input, shadow->salt++))
         return;
 
     // emplace into real array
@@ -298,7 +299,7 @@ static void fuzz_emplace_first(ufo_array_t* array, fuzz_input_t* input, shadow_t
 
     // create the ufo
     ufo_t ufo;
-    if (!fuzz_ufo_init(&ufo, input))
+    if (!fuzz_ufo_init(&ufo, input, shadow->salt++))
         return;
 
     // emplace into real array
@@ -322,7 +323,7 @@ static void fuzz_emplace_last(ufo_array_t* array, fuzz_input_t* input, shadow_t*
 
     // create the ufo
     ufo_t ufo;
-    if (!fuzz_ufo_init(&ufo, input))
+    if (!fuzz_ufo_init(&ufo, input, shadow->salt++))
         return;
 
     // emplace into real array
@@ -401,7 +402,8 @@ static void fuzz_remove_last(ufo_array_t* array, fuzz_input_t* input, shadow_t* 
 static void fuzz(fuzz_input_t* input) {
     shadow_t shadow = {
         pottery_cast(ufo_t*, malloc(sizeof(ufo_t) * FUZZ_ARRAY_UFO_COUNT_LIMIT)),
-        0
+        0,
+        0,
     };
     pottery_test_assert(shadow.array != pottery_null);
 

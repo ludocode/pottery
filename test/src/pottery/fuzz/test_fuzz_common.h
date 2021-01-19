@@ -89,7 +89,7 @@ static inline uint32_t fuzz_load_u32(fuzz_input_t* input) {
     return ret;
 }
 
-static inline bool fuzz_ufo_init(ufo_t* ufo, fuzz_input_t* input) {
+static inline bool fuzz_ufo_init(ufo_t* ufo, fuzz_input_t* input, size_t salt) {
     if (input->end == input->pos)
         return false;
 
@@ -100,7 +100,10 @@ static inline bool fuzz_ufo_init(ufo_t* ufo, fuzz_input_t* input) {
     for (i = 0; i < len; ++i) {
         if (input->end == input->pos)
             return false;
-        string[i] = pottery_cast(char, 'a' + *(input->pos++) % ('z' - 'a'));
+        // generate a salted character
+        size_t r = pottery_cast(size_t, *(input->pos++)) + salt;
+        salt = salt * 31 + 17;
+        string[i] = pottery_cast(char, 'a' + r % ('z' - 'a'));
     }
     string[len] = '\0';
 

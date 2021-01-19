@@ -190,9 +190,9 @@ void pottery_lifecycle_swap_restrict(POTTERY_LIFECYCLE_CONTEXT_ARG
 
         // swap by move through a temporary buffer
         POTTERY_DECLARE_UNCONSTRUCTED(pottery_lifecycle_value_t, temp);
-        pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_VAL temp, left);
-        pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_VAL left, right);
-        pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_VAL right, temp);
+        pottery_lifecycle_move_restrict(POTTERY_LIFECYCLE_CONTEXT_VAL temp, left);
+        pottery_lifecycle_move_restrict(POTTERY_LIFECYCLE_CONTEXT_VAL left, right);
+        pottery_lifecycle_move_restrict(POTTERY_LIFECYCLE_CONTEXT_VAL right, temp);
 
     #else
         #error "Lifecycle template bug! No swap() implementation but CAN_SWAP is 1"
@@ -485,7 +485,7 @@ void pottery_lifecycle_move_bulk_restrict(POTTERY_LIFECYCLE_CONTEXT_ARG
     // move by move()
     size_t i;
     for (i = 0; i < count; ++i)
-        pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_VAL
+        pottery_lifecycle_move_restrict(POTTERY_LIFECYCLE_CONTEXT_VAL
                 to + i, from + i);
 }
 
@@ -514,7 +514,7 @@ void pottery_lifecycle_move_bulk_down(POTTERY_LIFECYCLE_CONTEXT_ARG
     // move by move()
     size_t i;
     for (i = 0; i < count; ++i)
-        pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_VAL
+        pottery_lifecycle_move_restrict(POTTERY_LIFECYCLE_CONTEXT_VAL
                 to + i, from + i);
 }
 
@@ -544,7 +544,7 @@ void pottery_lifecycle_move_bulk_up(POTTERY_LIFECYCLE_CONTEXT_ARG
     size_t i;
     for (i = count; i > 0;) {
         --i;
-        pottery_lifecycle_move(POTTERY_LIFECYCLE_CONTEXT_VAL
+        pottery_lifecycle_move_restrict(POTTERY_LIFECYCLE_CONTEXT_VAL
                 to + i, from + i);
     }
 }
