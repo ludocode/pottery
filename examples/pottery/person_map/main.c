@@ -37,14 +37,14 @@ typedef struct person_t {
     int age;
 } person_t;
 
-person_t* person_new(const char* name, int age) {
+static person_t* person_new(const char* name, int age) {
     person_t* person = (person_t*) malloc(sizeof(person_t));
     person->name = strdup(name);
     person->age = age;
     return person;
 }
 
-void person_delete(person_t* person) {
+static void person_delete(person_t* person) {
     free(person->name);
     free(person);
 }

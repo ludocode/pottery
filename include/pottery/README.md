@@ -13,6 +13,7 @@ Here's a more hierarchical index:
         - [Pager](pager/), a paged double-ended queue
     - Maps
         - [Open Hash Map](open_hash_map/), a dynamically growing open-addressed hash table
+        - [Array Map](array_map/), a map over a dynamically growing array
     - Others
         - [Priority Queue](priority_queue/), a heap over a growing array
 
