@@ -186,7 +186,7 @@ pottery_error_t pottery_rehash(pottery_ohm_t* map, size_t new_log_2_size) {
     while (pottery_ohm_entry_exists(&old_map, source)) {
         //printf("migrating bucket %zi\n", source - old_map.values);
 
-        pottery_ohm_entry_t target = pottery_ohm_table_emplace(
+        pottery_ohm_entry_t target = pottery_ohm_table_emplace_key(
                 map,
                 map->log_2_size,
                 #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
@@ -246,7 +246,7 @@ void pottery_ohm_shrink_if_needed(pottery_ohm_t* map) {
 }
 
 POTTERY_OPEN_HASH_MAP_EXTERN
-pottery_error_t pottery_ohm_emplace(pottery_ohm_t* map, pottery_ohm_key_t key,
+pottery_error_t pottery_ohm_emplace_key(pottery_ohm_t* map, pottery_ohm_key_t key,
         pottery_ohm_entry_t* entry, bool* /*nullable*/ out_created)
 {
     // If we're full we grow regardless of whether the element already exists
@@ -256,7 +256,7 @@ pottery_error_t pottery_ohm_emplace(pottery_ohm_t* map, pottery_ohm_key_t key,
         return error;
 
     bool created;
-    *entry = pottery_ohm_table_emplace(
+    *entry = pottery_ohm_table_emplace_key(
             map,
             map->log_2_size,
             #if POTTERY_OPEN_HASH_MAP_TOMBSTONES

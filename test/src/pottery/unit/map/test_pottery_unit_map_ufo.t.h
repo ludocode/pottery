@@ -80,13 +80,13 @@ POTTERY_TEST_MAP_UFO(remove) {
     bool created;
 
     created = false;
-    pottery_test_assert(ufo_map_emplace(&map, "hello", &entry, &created) == POTTERY_OK);
+    pottery_test_assert(ufo_map_emplace_key(&map, "hello", &entry, &created) == POTTERY_OK);
     pottery_test_assert(created);
     ufo_init(entry, "hello", 1);
     check_ufo_map(&map);
 
     created = false;
-    pottery_test_assert(ufo_map_emplace(&map, "world", &entry, &created) == POTTERY_OK);
+    pottery_test_assert(ufo_map_emplace_key(&map, "world", &entry, &created) == POTTERY_OK);
     pottery_test_assert(created);
     ufo_init(entry, "world", 2);
     check_ufo_map(&map);
@@ -129,13 +129,13 @@ POTTERY_TEST_MAP_UFO(remove_all) {
 
     ufo_map_entry_t entry;
 
-    pottery_test_assert(ufo_map_emplace(&map, "apple", &entry, pottery_null) == POTTERY_OK);
+    pottery_test_assert(ufo_map_emplace_key(&map, "apple", &entry, pottery_null) == POTTERY_OK);
     pottery_test_assert(ufo_init(entry, "apple", 1) == POTTERY_OK);
 
-    pottery_test_assert(ufo_map_emplace(&map, "banana", &entry, pottery_null) == POTTERY_OK);
+    pottery_test_assert(ufo_map_emplace_key(&map, "banana", &entry, pottery_null) == POTTERY_OK);
     pottery_test_assert(ufo_init(entry, "banana", 1) == POTTERY_OK);
 
-    pottery_test_assert(ufo_map_emplace(&map, "cherry", &entry, pottery_null) == POTTERY_OK);
+    pottery_test_assert(ufo_map_emplace_key(&map, "cherry", &entry, pottery_null) == POTTERY_OK);
     pottery_test_assert(ufo_init(entry, "cherry", 1) == POTTERY_OK);
 
     check_ufo_map(&map);
@@ -173,7 +173,7 @@ POTTERY_TEST_MAP_UFO(grow_and_shrink) {
 
         bool created = false;
         ufo_map_entry_t entry;
-        pottery_test_assert(ufo_map_emplace(&map, key, &entry, &created) == POTTERY_OK);
+        pottery_test_assert(ufo_map_emplace_key(&map, key, &entry, &created) == POTTERY_OK);
         pottery_test_assert(created);
         ufo_init(entry, key, i);
         check_ufo_map(&map);

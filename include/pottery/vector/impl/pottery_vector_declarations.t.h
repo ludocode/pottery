@@ -339,7 +339,7 @@ pottery_error_t pottery_vector_construct_last(pottery_vector_t* vector,
 
 #if POTTERY_LIFECYCLE_CAN_INIT_COPY
 
-// C++ const entryerence
+// C++ const reference
 
 static inline
 pottery_error_t pottery_vector_insert_at(pottery_vector_t* vector,
@@ -386,7 +386,7 @@ pottery_error_t pottery_vector_insert_after(pottery_vector_t* vector,
 
 #if POTTERY_LIFECYCLE_CAN_INIT_STEAL
 
-// C++ rvalue entryerence
+// C++ rvalue reference
 
 static inline
 pottery_error_t pottery_vector_insert_at(pottery_vector_t* vector,

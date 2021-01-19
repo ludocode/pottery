@@ -62,7 +62,7 @@ void pottery_ohm_destroy(pottery_ohm_t* map);
  *
  */
 POTTERY_OPEN_HASH_MAP_EXTERN
-pottery_error_t pottery_ohm_emplace(pottery_ohm_t* map, pottery_ohm_key_t key,
+pottery_error_t pottery_ohm_emplace_key(pottery_ohm_t* map, pottery_ohm_key_t key,
         pottery_ohm_entry_t* entry, bool* /*nullable*/ created);
 
 static inline

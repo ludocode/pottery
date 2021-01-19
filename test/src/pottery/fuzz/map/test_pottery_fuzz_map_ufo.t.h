@@ -234,17 +234,19 @@ typedef enum command_t {
 
 #if TEST_POTTERY_FUZZ_MAP_UFO_CAN_SHRINK
 static void fuzz_shrink(ufo_map_t* map) {
+    //printf("shrinking\n");
     ufo_map_shrink(map);
 }
 #endif
 
 #if TEST_POTTERY_FUZZ_MAP_UFO_CAN_RESERVE
 static void fuzz_reserve(ufo_map_t* map, fuzz_input_t* input) {
-    // Reserve any number between 256 and (roughly) four times what the map
-    // currently holds. Often we'll be reserving less (which should do
+    // Reserve any number between zero and four times what the map currently
+    // holds (plus one.) Often we'll be reserving less (which should do
     // nothing), but usually we'll be reserving more, sometimes much more.
-    size_t count = fuzz_load_u24(input) % (256 + 4 * ufo_map_count(map));
-    ufo_map_reserve(map, count);
+    size_t new_capacity = fuzz_load_u24(input) % (4 * (ufo_map_count(map) + 1));
+    //printf("reserving %zi (currently %zi/%zi)\n", new_capacity, ufo_map_count(map), ufo_map_capacity(map));
+    ufo_map_reserve(map, new_capacity);
 }
 #endif
 
@@ -258,10 +260,10 @@ static void fuzz_emplace_key(ufo_map_t* map, fuzz_input_t* input, shadow_t* shad
         return;
 
     // emplace into real map
-    //printf("emplacing %s in map of size %zu\n", ufo.string, ufo_map_count(map));
+    //printf("*** emplacing %s in map of size %zu\n", ufo.string, ufo_map_count(map));
     bool created;
     ufo_map_entry_t entry;
-    if (POTTERY_OK != ufo_map_emplace(map, ufo.string, &entry, &created)) {
+    if (POTTERY_OK != ufo_map_emplace_key(map, ufo.string, &entry, &created)) {
         ufo_destroy(&ufo);
         return;
     }

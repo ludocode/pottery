@@ -100,7 +100,7 @@ static void add_employees(employees_t* employees) {
 
         // Moves homer into the container
         employee_t* entry = pottery_null;
-        employees_emplace(employees, employee_number(&homer), &entry, pottery_null);
+        employees_emplace_key(employees, employee_number(&homer), &entry, pottery_null);
         employee_move(entry, &homer);
 
         printf("Added: ");
@@ -114,7 +114,7 @@ static void add_employees(employees_t* employees) {
         // Initializes kyle in-place
         int kyle_number = 31;
         employee_t* kyle = pottery_null;
-        employees_emplace(employees, kyle_number, &kyle, pottery_null);
+        employees_emplace_key(employees, kyle_number, &kyle, pottery_null);
         employee_init_values(kyle, "Kyle", "Broslovsky", "1999-01-01", kyle_number);
 
         printf("Added: ");
@@ -129,7 +129,7 @@ static void add_employees(employees_t* employees) {
         // Inserts a copy of bob
         bool created = false;
         employee_t* entry = pottery_null;
-        employees_emplace(employees, employee_number(&bob), &entry, &created);
+        employees_emplace_key(employees, employee_number(&bob), &entry, &created);
         pottery_assert(created);
         employee_init_copy(entry, &bob);
 
@@ -148,7 +148,7 @@ static void add_employees(employees_t* employees) {
 
         // Inserts stan, stealing its contents
         employee_t* entry = pottery_null;
-        employees_emplace(employees, employee_number(&stan), &entry, pottery_null);
+        employees_emplace_key(employees, employee_number(&stan), &entry, pottery_null);
         employee_init_steal(entry, &stan);
 
         printf("Added: ");

@@ -258,11 +258,12 @@ static void fuzz_shrink(ufo_array_t* array) {
 
 #if TEST_POTTERY_FUZZ_ARRAY_UFO_CAN_RESERVE
 static void fuzz_reserve(ufo_array_t* array, fuzz_input_t* input) {
-    // Reserve any number between 256 and (roughly) four times what the array
-    // currently holds. Often we'll be reserving less (which should do
+    // Reserve any number between zero and four times what the array currently
+    // holds (plus one.) Often we'll be reserving less (which should do
     // nothing), but usually we'll be reserving more, sometimes much more.
-    size_t count = fuzz_load_u24(input) % (256 + 4 * ufo_array_count(array));
-    ufo_array_reserve(array, count);
+    size_t new_capacity = fuzz_load_u24(input) % (4 * (ufo_array_count(array) + 1));
+    //printf("reserving %zi (currently %zi/%zi)\n", new_capacity, ufo_array_count(array), ufo_array_capacity(array));
+    ufo_array_reserve(array, new_capacity);
 }
 #endif
 

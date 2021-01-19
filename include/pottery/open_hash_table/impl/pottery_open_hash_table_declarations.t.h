@@ -89,7 +89,7 @@ pottery_oht_key_t pottery_oht_key(
  * load factor for the table.
  */
 POTTERY_OPEN_HASH_TABLE_EXTERN
-pottery_oht_entry_t pottery_oht_emplace(
+pottery_oht_entry_t pottery_oht_emplace_key(
         POTTERY_OPEN_HASH_TABLE_ARGS
         size_t log_2_size,
         #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES
@@ -113,7 +113,7 @@ pottery_oht_entry_t pottery_oht_insert(
 {
     bool created;
 
-    pottery_oht_entry_t entry = pottery_oht_emplace(
+    pottery_oht_entry_t entry = pottery_oht_emplace_key(
             POTTERY_OPEN_HASH_TABLE_VALS
             log_2_size,
             #if POTTERY_OPEN_HASH_TABLE_TOMBSTONES

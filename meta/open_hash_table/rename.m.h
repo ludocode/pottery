@@ -25,7 +25,7 @@
 //!!! END_LICENSE
 // Renames open_hash_table identifiers from {SRC} to {DEST}
 
-#define {SRC}_emplace POTTERY_CONCAT({DEST}, _emplace)
+#define {SRC}_emplace_key POTTERY_CONCAT({DEST}, _emplace_key)
 #define {SRC}_insert POTTERY_CONCAT({DEST}, _insert)
 #define {SRC}_find POTTERY_CONCAT({DEST}, _find)
 #define {SRC}_displace POTTERY_CONCAT({DEST}, _displace)

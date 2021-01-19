@@ -69,11 +69,11 @@ void string_set_delete(string_set_t* set) {
 }
 
 bool string_set_add(string_set_t* set, const char* str) {
-    // We use emplace() here so that we can detect whether the value was
+    // We use emplace_key() here so that we can detect whether the value was
     // already in the set, and if it is, we don't do an unnecessary strdup().
     bool created;
     char** entry;
-    if (POTTERY_OK != string_set_map_emplace(&set->map, str, &entry, &created))
+    if (POTTERY_OK != string_set_map_emplace_key(&set->map, str, &entry, &created))
         abort();
     if (created)
         *entry = strdup(str);

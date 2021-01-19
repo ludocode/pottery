@@ -70,7 +70,7 @@ int pottery_hsearch_r(POTTERY_ENTRY item, POTTERY_ACTION action,
 
         } else if (action == POTTERY_ENTER) {
             pottery_hsearch_impl_entry_t impl_entry;
-            if (POTTERY_OK != pottery_hsearch_impl_emplace(&table->impl, item.key, &impl_entry, NULL)) {
+            if (POTTERY_OK != pottery_hsearch_impl_emplace_key(&table->impl, item.key, &impl_entry, NULL)) {
                 // The BSDs require that entry be set to NULL on error. This is also
                 // necessary to allow our hsearch() wrapper to ignore the return value.
                 *entry = NULL;
