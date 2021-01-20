@@ -25,6 +25,10 @@
 #define POTTERY_PAGER_IMPL
 
 #include "pottery/pager/impl/pottery_pager_macros.t.h"
+
+#include "pottery/pager/impl/pottery_pager_config_types.t.h"
+#include "pottery/container_types/pottery_container_types_declare.t.h"
+
 #include "pottery/pager/impl/pottery_pager_forward.t.h"
 
 #include "pottery/pager/impl/pottery_pager_config_alloc.t.h"

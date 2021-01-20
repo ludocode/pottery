@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-typedef POTTERY_PAGER_VALUE_TYPE pottery_pager_value_t;
-
 // TODO maybe don't bother with this, it just makes it confusing.
 typedef pottery_pager_value_t* pottery_pager_page_t;
 

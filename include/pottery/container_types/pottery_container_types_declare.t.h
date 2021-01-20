@@ -28,7 +28,7 @@
 #include "pottery/container_types/impl/pottery_container_types_declarations.t.h"
 #include "pottery/container_types/impl/pottery_container_types_unmacros.t.h"
 #if POTTERY_CONTAINER_TYPES_CLEANUP
-    #include "pottery/container_types/impl/pottery_container_types_cleanup.t.h"
+    #include "pottery/container_types/pottery_container_types_cleanup.t.h"
 #endif
 
 #undef POTTERY_CONTAINER_TYPES_INTERNAL

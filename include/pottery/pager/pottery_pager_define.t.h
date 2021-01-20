@@ -26,11 +26,14 @@
 
 #include "pottery/pager/impl/pottery_pager_macros.t.h"
 
-#include "pottery/pager/impl/pottery_pager_config_ring.t.h"
-#include "pottery/ring/pottery_ring_define.t.h"
+#include "pottery/pager/impl/pottery_pager_config_types.t.h"
+#include "pottery/container_types/pottery_container_types_define.t.h"
 
 #include "pottery/pager/impl/pottery_pager_config_alloc.t.h"
 #include "pottery/alloc/pottery_alloc_define.t.h"
+
+#include "pottery/pager/impl/pottery_pager_config_ring.t.h"
+#include "pottery/ring/pottery_ring_define.t.h"
 
 #include "pottery/pager/impl/pottery_pager_config_lifecycle.t.h"
 #include "pottery/lifecycle/pottery_lifecycle_define.t.h"
