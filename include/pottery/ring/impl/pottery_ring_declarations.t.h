@@ -30,8 +30,6 @@
 #error "A move expression is required so that the ring can grow."
 #endif
 
-typedef POTTERY_RING_VALUE_TYPE pottery_ring_value_t;
-
 typedef pottery_ring_value_t* pottery_ring_entry_t;
 
 /**

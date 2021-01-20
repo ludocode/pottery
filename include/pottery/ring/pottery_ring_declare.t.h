@@ -24,6 +24,11 @@
 
 #define POTTERY_RING_IMPL
 
+#ifndef POTTERY_RING_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/ring/impl/pottery_ring_config_types.t.h"
+    #include "pottery/container_types/pottery_container_types_declare.t.h"
+#endif
+
 #include "pottery/ring/impl/pottery_ring_macros.t.h"
 
 #ifndef POTTERY_RING_EXTERNAL_ALLOC
@@ -37,10 +42,15 @@
 #endif
 
 #include "pottery/ring/impl/pottery_ring_declarations.t.h"
-#include "pottery/ring/impl/pottery_ring_unmacros.t.h"
 
 #ifndef POTTERY_RING_EXTERNAL_LIFECYCLE
     #include "pottery/lifecycle/pottery_lifecycle_cleanup.t.h"
 #endif
+
+#ifndef POTTERY_RING_EXTERNAL_CONTAINER_TYPES
+    #include "pottery/container_types/pottery_container_types_cleanup.t.h"
+#endif
+
+#include "pottery/ring/impl/pottery_ring_unmacros.t.h"
 
 #undef POTTERY_RING_IMPL
