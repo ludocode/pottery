@@ -32,9 +32,6 @@
 #if defined({SRC}_REF_TYPE)
     #define {DEST}_REF_TYPE {SRC}_REF_TYPE
 #endif
-#if defined({SRC}_ENTRY_TYPE)
-    #define {DEST}_ENTRY_TYPE {SRC}_ENTRY_TYPE
-#endif
 #if defined({SRC}_KEY_TYPE)
     #define {DEST}_KEY_TYPE {SRC}_KEY_TYPE
 #endif
@@ -43,9 +40,6 @@
 #endif
 
 // Forward the conversion and comparison expressions
-#if defined({SRC}_ENTRY_REF)
-    #define {DEST}_ENTRY_REF {SRC}_ENTRY_REF
-#endif
 #if defined({SRC}_REF_KEY)
     #define {DEST}_REF_KEY {SRC}_REF_KEY
 #endif

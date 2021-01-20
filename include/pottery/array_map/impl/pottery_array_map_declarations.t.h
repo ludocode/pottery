@@ -26,9 +26,12 @@
 #error "This is an internal header. Do not include it."
 #endif
 
+// TODO clean up context, should come from container_types
 #ifdef POTTERY_ARRAY_MAP_CONTEXT_TYPE
 typedef POTTERY_ARRAY_MAP_CONTEXT_TYPE pottery_context_t;
 #endif
+
+typedef pottery_array_map_ref_t pottery_array_map_entry_t;
 
 typedef struct pottery_array_map_t {
     pottery_array_map_vector_t vector;

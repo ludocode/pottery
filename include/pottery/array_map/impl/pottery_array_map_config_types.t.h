@@ -46,9 +46,6 @@
     #if defined(POTTERY_ARRAY_MAP_REF_TYPE)
         #define POTTERY_CONTAINER_TYPES_REF_TYPE POTTERY_ARRAY_MAP_REF_TYPE
     #endif
-    #if defined(POTTERY_ARRAY_MAP_ENTRY_TYPE)
-        #define POTTERY_CONTAINER_TYPES_ENTRY_TYPE POTTERY_ARRAY_MAP_ENTRY_TYPE
-    #endif
     #if defined(POTTERY_ARRAY_MAP_KEY_TYPE)
         #define POTTERY_CONTAINER_TYPES_KEY_TYPE POTTERY_ARRAY_MAP_KEY_TYPE
     #endif
@@ -57,9 +54,6 @@
     #endif
 
     // Forward the conversion and comparison expressions
-    #if defined(POTTERY_ARRAY_MAP_ENTRY_REF)
-        #define POTTERY_CONTAINER_TYPES_ENTRY_REF POTTERY_ARRAY_MAP_ENTRY_REF
-    #endif
     #if defined(POTTERY_ARRAY_MAP_REF_KEY)
         #define POTTERY_CONTAINER_TYPES_REF_KEY POTTERY_ARRAY_MAP_REF_KEY
     #endif

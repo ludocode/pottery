@@ -43,14 +43,6 @@ typedef pottery_container_types_value_t* pottery_container_types_ref_t;
 typedef const pottery_container_types_ref_t pottery_container_types_const_ref_t;
 #endif
 
-// The entry is a handle to an entry in the container.
-#ifdef POTTERY_CONTAINER_TYPES_ENTRY_TYPE
-typedef POTTERY_CONTAINER_TYPES_ENTRY_TYPE pottery_container_types_entry_t;
-#else
-// The entry type defaults to the ref type.
-typedef pottery_container_types_ref_t pottery_container_types_entry_t;
-#endif
-
 // The key type is an abstract handle to a key used for lookups in associative
 // arrays.
 #if POTTERY_CONTAINER_TYPES_HAS_KEY
@@ -65,35 +57,6 @@ typedef pottery_container_types_ref_t pottery_container_types_key_t;
 #ifdef POTTERY_CONTAINER_TYPES_CONTEXT_TYPE
 typedef POTTERY_CONTAINER_TYPES_CONTEXT_TYPE pottery_container_types_context_t;
 #endif
-
-/**
- * Returns a ref for an entry.
- *
- * The entry must exist.
- */
-static inline
-pottery_container_types_ref_t pottery_container_types_entry_ref(
-        #ifdef POTTERY_CONTAINER_TYPES_CONTEXT_TYPE
-        pottery_container_types_context_t context,
-        #endif
-        pottery_container_types_entry_t entry)
-{
-    #ifdef POTTERY_CONTAINER_TYPES_CONTEXT_TYPE
-    (void)context;
-    #endif
-
-    #ifdef POTTERY_CONTAINER_TYPES_ENTRY_REF
-        #ifdef POTTERY_CONTAINER_TYPES_CONTEXT_TYPE
-            return (POTTERY_CONTAINER_TYPES_ENTRY_REF((context), (entry)));
-        #else
-            return (POTTERY_CONTAINER_TYPES_ENTRY_REF((entry)));
-        #endif
-    #else
-        // Without an ENTRY_REF expression, the entry type must implicitly
-        // convertible to the ref type.
-        return entry;
-    #endif
-}
 
 /**
  * Returns true if the given refs are equal.

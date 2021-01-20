@@ -28,6 +28,16 @@
 
 
 
+// The entry is a handle to the storage location of a value in the array.
+#ifdef POTTERY_ARRAY_ACCESS_ENTRY_TYPE
+typedef POTTERY_ARRAY_ACCESS_ENTRY_TYPE pottery_array_access_entry_t;
+#else
+// The entry type defaults to the ref type.
+typedef pottery_array_access_ref_t pottery_array_access_entry_t;
+#endif
+
+
+
 /*
  * Forward declarations
  */
@@ -48,6 +58,37 @@ size_t pottery_array_access_count(
         POTTERY_ARRAY_ACCESS_SOLE_ARGS);
 #endif
 #endif
+
+
+
+/**
+ * Returns a ref for an entry.
+ *
+ * The entry must exist.
+ */
+static inline
+pottery_array_access_ref_t pottery_array_access_entry_ref(
+        #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
+        pottery_array_access_context_t context,
+        #endif
+        pottery_array_access_entry_t entry)
+{
+    #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
+    (void)context;
+    #endif
+
+    #ifdef POTTERY_ARRAY_ACCESS_ENTRY_REF
+        #ifdef POTTERY_ARRAY_ACCESS_CONTEXT_TYPE
+            return (POTTERY_ARRAY_ACCESS_ENTRY_REF((context), (entry)));
+        #else
+            return (POTTERY_ARRAY_ACCESS_ENTRY_REF((entry)));
+        #endif
+    #else
+        // Without an ENTRY_REF expression, the entry type must implicitly
+        // convertible to the ref type.
+        return entry;
+    #endif
+}
 
 
 

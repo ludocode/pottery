@@ -25,6 +25,9 @@
 //!!! END_LICENSE
 // Renames array_access identifiers from {SRC} to {DEST}
 
+#define {SRC}_entry_t POTTERY_CONCAT({DEST}, _entry_t)
+#define {SRC}_entry_ref POTTERY_CONCAT({DEST}, _entry_ref)
+
 #define {SRC}_begin POTTERY_CONCAT({DEST}, _begin)
 #define {SRC}_end POTTERY_CONCAT({DEST}, _end)
 #define {SRC}_count POTTERY_CONCAT({DEST}, _count)

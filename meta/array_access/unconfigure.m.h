@@ -25,6 +25,10 @@
 //!!! END_LICENSE
 // Undefines (forwardable/forwarded) array_access configuration on {PREFIX}
 
+// entry type
+#undef {PREFIX}_ENTRY_TYPE
+#undef {PREFIX}_ENTRY_REF
+
 // absolute addressing configs
 #undef {PREFIX}_BEGIN
 #undef {PREFIX}_END

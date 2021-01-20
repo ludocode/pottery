@@ -28,10 +28,8 @@
 #undef {PREFIX}_value_t
 #undef {PREFIX}_ref_t
 #undef {PREFIX}_const_ref_t
-#undef {PREFIX}_entry_t
 #undef {PREFIX}_key_t
 #undef {PREFIX}_context_t
 
-#undef {PREFIX}_entry_ref
 #undef {PREFIX}_ref_key
 #undef {PREFIX}_ref_equal

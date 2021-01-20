@@ -25,6 +25,14 @@
 //!!! END_LICENSE
 // Forwards array_access configuration from {SRC} to {DEST}
 
+// entry type
+#ifdef {SRC}_ENTRY_TYPE
+    #define {DEST}_ENTRY_TYPE {SRC}_ENTRY_TYPE
+#endif
+#ifdef {SRC}_ENTRY_REF
+    #define {DEST}_ENTRY_REF {SRC}_ENTRY_REF
+#endif
+
 // absolute addressing configs
 #ifdef {SRC}_BEGIN
     #define {DEST}_BEGIN {SRC}_BEGIN

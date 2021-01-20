@@ -26,6 +26,8 @@
 #error "This is an internal header. Do not include it."
 #endif
 
+typedef pottery_vector_value_t* pottery_vector_entry_t;
+
 typedef struct pottery_vector_t {
     pottery_vector_value_t* storage;
     #if POTTERY_VECTOR_DOUBLE_ENDED

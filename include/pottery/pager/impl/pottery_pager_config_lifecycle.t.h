@@ -44,9 +44,6 @@
     #if defined(POTTERY_PAGER_REF_TYPE)
         #define POTTERY_LIFECYCLE_REF_TYPE POTTERY_PAGER_REF_TYPE
     #endif
-    #if defined(POTTERY_PAGER_ENTRY_TYPE)
-        #define POTTERY_LIFECYCLE_ENTRY_TYPE POTTERY_PAGER_ENTRY_TYPE
-    #endif
     #if defined(POTTERY_PAGER_KEY_TYPE)
         #define POTTERY_LIFECYCLE_KEY_TYPE POTTERY_PAGER_KEY_TYPE
     #endif
@@ -55,9 +52,6 @@
     #endif
 
     // Forward the conversion and comparison expressions
-    #if defined(POTTERY_PAGER_ENTRY_REF)
-        #define POTTERY_LIFECYCLE_ENTRY_REF POTTERY_PAGER_ENTRY_REF
-    #endif
     #if defined(POTTERY_PAGER_REF_KEY)
         #define POTTERY_LIFECYCLE_REF_KEY POTTERY_PAGER_REF_KEY
     #endif

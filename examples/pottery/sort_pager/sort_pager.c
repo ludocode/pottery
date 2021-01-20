@@ -45,15 +45,17 @@
 // The context for our sort algorithm is a pointer to the pager.
 #define POTTERY_INTRO_SORT_CONTEXT_TYPE int_pager_t*
 
-// The entry type of the sort algorithm is the entry type of the pager. We need
-// to supply the pager's function for getting the value (ref) of an entry so
-// that the sort algorithm can do by-value lifecycle and compare operations on
-// pager values.
+// The value type is int. It can be moved/copied by assignment and compared by
+// the built-in comparison operators so we declare these to be BY_VALUE.
 #define POTTERY_INTRO_SORT_VALUE_TYPE int
-#define POTTERY_INTRO_SORT_ENTRY_TYPE int_pager_entry_t
-#define POTTERY_INTRO_SORT_ENTRY_REF int_pager_entry_value
 #define POTTERY_INTRO_SORT_LIFECYCLE_BY_VALUE 1
 #define POTTERY_INTRO_SORT_COMPARE_BY_VALUE 1
+
+// The entry type for accessing the array is the entry type of the pager. We
+// need to supply the pager's function for getting a pointer to the value
+// (a.k.a the ref) of an entry.
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_ENTRY_TYPE int_pager_entry_t
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_ENTRY_REF int_pager_entry_value
 
 // The pager is itself an array container, so we pass its begin, end and count.
 // These are not necessary but they make the API nicer because now

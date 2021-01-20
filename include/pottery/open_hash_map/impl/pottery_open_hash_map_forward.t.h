@@ -47,6 +47,8 @@ typedef enum pottery_ohm_bucket_state_t {
 
 typedef struct pottery_ohm_t pottery_ohm_t;
 
+typedef pottery_ohm_ref_t pottery_ohm_entry_t;
+
 static inline
 void pottery_ohm_entry_move(pottery_ohm_t* map, pottery_ohm_entry_t to, pottery_ohm_entry_t from);
 

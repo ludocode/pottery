@@ -47,9 +47,6 @@
     #if defined(POTTERY_SHELL_SORT_REF_TYPE)
         #define POTTERY_LIFECYCLE_REF_TYPE POTTERY_SHELL_SORT_REF_TYPE
     #endif
-    #if defined(POTTERY_SHELL_SORT_ENTRY_TYPE)
-        #define POTTERY_LIFECYCLE_ENTRY_TYPE POTTERY_SHELL_SORT_ENTRY_TYPE
-    #endif
     #if defined(POTTERY_SHELL_SORT_KEY_TYPE)
         #define POTTERY_LIFECYCLE_KEY_TYPE POTTERY_SHELL_SORT_KEY_TYPE
     #endif
@@ -58,9 +55,6 @@
     #endif
 
     // Forward the conversion and comparison expressions
-    #if defined(POTTERY_SHELL_SORT_ENTRY_REF)
-        #define POTTERY_LIFECYCLE_ENTRY_REF POTTERY_SHELL_SORT_ENTRY_REF
-    #endif
     #if defined(POTTERY_SHELL_SORT_REF_KEY)
         #define POTTERY_LIFECYCLE_REF_KEY POTTERY_SHELL_SORT_REF_KEY
     #endif

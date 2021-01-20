@@ -33,7 +33,8 @@
 
 #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
     #if !POTTERY_ARRAY_ACCESS_INHERENT_BASE
-        #define {CONFIG}_SOLE_ARGS {NAME}_context_t context, {NAME}_entry_t base
+        #define {CONFIG}_SOLE_ARGS \
+                {NAME}_context_t context, {NAME}_entry_t base
         #define {CONFIG}_SOLE_VALS context, base
         #define {CONFIG}_ARGS_UNUSED (void)context, (void)base
     #else
