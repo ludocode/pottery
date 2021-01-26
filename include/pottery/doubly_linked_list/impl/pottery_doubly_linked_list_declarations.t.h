@@ -41,10 +41,11 @@ typedef struct pottery_dll_t {
 
 
 
-#if POTTERY_DEBUG
+#if 0&&POTTERY_DEBUG
 POTTERY_DOUBLY_LINKED_LIST_EXTERN void pottery_dll_sanity_check(pottery_dll_t* dll);
 #else
-static inline void pottery_dll_sanity_check(pottery_dll_t* dll) {}
+pottery_always_inline static
+void pottery_dll_sanity_check(pottery_dll_t* dll) {(void)dll;}
 #endif
 
 static inline

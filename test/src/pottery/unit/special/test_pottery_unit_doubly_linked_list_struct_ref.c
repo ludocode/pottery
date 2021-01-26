@@ -78,6 +78,10 @@ POTTERY_TEST(pottery_doubly_linked_list_struct_ref) {
 
         coords_t eve = {1, 0};
         pool[eve.x][eve.y].name = "eve";
+
+        // Note: This fails in TinyCC 0.9.27, apparently due to a
+        // miscompilation bug.
+        //node_list_link_after(&list, node_list_first(&list), eve);
         node_list_link_after(&list, alice, eve);
     }
 

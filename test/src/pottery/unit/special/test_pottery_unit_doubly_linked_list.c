@@ -47,7 +47,8 @@ POTTERY_TEST(pottery_doubly_linked_list_link_last) {
     foo_list_t list;
     foo_list_init(&list);
 
-    for (size_t i = 0; i < 5; ++i) {
+    size_t i;
+    for (i = 0; i < 5; ++i) {
         foos[i].value = i;
         pottery_test_assert(foo_list_count(&list) == i);
         foo_list_link_last(&list, &foos[i]);
@@ -55,8 +56,9 @@ POTTERY_TEST(pottery_doubly_linked_list_link_last) {
 
     pottery_test_assert(foo_list_count(&list) == 5);
 
-    size_t i = 0;
-    for (foo_t* foo = foo_list_first(&list); foo != NULL; foo = foo_list_next(&list, foo)) {
+    i = 0;
+    foo_t* foo;
+    for (foo = foo_list_first(&list); foo != pottery_null; foo = foo_list_next(&list, foo)) {
         pottery_test_assert(i++ == foo->value);
     }
 
@@ -69,13 +71,15 @@ POTTERY_TEST(pottery_doubly_linked_list_link_first) {
     foo_list_t list;
     foo_list_init(&list);
 
-    for (size_t i = 0; i < 5; ++i) {
+    size_t i;
+    for (i = 0; i < 5; ++i) {
         foos[i].value = i;
         foo_list_link_first(&list, &foos[i]);
     }
 
-    size_t i = 4;
-    for (foo_t* foo = foo_list_first(&list); foo != NULL; foo = foo_list_next(&list, foo)) {
+    i = 4;
+    foo_t* foo;
+    for (foo = foo_list_first(&list); foo != pottery_null; foo = foo_list_next(&list, foo)) {
         pottery_test_assert(i-- == foo->value);
     }
 

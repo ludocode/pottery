@@ -28,7 +28,10 @@
 
 
 
-#if POTTERY_DEBUG
+// Sanity check involves a complete scan of the entire list, making it way too
+// slow. It's disabled even in debug builds. This is really only useful for
+// development purposes.
+#if 0&&POTTERY_DEBUG
 POTTERY_DOUBLY_LINKED_LIST_EXTERN
 void pottery_dll_sanity_check(pottery_dll_t* dll) {
 
