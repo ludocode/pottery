@@ -153,3 +153,20 @@
 #undef {PREFIX}_displace_last_bulk
 #undef {PREFIX}_displace_and_next_bulk
 #undef {PREFIX}_displace_and_previous_bulk
+
+// link
+#undef {PREFIX}_link
+#undef {PREFIX}_link_first
+#undef {PREFIX}_link_last
+#undef {PREFIX}_link_before
+#undef {PREFIX}_link_after
+
+// unlink
+#undef {PREFIX}_unlink
+#undef {PREFIX}_unlink_at
+#undef {PREFIX}_unlink_key
+#undef {PREFIX}_unlink_first
+#undef {PREFIX}_unlink_last
+#undef {PREFIX}_unlink_and_next
+#undef {PREFIX}_unlink_and_previous
+#undef {PREFIX}_unlink_all

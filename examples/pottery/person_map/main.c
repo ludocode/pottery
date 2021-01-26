@@ -66,13 +66,14 @@ static void person_delete(person_t* person) {
 #define POTTERY_ARRAY_MAP_KEY_TYPE const char*
 #define POTTERY_ARRAY_MAP_COMPARE_THREE_WAY strcmp
 
-// We are storing `person_t*` as the value type so the ref type is a
-// double-pointer `person_t**` (as well as the entry type for most map
-// types.)
+// We are storing `person_t*` as the value type so the ref type (and entry type
+// for most maps) is a double-pointer `person_t**`.
 #define POTTERY_ARRAY_MAP_VALUE_TYPE person_t*
 #define POTTERY_ARRAY_MAP_REF_KEY(person) (*person)->name
 
-// array_map requires a way to move its values. Pointers are bitwise-movable.
+// We want to be able to insert() and extract() our person pointers. This
+// requires that they passable as arguments and return values; in other words
+// they must be movable by value. Pointers are bitwise movable.
 #define POTTERY_ARRAY_MAP_LIFECYCLE_MOVE_BY_VALUE 1
 
 // We'd like our map to own the persons it contains so it needs to be able to
@@ -108,7 +109,7 @@ int main(void) {
     person_map_remove(&map, entry);
 
 
-    // Find bob
+    // Find bob, checking whether he was found
     entry = person_map_find(&map, "bob");
     if (!person_map_entry_exists(&map, entry)) {
         fprintf(stderr, "bob not found!\n");
@@ -118,12 +119,12 @@ int main(void) {
     // Extract bob from the map. This returns bob without deleting him.
     person_t* bob = person_map_extract(&map, entry);
 
-    // We now own bob. We have to delete him when done.
+    // We now own bob; he is no longer in the map. We delete him when done.
     printf("%s is %i years old.\n", bob->name, bob->age);
     person_delete(bob);
 
 
-    // Remove dave by key. This deletes carl.
+    // Remove carl by key. This deletes carl.
     if (person_map_remove_key(&map, "carl")) {
         printf("carl was removed.\n");
     }

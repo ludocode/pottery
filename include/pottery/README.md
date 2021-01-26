@@ -17,9 +17,12 @@ Here's a more hierarchical index:
     - Others
         - [Priority Queue](priority_queue/), a heap over a growing array
 
-- Intrusive/External Containers, i.e. container algorithms that work on external memory
-    - [Heap](heap/), binary heap algorithms on an external array
-    - [Open Hash Table](open_hash_table/), open-addressed hash table algorithms on an external array
+- User-Allocated Containers, i.e. container algorithms that work on user-allocated memory
+    - Intrusive Containers
+        - [Doubly-Linked List](doubly_linked_list/), an intrusive doubly-linked list with user-allocated nodes
+    - External Array Containers
+        - [Heap](heap/), binary heap algorithms on an external array
+        - [Open Hash Table](open_hash_table/), open-addressed hash table algorithms on an external array
 
 - Sorting Algorithms
     - [Insertion Sort](insertion_sort/), a very small algorithm that is efficient for short arrays

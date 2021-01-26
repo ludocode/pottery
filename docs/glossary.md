@@ -161,21 +161,21 @@ Copy and steal can be combined with initialization:
 
 
 
-## Non-intrusive Container Value Operations
+## Container Value Operations
 
-The two fundamental mutation operations for non-intrusive containers are "emplace" and "displace". These create and destroy unitialized storage for values in the container.
+The two fundamental mutation operations for non-intrusive containers are "emplace" and "displace". These manage unitialized storage for values in the container.
 
 - **`emplace()`**: Create uninitialized storage for a value in the container. You must initialize the value yourself before calling any other functions on the container. (Note that this is not the same as the C++ STL operation "emplace", which is instead called "construct" in Pottery.)
 
-- **`displace()`**: Remove uninitialized storage for a value in the container. You must deinitialize a value yourself before displacing it, and you cannot call any other functions on the container in between.
+- **`displace()`**: Discard uninitialized storage for a value in the container. You must de-initialize (destroy) a value yourself before displacing it, and you cannot call any other functions on the container in between.
 
 The other core operations on non-intrusive containers wrap emplace and displace with appropriate lifecycle operations.
 
-- **`insert()`**: Insert a value passed by value into the non-intrusive container. (Other libraries sometimes call this "push".) This requires that the value can be passed, i.e. moved by value; see the glossary for "pass". Note "insert" means something different on intrusive containers.
+- **`insert()`**: Insert a value passed by value into the non-intrusive container. (Other libraries sometimes call this "push".) This requires that the value can be passed, i.e. moved by value; see the glossary for "pass".
 
 - **`extract()`**: Extract a value, returning (passing) it to the caller by value and removing its storage from the container. (Other libraries sometimes call this "pop" or "remove".) It requires that the value can be passed, i.e. moved by value; see the glossary for "pass".
 
-- **`remove()`**: Destroy a value and remove its storage from the non-intrusive container. This is essentially `destroy()` followed by `displace()`, and it's the usual way to remove values from a container that owns its values. It requires that the container is able to destroy its values. Note "remove" means something different on intrusive containers.
+- **`remove()`**: De-initialize (destroy) a value and remove its storage from the non-intrusive container. This is essentially `lifecycle_destroy()` followed by `displace()`, and it's the usual way to remove values from a container that owns its values. It requires that the container is able to destroy its values.
 
 - **`construct()`**: In the context of a container operation, create uninitialized storage for a value and then run its C++ constructor in-place, passing the given arguments along with perfect forwarding. (In the C++ STL this is called "emplace", which means something different in Pottery.) This operation only exists in C++.
 
@@ -183,11 +183,11 @@ For user-ordered containers, these are typically combined with iteration words, 
 
 - `insert_at()` inserts a value at a specific index;
 - `emplace_last()` creates uninitialized storage for a value at the end of a container (making it the new last value);
-- `displace_and_next()` displaces a value and returns the subsequent entry;
+- `displace_and_next()` displaces a value and returns the subsequent entry.
 
 See the iteration and ordering sections below.
 
-Note in particular that Pottery defines both `remove_all()` and `displace_all()` for clearing a contianer. Other libraries call such an operation "clear", but Pottery has two such operations. The best way to distinguish them is to follow the same naming conventions as everything else: "remove" destroys the values and "displace" does not.
+Note in particular that Pottery defines both `remove_all()` and `displace_all()` for clearing a non-intrusive container. Other libraries call such an operation "clear", but Pottery has two such operations. The best way to distinguish them is to follow the same naming conventions as everything else: "remove" destroys the values and "displace" does not.
 
 Heaps also provide two additional core mutation operations. A heap operates on a starting range of an underlying generalized array, and these functions alter the range:
 
@@ -199,13 +199,13 @@ Heaps also provide two additional core mutation operations. A heap operates on a
 
 ## Intrusive Container Value Operations
 
-The two fundamental mutation operations for intrusive containers are "insert" and "remove". These insert or remove externally owned and allocated values from the container.
+The two fundamental mutation operations for intrusive linked containers are "link" and "unlink". These add or remove externally owned and allocated values to and from the container.
 
-- **`insert()`**: Insert an externally owned and allocated value into an intrusive container. Note "insert" means something different on non-intrusive containers.
+- **`link()`**: Add an externally owned and allocated value to an intrusive container.
 
-- **`remove()`**: Remove an externally owned and allocated value from an intrusive container. Note "remove" means something different on non-intrusive containers.
+- **`unlink()`**: Remove an externally owned and allocated value from an intrusive container, possibly returning a ref to the removed value.
 
-In both of the above cases, the values are unchanged, aside from whatever intrusive metadata they store to link them with other values. Intrusive containers never initialize, destroy, allocate or free values. All values are externally owned and externally managed. They must be initialized before insertion into the intrusive container, and cannot be destroyed until after they are removed from the intrusive container.
+In both of the above cases, the values are unchanged, aside from whatever intrusive metadata they store to link them with other values. Intrusive containers never initialize, destroy, allocate or free values. All values are externally owned and externally managed. They must be initialized before insertion into the intrusive container and cannot be destroyed until after they are removed from the intrusive container.
 
 
 

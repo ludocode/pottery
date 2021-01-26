@@ -46,6 +46,7 @@
 #define {SRC}_entry_exists POTTERY_CONCAT({DEST}, _entry_exists)
 #define {SRC}_entry_equal POTTERY_CONCAT({DEST}, _entry_equal)
 #define {SRC}_entry_value POTTERY_CONCAT({DEST}, _entry_value)
+#define {SRC}_entry_ref POTTERY_CONCAT({DEST}, _entry_ref)
 
 // lookup
 #define {SRC}_count POTTERY_CONCAT({DEST}, _count)
@@ -153,3 +154,20 @@
 #define {SRC}_displace_last_bulk POTTERY_CONCAT({DEST}, _displace_last_bulk)
 #define {SRC}_displace_and_next_bulk POTTERY_CONCAT({DEST}, _displace_and_next_bulk)
 #define {SRC}_displace_and_previous_bulk POTTERY_CONCAT({DEST}, _displace_and_previous_bulk)
+
+// link
+#define {SRC}_link POTTERY_CONCAT({DEST}, _link)
+#define {SRC}_link_first POTTERY_CONCAT({DEST}, _link_first)
+#define {SRC}_link_last POTTERY_CONCAT({DEST}, _link_last)
+#define {SRC}_link_before POTTERY_CONCAT({DEST}, _link_before)
+#define {SRC}_link_after POTTERY_CONCAT({DEST}, _link_after)
+
+// unlink
+#define {SRC}_unlink POTTERY_CONCAT({DEST}, _unlink)
+#define {SRC}_unlink_at POTTERY_CONCAT({DEST}, _unlink_at)
+#define {SRC}_unlink_key POTTERY_CONCAT({DEST}, _unlink_key)
+#define {SRC}_unlink_first POTTERY_CONCAT({DEST}, _unlink_first)
+#define {SRC}_unlink_last POTTERY_CONCAT({DEST}, _unlink_last)
+#define {SRC}_unlink_and_next POTTERY_CONCAT({DEST}, _unlink_and_next)
+#define {SRC}_unlink_and_previous POTTERY_CONCAT({DEST}, _unlink_and_previous)
+#define {SRC}_unlink_all POTTERY_CONCAT({DEST}, _unlink_all)
