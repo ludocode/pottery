@@ -84,7 +84,7 @@ void pottery_dll_sanity_check(pottery_dll_t* dll) {
     }
     pottery_assert(pottery_dll_ref_equal(POTTERY_DLL_CONTEXT_VAL(dll)
                 pottery_dll_previous_ref(dll, dll->tail), full));
-    pottery_assert(count = dll->count);
+    pottery_assert(count == dll->count);
 }
 #endif
 

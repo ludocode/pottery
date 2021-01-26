@@ -78,7 +78,7 @@ POTTERY_TEST(pottery_doubly_linked_list_struct_ref) {
 
         coords_t eve = {1, 0};
         pool[eve.x][eve.y].name = "eve";
-        node_list_link_after(&list, node_list_first(&list), eve);
+        node_list_link_after(&list, alice, eve);
     }
 
     coords_t ref = node_list_begin(&list);
