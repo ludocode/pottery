@@ -2,9 +2,9 @@
 
 An intrusive doubly-linked list.
 
-The linked list and its values contain links to other values in the list. This means the entry for a value (usually its address) cannot change while it is in a linked list. In other words, values cannot be moved. You are responsible for allocating the entries and ensuring they remain fixed in place while they are part of the list.
+The linked list and its values contain links to other values in the list. This means the entry for a value (usually its address) cannot change while it is in a linked list. In other words, values cannot be moved. You are responsible for allocating the entries and ensuring their refs remain constant while they are part of the list.
 
-The linked list supports an arbitrary ref (or value) type and arbitrary storage of next and previous refs within your values. By default it expects that your ref type is a pointer to a struct and the next and previous pointers are stored in fields called `next` and `previous`. The simplest way to use the doubly-linked list is to store `next` and `previous` pointers in your struct and just define `VALUE_TYPE` to the type of your struct.
+The linked list supports an arbitrary ref or value type and arbitrary storage of next and previous refs within your values. By default it expects that your ref type is a pointer to a struct and the next and previous pointers are stored in fields called `next` and `previous`. The simplest way to use the doubly-linked list is to store `next` and `previous` pointers in your struct and just define `VALUE_TYPE` to the type of your struct.
 
 You can define `NEXT` and `PREVIOUS` to change where these refs are stored within your values. You can also define `SET_NEXT` and `SET_PREVIOUS` to customize how they are stored (in case `NEXT` and `PREVIOUS` are not l-values.) In any case, head and tail refs are stored by value within the linked list container. You can also define an arbitrary `REF_TYPE`, a custom `NULL` to represent empty refs if not `NULL`, and even a `REF_EQUAL` expression in case your ref type is not comparable with operator `==`. 
 

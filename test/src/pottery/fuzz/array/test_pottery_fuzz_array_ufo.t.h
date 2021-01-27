@@ -22,6 +22,10 @@
  * SOFTWARE.
  */
 
+// This is a fuzz tester for a container that can be shadowed by an array. It's
+// used not just for array containers but also for some queues (like ring and
+// node_list.)
+
 #ifndef TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX
 #error "Misconfigured template"
 #endif

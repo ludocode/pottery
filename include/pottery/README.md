@@ -15,6 +15,7 @@ Here's a more hierarchical index:
         - [Open Hash Map](open_hash_map/), a dynamically growing open-addressed hash table
         - [Array Map](array_map/), a map over a dynamically growing array
     - Others
+        - [Node List](node_list/), a doubly-linked list of dynamically allocated nodes
         - [Priority Queue](priority_queue/), a heap over a growing array
 
 - User-Allocated Containers, i.e. container algorithms that work on user-allocated memory

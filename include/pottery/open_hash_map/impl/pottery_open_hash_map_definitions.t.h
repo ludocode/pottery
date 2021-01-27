@@ -157,7 +157,7 @@ void pottery_ohm_destroy(pottery_ohm_t* map) {
     #else
     // If we don't have a destroy expression, you must manually empty the hash
     // map before destroying it.
-    pottery_assert(pottery_ohm_count(map) == 0);
+    pottery_assert(pottery_ohm_is_empty(map));
     #endif
 
     pottery_ohm_impl_free_allocs(map);

@@ -219,7 +219,6 @@ void pottery_dll_init(pottery_dll_t* dll
 static inline
 void pottery_dll_unlink_all(pottery_dll_t* dll) {
     pottery_assert(dll != NULL);
-    pottery_dll_sanity_check(dll);
     dll->head = pottery_dll_null(dll);
     dll->tail = pottery_dll_null(dll);
     dll->count = 0;
