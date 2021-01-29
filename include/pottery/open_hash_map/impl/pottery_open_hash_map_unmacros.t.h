@@ -151,7 +151,7 @@
     // entry operations
     #undef pottery_ohm_entry_exists
     #undef pottery_ohm_entry_equal
-    #undef pottery_ohm_entry_value
+    #undef pottery_ohm_entry_ref
 
     // lookup
     #undef pottery_ohm_count

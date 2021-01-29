@@ -177,7 +177,7 @@ void pottery_pager_remove_first_bulk(pottery_pager_t* pager, size_t count) {
     pottery_pager_entry_t entry = pottery_pager_first(pager);
     size_t i;
     for (i = 0; i < count; ++i) {
-        pottery_pager_lifecycle_destroy(pottery_pager_entry_value(pager, entry));
+        pottery_pager_lifecycle_destroy(pottery_pager_entry_ref(pager, entry));
         entry = pottery_pager_next(pager, entry);
     }
     pottery_pager_displace_first_bulk(pager, count);
@@ -188,7 +188,7 @@ void pottery_pager_remove_last_bulk(pottery_pager_t* pager, size_t count) {
     pottery_pager_entry_t entry = pottery_pager_last(pager);
     size_t i;
     for (i = 0; i < count; ++i) {
-        pottery_pager_lifecycle_destroy(pottery_pager_entry_value(pager, entry));
+        pottery_pager_lifecycle_destroy(pottery_pager_entry_ref(pager, entry));
         entry = pottery_pager_next(pager, entry);
     }
     pottery_pager_displace_last_bulk(pager, count);

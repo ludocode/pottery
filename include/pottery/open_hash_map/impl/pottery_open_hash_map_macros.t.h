@@ -158,7 +158,6 @@
     // entry operations
     #define pottery_ohm_entry_exists POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_PREFIX, _entry_exists)
     #define pottery_ohm_entry_equal POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_PREFIX, _entry_equal)
-    #define pottery_ohm_entry_value POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_PREFIX, _entry_value)
     #define pottery_ohm_entry_ref POTTERY_CONCAT(POTTERY_OPEN_HASH_MAP_PREFIX, _entry_ref)
 
     // lookup

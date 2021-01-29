@@ -193,7 +193,7 @@
     // entry operations
     #undef pottery_array_map_entry_exists
     #undef pottery_array_map_entry_equal
-    #undef pottery_array_map_entry_value
+    #undef pottery_array_map_entry_ref
 
     // lookup
     #undef pottery_array_map_count
@@ -341,7 +341,7 @@
     // entry operations
     #undef pottery_array_map_vector_entry_exists
     #undef pottery_array_map_vector_entry_equal
-    #undef pottery_array_map_vector_entry_value
+    #undef pottery_array_map_vector_entry_ref
 
     // lookup
     #undef pottery_array_map_vector_count

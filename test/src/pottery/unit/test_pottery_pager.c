@@ -60,7 +60,7 @@ static void test_pottery_pager_int_normal(int count) {
     }
 
     for (i = 0; i < count; ++i) {
-        pottery_test_assert(*int_pager_entry_value(&pager,
+        pottery_test_assert(*int_pager_entry_ref(&pager,
                     int_pager_at(&pager, pottery_cast(size_t, i))) == i);
     }
 
@@ -91,7 +91,7 @@ static void test_pottery_pager_int_reverse(int count) {
     }
 
     for (i = 0; i < count; ++i) {
-        pottery_test_assert(*int_pager_entry_value(&pager,
+        pottery_test_assert(*int_pager_entry_ref(&pager,
                     int_pager_at(&pager, pottery_cast(size_t, i))) == count - i - 1);
     }
 
@@ -129,7 +129,7 @@ POTTERY_TEST(pottery_pager_bulk_insert) {
 
         //fprintf(stderr, "inserted bulk, now contains:\n");
         //for (i = 0; i < (int)int_pager_count(&pager); ++i)
-            //fprintf(stderr, "%i ", *int_pager_entry_value(&pager, int_pager_at(&pager, pottery_cast(size_t)i)));
+            //fprintf(stderr, "%i ", *int_pager_entry_ref(&pager, int_pager_at(&pager, pottery_cast(size_t)i)));
         //fprintf(stderr, "\n");
     }
 

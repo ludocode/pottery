@@ -99,7 +99,7 @@
     // entry operations
     #undef pottery_nl_entry_exists
     #undef pottery_nl_entry_equal
-    #undef pottery_nl_entry_value
+    #undef pottery_nl_entry_ref
 
     // lookup
     #undef pottery_nl_count
@@ -253,7 +253,7 @@
     // entry operations
     #undef pottery_nl_dll_entry_exists
     #undef pottery_nl_dll_entry_equal
-    #undef pottery_nl_dll_entry_value
+    #undef pottery_nl_dll_entry_ref
 
     // lookup
     #undef pottery_nl_dll_count

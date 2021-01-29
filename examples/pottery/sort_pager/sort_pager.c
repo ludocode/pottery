@@ -55,7 +55,7 @@
 // need to supply the pager's function for getting a pointer to the value
 // (a.k.a the ref) of an entry.
 #define POTTERY_INTRO_SORT_ARRAY_ACCESS_ENTRY_TYPE int_pager_entry_t
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_ENTRY_REF int_pager_entry_value
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_ENTRY_REF int_pager_entry_ref
 
 // The pager is itself an array container, so we pass its begin, end and count.
 // These are not necessary but they make the API nicer because now
@@ -101,7 +101,7 @@ int main(void) {
 
     // Print its contents
     for (i = 0; i < int_pager_count(&pager); ++i) {
-        printf("%i\n", *int_pager_entry_value(&pager, int_pager_at(&pager, i)));
+        printf("%i\n", *int_pager_entry_ref(&pager, int_pager_at(&pager, i)));
     }
 
     return EXIT_SUCCESS;

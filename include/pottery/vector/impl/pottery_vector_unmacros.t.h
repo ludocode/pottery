@@ -148,7 +148,7 @@
     // entry operations
     #undef pottery_vector_entry_exists
     #undef pottery_vector_entry_equal
-    #undef pottery_vector_entry_value
+    #undef pottery_vector_entry_ref
 
     // lookup
     #undef pottery_vector_count

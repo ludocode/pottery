@@ -97,7 +97,6 @@
     // entry operations
     #define pottery_nl_entry_exists POTTERY_CONCAT(POTTERY_NODE_LIST_PREFIX, _entry_exists)
     #define pottery_nl_entry_equal POTTERY_CONCAT(POTTERY_NODE_LIST_PREFIX, _entry_equal)
-    #define pottery_nl_entry_value POTTERY_CONCAT(POTTERY_NODE_LIST_PREFIX, _entry_value)
     #define pottery_nl_entry_ref POTTERY_CONCAT(POTTERY_NODE_LIST_PREFIX, _entry_ref)
 
     // lookup
@@ -250,7 +249,6 @@
     // entry operations
     #define pottery_nl_dll_entry_exists POTTERY_CONCAT(POTTERY_NODE_LIST_DLL_PREFIX, _entry_exists)
     #define pottery_nl_dll_entry_equal POTTERY_CONCAT(POTTERY_NODE_LIST_DLL_PREFIX, _entry_equal)
-    #define pottery_nl_dll_entry_value POTTERY_CONCAT(POTTERY_NODE_LIST_DLL_PREFIX, _entry_value)
     #define pottery_nl_dll_entry_ref POTTERY_CONCAT(POTTERY_NODE_LIST_DLL_PREFIX, _entry_ref)
 
     // lookup

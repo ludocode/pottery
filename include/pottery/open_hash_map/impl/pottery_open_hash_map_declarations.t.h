@@ -125,7 +125,7 @@ bool pottery_ohm_remove_key(pottery_ohm_t* map, pottery_ohm_key_t key);
 #endif
 
 static inline
-pottery_ohm_value_t* pottery_ohm_entry_value(pottery_ohm_t* map, pottery_ohm_entry_t entry) {
+pottery_ohm_value_t* pottery_ohm_entry_ref(pottery_ohm_t* map, pottery_ohm_entry_t entry) {
     (void)map;
     return entry;
 }

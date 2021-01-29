@@ -89,7 +89,6 @@
     // entry operations
     #define pottery_dll_entry_exists POTTERY_CONCAT(POTTERY_DOUBLY_LINKED_LIST_PREFIX, _entry_exists)
     #define pottery_dll_entry_equal POTTERY_CONCAT(POTTERY_DOUBLY_LINKED_LIST_PREFIX, _entry_equal)
-    #define pottery_dll_entry_value POTTERY_CONCAT(POTTERY_DOUBLY_LINKED_LIST_PREFIX, _entry_value)
     #define pottery_dll_entry_ref POTTERY_CONCAT(POTTERY_DOUBLY_LINKED_LIST_PREFIX, _entry_ref)
 
     // lookup

@@ -118,7 +118,6 @@
     // entry operations
     #define pottery_vector_entry_exists POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _entry_exists)
     #define pottery_vector_entry_equal POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _entry_equal)
-    #define pottery_vector_entry_value POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _entry_value)
     #define pottery_vector_entry_ref POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _entry_ref)
 
     // lookup

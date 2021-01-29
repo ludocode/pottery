@@ -66,7 +66,7 @@ bool pottery_array_map_find_slot(pottery_array_map_t* map,
         entry = pottery_array_map_vector_select(&map->vector, m);
         pottery_assert(pottery_array_map_entry_exists(map, entry));
         entry_key = pottery_array_map_value_key(
-                pottery_array_map_vector_entry_value(&map->vector, entry));
+                pottery_array_map_vector_entry_ref(&map->vector, entry));
         if (pottery_array_map_compare_greater(key, entry_key)) {
             l = m + 1;
         } else {
@@ -78,7 +78,7 @@ bool pottery_array_map_find_slot(pottery_array_map_t* map,
     *out_entry = entry;
     return pottery_array_map_entry_exists(map, entry) &&
             pottery_array_map_compare_equal(key, pottery_array_map_value_key(
-                pottery_array_map_vector_entry_value(&map->vector, entry)));
+                pottery_array_map_vector_entry_ref(&map->vector, entry)));
 }
 #endif
 
@@ -164,7 +164,7 @@ POTTERY_ARRAY_MAP_EXTERN
 void pottery_array_map_remove(pottery_array_map_t* map,
         pottery_array_map_entry_t entry)
 {
-    pottery_array_map_lifecycle_destroy(pottery_array_map_entry_value(map, entry));
+    pottery_array_map_lifecycle_destroy(pottery_array_map_entry_ref(map, entry));
     pottery_array_map_displace(map, entry);
 }
 

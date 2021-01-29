@@ -139,7 +139,7 @@ pottery_error_t pottery_pager_insert_last(pottery_pager_t* pager, pottery_pager_
     pottery_error_t error = pottery_pager_emplace_last(pager, &entry);
     if (error != POTTERY_OK)
         return error;
-    pottery_move_construct(pottery_pager_value_t, *pottery_pager_entry_value(pager, entry), value);
+    pottery_move_construct(pottery_pager_value_t, *pottery_pager_entry_ref(pager, entry), value);
     return POTTERY_OK;
 }
 
@@ -149,7 +149,7 @@ pottery_error_t pottery_pager_insert_first(pottery_pager_t* pager, pottery_pager
     pottery_error_t error = pottery_pager_emplace_first(pager, &entry);
     if (error != POTTERY_OK)
         return error;
-    pottery_move_construct(pottery_pager_value_t, *pottery_pager_entry_value(pager, entry), value);
+    pottery_move_construct(pottery_pager_value_t, *pottery_pager_entry_ref(pager, entry), value);
     return POTTERY_OK;
 }
 #endif
@@ -185,7 +185,7 @@ pottery_pager_entry_t pottery_pager_last(pottery_pager_t* pager) {
 #if POTTERY_LIFECYCLE_CAN_PASS
 static inline
 pottery_pager_value_t pottery_pager_extract_first(pottery_pager_t* pager) {
-    pottery_pager_value_t* p = pottery_pager_entry_value(pager, pottery_pager_first(pager));
+    pottery_pager_value_t* p = pottery_pager_entry_ref(pager, pottery_pager_first(pager));
     pottery_pager_value_t ret = pottery_move_if_cxx(*p);
     #ifdef __cplusplus
     // We have to run the destructor. See note in pottery_vector_extract()
@@ -197,7 +197,7 @@ pottery_pager_value_t pottery_pager_extract_first(pottery_pager_t* pager) {
 
 static inline
 pottery_pager_value_t pottery_pager_extract_last(pottery_pager_t* pager) {
-    pottery_pager_value_t* p = pottery_pager_entry_value(pager, pottery_pager_last(pager));
+    pottery_pager_value_t* p = pottery_pager_entry_ref(pager, pottery_pager_last(pager));
     pottery_pager_value_t ret = pottery_move_if_cxx(*p);
     #ifdef __cplusplus
     // We have to run the destructor. See note in pottery_vector_extract()
@@ -258,7 +258,7 @@ void pottery_pager_extract_last_bulk(pottery_pager_t* pager, pottery_pager_value
  * the number of values past which the entry has been shifted.
  *
  * The pointer returned is the same as that returned by
- * pottery_pager_entry_value() before the given entry is shifted.
+ * pottery_pager_entry_ref() before the given entry is shifted.
  */
 POTTERY_PAGER_EXTERN
 pottery_pager_value_t* pottery_pager_next_bulk(pottery_pager_t* pager,
@@ -272,7 +272,7 @@ pottery_pager_value_t* pottery_pager_next_bulk(pottery_pager_t* pager,
  * the number of values past which the entry has been shifted.
  *
  * The pointer returned is the same as that returned by
- * pottery_pager_entry_value() before the given entry is shifted.
+ * pottery_pager_entry_ref() before the given entry is shifted.
  *
  * @warning The pointer returned is to the first value when iterating
  *          backwards, so it is the last value in memory! You must offset the

@@ -254,7 +254,7 @@ bool pottery_vector_entry_equal(pottery_vector_t* vector, pottery_vector_entry_t
  * Returns a pointer (a entry) to the value contained in this entry.
  */
 static inline
-pottery_vector_value_t* pottery_vector_entry_value(pottery_vector_t* vector,
+pottery_vector_value_t* pottery_vector_entry_ref(pottery_vector_t* vector,
         pottery_vector_entry_t entry)
 {
     (void)vector;

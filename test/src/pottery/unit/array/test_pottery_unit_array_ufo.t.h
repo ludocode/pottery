@@ -59,9 +59,9 @@ POTTERY_TEST_ARRAY_UFO(remove) {
     ufo_array_entry_t entry;
 
     pottery_test_assert(ufo_array_emplace_last(&array, &entry) == POTTERY_OK);
-    ufo_init(ufo_array_entry_value(&array, entry), "hello", 1);
+    ufo_init(ufo_array_entry_ref(&array, entry), "hello", 1);
     pottery_test_assert(ufo_array_emplace_last(&array, &entry) == POTTERY_OK);
-    ufo_init(ufo_array_entry_value(&array, entry), "world", 2);
+    ufo_init(ufo_array_entry_ref(&array, entry), "world", 2);
     check_ufo_array(&array);
 
     pottery_test_assert(0 == strcmp(ufo_array_first(&array)->string, "hello"));
@@ -96,7 +96,7 @@ POTTERY_TEST_ARRAY_UFO(grow_and_shrink) {
 
         ufo_array_entry_t entry;
         pottery_test_assert(ufo_array_emplace_last(&array, &entry) == POTTERY_OK);
-        ufo_init(ufo_array_entry_value(&array, entry), buf, i);
+        ufo_init(ufo_array_entry_ref(&array, entry), buf, i);
         check_ufo_array(&array);
 
         // Track capacity changes

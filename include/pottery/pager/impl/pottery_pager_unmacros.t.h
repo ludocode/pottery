@@ -67,7 +67,7 @@
     // entry operations
     #undef pottery_pager_entry_exists
     #undef pottery_pager_entry_equal
-    #undef pottery_pager_entry_value
+    #undef pottery_pager_entry_ref
 
     // lookup
     #undef pottery_pager_count
@@ -256,7 +256,7 @@
     // entry operations
     #undef pottery_pager_page_ring_entry_exists
     #undef pottery_pager_page_ring_entry_equal
-    #undef pottery_pager_page_ring_entry_value
+    #undef pottery_pager_page_ring_entry_ref
 
     // lookup
     #undef pottery_pager_page_ring_count

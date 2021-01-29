@@ -60,7 +60,7 @@
     // entry operations
     #undef pottery_ring_entry_exists
     #undef pottery_ring_entry_equal
-    #undef pottery_ring_entry_value
+    #undef pottery_ring_entry_ref
 
     // lookup
     #undef pottery_ring_count

@@ -78,7 +78,6 @@
     // entry operations
     #define pottery_pager_entry_exists POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _entry_exists)
     #define pottery_pager_entry_equal POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _entry_equal)
-    #define pottery_pager_entry_value POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _entry_value)
     #define pottery_pager_entry_ref POTTERY_CONCAT(POTTERY_PAGER_PREFIX, _entry_ref)
 
     // lookup
@@ -229,7 +228,6 @@
     // entry operations
     #define pottery_pager_page_ring_entry_exists POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _entry_exists)
     #define pottery_pager_page_ring_entry_equal POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _entry_equal)
-    #define pottery_pager_page_ring_entry_value POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _entry_value)
     #define pottery_pager_page_ring_entry_ref POTTERY_CONCAT(POTTERY_PAGER_NAME(_page_ring), _entry_ref)
 
     // lookup

@@ -66,7 +66,6 @@
     // entry operations
     #define ufo_map_entry_exists POTTERY_CONCAT(TEST_POTTERY_FUZZ_MAP_UFO_PREFIX, _entry_exists)
     #define ufo_map_entry_equal POTTERY_CONCAT(TEST_POTTERY_FUZZ_MAP_UFO_PREFIX, _entry_equal)
-    #define ufo_map_entry_value POTTERY_CONCAT(TEST_POTTERY_FUZZ_MAP_UFO_PREFIX, _entry_value)
     #define ufo_map_entry_ref POTTERY_CONCAT(TEST_POTTERY_FUZZ_MAP_UFO_PREFIX, _entry_ref)
 
     // lookup
@@ -222,7 +221,7 @@ static void fuzz_check(ufo_map_t* map, shadow_t* shadow) {
         ufo_t* ufo = shadow->map + i;
         ufo_map_entry_t entry = ufo_map_find(map, ufo->string);
         pottery_test_assert(ufo_map_entry_exists(map, entry));
-        pottery_test_assert(ufo_equal(ufo, ufo_map_entry_value(map, entry)));
+        pottery_test_assert(ufo_equal(ufo, ufo_map_entry_ref(map, entry)));
     }
 }
 
@@ -286,9 +285,9 @@ static void fuzz_emplace_key(ufo_map_t* map, fuzz_input_t* input, shadow_t* shad
     if (created) {
         //printf("created\n");
         // the ufo's key doesn't exist in the map. move it in
-        ufo_move(ufo_map_entry_value(map, entry), &ufo);
+        ufo_move(ufo_map_entry_ref(map, entry), &ufo);
         // add to shadow map
-        ufo_init_copy(shadow->map + shadow->count++, ufo_map_entry_value(map, entry));
+        ufo_init_copy(shadow->map + shadow->count++, ufo_map_entry_ref(map, entry));
 
     } else {
         //printf("not created\n");
@@ -305,7 +304,7 @@ static void fuzz_emplace_key(ufo_map_t* map, fuzz_input_t* input, shadow_t* shad
         pottery_test_assert(shadow_ufo != pottery_null);
 
         // replace the ufo in the map and the ufo in the shadow
-        ufo_steal(ufo_map_entry_value(map, entry), &ufo);
+        ufo_steal(ufo_map_entry_ref(map, entry), &ufo);
         ufo_steal(shadow_ufo, &ufo);
         ufo_destroy(&ufo);
     }

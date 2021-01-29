@@ -56,13 +56,6 @@ typedef struct pottery_nl_t {
     pottery_nl_dll_t dll;
 } pottery_nl_t;
 
-// TODO this is temporarily here for backwards compatibility
-static inline
-pottery_nl_value_t* pottery_nl_entry_value(pottery_nl_t* list, pottery_nl_entry_t entry) {
-    (void)list;
-    return entry;
-}
-
 static inline
 pottery_nl_value_t* pottery_nl_entry_ref(pottery_nl_t* list, pottery_nl_entry_t entry) {
     (void)list;

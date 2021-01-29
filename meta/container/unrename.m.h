@@ -42,7 +42,7 @@
 // entry operations
 #undef {PREFIX}_entry_exists
 #undef {PREFIX}_entry_equal
-#undef {PREFIX}_entry_value
+#undef {PREFIX}_entry_ref
 
 // lookup
 #undef {PREFIX}_count

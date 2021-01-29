@@ -74,7 +74,6 @@
     // entry operations
     #define pottery_array_map_entry_exists POTTERY_CONCAT(POTTERY_ARRAY_MAP_PREFIX, _entry_exists)
     #define pottery_array_map_entry_equal POTTERY_CONCAT(POTTERY_ARRAY_MAP_PREFIX, _entry_equal)
-    #define pottery_array_map_entry_value POTTERY_CONCAT(POTTERY_ARRAY_MAP_PREFIX, _entry_value)
     #define pottery_array_map_entry_ref POTTERY_CONCAT(POTTERY_ARRAY_MAP_PREFIX, _entry_ref)
 
     // lookup
@@ -226,7 +225,6 @@
     // entry operations
     #define pottery_array_map_vector_entry_exists POTTERY_CONCAT(POTTERY_ARRAY_MAP_NAME(_vector), _entry_exists)
     #define pottery_array_map_vector_entry_equal POTTERY_CONCAT(POTTERY_ARRAY_MAP_NAME(_vector), _entry_equal)
-    #define pottery_array_map_vector_entry_value POTTERY_CONCAT(POTTERY_ARRAY_MAP_NAME(_vector), _entry_value)
     #define pottery_array_map_vector_entry_ref POTTERY_CONCAT(POTTERY_ARRAY_MAP_NAME(_vector), _entry_ref)
 
     // lookup

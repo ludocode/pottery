@@ -72,7 +72,6 @@
     // entry operations
     #define ufo_array_entry_exists POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _entry_exists)
     #define ufo_array_entry_equal POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _entry_equal)
-    #define ufo_array_entry_value POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _entry_value)
     #define ufo_array_entry_ref POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _entry_ref)
 
     // lookup
@@ -233,7 +232,7 @@ static void fuzz_check(ufo_array_t* array, shadow_t* shadow) {
     ufo_t* expected = shadow->array;
     ufo_array_entry_t entry = ufo_array_begin(array);
     for (; ufo_array_entry_exists(array, entry); entry = ufo_array_next(array, entry)) {
-        ufo_t* ufo = ufo_array_entry_value(array, entry);
+        ufo_t* ufo = ufo_array_entry_ref(array, entry);
         pottery_test_assert(ufo_equal(ufo, expected++));
     }
 }
@@ -304,11 +303,11 @@ static void fuzz_emplace_at(ufo_array_t* array, fuzz_input_t* input, shadow_t* s
         ufo_destroy(&ufo);
         return;
     }
-    ufo_move(ufo_array_entry_value(array, entry), &ufo);
+    ufo_move(ufo_array_entry_ref(array, entry), &ufo);
 
     // insert into shadow array
     ufo_move_bulk_up(shadow->array + pos + 1, shadow->array + pos, shadow->count - pos);
-    ufo_init_copy(shadow->array + pos, ufo_array_entry_value(array, entry));
+    ufo_init_copy(shadow->array + pos, ufo_array_entry_ref(array, entry));
     ++shadow->count;
 }
 #endif
@@ -329,11 +328,11 @@ static void fuzz_emplace_first(ufo_array_t* array, fuzz_input_t* input, shadow_t
         ufo_destroy(&ufo);
         return;
     }
-    ufo_move(ufo_array_entry_value(array, entry), &ufo);
+    ufo_move(ufo_array_entry_ref(array, entry), &ufo);
 
     // insert into shadow array
     ufo_move_bulk_up(shadow->array + 1, shadow->array, shadow->count);
-    ufo_init_copy(shadow->array, ufo_array_entry_value(array, entry));
+    ufo_init_copy(shadow->array, ufo_array_entry_ref(array, entry));
     ++shadow->count;
 }
 
@@ -353,10 +352,10 @@ static void fuzz_emplace_last(ufo_array_t* array, fuzz_input_t* input, shadow_t*
         ufo_destroy(&ufo);
         return;
     }
-    ufo_move(ufo_array_entry_value(array, entry), &ufo);
+    ufo_move(ufo_array_entry_ref(array, entry), &ufo);
 
     // insert into shadow array
-    ufo_init_copy(shadow->array + shadow->count, ufo_array_entry_value(array, entry));
+    ufo_init_copy(shadow->array + shadow->count, ufo_array_entry_ref(array, entry));
     ++shadow->count;
 }
 

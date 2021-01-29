@@ -188,7 +188,7 @@
     // entry operations
     #undef pottery_pq_entry_exists
     #undef pottery_pq_entry_equal
-    #undef pottery_pq_entry_value
+    #undef pottery_pq_entry_ref
 
     // lookup
     #undef pottery_pq_count
@@ -340,7 +340,7 @@
     // entry operations
     #undef pottery_pq_array_entry_exists
     #undef pottery_pq_array_entry_equal
-    #undef pottery_pq_array_entry_value
+    #undef pottery_pq_array_entry_ref
 
     // lookup
     #undef pottery_pq_array_count

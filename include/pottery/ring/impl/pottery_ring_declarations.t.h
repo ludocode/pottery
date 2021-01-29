@@ -178,7 +178,7 @@ bool pottery_ring_entry_exists(pottery_ring_t* ring, pottery_ring_value_t* entry
 }
 
 static inline
-pottery_ring_value_t* pottery_ring_entry_value(pottery_ring_t* ring, pottery_ring_value_t* entry) {
+pottery_ring_value_t* pottery_ring_entry_ref(pottery_ring_t* ring, pottery_ring_value_t* entry) {
     (void)ring;
     return entry;
 }

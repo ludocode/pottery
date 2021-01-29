@@ -187,7 +187,7 @@ pottery_array_map_value_t* pottery_array_map_next(pottery_array_map_t* map,
 }
 
 static inline
-pottery_array_map_value_t* pottery_array_map_entry_value(pottery_array_map_t* map,
+pottery_array_map_value_t* pottery_array_map_entry_ref(pottery_array_map_t* map,
         pottery_array_map_entry_t entry)
 {
     (void)map;
@@ -237,7 +237,7 @@ static inline
 pottery_array_map_value_t pottery_array_map_extract(pottery_array_map_t* map,
         pottery_array_map_entry_t entry)
 {
-    pottery_array_map_ref_t ref = pottery_array_map_entry_value(map, entry);
+    pottery_array_map_ref_t ref = pottery_array_map_entry_ref(map, entry);
     pottery_array_map_value_t ret = pottery_move_if_cxx(*ref);
     #ifdef __cplusplus
     // We have to run the destructor. See note in pottery_vector_extract()

@@ -47,7 +47,7 @@ pottery_pager_entry_t pottery_pager_entry_make(
 }
 
 static inline
-pottery_pager_value_t* pottery_pager_entry_value(
+pottery_pager_value_t* pottery_pager_entry_ref(
         pottery_pager_t* pager,
         pottery_pager_entry_t entry)
 {

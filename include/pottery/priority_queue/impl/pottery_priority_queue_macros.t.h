@@ -114,7 +114,6 @@
     // entry operations
     #define pottery_pq_entry_exists POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _entry_exists)
     #define pottery_pq_entry_equal POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _entry_equal)
-    #define pottery_pq_entry_value POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _entry_value)
     #define pottery_pq_entry_ref POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_PREFIX, _entry_ref)
 
     // lookup
@@ -351,7 +350,6 @@
     // entry operations
     #define pottery_pq_array_entry_exists POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _entry_exists)
     #define pottery_pq_array_entry_equal POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _entry_equal)
-    #define pottery_pq_array_entry_value POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _entry_value)
     #define pottery_pq_array_entry_ref POTTERY_CONCAT(POTTERY_PRIORITY_QUEUE_NAME(_array), _entry_ref)
 
     // lookup

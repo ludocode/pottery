@@ -69,7 +69,6 @@
     // entry operations
     #define pottery_ring_entry_exists POTTERY_CONCAT(POTTERY_RING_PREFIX, _entry_exists)
     #define pottery_ring_entry_equal POTTERY_CONCAT(POTTERY_RING_PREFIX, _entry_equal)
-    #define pottery_ring_entry_value POTTERY_CONCAT(POTTERY_RING_PREFIX, _entry_value)
     #define pottery_ring_entry_ref POTTERY_CONCAT(POTTERY_RING_PREFIX, _entry_ref)
 
     // lookup

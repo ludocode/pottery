@@ -42,7 +42,6 @@
 // entry operations
 #define {SRC}_entry_exists POTTERY_CONCAT({DEST}, _entry_exists)
 #define {SRC}_entry_equal POTTERY_CONCAT({DEST}, _entry_equal)
-#define {SRC}_entry_value POTTERY_CONCAT({DEST}, _entry_value)
 #define {SRC}_entry_ref POTTERY_CONCAT({DEST}, _entry_ref)
 
 // lookup
