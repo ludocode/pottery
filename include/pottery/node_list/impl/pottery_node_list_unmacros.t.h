@@ -84,10 +84,7 @@
 
     // types
     #undef pottery_nl_t
-    #undef pottery_nl_value_t
-    #undef pottery_nl_ref_t
     #undef pottery_nl_entry_t
-    #undef pottery_nl_context_t
 
     // lifecycle operations
     #undef pottery_nl_copy
@@ -241,10 +238,7 @@
 
     // types
     #undef pottery_nl_dll_t
-    #undef pottery_nl_dll_value_t
-    #undef pottery_nl_dll_ref_t
     #undef pottery_nl_dll_entry_t
-    #undef pottery_nl_dll_context_t
 
     // lifecycle operations
     #undef pottery_nl_dll_copy

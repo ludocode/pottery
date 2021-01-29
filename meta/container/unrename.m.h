@@ -27,10 +27,7 @@
 
 // types
 #undef {PREFIX}_t
-#undef {PREFIX}_value_t
-#undef {PREFIX}_ref_t
 #undef {PREFIX}_entry_t
-#undef {PREFIX}_context_t
 
 // lifecycle operations
 #undef {PREFIX}_copy

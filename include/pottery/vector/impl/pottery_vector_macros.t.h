@@ -103,10 +103,7 @@
 
     // types
     #define pottery_vector_t POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _t)
-    #define pottery_vector_value_t POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _value_t)
-    #define pottery_vector_ref_t POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _ref_t)
     #define pottery_vector_entry_t POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _entry_t)
-    #define pottery_vector_context_t POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _context_t)
 
     // lifecycle operations
     #define pottery_vector_copy POTTERY_CONCAT(POTTERY_VECTOR_PREFIX, _copy)
@@ -252,10 +249,6 @@
 
 
 // container_types
-                // TODO TEMPORARY HACK until other arrays (ring, pager) are also converted to container_types
-                #undef pottery_vector_value_t
-                #undef pottery_vector_ref_t
-                #undef pottery_vector_context_t
 #ifdef POTTERY_VECTOR_EXTERNAL_CONTAINER_TYPES
     #define POTTERY_VECTOR_CONTAINER_TYPES_PREFIX POTTERY_VECTOR_EXTERNAL_CONTAINER_TYPES
 #else

@@ -81,10 +81,7 @@
 
     // types
     #undef pottery_dll_t
-    #undef pottery_dll_value_t
-    #undef pottery_dll_ref_t
     #undef pottery_dll_entry_t
-    #undef pottery_dll_context_t
 
     // lifecycle operations
     #undef pottery_dll_copy

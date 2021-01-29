@@ -26,9 +26,6 @@
 #error "This is an internal header. Do not include it."
 #endif
 
-#undef pottery_pq_t // TODO remove, should be part of container meta
-#undef pottery_pq_value_t // TODO remove
-
 // internal funcs
 #undef pottery_pq_set_index
 #undef pottery_pq_heap_build
@@ -176,10 +173,7 @@
 
     // types
     #undef pottery_pq_t
-    #undef pottery_pq_value_t
-    #undef pottery_pq_ref_t
     #undef pottery_pq_entry_t
-    #undef pottery_pq_context_t
 
     // lifecycle operations
     #undef pottery_pq_copy
@@ -331,10 +325,7 @@
 
     // types
     #undef pottery_pq_array_t
-    #undef pottery_pq_array_value_t
-    #undef pottery_pq_array_ref_t
     #undef pottery_pq_array_entry_t
-    #undef pottery_pq_array_context_t
 
     // lifecycle operations
     #undef pottery_pq_array_copy

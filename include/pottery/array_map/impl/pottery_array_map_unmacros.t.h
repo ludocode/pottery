@@ -178,10 +178,7 @@
 
     // types
     #undef pottery_array_map_t
-    #undef pottery_array_map_value_t
-    #undef pottery_array_map_ref_t
     #undef pottery_array_map_entry_t
-    #undef pottery_array_map_context_t
 
     // lifecycle operations
     #undef pottery_array_map_copy
@@ -329,10 +326,7 @@
 
     // types
     #undef pottery_array_map_vector_t
-    #undef pottery_array_map_vector_value_t
-    #undef pottery_array_map_vector_ref_t
     #undef pottery_array_map_vector_entry_t
-    #undef pottery_array_map_vector_context_t
 
     // lifecycle operations
     #undef pottery_array_map_vector_copy

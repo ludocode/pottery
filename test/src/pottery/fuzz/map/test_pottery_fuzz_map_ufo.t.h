@@ -51,10 +51,7 @@
 
     // types
     #define ufo_map_t POTTERY_CONCAT(TEST_POTTERY_FUZZ_MAP_UFO_PREFIX, _t)
-    #define ufo_map_value_t POTTERY_CONCAT(TEST_POTTERY_FUZZ_MAP_UFO_PREFIX, _value_t)
-    #define ufo_map_ref_t POTTERY_CONCAT(TEST_POTTERY_FUZZ_MAP_UFO_PREFIX, _ref_t)
     #define ufo_map_entry_t POTTERY_CONCAT(TEST_POTTERY_FUZZ_MAP_UFO_PREFIX, _entry_t)
-    #define ufo_map_context_t POTTERY_CONCAT(TEST_POTTERY_FUZZ_MAP_UFO_PREFIX, _context_t)
 
     // lifecycle operations
     #define ufo_map_copy POTTERY_CONCAT(TEST_POTTERY_FUZZ_MAP_UFO_PREFIX, _copy)

@@ -57,10 +57,7 @@
 
     // types
     #define ufo_array_t POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _t)
-    #define ufo_array_value_t POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _value_t)
-    #define ufo_array_ref_t POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _ref_t)
     #define ufo_array_entry_t POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _entry_t)
-    #define ufo_array_context_t POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _context_t)
 
     // lifecycle operations
     #define ufo_array_copy POTTERY_CONCAT(TEST_POTTERY_FUZZ_ARRAY_UFO_PREFIX, _copy)

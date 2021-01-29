@@ -133,10 +133,7 @@
 
     // types
     #undef pottery_vector_t
-    #undef pottery_vector_value_t
-    #undef pottery_vector_ref_t
     #undef pottery_vector_entry_t
-    #undef pottery_vector_context_t
 
     // lifecycle operations
     #undef pottery_vector_copy

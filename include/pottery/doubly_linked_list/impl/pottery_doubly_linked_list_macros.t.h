@@ -74,10 +74,7 @@
 
     // types
     #define pottery_dll_t POTTERY_CONCAT(POTTERY_DOUBLY_LINKED_LIST_PREFIX, _t)
-    #define pottery_dll_value_t POTTERY_CONCAT(POTTERY_DOUBLY_LINKED_LIST_PREFIX, _value_t)
-    #define pottery_dll_ref_t POTTERY_CONCAT(POTTERY_DOUBLY_LINKED_LIST_PREFIX, _ref_t)
     #define pottery_dll_entry_t POTTERY_CONCAT(POTTERY_DOUBLY_LINKED_LIST_PREFIX, _entry_t)
-    #define pottery_dll_context_t POTTERY_CONCAT(POTTERY_DOUBLY_LINKED_LIST_PREFIX, _context_t)
 
     // lifecycle operations
     #define pottery_dll_copy POTTERY_CONCAT(POTTERY_DOUBLY_LINKED_LIST_PREFIX, _copy)
@@ -223,10 +220,6 @@
 
 
 // container_types
-                // TODO TEMPORARY HACK until we fix container_types type collisions
-                #undef pottery_dll_value_t
-                #undef pottery_dll_ref_t
-                #undef pottery_dll_context_t
 #ifdef POTTERY_DOUBLY_LINKED_LIST_EXTERNAL_CONTAINER_TYPES
     #define POTTERY_DOUBLY_LINKED_LIST_CONTAINER_TYPES_PREFIX POTTERY_DOUBLY_LINKED_LIST_EXTERNAL_CONTAINER_TYPES
 #else

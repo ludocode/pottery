@@ -136,10 +136,7 @@
 
     // types
     #undef pottery_ohm_t
-    #undef pottery_ohm_value_t
-    #undef pottery_ohm_ref_t
     #undef pottery_ohm_entry_t
-    #undef pottery_ohm_context_t
 
     // lifecycle operations
     #undef pottery_ohm_copy
