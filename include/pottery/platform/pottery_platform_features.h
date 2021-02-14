@@ -222,4 +222,101 @@ typedef int pottery_error_t;
 
 
 
+// This doesn't really belong in "platform" but we don't have a better place
+// for this yet. These headers need to be moved around, probably renaming
+// "platform" to "common".
+
+/*
+ * POTTERY_FOR_EACH()
+ *
+ * The for_each loop loops over all entries in the container. It starts with
+ * prefix##_begin() and loops with prefix##_next() until
+ * prefix##_entry_exists() returns false, assigning prefix##_entry_ref() to
+ * your ref in each iteration of the loop.
+ *
+ * @param ref An l-value of type prefix##_ref_t (which is a pointer to value
+ *            for concrete value types.) This will be assigned in each loop
+ *            iteration.
+ * @param prefix The pottery PREFIX of the container.
+ * @param container A pointer to the container.
+ *
+ * @warning The ref and container arguments may be evaluated multiple times.
+ *
+ * @note In ANSI C/gnu89 (i.e. pre-C99), POTTERY_FOR_EACH() only supports
+ *       containers where the ref and entry types are the same because an entry
+ *       cannot be defined within the for loop. Usage is the same where
+ *       supported so POTTERY_FOR_EACH() in gnu89 is forward-compatible.
+ */
+
+// First determine whether we can suppor the full implementation of for-each
+// (we need support for C99/C++-style definitions in for loops)
+
+#ifndef POTTERY_HAS_FULL_FOR_EACH
+    #ifdef __STDC_VERSION__
+        #if __STDC_VERSION__ >= 199901L
+            #define POTTERY_HAS_FULL_FOR_EACH 1
+        #endif
+    #endif
+#endif
+
+#ifndef POTTERY_HAS_FULL_FOR_EACH
+    #ifdef __cplusplus
+        #define POTTERY_HAS_FULL_FOR_EACH 1
+    #endif
+#endif
+
+#ifndef POTTERY_HAS_FULL_FOR_EACH
+    #define POTTERY_HAS_FULL_FOR_EACH 0
+#endif
+
+// If possible, POTTERY_FOR_EACH() defines an entry iterator and performs
+// correct ref conversions. This means it works on any container type.
+
+#ifndef POTTERY_FOR_EACH
+    #if POTTERY_HAS_FULL_FOR_EACH
+        #define POTTERY_FOR_EACH(ref, prefix, container) \
+            for (POTTERY_CONCAT(prefix, _entry_t) POTTERY_CONCAT(prefix, _for_each_entry) = \
+                        POTTERY_CONCAT(prefix, _begin)((container)); \
+                    (POTTERY_CONCAT(prefix, _entry_exists)((container), POTTERY_CONCAT(prefix, _for_each_entry)) ? \
+                        (((ref) = POTTERY_CONCAT(prefix, _entry_ref)((container), POTTERY_CONCAT(prefix, _for_each_entry))), true) : \
+                        false); \
+                    POTTERY_CONCAT(prefix, _for_each_entry) = \
+                        POTTERY_CONCAT(prefix, _next)((container), POTTERY_CONCAT(prefix, _for_each_entry)))
+    #endif
+#endif
+
+// POTTERY_FOR_EACH() cannot declare an entry iterator pre-C99 so in this case
+// it only works on containers where the entry and ref types are the same.
+
+// If possible we add a static assert to ensure that the types are the same
+// (otherwise if e.g. the ref type is void* and the entry type is some other
+// pointer, they are implicitly convertible so this would silently compile to
+// nonsense.) (This causes warnings if you're compiling under gnu89 with
+// -Wpedantic since ANSI C doesn't have statement expressions or _Static_assert,
+// but so does everything else in Pottery like these // comments.)
+#ifndef POTTERY_FOR_EACH
+    #if defined(__GNUC__) && defined(__has_builtin)
+        #if __has_builtin(__builtin_types_compatible_p)
+            #define POTTERY_FOR_EACH(ref, prefix, container) \
+                for ((ref) = ({ \
+                            _Static_assert(__builtin_types_compatible_p(POTTERY_CONCAT(prefix, _entry_t), POTTERY_CONCAT(prefix, _ref_t)), \
+                                    "Entry and ref types do not match! POTTERY_FOR_EACH() cannot be used under gnu89 on this container."); \
+                            POTTERY_CONCAT(prefix, _begin)((container)); \
+                        }); \
+                        POTTERY_CONCAT(prefix, _entry_exists)((container), (ref)); \
+                        (ref) = POTTERY_CONCAT(prefix, _next)((container), (ref)))
+        #endif
+    #endif
+#endif
+
+// This is the same as the previous one, just without the static assert.
+#ifndef POTTERY_FOR_EACH
+    #define POTTERY_FOR_EACH(ref, prefix, container) \
+        for ((ref) = POTTERY_CONCAT(prefix, _begin)((container)); \
+                POTTERY_CONCAT(prefix, _entry_exists)((container), (ref)); \
+                (ref) = POTTERY_CONCAT(prefix, _next)((container), (ref)))
+#endif
+
+
+
 #endif

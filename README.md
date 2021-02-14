@@ -100,6 +100,12 @@ person_t** eve = person_map_find(&map, "eve");
 if (!person_map_entry_exists(&map, eve)) {
     // not found!
 }
+
+// for-each loop works on any container
+person_t** ref;
+POTTERY_FOR_EACH(ref, person_map, &map) {
+    printf("%s\n", (*ref)->name);
+}
 ```
 
 See the full example [here](examples/pottery/person_map/).

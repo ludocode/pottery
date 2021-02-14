@@ -101,23 +101,24 @@ int main(void) {
     person_map_insert(&map, person_new("dave", 57));
 
 
-    // Find alice
-    person_t** entry = person_map_find(&map, "alice");
-    printf("%s is %i years old.\n", (*entry)->name, (*entry)->age);
-
-    // Remove alice from the map. The map deletes alice.
-    person_map_remove(&map, entry);
-
-
-    // Find bob, checking whether he was found
-    entry = person_map_find(&map, "bob");
-    if (!person_map_entry_exists(&map, entry)) {
-        fprintf(stderr, "bob not found!\n");
-        abort();
+    // Print the contents of the map
+    printf("Map contains:\n");
+    person_t** ref;
+    POTTERY_FOR_EACH(ref, person_map, &map) {
+        printf(" %s\n", (*ref)->name);
     }
 
+
+    // Find alice
+    ref = person_map_find(&map, "alice");
+    printf("%s is %i years old.\n", (*ref)->name, (*ref)->age);
+
+    // Remove alice from the map. The map deletes alice.
+    person_map_remove(&map, ref);
+
+
     // Extract bob from the map. This returns bob without deleting him.
-    person_t* bob = person_map_extract(&map, entry);
+    person_t* bob = person_map_extract(&map, person_map_find(&map, "bob"));
 
     // We now own bob; he is no longer in the map. We delete him when done.
     printf("%s is %i years old.\n", bob->name, bob->age);
@@ -131,8 +132,8 @@ int main(void) {
 
 
     // Try to find eve. Eve should not exist.
-    entry = person_map_find(&map, "eve");
-    if (person_map_entry_exists(&map, entry)) {
+    ref = person_map_find(&map, "eve");
+    if (person_map_entry_exists(&map, ref)) {
         fprintf(stderr, "eve does not belong in the map!\n");
         abort();
     }

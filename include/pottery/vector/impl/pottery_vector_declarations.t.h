@@ -203,6 +203,7 @@ pottery_error_t pottery_vector_shrink(pottery_vector_t* vector);
 static inline
 ptrdiff_t pottery_vector_offset(pottery_vector_t* vector, pottery_vector_entry_t first,
         pottery_vector_entry_t second) {
+    (void)vector;
     pottery_assert(first >= pottery_vector_begin(vector) && first <= pottery_vector_end(vector));
     pottery_assert(second >= pottery_vector_begin(vector) && second <= pottery_vector_end(vector));
     return pottery_cast(ptrdiff_t, second - first);
@@ -213,6 +214,7 @@ ptrdiff_t pottery_vector_offset(pottery_vector_t* vector, pottery_vector_entry_t
  */
 static inline
 pottery_vector_entry_t pottery_vector_shift(pottery_vector_t* vector, pottery_vector_entry_t entry, ptrdiff_t offset) {
+    (void)vector;
     pottery_assert(entry >= pottery_vector_begin(vector) && entry <= pottery_vector_end(vector));
     entry += offset;
     pottery_assert(entry >= pottery_vector_begin(vector) && entry <= pottery_vector_end(vector));

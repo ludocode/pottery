@@ -206,3 +206,30 @@ POTTERY_TEST(pottery_pager_bulk_extract_last) {
 
     int_pager_destroy(&pager);
 }
+
+// This should be moved to test_pottery_unit_array_ufo but pager doesn't use it
+// yet! See for_each in test_pottery_unit_map_ufo for the map equivalent
+#if POTTERY_HAS_FULL_FOR_EACH
+POTTERY_TEST(pottery_pager_for_ecah) {
+    int_pager_t pager;
+    int_pager_init(&pager);
+
+    for (int i = 0; i < 32; ++i) {
+
+        // test that POTTERY_FOR_EACH() visits all elements in the correct order
+        int count = 0;
+        int* ref;
+        POTTERY_FOR_EACH(ref, int_pager, &pager) {
+            pottery_test_assert(*ref == count);
+            ++count;
+        }
+
+        // test that we visited all elements
+        pottery_test_assert(count == i);
+        pottery_test_assert(count == pottery_cast(int, int_pager_count(&pager)));
+
+        // add an element
+        int_pager_insert_last(&pager, i);
+    }
+}
+#endif

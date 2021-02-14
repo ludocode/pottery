@@ -55,13 +55,6 @@ static inline void test_ufo_map_init(ufo_map_t* map) {
     #endif
 }
 
-POTTERY_TEST_MAP_UFO(init_destroy) {
-    ufo_map_t map;
-    test_ufo_map_init(&map);
-    pottery_test_assert(ufo_map_count(&map) == 0);
-    ufo_map_destroy(&map);
-}
-
 static inline void check_ufo_map(ufo_map_t* map) {
     size_t count = 0;
     ufo_map_entry_t entry = ufo_map_begin(map);
@@ -70,6 +63,27 @@ static inline void check_ufo_map(ufo_map_t* map) {
         ++count;
     }
     pottery_test_assert(count == ufo_map_count(map));
+}
+
+static inline void test_ufo_map_destroy(ufo_map_t* map) {
+    #if POTTERY_TEST_MAP_UFO_NO_DESTROY
+    // We have to destroy and displace all manually.
+    ufo_t* ufo;
+    POTTERY_FOR_EACH(ufo, ufo_map, map)
+        ufo_destroy(ufo);
+    ufo_map_displace_all(map);
+    #endif
+
+    check_ufo_map(map);
+
+    ufo_map_destroy(map);
+}
+
+POTTERY_TEST_MAP_UFO(init_destroy) {
+    ufo_map_t map;
+    test_ufo_map_init(&map);
+    pottery_test_assert(ufo_map_count(&map) == 0);
+    ufo_map_destroy(&map);
 }
 
 POTTERY_TEST_MAP_UFO(remove) {
@@ -140,19 +154,12 @@ POTTERY_TEST_MAP_UFO(remove_all) {
 
     check_ufo_map(&map);
 
-    #if POTTERY_TEST_MAP_UFO_NO_DESTROY
-    // Destroy and displace all
-    for (entry = ufo_map_begin(&map); ufo_map_entry_exists(&map, entry); entry = ufo_map_next(&map, entry))
-        ufo_destroy(entry);
-    ufo_map_displace_all(&map);
-    #else
+    #if !POTTERY_TEST_MAP_UFO_NO_DESTROY
     // Remove all destroys all elements.
     ufo_map_remove_all(&map);
     #endif
 
-    check_ufo_map(&map);
-
-    ufo_map_destroy(&map);
+    test_ufo_map_destroy(&map);
 }
 
 POTTERY_TEST_MAP_UFO(grow_and_shrink) {
@@ -227,6 +234,41 @@ POTTERY_TEST_MAP_UFO(grow_and_shrink) {
 
     ufo_map_destroy(&map);
 }
+
+#if POTTERY_HAS_FULL_FOR_EACH
+POTTERY_TEST_MAP_UFO(for_each) {
+    ufo_map_t map;
+    test_ufo_map_init(&map);
+
+    for (int i = 0; i < 32; ++i) {
+
+        // test that POTTERY_FOR_EACH() visits all elements
+        // We could improve this later to verify that they are in order for
+        // ordered containers
+        int count = 0;
+        ufo_t* ref;
+        POTTERY_FOR_EACH(ref, ufo_map, &map) {
+            pottery_test_assert(ref != pottery_null);
+            ++count;
+        }
+        pottery_test_assert(count == i);
+        pottery_test_assert(count == pottery_cast(int, ufo_map_count(&map)));
+
+        // add an element
+        char key[16];
+        snprintf(key, sizeof(key), "%i", i);
+        bool created = false;
+        ufo_map_entry_t entry;
+        pottery_test_assert(ufo_map_emplace_key(&map, key, &entry, &created) == POTTERY_OK);
+        pottery_test_assert(created);
+        ufo_init(entry, key, i);
+        check_ufo_map(&map);
+
+    }
+
+    test_ufo_map_destroy(&map);
+}
+#endif
 
 #undef POTTERY_TEST_MAP_UFO
 
