@@ -248,8 +248,15 @@ typedef int pottery_error_t;
  *       supported so POTTERY_FOR_EACH() in gnu89 is forward-compatible.
  */
 
-// First determine whether we can suppor the full implementation of for-each
-// (we need support for C99/C++-style definitions in for loops)
+// First determine whether we can support the full implementation of for-each.
+// We need support for C99/C++-style definitions in for loops.
+//
+// It's possible some older compilers may get confused and throw warnings on
+// the full for-each implementation (MSVC in particular raised incorrect "ref
+// is uninitialized" warnings on a previous implementation.) If so you can
+// disable the full for-each implementation by defining
+// POTTERY_HAS_FULL_FOR_EACH to 0. This will allow POTTERY_FOR_EACH() to work
+// only on containers where the ref and entry types are the same.
 
 #ifndef POTTERY_HAS_FULL_FOR_EACH
     #ifdef __STDC_VERSION__
@@ -277,9 +284,8 @@ typedef int pottery_error_t;
         #define POTTERY_FOR_EACH(ref, prefix, container) \
             for (POTTERY_CONCAT(prefix, _entry_t) POTTERY_CONCAT(prefix, _for_each_entry) = \
                         POTTERY_CONCAT(prefix, _begin)((container)); \
-                    (POTTERY_CONCAT(prefix, _entry_exists)((container), POTTERY_CONCAT(prefix, _for_each_entry)) ? \
-                        (((ref) = POTTERY_CONCAT(prefix, _entry_ref)((container), POTTERY_CONCAT(prefix, _for_each_entry))), true) : \
-                        false); \
+                    POTTERY_CONCAT(prefix, _entry_exists)((container), POTTERY_CONCAT(prefix, _for_each_entry)) && \
+                        (((ref) = POTTERY_CONCAT(prefix, _entry_ref)((container), POTTERY_CONCAT(prefix, _for_each_entry))), true); \
                     POTTERY_CONCAT(prefix, _for_each_entry) = \
                         POTTERY_CONCAT(prefix, _next)((container), POTTERY_CONCAT(prefix, _for_each_entry)))
     #endif
