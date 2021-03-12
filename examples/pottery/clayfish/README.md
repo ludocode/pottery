@@ -1,6 +1,6 @@
 # Clayfish
 
-Clayfish is a toy chess engine written in C using [Pottery](../../..) containers and algorithms.
+Clayfish is a toy chess engine written in C using [Pottery](https://github.com/ludocode/pottery) containers and algorithms.
 
 It has a simple command-line interface for playing chess. It also supports the [UCI protocol](https://www.chessprogramming.org/UCI) so it can be used with chess GUIs and chess AI tournament software like [Cute Chess](https://cutechess.com/). Pass `-u` as a command-line argument to run it in UCI mode.
 

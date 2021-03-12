@@ -352,6 +352,7 @@ if compiler != "MSVC":
         "-Wcast-qual",
         "-fPIC",
         "-fstrict-aliasing",
+        "-fno-omit-frame-pointer",
     ]
     for flag in extraFlags:
         defaultCPPFlags += flagsIfSupported(flag)

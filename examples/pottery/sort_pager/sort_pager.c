@@ -104,5 +104,6 @@ int main(void) {
         printf("%i\n", *int_pager_entry_ref(&pager, int_pager_at(&pager, i)));
     }
 
+    int_pager_destroy(&pager);
     return EXIT_SUCCESS;
 }

@@ -28,6 +28,7 @@
 // translation units with the same name
 #ifdef __CLR_VER
 #define foo_t dll_foo_t
+#define foo_list_t dll_foo_list_t
 #endif
 
 typedef struct foo_t {

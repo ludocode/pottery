@@ -210,7 +210,7 @@ POTTERY_TEST(pottery_pager_bulk_extract_last) {
 // This should be moved to test_pottery_unit_array_ufo but pager doesn't use it
 // yet! See for_each in test_pottery_unit_map_ufo for the map equivalent
 #if POTTERY_HAS_FULL_FOR_EACH
-POTTERY_TEST(pottery_pager_for_ecah) {
+POTTERY_TEST(pottery_pager_for_each) {
     int_pager_t pager;
     int_pager_init(&pager);
 
@@ -231,5 +231,7 @@ POTTERY_TEST(pottery_pager_for_ecah) {
         // add an element
         int_pager_insert_last(&pager, i);
     }
+
+    int_pager_destroy(&pager);
 }
 #endif

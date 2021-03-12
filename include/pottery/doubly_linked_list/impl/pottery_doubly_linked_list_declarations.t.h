@@ -97,7 +97,7 @@ pottery_dll_ref_t pottery_dll_next_ref(pottery_dll_t* dll, pottery_dll_ref_t ref
 static inline
 pottery_dll_ref_t pottery_dll_previous_ref(pottery_dll_t* dll, pottery_dll_ref_t ref) {
     pottery_assert(dll != NULL);
-    pottery_assert(!pottery_dll_ref_equal(POTTERY_DLL_CONTEXT_VAL(dll) ref, pottery_dll_null(dll)));
+    pottery_assert(!pottery_dll_ref_is_null(dll, ref));
 
     #ifdef POTTERY_DOUBLY_LINKED_LIST_PREVIOUS
         #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
