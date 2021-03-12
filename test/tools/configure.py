@@ -34,7 +34,7 @@
 import shutil, os, sys, subprocess, json, itertools, platform
 from os import path
 
-globalbuild = path.join("test", "build")
+globalbuild = path.join("test", ".build")
 os.makedirs(globalbuild, exist_ok=True)
 
 

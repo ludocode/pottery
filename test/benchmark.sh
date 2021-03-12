@@ -24,7 +24,7 @@ fetch_file() {
     fi
 }
 
-LIB=test/build/lib
+LIB=test/.build/lib
 mkdir -p $LIB
 cd $LIB
 
@@ -74,7 +74,7 @@ make_empty_file memcopy.h # glibc
 make_empty_file _ansi.h # newlib
 
 # Hack up the wine benchmark to only include the qsort code
-WINE_NTDLL_MISC=test/build/lib/wine_ntdll_misc.c
+WINE_NTDLL_MISC=test/.build/lib/wine_ntdll_misc.c
 if ! grep -q 'HACKED FOR POTTERY BENCHMARKS' $WINE_NTDLL_MISC ; then
     sed -i.backup \
         -e '/^#include "ntstatus.h"$/i #if 0 // HACKED FOR POTTERY BENCHMARKS' \
@@ -94,4 +94,4 @@ fi
 make -j8 -f test/tools/benchmark-makefile.mk
 
 # Run them
-test/build/benchmark/runner
+test/.build/benchmark/runner

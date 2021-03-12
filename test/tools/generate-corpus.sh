@@ -11,7 +11,7 @@ echo "Generating test corpus for AFL fuzzing"
 set -e
 cd "$(dirname "$0")"/../..
 
-CORPUS=test/build/corpus
+CORPUS=test/.build/corpus
 rm -rf $CORPUS
 mkdir $CORPUS
 

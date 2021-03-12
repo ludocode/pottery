@@ -11,11 +11,11 @@ cd "$(dirname $0)/.."
 meta/generate.py
 
 # Fail CI builds if the above generate script changed anything
-if [ -n "$CI" ] && [ -e test/build/meta_changed ]; then
+if [ -n "$CI" ] && [ -e test/.build/meta_changed ]; then
     echo "Failing CI build due to generated meta-template changes."
     exit 1
 fi
 
 # Configure and run unit tests
 test/tools/configure.py
-ninja -f test/build/build.ninja $@
+ninja -f test/.build/build.ninja $@

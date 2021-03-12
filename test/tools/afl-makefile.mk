@@ -1,4 +1,4 @@
-BUILD := test/build/afl
+BUILD := test/.build/afl
 
 ifneq (, $(shell which afl-gcc 2>/dev/null))
 	CC := afl-gcc

@@ -1,4 +1,4 @@
-BUILD := test/build/benchmark
+BUILD := test/.build/benchmark
 RUNNER := $(BUILD)/runner
 
 .PHONY: all
@@ -14,7 +14,7 @@ CXXFLAGS := -std=gnu++17
 CPPFLAGS += -O3
 #CPPFLAGS += -Og -DDEBUG -g
 CPPFLAGS += -Wall -Wextra -Wpedantic -Werror -Wfatal-errors
-CPPFLAGS += -Iinclude -Itest/src -Itest/build/lib -Iexamples
+CPPFLAGS += -Iinclude -Itest/src -Itest/.build/lib -Iexamples
 CPPFLAGS += -MMD -MP
 
 SRC=test/src/pottery/benchmark

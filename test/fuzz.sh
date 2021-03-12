@@ -19,9 +19,9 @@ if ! [ "x$1" =  "x" ]; then
 
     # ugly output directory, but I haven't bothered trimming the fuzz
     # test names yet so oh well
-    OUT=test/build/afl/output/$1
+    OUT=test/.build/afl/output/$1
     mkdir -p $OUT
 
     # Run given fuzz tester
-    afl-fuzz -i test/build/corpus -o $OUT -m 2500 $1
+    afl-fuzz -i test/.build/corpus -o $OUT -m 2500 $1
 fi

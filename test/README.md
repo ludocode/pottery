@@ -64,7 +64,7 @@ To fuzz test with american fuzzy lop, use `test/fuzz.sh` and choose a container 
 echo core | sudo tee /proc/sys/kernel/core_pattern"
 echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 # echo ondemand to undo the above later
-test/fuzz.sh test/build/afl/test_pottery_fuzz_vector
+test/fuzz.sh test/.build/afl/test_pottery_fuzz_vector
 ```
 
 The test script prints out the afl command it uses so you can run it yourself if you want to configure it more (for example if you want to parallelize it.)

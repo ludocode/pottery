@@ -1,5 +1,5 @@
 NAME = $(shell basename "$(shell pwd)")
-BUILD = build/$(NAME)
+BUILD = .build/$(NAME)
 EXECUTABLE = $(BUILD)/$(NAME)
 
 run: $(EXECUTABLE) FORCE
@@ -10,7 +10,7 @@ run: $(EXECUTABLE) FORCE
 build: $(EXECUTABLE) FORCE
 
 clean: FORCE
-	rm -rf build
+	rm -rf .build
 
 FORCE:
 
