@@ -229,7 +229,7 @@ void position_apply_move(position_t* position, move_t* move) {
                 }
             } else {
                 // only pawns may capture pawns en-passant
-                if (piece != 'P' && piece != 'p') {
+                if (piece == 'P' || piece == 'p') {
                     // remove captured pawn
                     position->board[en_passant.row + (position->white_to_move ? -1 : 1)][en_passant.col] = '.';
                 }

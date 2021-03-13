@@ -361,7 +361,7 @@ static bool uci_parse_fen(uci_t* uci, uci_parser_t* parser) {
             return false;
         }
         char col = string_cstr(&parser->word)[0];
-        char row = string_cstr(&parser->word)[0];
+        char row = string_cstr(&parser->word)[1];
         if (col < 'a' || col > 'h' || row < '1' || row > '8') {
             uci_print(uci, uci_channel_error, "FEN string en-passant coordinates invalid!");
             return false;
