@@ -57,8 +57,19 @@ static inline void pottery_abort() {
 
 #if POTTERY_DEBUG || defined(POTTERY_UNIT_TEST)
 #define pottery_assert(x) (pottery_unlikely(!(x)) ? pottery_abort() : ((void)0))
+#define pottery_unreachable() pottery_assert(0)
 #else
 #define pottery_assert(x) /*nothing*/
+#endif
+
+#ifndef pottery_unreachable
+    #ifdef __GNUC__
+        #define pottery_unreachable() __builtin_unreachable()
+    #elif defined(_MSC_VER)
+        #define pottery_unreachable() __assume(0)
+    #else
+        #define pottery_unreachable() pottery_abort()
+    #endif
 #endif
 
 

@@ -12,6 +12,7 @@ Here's a more hierarchical index:
         - [Ring](ring/), a dynamically growing circular buffer
         - [Pager](pager/), a paged double-ended queue
     - Maps
+        - [Tree Map](tree_map/), a self-balancing binary search tree with dynamically allocated nodes
         - [Open Hash Map](open_hash_map/), a dynamically growing open-addressed hash table
         - [Array Map](array_map/), a map over a dynamically growing array
     - Others
@@ -20,6 +21,7 @@ Here's a more hierarchical index:
 
 - User-Allocated Containers, i.e. container algorithms that work on user-allocated memory
     - Intrusive Containers
+        - [Red-Black Tree](red_black_tree/), a red-black tree with configurable links and user-allocated nodes
         - [Doubly-Linked List](doubly_linked_list/), an intrusive doubly-linked list with user-allocated nodes
     - External Array Containers
         - [Heap](heap/), binary heap algorithms on an external array

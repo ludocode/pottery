@@ -213,7 +213,7 @@ In both of the above cases, the values are unchanged, aside from whatever intrus
 
 Entries in a container are semantically ordered as per one of the following ordering modes. These are used for access and iteration.
 
-- For **comparison-ordered** containers (like `red_black_map`), the values are accessible in the order given by the comparison expression with which the container is configured.
+- For **comparison-ordered** containers (like `tree_map`), the values are accessible in the order given by the comparison expression with which the container is configured.
 
 - For **unordered** containers (like [`open_hash_map`](../include/pottery/open_hash_map/) or [`heap`](../include/pottery/heap/)), the values are accessible in an arbitrary order internal to the container. The order can change arbitrarily as the container is mutated.
 

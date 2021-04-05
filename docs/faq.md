@@ -30,7 +30,7 @@ Care is always needed to keep binary sizes under control. This is one reason why
 
 C++ names its templates based on abstract behaviour rather than implementation, for example `std::map` and `std::sort`. These are meant to be generic so the underlying algorithms can vary.
 
-Pottery does not. If you want a map, you have to choose whether you want a `red_black_map`, a `btree_map`, an `array_map`, an `open_hash_map`, etc.
+Pottery does not. If you want a map, you have to choose whether you want a `tree_map`, an `open_hash_map`, an `array_map`, a `btree_map`, etc.
 
 Unfortunately the promised genericity of C++ templates doesn't really work in practice. The pointer stability and iterator invalidation rules require that `std::map` be implemented as a self-balancing search tree with non-mutating lookup and individually allocated mutable nodes. The red-black tree is the only sensible choice. There are better C++ map containers available but none can be called `map` because that's now reserved for the red-black tree.
 
@@ -40,11 +40,11 @@ Pottery does not use abstract names because you need to be aware of the underlyi
 
 - Ignoring compilation speed can lead to a painfully long edit, compile, debug cycle which makes debugging time consuming and agonizing. The speed of this cycle has been argued to be the most critical component of programmer productivity and programmer happiness.
 
-- Ignoring performance characteristics can result in [Schlemiel the painter’s algorithms](https://www.joelonsoftware.com/2001/12/11/back-to-basics/). This can lead to unnacceptable user experience and even denial-of-service vulnerabilities.
+- Ignoring performance characteristics can result in [Schlemiel the painter’s algorithms](https://www.joelonsoftware.com/2001/12/11/back-to-basics/). This can lead to unacceptable user experience and even denial-of-service vulnerabilities.
 
 - Ignoring the size of your templates can lead to executables tens of megabytes in size. The resulting instruction cache thrashing will significantly reduce overall performance in ways that are hard to quantify; it's death by a thousand cuts. (See the question on bloat above for more.)
 
-The name `red_black_map` confronts you with the implementation and forces you to question whether it's the right decision for your purpose.
+The name `tree_map` or `open_hash_map` confronts you with the implementation and forces you to question whether it's the right decision for your purpose.
 
 
 
