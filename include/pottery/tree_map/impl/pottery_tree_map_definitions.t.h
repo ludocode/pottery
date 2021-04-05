@@ -158,7 +158,7 @@ pottery_error_t pottery_tree_map_emplace_key(pottery_tree_map_t* map, pottery_tr
     if (pottery_tree_map_tree_entry_exists(&map->tree, entry)) {
         // Found existing entry
         *out_entry = pottery_tree_map_node_ref(entry);
-        if (out_created != NULL)
+        if (out_created != pottery_null)
             *out_created = false;
         return POTTERY_OK;
     }
@@ -167,7 +167,7 @@ pottery_error_t pottery_tree_map_emplace_key(pottery_tree_map_t* map, pottery_tr
     if (entry == pottery_null) {
         // Allocation failed
         *out_entry = pottery_null;
-        if (out_created != NULL)
+        if (out_created != pottery_null)
             *out_created = false;
         return POTTERY_ERROR_ALLOC;
     }
@@ -175,7 +175,7 @@ pottery_error_t pottery_tree_map_emplace_key(pottery_tree_map_t* map, pottery_tr
     // New entry created
     pottery_tree_map_tree_link_location(&map->tree, entry, &location);
     *out_entry = pottery_tree_map_node_ref(entry);
-    if (out_created != NULL)
+    if (out_created != pottery_null)
         *out_created = true;
     return POTTERY_OK;
 }

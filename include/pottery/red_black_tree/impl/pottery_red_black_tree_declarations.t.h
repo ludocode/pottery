@@ -82,7 +82,7 @@ pottery_rbt_ref_t pottery_rbt_entry_ref(pottery_rbt_t* rbt, pottery_rbt_entry_t 
 
 static inline
 pottery_rbt_ref_t pottery_rbt_left_child(pottery_rbt_t* rbt, pottery_rbt_ref_t ref) {
-    pottery_assert(rbt != NULL);
+    pottery_assert(rbt != pottery_null);
     pottery_assert(!pottery_rbt_ref_is_null(rbt, ref));
 
     #ifdef POTTERY_RED_BLACK_TREE_LEFT_CHILD
@@ -103,7 +103,7 @@ pottery_rbt_ref_t pottery_rbt_left_child(pottery_rbt_t* rbt, pottery_rbt_ref_t r
 
 static inline
 pottery_rbt_ref_t pottery_rbt_right_child(pottery_rbt_t* rbt, pottery_rbt_ref_t ref) {
-    pottery_assert(rbt != NULL);
+    pottery_assert(rbt != pottery_null);
     pottery_assert(!pottery_rbt_ref_is_null(rbt, ref));
 
     #ifdef POTTERY_RED_BLACK_TREE_RIGHT_CHILD
@@ -124,7 +124,7 @@ pottery_rbt_ref_t pottery_rbt_right_child(pottery_rbt_t* rbt, pottery_rbt_ref_t 
 
 static inline
 pottery_rbt_ref_t pottery_rbt_parent(pottery_rbt_t* rbt, pottery_rbt_ref_t ref) {
-    pottery_assert(rbt != NULL);
+    pottery_assert(rbt != pottery_null);
     pottery_assert(!pottery_rbt_ref_is_null(rbt, ref));
 
     #ifdef POTTERY_RED_BLACK_TREE_PARENT
@@ -163,7 +163,7 @@ pottery_rbt_ref_t pottery_rbt_other_child(pottery_rbt_t* rbt, pottery_rbt_ref_t 
 
 static inline
 bool pottery_rbt_is_red(pottery_rbt_t* rbt, pottery_rbt_ref_t ref) {
-    pottery_assert(rbt != NULL);
+    pottery_assert(rbt != pottery_null);
     pottery_assert(!pottery_rbt_ref_is_null(rbt, ref));
 
     #ifdef POTTERY_RED_BLACK_TREE_IS_RED
@@ -188,7 +188,7 @@ void pottery_rbt_set_left_child(pottery_rbt_t* rbt,
 {
             //printf("%i SET %p RIGHT_CHILD %p\n",__LINE__,(void*)ref,(void*)left_child);
     (void)rbt;
-    pottery_assert(rbt != NULL);
+    pottery_assert(rbt != pottery_null);
     pottery_assert(!pottery_rbt_ref_is_null(rbt, ref));
 
     #ifdef POTTERY_RED_BLACK_TREE_SET_LEFT_CHILD
@@ -215,7 +215,7 @@ void pottery_rbt_set_right_child(pottery_rbt_t* rbt,
         pottery_rbt_ref_t ref, pottery_rbt_ref_t right_child)
 {
             //printf("%i SET %p RIGHT_CHILD %p\n",__LINE__,(void*)ref,(void*)right_child);
-    pottery_assert(rbt != NULL);
+    pottery_assert(rbt != pottery_null);
     pottery_assert(!pottery_rbt_ref_is_null(rbt, ref));
 
     #ifdef POTTERY_RED_BLACK_TREE_SET_RIGHT_CHILD
@@ -245,7 +245,7 @@ void pottery_rbt_set_parent(pottery_rbt_t* rbt,
         pottery_rbt_ref_t ref, pottery_rbt_ref_t parent)
 {
             //printf("%i SET %p PARENT %p\n",__LINE__,(void*)ref,(void*)parent);
-    pottery_assert(rbt != NULL);
+    pottery_assert(rbt != pottery_null);
     pottery_assert(!pottery_rbt_ref_is_null(rbt, ref));
 
     #ifdef POTTERY_RED_BLACK_TREE_SET_PARENT
@@ -272,7 +272,7 @@ void pottery_rbt_set_parent(pottery_rbt_t* rbt,
 
 static inline
 void pottery_rbt_set_is_red(pottery_rbt_t* rbt, pottery_rbt_ref_t ref, bool is_red) {
-    pottery_assert(rbt != NULL);
+    pottery_assert(rbt != pottery_null);
     pottery_assert(!pottery_rbt_ref_is_null(rbt, ref));
 
     #ifdef POTTERY_RED_BLACK_TREE_SET_IS_RED
@@ -323,7 +323,7 @@ void pottery_rbt_init(pottery_rbt_t* rbt
         , pottery_rbt_context_t context
         #endif
 ) {
-    pottery_assert(rbt != NULL);
+    pottery_assert(rbt != pottery_null);
     #if POTTERY_RED_BLACK_TREE_HAS_CONTEXT
     rbt->context = context;
     #endif
@@ -334,7 +334,7 @@ void pottery_rbt_init(pottery_rbt_t* rbt
 
 static inline
 void pottery_rbt_unlink_all(pottery_rbt_t* rbt) {
-    pottery_assert(rbt != NULL);
+    pottery_assert(rbt != pottery_null);
     rbt->root = pottery_rbt_null(rbt);
     rbt->count = 0;
     pottery_rbt_sanity_check(rbt);
@@ -378,7 +378,7 @@ pottery_rbt_entry_t pottery_rbt_impl_find_location(pottery_rbt_t* rbt,
 
 static pottery_always_inline
 pottery_rbt_entry_t pottery_rbt_find(pottery_rbt_t* rbt, pottery_rbt_key_t key) {
-    return pottery_rbt_impl_find_location(rbt, key, NULL);
+    return pottery_rbt_impl_find_location(rbt, key, pottery_null);
 }
 
 /**
@@ -400,7 +400,7 @@ static pottery_always_inline
 pottery_rbt_entry_t pottery_rbt_find_location(pottery_rbt_t* rbt,
         pottery_rbt_key_t key, pottery_rbt_location_t* out_location)
 {
-    pottery_assert(out_location != NULL);
+    pottery_assert(out_location != pottery_null);
     return pottery_rbt_impl_find_location(rbt, key, out_location);
 }
 
@@ -431,7 +431,7 @@ pottery_rbt_entry_t pottery_rbt_any(pottery_rbt_t* rbt) {
 
 static inline
 void pottery_rbt_destroy(pottery_rbt_t* rbt) {
-    pottery_assert(rbt != NULL);
+    pottery_assert(rbt != pottery_null);
 
     // It is an error to destroy a non-empty list. The list contents must be
     // properly disposed of.
