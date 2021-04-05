@@ -178,6 +178,9 @@ pottery_rbt_ref_t pottery_rbt_previous(pottery_rbt_t* rbt, pottery_rbt_entry_t e
     return pottery_rbt_null(rbt);
 }
 
+// TODO it would be nice to inline the below, we have to expose our
+// leftmost/rightmost functions
+
 pottery_rbt_entry_t pottery_rbt_begin(pottery_rbt_t* rbt) {
     pottery_rbt_sanity_check(rbt);
     if (pottery_rbt_ref_is_null(rbt, rbt->root))
@@ -207,9 +210,8 @@ void pottery_rbt_swap(pottery_rbt_t* left, pottery_rbt_t* right) {
     *right = temp;
 }
 
-// Replaces current with entry
-static inline
-void pottery_rbt_replace_node(pottery_rbt_t* rbt,
+POTTERY_RED_BLACK_TREE_EXTERN
+void pottery_rbt_replace(pottery_rbt_t* rbt,
         pottery_rbt_entry_t current, pottery_rbt_entry_t entry)
 {
             //pottery_log("%i\n",__LINE__);
@@ -259,23 +261,22 @@ void pottery_rbt_replace_node(pottery_rbt_t* rbt,
  * Walks down the tree looking for a node with the given key or a place to
  * insert it.
  *
- * If a node with the given key is found, it is returned and compare is set to
- * zero.
- * 
- * Otherwise the parent where the new node should be inserted is returned.
- * Compare is set to less than zero if it should be the left child and greater
- * than zero if it should be the right child. The corresponding child ref is
- * null.
+ * If a node with the given key is found, it is returned.
  *
- * The tree must not be empty! You should handle empty tree edge cases before
- * calling this. This never returns null.
+ * Otherwise the parent where the new node should be inserted is placed in
+ * location. The location's compare is set to less than zero if it should be
+ * the left child and greater than zero if it should be the right child. The
+ * corresponding child ref is null, and null is returned.
  */
-static inline
-pottery_rbt_entry_t pottery_rbt_find_key_or_parent(pottery_rbt_t* rbt,
-        pottery_rbt_key_t key, int* compare)
+pottery_rbt_entry_t pottery_rbt_impl_find_location(pottery_rbt_t* rbt,
+        pottery_rbt_key_t key, pottery_rbt_location_t* /*nullable*/ location)
 {
-    pottery_assert(!pottery_rbt_is_empty(rbt));
-    pottery_assert(!pottery_rbt_ref_is_null(rbt, rbt->root));
+    if (pottery_rbt_is_empty(rbt)) {
+        // The tree is empty. Store null in location and return null.
+        if (location != pottery_null)
+            location->parent = pottery_rbt_null(rbt);
+        return pottery_rbt_null(rbt);
+    }
 
     pottery_rbt_entry_t current = rbt->root;
     while (true) {
@@ -291,10 +292,17 @@ pottery_rbt_entry_t pottery_rbt_find_key_or_parent(pottery_rbt_t* rbt,
         #endif
 
         if (equal) {
-            // We've found an entry with matching key. Replace the existing
-            // entry with the new one and return the old entry. No need to
-            // balance because the tree structure is the same.
-            *compare = 0;
+            // We've found an entry with matching key. Just return it; location
+            // won't be used.
+            #if POTTERY_DEBUG
+            if (location != pottery_null) {
+                // We put in some bogus values in the location struct that will
+                // cause an assertion in case it is actually used.
+                location->parent = pottery_null;
+                location->compare = 0;
+                // TODO this would be a good candidate for valgrind mark uninitialized
+            }
+            #endif
             return current;
         }
 
@@ -309,12 +317,17 @@ pottery_rbt_entry_t pottery_rbt_find_key_or_parent(pottery_rbt_t* rbt,
             pottery_rbt_right_child(rbt, current);
 
         if (pottery_rbt_ref_is_null(rbt, next)) {
-            #if POTTERY_COMPARE_HAS_USER_THREE_WAY
-            *compare = three_way;
-            #else
-            *compare = less ? -1 : 1;
-            #endif
-            return current;
+            // We've hit a leaf, meaning our key is not in the tree. Store the
+            // parent and side in location and return null.
+            if (location != pottery_null) {
+                location->parent = current;
+                #if POTTERY_COMPARE_HAS_USER_THREE_WAY
+                location->compare = three_way;
+                #else
+                location->compare = less ? -1 : 1;
+                #endif
+            }
+            return pottery_rbt_null(rbt);
         }
 
         // Otherwise we walk down and loop around.
@@ -324,6 +337,7 @@ pottery_rbt_entry_t pottery_rbt_find_key_or_parent(pottery_rbt_t* rbt,
     pottery_unreachable();
 }
 
+#if 0
 static inline
 void pottery_rbt_link_root(pottery_rbt_t* rbt, pottery_rbt_entry_t entry) {
     pottery_assert(pottery_rbt_ref_is_null(rbt, rbt->root));
@@ -336,6 +350,7 @@ void pottery_rbt_link_root(pottery_rbt_t* rbt, pottery_rbt_entry_t entry) {
 
     pottery_rbt_sanity_check(rbt);
 }
+#endif
 
 // Rotate left: entry is replaced by its right child
 static
@@ -491,7 +506,7 @@ void pottery_rbt_link_rebalance(pottery_rbt_t* rbt,
             parent = entry;
             entry = temp;
         }
-           
+
         // entry is now an outer child. rotate grandparent and swap colors.
         pottery_log("%i rotating grandparent %s, done.\n",__LINE__, parent_is_left ? "right" : "left");
         if (parent_is_left)
@@ -506,6 +521,48 @@ void pottery_rbt_link_rebalance(pottery_rbt_t* rbt,
     pottery_rbt_sanity_check(rbt);
 }
 
+POTTERY_RED_BLACK_TREE_EXTERN
+void pottery_rbt_link_location(pottery_rbt_t* rbt, pottery_rbt_entry_t entry,
+        pottery_rbt_location_t* location)
+{
+    pottery_rbt_set_left_child(rbt, entry, pottery_rbt_null(rbt));
+    pottery_rbt_set_right_child(rbt, entry, pottery_rbt_null(rbt));
+    pottery_rbt_set_is_red(rbt, entry, true);
+    ++rbt->count;
+
+    if (pottery_rbt_ref_is_null(rbt, location->parent)) {
+        pottery_assert(rbt->count == 1);
+        pottery_assert(pottery_rbt_ref_is_null(rbt, rbt->root));
+        pottery_rbt_set_parent(rbt, entry, pottery_rbt_null(rbt));
+        rbt->root = entry;
+    } else {
+        pottery_rbt_set_parent(rbt, entry, location->parent);
+        if (location->compare < 0) {
+            pottery_rbt_set_left_child(rbt, location->parent, entry);
+        } else {
+            pottery_assert(location->compare > 0);
+            pottery_rbt_set_right_child(rbt, location->parent, entry);
+        }
+        pottery_rbt_link_rebalance(rbt, location->parent, entry);
+    }
+
+    pottery_rbt_sanity_check(rbt);
+}
+
+#if 1
+POTTERY_RED_BLACK_TREE_EXTERN
+pottery_rbt_entry_t pottery_rbt_link(pottery_rbt_t* rbt, pottery_rbt_entry_t entry) {
+    pottery_rbt_location_t location;
+    pottery_rbt_entry_t previous = pottery_rbt_impl_find_location(rbt,
+            pottery_rbt_ref_key(POTTERY_RBT_CONTEXT_VAL(rbt) entry), &location);
+    if (pottery_rbt_ref_is_null(rbt, previous)) {
+        pottery_rbt_link_location(rbt, entry, &location);
+    } else {
+        pottery_rbt_replace(rbt, previous, entry);
+    }
+    return previous;
+}
+#else
 POTTERY_RED_BLACK_TREE_EXTERN
 pottery_rbt_entry_t pottery_rbt_link(pottery_rbt_t* rbt, pottery_rbt_entry_t entry) {
     pottery_log("=================\n===================\n==============\n%i link\n",__LINE__);
@@ -574,6 +631,7 @@ pottery_rbt_entry_t pottery_rbt_link(pottery_rbt_t* rbt, pottery_rbt_entry_t ent
 
     pottery_unreachable();
 }
+#endif
 
 POTTERY_RED_BLACK_TREE_EXTERN
 void pottery_rbt_unlink(pottery_rbt_t* rbt, pottery_rbt_entry_t entry) {
@@ -849,26 +907,7 @@ void pottery_rbt_unlink(pottery_rbt_t* rbt, pottery_rbt_entry_t entry) {
     pottery_rbt_sanity_check(rbt);
 }
 
-POTTERY_RED_BLACK_TREE_EXTERN
-pottery_rbt_entry_t pottery_rbt_find(pottery_rbt_t* rbt, pottery_rbt_key_t key) {
-    if (pottery_rbt_is_empty(rbt))
-        return pottery_rbt_null(rbt);
-    int compare;
-    pottery_rbt_entry_t entry = pottery_rbt_find_key_or_parent(rbt, key, &compare);
-    return (compare == 0) ? entry : pottery_rbt_null(rbt);
-}
-
-#ifdef POTTERY_RED_BLACK_TREE_ACQUIRE
-static inline
-pottery_rbt_ref_t pottery_rbt_acquire(pottery_rbt_t* rbt) {
-    #if POTTERY_RED_BLACK_TREE_HAS_CONTEXT
-        return POTTERY_RED_BLACK_TREE_ACQUIRE((rbt->context));
-    #else
-        (void)rbt;
-        return POTTERY_RED_BLACK_TREE_ACQUIRE();
-    #endif
-}
-
+#if 0
 POTTERY_RED_BLACK_TREE_EXTERN
 pottery_error_t pottery_rbt_emplace_key(pottery_rbt_t* rbt, pottery_rbt_key_t key,
         pottery_rbt_entry_t* entry, bool* /*nullable*/ out_created)
@@ -909,7 +948,7 @@ pottery_error_t pottery_rbt_emplace_key(pottery_rbt_t* rbt, pottery_rbt_key_t ke
     pottery_rbt_set_parent(rbt, child, parent);
     pottery_rbt_set_left_child(rbt, child, pottery_rbt_null(rbt));
     pottery_rbt_set_right_child(rbt, child, pottery_rbt_null(rbt));
-    pottery_rbt_set_is_red(rbt, child, true); // TODO ?
+    pottery_rbt_set_is_red(rbt, child, true);
 
     if (compare < 0) {
         pottery_assert(pottery_rbt_ref_is_null(rbt, pottery_rbt_left_child(rbt, parent)));

@@ -33,6 +33,7 @@ struct pottery_tree_map_t {
     #endif
 };
 
+#if POTTERY_FORWARD_DECLARATIONS
 POTTERY_TREE_MAP_EXTERN
 void pottery_tree_map_init(pottery_tree_map_t* map
         #ifdef POTTERY_TREE_MAP_CONTEXT_TYPE
@@ -46,14 +47,10 @@ void pottery_tree_map_destroy(pottery_tree_map_t* map);
 /**
  *
  */
-static inline
+POTTERY_TREE_MAP_EXTERN
 pottery_error_t pottery_tree_map_emplace_key(pottery_tree_map_t* map, pottery_tree_map_key_t key,
-        pottery_tree_map_entry_t* entry, bool* /*nullable*/ out_created)
-{
-    return pottery_tree_map_tree_emplace_key(&map->tree, key,
-            pottery_reinterpret_cast(pottery_tree_map_node_t**, entry),
-            out_created);
-}
+        pottery_tree_map_entry_t* entry, bool* /*nullable*/ out_created);
+#endif
 
 static inline
 size_t pottery_tree_map_count(pottery_tree_map_t* map) {

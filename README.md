@@ -70,7 +70,7 @@ See the full example [here](examples/pottery/int_vector/).
 
 ### String➔Object Map
 
-Suppose you want a map of string names to person pointers, i.e. `const char*` to `person_t*`:
+Suppose you want a map of names to person pointers for this struct:
 
 ```c
 typedef struct person_t {
@@ -78,13 +78,22 @@ typedef struct person_t {
     // other stuff
 } person_t;
 
-#define POTTERY_ARRAY_MAP_PREFIX person_map
-#define POTTERY_ARRAY_MAP_KEY_TYPE const char*
-#define POTTERY_ARRAY_MAP_COMPARE_THREE_WAY strcmp
-#define POTTERY_ARRAY_MAP_VALUE_TYPE person_t*
-#define POTTERY_ARRAY_MAP_REF_KEY(person) (*person)->name
-#define POTTERY_ARRAY_MAP_LIFECYCLE_MOVE_BY_VALUE 1
-#include "pottery/array_map/pottery_array_map_static.t.h"
+person_t* person_new(const char* name);
+void person_delete(person_t* person);
+// other functions
+```
+
+Instantiate a red-black tree map like this:
+
+```c
+#define POTTERY_TREE_MAP_PREFIX person_map
+#define POTTERY_TREE_MAP_KEY_TYPE const char*
+#define POTTERY_TREE_MAP_COMPARE_THREE_WAY strcmp
+#define POTTERY_TREE_MAP_VALUE_TYPE person_t*
+#define POTTERY_TREE_MAP_REF_KEY(person) (*person)->name
+#define POTTERY_TREE_MAP_LIFECYCLE_MOVE_BY_VALUE 1
+#define POTTERY_TREE_MAP_LIFECYCLE_DESTROY(person) person_delete(*person)
+#include "pottery/tree_map/pottery_tree_map_static.t.h"
 ```
 
 This gives you a `person_map_t`:
@@ -97,7 +106,7 @@ person_map_insert(&map, person_new("alice"));
 person_map_insert(&map, person_new("bob"));
 
 person_t** eve = person_map_find(&map, "eve");
-if (!person_map_entry_exists(&map, eve)) {
+if (eve == NULL) {
     // not found!
 }
 
@@ -106,6 +115,9 @@ person_t** ref;
 POTTERY_FOR_EACH(ref, person_map, &map) {
     printf("%s\n", (*ref)->name);
 }
+
+// map destroys its values with person_delete()
+person_map_destroy(&map);
 ```
 
 See the full example [here](examples/pottery/person_map/).

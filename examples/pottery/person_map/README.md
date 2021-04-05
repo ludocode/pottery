@@ -1,4 +1,4 @@
-This demonstrates how to build a map with Pottery. In this example we're building a map of string names to person pointers, i.e. `const char*` to `person_t*`.
+This demonstrates how to build a map with Pottery. In this example we're building a map of string names to person pointers, i.e. `const char*` to `person_t*`. We use a [`tree_map`](../../../include/pottery/tree_map/), which by default is a red-black tree with dynamically allocated nodes and managed values (similar to C++ `std::map`.)
 
 The template instantiation gives us a type called `person_map_t`. You can initialize it with `person_map_init()`; add to it with `person_map_insert()` and friends; access the contents by `person_map_find()`; and so forth.
 

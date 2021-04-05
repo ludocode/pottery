@@ -32,9 +32,13 @@ print:
 	@echo
 	@echo $(EXES)|sed -E -e 's/ /\n    /g' -e 's/^/    /g'
 	@echo
-	@echo "You'll probably want to do these first:"
+	@echo "You'll probably want to do this first:"
 	@echo
 	@echo "    echo core | sudo tee /proc/sys/kernel/core_pattern"
+	@echo
+	@echo "and one of these two:"
+	@echo
+	@echo "    export AFL_SKIP_CPUFREQ=1"
 	@echo "    echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor"
 	@echo
 	@echo '(undo that last one with "ondemand" instead of "performance")'

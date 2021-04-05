@@ -28,6 +28,7 @@
 // types
 #undef {PREFIX}_t
 #undef {PREFIX}_entry_t
+#undef {PREFIX}_location_t // currently only used for intrusive maps
 
 // lifecycle operations
 #undef {PREFIX}_copy
@@ -167,3 +168,8 @@
 #undef {PREFIX}_unlink_and_next
 #undef {PREFIX}_unlink_and_previous
 #undef {PREFIX}_unlink_all
+
+// special links
+#undef {PREFIX}_replace
+#undef {PREFIX}_find_location
+#undef {PREFIX}_link_location

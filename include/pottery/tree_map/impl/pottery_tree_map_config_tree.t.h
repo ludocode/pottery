@@ -34,7 +34,6 @@
 #define POTTERY_RED_BLACK_TREE_VALUE_TYPE pottery_tree_map_node_t
 #define POTTERY_RED_BLACK_TREE_KEY_TYPE pottery_tree_map_key_t
 #define POTTERY_RED_BLACK_TREE_REF_KEY pottery_tree_map_node_key
-#define POTTERY_RED_BLACK_TREE_ACQUIRE pottery_tree_map_impl_alloc
 
 // right_child and is_red are collapsed together; is_red is the low bit
 #define POTTERY_RED_BLACK_TREE_RIGHT_CHILD(map, foo) \

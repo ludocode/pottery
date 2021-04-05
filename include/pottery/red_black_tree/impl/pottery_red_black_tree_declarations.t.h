@@ -38,6 +38,12 @@ typedef struct pottery_rbt_t {
     size_t count;
 } pottery_rbt_t;
 
+// Location struct use for find_location()/link_location()
+typedef struct pottery_rbt_location_t {
+    pottery_rbt_entry_t parent; // Null if new entry should be root
+    int compare; // if <0, new entry should be left child; if >0, right child
+} pottery_rbt_location_t;
+
 
 
 #if 0&&POTTERY_DEBUG
@@ -137,6 +143,7 @@ pottery_rbt_ref_t pottery_rbt_parent(pottery_rbt_t* rbt, pottery_rbt_ref_t ref) 
     #endif
 }
 
+#if 0
 static inline
 pottery_rbt_ref_t pottery_rbt_other_child(pottery_rbt_t* rbt, pottery_rbt_ref_t parent,
         pottery_rbt_ref_t child)
@@ -152,6 +159,7 @@ pottery_rbt_ref_t pottery_rbt_other_child(pottery_rbt_t* rbt, pottery_rbt_ref_t 
     pottery_assert(pottery_rbt_ref_equal(POTTERY_RBT_CONTEXT_VAL(rbt) child, right_child));
     return left_child;
 }
+#endif
 
 static inline
 bool pottery_rbt_is_red(pottery_rbt_t* rbt, pottery_rbt_ref_t ref) {
@@ -348,14 +356,71 @@ pottery_rbt_entry_t pottery_rbt_link(pottery_rbt_t* rbt, pottery_rbt_entry_t ent
 POTTERY_RED_BLACK_TREE_EXTERN
 void pottery_rbt_unlink(pottery_rbt_t* rbt, pottery_rbt_entry_t entry);
 
+/**
+ * Replaces a node in the tree.
+ *
+ * The replacement node must have the same key that the current node had.
+ * Neither key will be accessed during this call; you can move (relocate) the
+ * key and other node data from the old node to the new one before or after
+ * this call.
+ *
+ * @param current A node currently in the tree
+ * @param replacement A node not in the tree that should replace current
+ */
 POTTERY_RED_BLACK_TREE_EXTERN
-pottery_rbt_entry_t pottery_rbt_find(pottery_rbt_t* rbt, pottery_rbt_key_t key);
+void pottery_rbt_replace(pottery_rbt_t* rbt,
+        pottery_rbt_entry_t current, pottery_rbt_entry_t replacement);
 
-#ifdef POTTERY_RED_BLACK_TREE_ACQUIRE
 POTTERY_RED_BLACK_TREE_EXTERN
-pottery_error_t pottery_rbt_emplace_key(pottery_rbt_t* rbt, pottery_rbt_key_t key,
-        pottery_rbt_entry_t* entry, bool* /*nullable*/ out_created);
+pottery_rbt_entry_t pottery_rbt_impl_find_location(pottery_rbt_t* rbt,
+        pottery_rbt_key_t key, pottery_rbt_location_t* /*nullable*/ out_location);
 #endif
+
+static pottery_always_inline
+pottery_rbt_entry_t pottery_rbt_find(pottery_rbt_t* rbt, pottery_rbt_key_t key) {
+    return pottery_rbt_impl_find_location(rbt, key, NULL);
+}
+
+/**
+ * Finds an entry with the given key or the location where such an entry could
+ * be inserted.
+ *
+ * If the given key exists in the tree, its entry is returned. Otherwise, a
+ * non-existent entry is returned and the location where such an entry could be
+ * inserted is stored in the given location struct.
+ *
+ * This exists as an optimization of find() followed by link(), which would
+ * necessitate two tree traversals. Instead you can do a lookup with
+ * find_location() and if the entry is not found, you can allocate a node and
+ * insert it with link_location() without traversing the tree a second time.
+ *
+ * @see pottery_rbt_link_location
+ */
+static pottery_always_inline
+pottery_rbt_entry_t pottery_rbt_find_location(pottery_rbt_t* rbt,
+        pottery_rbt_key_t key, pottery_rbt_location_t* out_location)
+{
+    pottery_assert(out_location != NULL);
+    return pottery_rbt_impl_find_location(rbt, key, out_location);
+}
+
+#if POTTERY_FORWARD_DECLARATIONS
+/**
+ * Commits an entry emplace operation.
+ *
+ * You can only call this immediately after a call to find_location() that
+ * returned a non-existent entry.
+ *
+ * @warning You can only call this if you have not called any non-const
+ *          functions on the tree in since calling find_location()! Any
+ *          mutating functions on the tree may change its structure which would
+ *          cause link_location() to corrupt the tree.
+ *
+ * @see pottery_rbt_find_location()
+ */
+POTTERY_RED_BLACK_TREE_EXTERN
+void pottery_rbt_link_location(pottery_rbt_t* rbt, pottery_rbt_entry_t entry,
+        pottery_rbt_location_t* location);
 #endif
 
 static inline

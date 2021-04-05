@@ -147,3 +147,35 @@ pottery_error_t pottery_tree_map_insert(pottery_tree_map_t* map,
     return error;
 }
 #endif // insert criteria
+
+POTTERY_TREE_MAP_EXTERN
+pottery_error_t pottery_tree_map_emplace_key(pottery_tree_map_t* map, pottery_tree_map_key_t key,
+        pottery_tree_map_entry_t* out_entry, bool* /*nullable*/ out_created)
+{
+    pottery_tree_map_tree_location_t location;
+    pottery_tree_map_node_t* entry = pottery_tree_map_tree_find_location(&map->tree, key, &location);
+
+    if (pottery_tree_map_tree_entry_exists(&map->tree, entry)) {
+        // Found existing entry
+        *out_entry = pottery_tree_map_node_ref(entry);
+        if (out_created != NULL)
+            *out_created = false;
+        return POTTERY_OK;
+    }
+
+    entry = pottery_tree_map_impl_alloc(map);
+    if (entry == pottery_null) {
+        // Allocation failed
+        *out_entry = pottery_null;
+        if (out_created != NULL)
+            *out_created = false;
+        return POTTERY_ERROR_ALLOC;
+    }
+
+    // New entry created
+    pottery_tree_map_tree_link_location(&map->tree, entry, &location);
+    *out_entry = pottery_tree_map_node_ref(entry);
+    if (out_created != NULL)
+        *out_created = true;
+    return POTTERY_OK;
+}

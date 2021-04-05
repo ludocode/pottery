@@ -44,9 +44,6 @@ typedef struct pottery_tree_map_t pottery_tree_map_t;
 
 typedef pottery_tree_map_ref_t pottery_tree_map_entry_t;
 
-static inline
-pottery_tree_map_node_t* pottery_tree_map_impl_alloc(pottery_tree_map_t* map);
-
 // Convert a node to a ref, correctly handling null
 static inline
 pottery_tree_map_ref_t pottery_tree_map_node_ref(pottery_tree_map_node_t* /*nullable*/ node) {

@@ -22,12 +22,18 @@
  * SOFTWARE.
  */
 
+// Note: The below macros are for any container, so they include tons of
+// functions that aren't used by most containers. In particular the macros for
+// dynamic and intrusive containers are both here even though there isn't that
+// much overlap between them. Eventually this will be broken up.
+
 //!!! END_LICENSE
 // Renames array identifiers from {SRC} to {DEST}
 
 // types
 #define {SRC}_t POTTERY_CONCAT({DEST}, _t)
 #define {SRC}_entry_t POTTERY_CONCAT({DEST}, _entry_t)
+#define {SRC}_location_t POTTERY_CONCAT({DEST}, _location_t) // currently only used for intrusive maps
 
 // lifecycle operations
 #define {SRC}_copy POTTERY_CONCAT({DEST}, _copy)
@@ -167,3 +173,8 @@
 #define {SRC}_unlink_and_next POTTERY_CONCAT({DEST}, _unlink_and_next)
 #define {SRC}_unlink_and_previous POTTERY_CONCAT({DEST}, _unlink_and_previous)
 #define {SRC}_unlink_all POTTERY_CONCAT({DEST}, _unlink_all)
+
+// special links
+#define {SRC}_replace POTTERY_CONCAT({DEST}, _replace)
+#define {SRC}_find_location POTTERY_CONCAT({DEST}, _find_location)
+#define {SRC}_link_location POTTERY_CONCAT({DEST}, _link_location)

@@ -54,34 +54,35 @@ static void person_delete(person_t* person) {
 /*
  * Now we instantiate a map of strings to persons.
  *
- * This example uses array_map. You could also use an open_hash_map (with a
- * hash function), a red_black_map, etc.
+ * This example uses tree_map. You could also use an array_map (with or
+ * without an ordering comparison), an open_hash_map (with a hash function),
+ * etc.
  */
 
 // We'll call our map "person_map".
-#define POTTERY_ARRAY_MAP_PREFIX person_map
+#define POTTERY_TREE_MAP_PREFIX person_map
 
 // We'll use `const char*` as the key, not `char*`, that way we can search it
 // with const strings.
-#define POTTERY_ARRAY_MAP_KEY_TYPE const char*
-#define POTTERY_ARRAY_MAP_COMPARE_THREE_WAY strcmp
+#define POTTERY_TREE_MAP_KEY_TYPE const char*
+#define POTTERY_TREE_MAP_COMPARE_THREE_WAY strcmp
 
 // We are storing `person_t*` as the value type so the ref type (and entry type
 // for most maps) is a double-pointer `person_t**`.
-#define POTTERY_ARRAY_MAP_VALUE_TYPE person_t*
-#define POTTERY_ARRAY_MAP_REF_KEY(person) (*person)->name
+#define POTTERY_TREE_MAP_VALUE_TYPE person_t*
+#define POTTERY_TREE_MAP_REF_KEY(person) (*person)->name
 
 // We want to be able to insert() and extract() our person pointers. This
-// requires that they passable as arguments and return values; in other words
-// they must be movable by value. Pointers are bitwise movable.
-#define POTTERY_ARRAY_MAP_LIFECYCLE_MOVE_BY_VALUE 1
+// requires that they are passable as arguments and return values; in other
+// words they must be movable by value. Pointers are bitwise movable.
+#define POTTERY_TREE_MAP_LIFECYCLE_MOVE_BY_VALUE 1
 
 // We'd like our map to own the persons it contains so it needs to be able to
 // destroy them when removing them. We'll be able to call remove() or destroy
 // the whole map and it will delete values for us.
-#define POTTERY_ARRAY_MAP_LIFECYCLE_DESTROY(person) person_delete(*person)
+#define POTTERY_TREE_MAP_LIFECYCLE_DESTROY(person) person_delete(*person)
 
-#include "pottery/array_map/pottery_array_map_static.t.h"
+#include "pottery/tree_map/pottery_tree_map_static.t.h"
 
 
 
@@ -132,6 +133,9 @@ int main(void) {
 
 
     // Try to find eve. Eve should not exist.
+    // (Note that we call entry_exists() here. We could actually just compare
+    // it to NULL because in a tree_map the end entry is NULL. This is not true
+    // of other maps however; in general you would call entry_exists().)
     ref = person_map_find(&map, "eve");
     if (person_map_entry_exists(&map, ref)) {
         fprintf(stderr, "eve does not belong in the map!\n");

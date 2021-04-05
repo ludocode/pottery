@@ -205,6 +205,14 @@ The two fundamental mutation operations for intrusive linked containers are "lin
 
 - **`unlink()`**: Remove an externally owned and allocated value from an intrusive container, possibly returning a ref to the removed value.
 
+There are other operations specific to linked containers as well:
+
+- **`replace()`**: Replaces one node with another.
+
+- **`find_location()`**: Finds an entry in the container by key. If such an entry does not exist, an opaque location struct is populated which can be passed to `link_location()`.
+
+- **`link_location()`** Links an entry at a location previously populated by `find_location()`. This avoids the double-lookup of calling `find()` followed by `link()`.
+
 In both of the above cases, the values are unchanged, aside from whatever intrusive metadata they store to link them with other values. Intrusive containers never initialize, destroy, allocate or free values. All values are externally owned and externally managed. They must be initialized before insertion into the intrusive container and cannot be destroyed until after they are removed from the intrusive container.
 
 
@@ -236,6 +244,8 @@ These operations or operation modifiers access specific values in a container:
 - **`bulk()`**: A range of values in a C array. This is used in the context of a mutation, such as `insert_bulk()`, which inserts all values from a C array into the container.
 
 - **`all()`**: All entries in the container. This is used in e.g. `remove_all()` or `displace_all()` to clear a container.
+
+- **`find()`**: Finds an entry with the given key. This is used for containers that support key-based lookups, for example associative arrays (maps, trees, hash tables, etc.)
 
 
 
