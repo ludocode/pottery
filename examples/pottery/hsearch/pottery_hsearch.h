@@ -92,7 +92,7 @@ void pottery_hdestroy1(void (*free_key)(void*), void (*free_data)(void*)) {
 int pottery_hcreate_r(size_t number_of_elements, struct pottery_hsearch_data* table);
 
 int pottery_hsearch_r(POTTERY_ENTRY item, POTTERY_ACTION action,
-        POTTERY_ENTRY** entry, struct pottery_hsearch_data* table);
+        POTTERY_ENTRY** out_entry, struct pottery_hsearch_data* table);
 
 static inline
 void pottery_hdestroy_r(struct pottery_hsearch_data *htab) {
@@ -121,9 +121,13 @@ void pottery_hdestroy(void);
  */
 
 static inline
-void pottery_hdestroy_openbsd(void) {
+void pottery_hdestroy_freekeys(void) {
     pottery_hdestroy1(free, NULL);
 }
+
+// The above function originally used an openbsd() suffix. We keep it here in
+// case anyone is using it.
+#define pottery_hdestroy_openbsd pottery_hdestroy_freekeys
 
 
 /*
@@ -151,6 +155,7 @@ void pottery_hdestroy_openbsd(void) {
     #define hdestroy1_r pottery_hdestroy1_r
 
     // OpenBSD API
+    #define hdestroy_freekeys pottery_hdestroy_freekeys
     #define hdestroy_openbsd pottery_hdestroy_openbsd
 #endif
 
