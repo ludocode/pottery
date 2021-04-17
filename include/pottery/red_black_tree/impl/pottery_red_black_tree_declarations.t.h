@@ -82,6 +82,7 @@ pottery_rbt_ref_t pottery_rbt_entry_ref(pottery_rbt_t* rbt, pottery_rbt_entry_t 
 
 static inline
 pottery_rbt_ref_t pottery_rbt_left_child(pottery_rbt_t* rbt, pottery_rbt_ref_t ref) {
+    (void)rbt;
     pottery_assert(rbt != pottery_null);
     pottery_assert(!pottery_rbt_ref_is_null(rbt, ref));
 
@@ -89,20 +90,19 @@ pottery_rbt_ref_t pottery_rbt_left_child(pottery_rbt_t* rbt, pottery_rbt_ref_t r
         #if POTTERY_RED_BLACK_TREE_HAS_CONTEXT
             return POTTERY_RED_BLACK_TREE_LEFT_CHILD((rbt->context), ref);
         #else
-            (void)rbt;
             return POTTERY_RED_BLACK_TREE_LEFT_CHILD(ref);
         #endif
     #else
         // If LEFT_CHILD is not defined, the default is that ref is a pointer
         // to a struct in which the left_child pointer is stored in a field
         // called "left_child"
-        (void)rbt;
         return ref->left_child;
     #endif
 }
 
 static inline
 pottery_rbt_ref_t pottery_rbt_right_child(pottery_rbt_t* rbt, pottery_rbt_ref_t ref) {
+    (void)rbt;
     pottery_assert(rbt != pottery_null);
     pottery_assert(!pottery_rbt_ref_is_null(rbt, ref));
 
@@ -110,20 +110,19 @@ pottery_rbt_ref_t pottery_rbt_right_child(pottery_rbt_t* rbt, pottery_rbt_ref_t 
         #if POTTERY_RED_BLACK_TREE_HAS_CONTEXT
             return POTTERY_RED_BLACK_TREE_RIGHT_CHILD((rbt->context), ref);
         #else
-            (void)rbt;
             return POTTERY_RED_BLACK_TREE_RIGHT_CHILD(ref);
         #endif
     #else
         // If RIGHT_CHILD is not defined, the default is that ref is a pointer
         // to a struct in which the right_child pointer is stored in a field
         // called "right_child"
-        (void)rbt;
         return ref->right_child;
     #endif
 }
 
 static inline
 pottery_rbt_ref_t pottery_rbt_parent(pottery_rbt_t* rbt, pottery_rbt_ref_t ref) {
+    (void)rbt;
     pottery_assert(rbt != pottery_null);
     pottery_assert(!pottery_rbt_ref_is_null(rbt, ref));
 
@@ -131,14 +130,12 @@ pottery_rbt_ref_t pottery_rbt_parent(pottery_rbt_t* rbt, pottery_rbt_ref_t ref) 
         #if POTTERY_RED_BLACK_TREE_HAS_CONTEXT
             return POTTERY_RED_BLACK_TREE_PARENT((rbt->context), ref);
         #else
-            (void)rbt;
             return POTTERY_RED_BLACK_TREE_PARENT(ref);
         #endif
     #else
         // If PARENT is not defined, the default is that ref is a pointer
         // to a struct in which the parent pointer is stored in a field
         // called "parent"
-        (void)rbt;
         return ref->parent;
     #endif
 }
@@ -163,6 +160,7 @@ pottery_rbt_ref_t pottery_rbt_other_child(pottery_rbt_t* rbt, pottery_rbt_ref_t 
 
 static inline
 bool pottery_rbt_is_red(pottery_rbt_t* rbt, pottery_rbt_ref_t ref) {
+    (void)rbt;
     pottery_assert(rbt != pottery_null);
     pottery_assert(!pottery_rbt_ref_is_null(rbt, ref));
 
@@ -170,14 +168,12 @@ bool pottery_rbt_is_red(pottery_rbt_t* rbt, pottery_rbt_ref_t ref) {
         #if POTTERY_RED_BLACK_TREE_HAS_CONTEXT
             return POTTERY_RED_BLACK_TREE_IS_RED((rbt->context), ref);
         #else
-            (void)rbt;
             return POTTERY_RED_BLACK_TREE_IS_RED(ref);
         #endif
     #else
         // If IS_RED is not defined, the default is that ref is a pointer to a
         // struct in which the red/black flag is stored in a field called
         // "is_red"
-        (void)rbt;
         return ref->is_red;
     #endif
 }
@@ -215,6 +211,7 @@ void pottery_rbt_set_right_child(pottery_rbt_t* rbt,
         pottery_rbt_ref_t ref, pottery_rbt_ref_t right_child)
 {
             //printf("%i SET %p RIGHT_CHILD %p\n",__LINE__,(void*)ref,(void*)right_child);
+    (void)rbt;
     pottery_assert(rbt != pottery_null);
     pottery_assert(!pottery_rbt_ref_is_null(rbt, ref));
 
@@ -222,7 +219,6 @@ void pottery_rbt_set_right_child(pottery_rbt_t* rbt,
         #if POTTERY_RED_BLACK_TREE_HAS_CONTEXT
             POTTERY_RED_BLACK_TREE_SET_RIGHT_CHILD((rbt->context), (ref), (right_child));
         #else
-            (void)rbt;
             POTTERY_RED_BLACK_TREE_SET_RIGHT_CHILD((ref), (right_child));
         #endif
     #elif defined(POTTERY_RED_BLACK_TREE_RIGHT_CHILD)
@@ -230,12 +226,10 @@ void pottery_rbt_set_right_child(pottery_rbt_t* rbt,
         #if POTTERY_RED_BLACK_TREE_HAS_CONTEXT
             POTTERY_RED_BLACK_TREE_RIGHT_CHILD((rbt->context), (ref)) = right_child;
         #else
-            (void)rbt;
             POTTERY_RED_BLACK_TREE_RIGHT_CHILD((ref)) = right_child;
         #endif
     #else
         // Otherwise it's a "right_child" field.
-        (void)rbt;
         ref->right_child = right_child;
     #endif
 }
@@ -245,6 +239,7 @@ void pottery_rbt_set_parent(pottery_rbt_t* rbt,
         pottery_rbt_ref_t ref, pottery_rbt_ref_t parent)
 {
             //printf("%i SET %p PARENT %p\n",__LINE__,(void*)ref,(void*)parent);
+    (void)rbt;
     pottery_assert(rbt != pottery_null);
     pottery_assert(!pottery_rbt_ref_is_null(rbt, ref));
 
@@ -252,7 +247,6 @@ void pottery_rbt_set_parent(pottery_rbt_t* rbt,
         #if POTTERY_RED_BLACK_TREE_HAS_CONTEXT
             POTTERY_RED_BLACK_TREE_SET_PARENT((rbt->context), (ref), (parent));
         #else
-            (void)rbt;
             POTTERY_RED_BLACK_TREE_SET_PARENT((ref), (parent));
         #endif
     #elif defined(POTTERY_RED_BLACK_TREE_PARENT)
@@ -260,18 +254,17 @@ void pottery_rbt_set_parent(pottery_rbt_t* rbt,
         #if POTTERY_RED_BLACK_TREE_HAS_CONTEXT
             POTTERY_RED_BLACK_TREE_PARENT((rbt->context), (ref)) = parent;
         #else
-            (void)rbt;
             POTTERY_RED_BLACK_TREE_PARENT((ref)) = parent;
         #endif
     #else
         // Otherwise it's a "parent" field.
-        (void)rbt;
         ref->parent = parent;
     #endif
 }
 
 static inline
 void pottery_rbt_set_is_red(pottery_rbt_t* rbt, pottery_rbt_ref_t ref, bool is_red) {
+    (void)rbt;
     pottery_assert(rbt != pottery_null);
     pottery_assert(!pottery_rbt_ref_is_null(rbt, ref));
 
@@ -279,7 +272,6 @@ void pottery_rbt_set_is_red(pottery_rbt_t* rbt, pottery_rbt_ref_t ref, bool is_r
         #if POTTERY_RED_BLACK_TREE_HAS_CONTEXT
             POTTERY_RED_BLACK_TREE_SET_IS_RED((rbt->context), (ref), (is_red));
         #else
-            (void)rbt;
             POTTERY_RED_BLACK_TREE_SET_IS_RED((ref), (is_red));
         #endif
     #elif defined(POTTERY_RED_BLACK_TREE_IS_RED)
@@ -287,12 +279,10 @@ void pottery_rbt_set_is_red(pottery_rbt_t* rbt, pottery_rbt_ref_t ref, bool is_r
         #if POTTERY_RED_BLACK_TREE_HAS_CONTEXT
             POTTERY_RED_BLACK_TREE_IS_RED((rbt->context), (ref)) = is_red;
         #else
-            (void)rbt;
             POTTERY_RED_BLACK_TREE_IS_RED((ref)) = is_red;
         #endif
     #else
         // Otherwise it's an "is_red" field.
-        (void)rbt;
         ref->is_red = is_red;
     #endif
 }

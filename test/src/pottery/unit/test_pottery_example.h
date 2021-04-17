@@ -107,6 +107,7 @@ static inline char* strcpy_workaround(char* to, const char* from) {
         const char* name = "pottery_example_unit_test"; \
         (void)name; \
         int ret = POTTERY_EXAMPLE_TEST_WRAPPER(POTTERY_EXAMPLE_MAIN_VALS); \
+        (void)ret; \
         pottery_assert(ret == 0); \
     } \
     \

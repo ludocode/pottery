@@ -27,9 +27,9 @@
 
 // This is used to override the system assert when running unit tests. Examples
 // #include <assert.h> directly which re-defines assert. We want them to use
-// pottery_assert instead.
+// pottery_test_assert instead (so that they happen even if release builds.)
 
 #undef assert
-#define assert pottery_assert
+#define assert pottery_test_assert
 
 #endif

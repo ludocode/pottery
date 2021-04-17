@@ -55,11 +55,11 @@ static inline void pottery_abort() {
 }
 #endif
 
-#if POTTERY_DEBUG || defined(POTTERY_UNIT_TEST)
+#if POTTERY_DEBUG
 #define pottery_assert(x) (pottery_unlikely(!(x)) ? pottery_abort() : ((void)0))
 #define pottery_unreachable() pottery_assert(0)
 #else
-#define pottery_assert(x) /*nothing*/
+#define pottery_assert(x) ((void)0)
 #endif
 
 #ifndef pottery_unreachable

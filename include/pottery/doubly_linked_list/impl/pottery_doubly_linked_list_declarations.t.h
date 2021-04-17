@@ -77,6 +77,7 @@ pottery_dll_ref_t pottery_dll_entry_ref(pottery_dll_t* dll, pottery_dll_entry_t 
 
 static inline
 pottery_dll_ref_t pottery_dll_next_ref(pottery_dll_t* dll, pottery_dll_ref_t ref) {
+    (void)dll;
     pottery_assert(dll != NULL);
     pottery_assert(!pottery_dll_ref_is_null(dll, ref));
 
@@ -84,7 +85,6 @@ pottery_dll_ref_t pottery_dll_next_ref(pottery_dll_t* dll, pottery_dll_ref_t ref
         #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return POTTERY_DOUBLY_LINKED_LIST_NEXT((dll->context), ref);
         #else
-            (void)dll;
             return POTTERY_DOUBLY_LINKED_LIST_NEXT(ref);
         #endif
     #else
@@ -96,6 +96,7 @@ pottery_dll_ref_t pottery_dll_next_ref(pottery_dll_t* dll, pottery_dll_ref_t ref
 
 static inline
 pottery_dll_ref_t pottery_dll_previous_ref(pottery_dll_t* dll, pottery_dll_ref_t ref) {
+    (void)dll;
     pottery_assert(dll != NULL);
     pottery_assert(!pottery_dll_ref_is_null(dll, ref));
 
@@ -103,7 +104,6 @@ pottery_dll_ref_t pottery_dll_previous_ref(pottery_dll_t* dll, pottery_dll_ref_t
         #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             return POTTERY_DOUBLY_LINKED_LIST_PREVIOUS((dll->context), ref);
         #else
-            (void)dll;
             return POTTERY_DOUBLY_LINKED_LIST_PREVIOUS(ref);
         #endif
     #else
@@ -145,6 +145,7 @@ static inline
 void pottery_dll_set_previous_ref(pottery_dll_t* dll,
         pottery_dll_ref_t ref, pottery_dll_ref_t previous)
 {
+    (void)dll;
     pottery_assert(dll != NULL);
     pottery_assert(!pottery_dll_ref_is_null(dll, ref));
 
@@ -152,7 +153,6 @@ void pottery_dll_set_previous_ref(pottery_dll_t* dll,
         #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             POTTERY_DOUBLY_LINKED_LIST_SET_PREVIOUS((dll->context), (ref), (previous));
         #else
-            (void)dll;
             POTTERY_DOUBLY_LINKED_LIST_SET_PREVIOUS((ref), (previous));
         #endif
     #elif defined(POTTERY_DOUBLY_LINKED_LIST_PREVIOUS)
@@ -160,7 +160,6 @@ void pottery_dll_set_previous_ref(pottery_dll_t* dll,
         #if POTTERY_CONTAINER_TYPES_HAS_CONTEXT
             POTTERY_DOUBLY_LINKED_LIST_PREVIOUS((dll->context), (ref)) = previous;
         #else
-            (void)dll;
             POTTERY_DOUBLY_LINKED_LIST_PREVIOUS((ref)) = previous;
         #endif
     #else

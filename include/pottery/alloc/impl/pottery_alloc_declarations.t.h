@@ -60,6 +60,7 @@ void pottery_alloc_impl_free_ea(POTTERY_ALLOC_CONTEXT_ARG void* ptr);
 
 static pottery_always_inline
 void pottery_alloc_impl_free_fa(POTTERY_ALLOC_CONTEXT_ARG void* ptr) {
+    POTTERY_ALLOC_CONTEXT_MAYBE_UNUSED;
 
     #if defined(POTTERY_ALLOC_FREE)
         #ifdef POTTERY_ALLOC_CONTEXT_TYPE

@@ -59,7 +59,7 @@
 
 // MSVC warns about unreachable code. We sometimes use assert(false) with some
 // recovery code for release builds so we disable this warning in debug.
-#if POTTERY_DEBUG || defined(POTTERY_UNIT_TEST)
+#if POTTERY_DEBUG
     #pragma warning(disable:4702)
 #endif
 
