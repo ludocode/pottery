@@ -6,27 +6,27 @@ A header-only container and algorithm template library in C.
 
 
 
-## Introduction
+# Introduction
 
-Pottery is a collection of templates for instantiating strongly typed containers and container algorithms in C.
+Pottery is a collection of templates for instantiating strongly typed containers and container algorithms in C. It provides vectors, hash tables, binary search trees, priority queues, sort algorithms, etc.
 
-It's called "Pottery" because it doesn't exactly give you containers you can use out-of-the-box. It gives you the tools, the materials, the instructions to build them but there is still some assembly required. You have to instantiate these templates manually, and often you'll want to wrap one or more templates with your own interface to build a practical data structure.
+Pottery is modern C code written in the ultra-portable intersection of C11, gnu89 and C++11 with no mandatory dependencies (not even libc.) Pottery supports many compilers including GCC, Clang, MSVC and various toy compilers. It supports (or intends to support) any modern C platform from microcontrollers to OS kernels to WebAssembly.
 
-Pottery is modern C code written in the ultra-portable intersection of C11, gnu89 and C++11 with no mandatory dependencies (not even libc.) Pottery supports many compilers including GCC, Clang, MSVC, TinyCC and more. It supports (or intends to support) any modern C platform from microcontrollers to OS kernels to WebAssembly.
+Pottery does not use void pointer casts, function pointers, code block macros, compiler extensions, or any other inefficiencies or messyness of typical C containers. Pottery's templates are clean, composable, fast, strongly typed, and highly configurable.
 
-Pottery does not use void pointer casts, function pointers, code block macros, compiler-dependent hacks, or any other inefficiencies or messyness of typical C containers. Pottery's templates are clean, composable, fast, strongly typed, and highly configurable.
+Take a look at the [template listing](include/pottery/) to see what Pottery has to offer. Use Pottery to make containers in C!
 
 
 
-## Documentation
+# Documentation
 
 - [Features](docs/features.md)
 - [How It Works](docs/how_it_works.md)
 - [Examples](examples/pottery/)
-- [Integration Guide](docs/integration.md)
-- [Lifecycle Style](docs/lifecycle_style.md)
 - [Glossary](docs/glossary.md)
 - [Template Listing](include/pottery/)
+- [Integration Guide](docs/integration.md)
+- [Lifecycle Style](docs/lifecycle_style.md)
 - [Meta-templates](meta/)
 - [C++ Bindings](bindings/cxx)
 - [Testing](test/)
@@ -34,10 +34,11 @@ Pottery does not use void pointer casts, function pointers, code block macros, c
 
 
 
-## Examples
+
+# Examples
 
 
-### Int Vector
+## Int Vector
 
 Suppose you want a growable array of `int`. Let's call it `int_vector`. Instantiate it like this:
 
@@ -48,7 +49,7 @@ Suppose you want a growable array of `int`. Let's call it `int_vector`. Instanti
 #include "pottery/vector/pottery_vector_static.t.h"
 ```
 
-This gives you a type `int_vector_t`:
+This gives you an `int_vector_t`:
 
 ```c
 int_vector_t vector;
@@ -68,7 +69,7 @@ int_vector_destroy(&vector);
 See the full example [here](examples/pottery/int_vector/).
 
 
-### String➔Object Map
+## String➔Object Map
 
 Suppose you want a map of names to person pointers for this struct:
 
@@ -123,7 +124,7 @@ person_map_destroy(&map);
 See the full example [here](examples/pottery/person_map/).
 
 
-### Sort Strings
+## Sort Strings
 
 Suppose you want to sort an array of C strings:
 
@@ -135,7 +136,7 @@ Suppose you want to sort an array of C strings:
 #include "pottery/intro_sort/pottery_intro_sort_static.t.h"
 ```
 
-This gives us a function called `sort_strings()`:
+This gives you a function called `sort_strings()`:
 
 ```c
 const char* players[] = {
@@ -145,6 +146,7 @@ const char* players[] = {
 };
 size_t count = sizeof(players) / sizeof(*players);
 
+// introsorts a string array with inline comparator, competitive with C++ std::sort
 sort_strings(players, count);
 
 for (size_t i = 0; i < count; ++i)
@@ -154,45 +156,7 @@ for (size_t i = 0; i < count; ++i)
 See the full example [here](examples/pottery/sort_strings/).
 
 
-### Request Queue
-
-Suppose you want a growable priority queue of request pointers:
-
-```c
-typedef struct request_t {
-    double priority;
-    // other stuff
-} request_t;
-
-#define POTTERY_PRIORITY_QUEUE_PREFIX request_queue
-#define POTTERY_PRIORITY_QUEUE_VALUE_TYPE request_t*
-#define POTTERY_PRIORITY_QUEUE_LIFECYCLE_MOVE_BY_VALUE 1
-#define POTTERY_PRIORITY_QUEUE_COMPARE_GREATER(x, y) (*x)->priority > (*y)->priority
-#include "pottery/priority_queue/pottery_priority_queue_static.t.h"
-```
-
-This gives us a type `request_queue_t`:
-
-```c
-request_queue_t queue;
-request_queue_init(&queue);
-
-// insert some requests
-request_queue_insert(&queue, request_new(/*...*/));
-request_queue_insert(&queue, request_new(/*...*/));
-request_queue_insert(&queue, request_new(/*...*/));
-
-// handle requests in priority order
-while (!request_queue_is_empty(&queue))
-    request_handle(request_queue_extract_first(&queue));
-
-request_queue_destroy(&queue);
-```
-
-See the [priority_queue](include/pottery/priority_queue/) documentation for more.
-
-
-### Additional Examples
+## Additional Examples
 
 There are more examples in the [`examples/`](examples/pottery/) folder and many more that still need to be written. Have a look at what's there so far to learn more ways you can use Pottery.
 

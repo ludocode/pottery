@@ -4,7 +4,7 @@ The documentation for each template is inline in each folder for ease of browsin
 
 Documentation is currently incomplete or missing entirely for most templates. Much more needs to be written. Eventually each template README should contain a full API reference.
 
-Here's a more hierarchical index:
+## Hierarchical Index
 
 - Dynamic Containers, i.e. containers that own and manage memory for their contents
     - Arrays
@@ -40,3 +40,25 @@ Here's a more hierarchical index:
     - [Alloc](alloc/), an allocator wrapper to zero, align, expand, relocate, check for overflow
     - [Compare](compare/), a generator for comparison functions
     - [Array Access](array_access/), accessor functions for a generalized array
+
+## C++ Equivalent
+
+Here are the Pottery template equivalents of typical C++ containers and algorithms:
+
+|C++|Pottery|
+| :-- | :-- |
+| [`std::vector`](https://en.cppreference.com/w/cpp/container/vector) | [`vector`](vector/) |
+| [`std::deque`](https://en.cppreference.com/w/cpp/container/deque) | [`pager`](pager/) |
+| [`std::list`](https://en.cppreference.com/w/cpp/container/list) | [`node_list`](node_list/) |
+| [`std::map`](https://en.cppreference.com/w/cpp/container/map), [`std::set`](https://en.cppreference.com/w/cpp/container/set) | [`tree_map`](tree_map/) |
+| [`std::unordered_map`](https://en.cppreference.com/w/cpp/container/unordered_map), [`std::unordered_set`](https://en.cppreference.com/w/cpp/container/unordered_set) | [`open_hash_map`](open_hash_map/) |
+| [`std::priority_queue`](https://en.cppreference.com/w/cpp/container/priority_queue) | [`priority_queue`](priority_queue/) |
+| [`std::push_heap`](https://en.cppreference.com/w/cpp/algorithm/push_heap), [`std::pop_heap`](https://en.cppreference.com/w/cpp/algorithm/pop_heap), etc. | [`heap`](heap/) |
+| [`std::sort`](https://en.cppreference.com/w/cpp/algorithm/sort) | [`intro_sort`](intro_sort/) |
+| [`boost::flat_map`](https://www.boost.org/doc/libs/1_76_0/doc/html/boost/container/flat_map.html) | [`array_map`](array_map/) |
+| [`boost::circular_buffer_space_optimized`](https://www.boost.org/doc/libs/1_61_0/doc/html/circular_buffer.html) | [`ring`](ring/) |
+| [`boost::intrusive::hashtable`](https://www.boost.org/doc/libs/1_35_0/doc/html/boost/intrusive/hashtable.html) | [`open_hash_table`](open_hash_table/) |
+| [`boost::intrusive::list`](https://www.boost.org/doc/libs/1_74_0/doc/html/intrusive/list.html) | [`doubly_linked_list`](doubly_linked_list/) |
+| [`boost::intrusive::rbtree`](https://www.boost.org/doc/libs/1_74_0/doc/html/intrusive/set_multiset.html) | [`red_black_tree`](red_black_tree/) |
+
+Also note there are [C++ bindings](../../bindings/cxx/) of some Pottery templates that can serve as drop-in replacements for the STL in C++ code.

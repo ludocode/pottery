@@ -161,11 +161,11 @@ Copy and steal can be combined with initialization:
 
 
 
-## Container Value Operations
+## Dynamic Container Mutation Operations
 
 The two fundamental mutation operations for non-intrusive containers are "emplace" and "displace". These manage unitialized storage for values in the container.
 
-- **`emplace()`**: Create uninitialized storage for a value in the container. You must initialize the value yourself before calling any other functions on the container. (Note that this is not the same as the C++ STL operation "emplace", which is instead called "construct" in Pottery.)
+- **`emplace()`**: Create uninitialized storage (if necessary) for a value in the container and return its entry. You must initialize the value yourself (if necessary) before calling any other functions on the container. (Note that this is not the same as the C++ STL operation "emplace", which is instead called "construct" in Pottery.)
 
 - **`displace()`**: Discard uninitialized storage for a value in the container. You must de-initialize (destroy) a value yourself before displacing it, and you cannot call any other functions on the container in between.
 
@@ -187,17 +187,11 @@ For user-ordered containers, these are typically combined with iteration words, 
 
 See the iteration and ordering sections below.
 
-Note in particular that Pottery defines both `remove_all()` and `displace_all()` for clearing a non-intrusive container. Other libraries call such an operation "clear", but Pottery has two such operations. The best way to distinguish them is to follow the same naming conventions as everything else: "remove" destroys the values and "displace" does not.
-
-Heaps also provide two additional core mutation operations. A heap operates on a starting range of an underlying generalized array, and these functions alter the range:
-
-- **`expand()`**: Expands the container to contain additional values from the underlying array, moving them to their appropriate place in the container.
-
-- **`contract()`**: Contracts the container to contain less values from the underlying array, moving them to the array immediately after the range of the container.
+Note in particular that Pottery defines both `remove_all()` and `displace_all()` for clearing a non-intrusive container. Other libraries call such an operation "clear", but in Pottery this would be ambiguous: does it remove or displace? The best way to distinguish them is to follow the same naming conventions as everything else: "remove" destroys the values and "displace" does not.
 
 
 
-## Intrusive Container Value Operations
+## Intrusive Container Mutation Operations
 
 The two fundamental mutation operations for intrusive linked containers are "link" and "unlink". These add or remove externally owned and allocated values to and from the container.
 
@@ -217,7 +211,17 @@ In both of the above cases, the values are unchanged, aside from whatever intrus
 
 
 
-### Ordering
+## Special Container Operations
+
+Heaps provide two additional core mutation operations. A heap operates on a starting range of an underlying generalized array, and these functions alter the range:
+
+- **`expand()`**: Expands the container to contain additional values from the underlying array, moving them to their appropriate place in the container.
+
+- **`contract()`**: Contracts the container to contain less values from the underlying array, moving them to the array immediately after the range of the container.
+
+
+
+## Ordering
 
 Entries in a container are semantically ordered as per one of the following ordering modes. These are used for access and iteration.
 
@@ -231,7 +235,7 @@ Note in particular, array containers are not unordered; they are user-ordered.
 
 
 
-### Access
+## Access
 
 These operations or operation modifiers access specific values in a container:
 
@@ -249,7 +253,7 @@ These operations or operation modifiers access specific values in a container:
 
 
 
-### Iteration
+## Iteration
 
 The term **iteration** means to access entries in a container sequentially based on their ordering. These are the fundamental iteration operations:
 
@@ -285,6 +289,6 @@ In addition, the `entry_ref()` function returns a ref to the value stored in an 
 
 
 
-### Miscellaneous
+## Miscellaneous
 
 - **Pass**: To pass a value as a function parameter or return it from a function by value. A value can only be passed if a `VALUE_TYPE` exists and if it can be moved by value (either `LIFECYCLE_BY_VALUE` or `LIFECYCLE_MOVE_BY_VALUE` must be 1.) This enables the "insert" and "extract" operations on containers. (A C++ type can be passed even if it has a non-trivial move constructor as long as it does not throw. Pottery will properly call all constructors, destructors and operators for C++ value types declared `BY_VALUE`.)

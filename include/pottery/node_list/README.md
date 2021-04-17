@@ -51,7 +51,6 @@ subject_t* subject_new(void);
 
 void subject_delete(subject_t* subject);
 
-// other functions
 
 typedef struct subject_listener_t subject_listener_t;
 
@@ -61,7 +60,7 @@ subject_listener_t* subject_register_listener(subject_t* subject,
 void subject_unregister_listener(subject_t* subject, subject_listener_t* listener);
 ```
 
-This subject lets you register and unregister for callbacks when something happens. You can easily implement this with a node list, letting it handle allocation and management of listeners for you.
+This subject lets you register and unregister callbacks which it will call when some event happens. You can easily implement this with a node list, letting it handle allocation and management of listeners for you. The advantage of using a node list is that it makes it easy to allow listeners to unregister themselves during their callback.
 
 ```c
 // subject.c
