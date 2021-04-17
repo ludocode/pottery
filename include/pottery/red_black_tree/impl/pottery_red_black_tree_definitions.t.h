@@ -175,7 +175,6 @@ pottery_rbt_ref_t pottery_rbt_previous(pottery_rbt_t* rbt, pottery_rbt_entry_t e
     }
 
     pottery_unreachable();
-    return pottery_rbt_null(rbt);
 }
 
 // TODO it would be nice to inline the below, we have to expose our
