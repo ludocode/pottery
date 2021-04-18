@@ -246,7 +246,7 @@ else:
         defaultCPPFlags.append("-Werror")
 
 defaultCPPFlags += [
-    "-Iinclude", "-Iexamples", "-Itest/src",
+    "-Iinclude", "-Iutil", "-Iexamples", "-Itest/src",
     "-DPOTTERY_UNIT_TEST",
 ]
 
@@ -504,7 +504,7 @@ if platform.system() == "Linux" and path.exists("/usr/include/jemalloc/jemalloc.
 
 srcs = []
 
-for root, dirs, files in itertools.chain(os.walk("test/src"), os.walk("examples")):
+for root, dirs, files in itertools.chain(os.walk("test/src"), os.walk("util"), os.walk("examples")):
     # skip clayfish. it requires pthreads and doesn't support windows yet
     if "clayfish" in root:
         continue
@@ -592,7 +592,7 @@ with open(ninja, "w") as out:
                 flags = cppflags + cflags
                 objname = src[:-2]
 
-            if src.startswith("examples"):
+            if src.startswith("examples") or src.startswith("util"):
                 if compiler == "MSVC":
                     flags += [
                         "/Itest/src/pottery/isystem",

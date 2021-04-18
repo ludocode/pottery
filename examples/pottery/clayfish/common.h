@@ -42,7 +42,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "../string/string.h"
+#include "pottery/string/string.h"
 
 
 

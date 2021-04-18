@@ -24,6 +24,12 @@
 
 #include "employee.h"
 
+#ifndef POTTERY_UNIT_TEST
+// We include Pottery's string source directly rather than configuring the
+// example buildsystem to build it separately.
+#include "pottery/string/string.c"
+#endif
+
 
 /*
  * Fundamental Lifecycle Functions

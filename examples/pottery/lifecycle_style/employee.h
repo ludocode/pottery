@@ -28,7 +28,7 @@
 #include <string.h>
 
 // Pottery's example string
-#include "../string/string.h"
+#include "pottery/string/string.h"
 
 #ifdef __cplusplus
 extern "C" {
