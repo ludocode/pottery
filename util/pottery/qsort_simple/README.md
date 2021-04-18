@@ -5,10 +5,11 @@ This is an implementation of the standard C `qsort()` and several extensions usi
 - `pottery_simple_qsort()` - Standard C `qsort()`
 - `pottery_simple_gnu_qsort_r()` - GNU glibc (and uClibc) `qsort_r()`
 - `pottery_simple_bsd_qsort_r()` - BSD (and macOS) `qsort_r()`
+- `pottery_simple_win_qsort_s()` - Windows `qsort_s()`
 
-This implementation is intended to be simple for demonstration purposes. Despite this, it provides great performance with safe worst-case time complexity, small optimized code size, no memory allocation and strictly bounded stack usage (it does not use recursion.)
+This would be suitable for a minimal libc, or for embedding in a project as a portable replacement for the platform `qsort()` and extensions. For example if your project depends on GNU/Linux `qsort_r()` and you want to port to macOS or Windows without painful code changes, add this to your project and replace `qsort_r()` with `pottery_simple_gnu_qsort_r()`.
 
-This would be suitable for a minimal libc. For an even faster implementation, see [qsort](../qsort/).
+This implementation is intended to be small and simple for demonstration purposes and for ease of embedding. Despite this, it provides great performance with safe worst-case time complexity, small optimized code size, no memory allocation and strictly bounded stack usage (it does not use recursion.) For an even faster implementation, see the [qsort](../../../pottery/examples/qsort/) example.
 
 
 

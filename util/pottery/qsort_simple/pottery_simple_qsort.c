@@ -41,6 +41,7 @@ typedef struct state_t {
         int (*c)(const void* left, const void* right);
         int (*gnu)(const void* left, const void* right, void* user_context);
         int (*bsd)(void* user_context, const void* left, const void* right);
+        // We share the bsd callback with Windows; see notes below.
     } compare;
 
     void* user_context;
@@ -53,8 +54,7 @@ int qsort_compare(state_t* state, void* left, void* right) {
         case variant_gnu: return state->compare.gnu(left, right, state->user_context);
         case variant_bsd: return state->compare.bsd(state->user_context, left, right);
     }
-    // unreachable
-    return 0;
+    pottery_unreachable();
 }
 
 static inline
@@ -130,4 +130,25 @@ void pottery_simple_bsd_qsort_r(void* first, size_t count, size_t element_size,
     state.compare.bsd = compare;
     state.user_context = user_context;
     qsort_impl(&state, first, count);
+}
+
+// The compare function in Windows's qsort_s() is the same as BSD's qsort_r()
+// except that it explicitly specifies __cdecl. This is the default on x86 and
+// does nothing on other platforms so we don't bother to instantiate separate
+// functions for win_qsort_s(); we just wrap bsd_qsort_r(). If for some reason
+// you are compiling x86 with a different default calling convention, you
+// should at least get a compiler error from this rather than it crashing at
+// runtime.
+void pottery_simple_win_qsort_s(void* first, size_t count, size_t element_size,
+        int (
+            #if defined(_MSC_VER) || defined(__MINGW32__)
+            __cdecl
+            #endif
+            *compare)(void* user_context, const void* left, const void* right),
+        void* user_context)
+{
+    // No cast passing compare. We want a compiler error if the calling
+    // convention is different.
+    // Note that the order of arguments is different from bsd_qsort_r().
+    pottery_simple_bsd_qsort_r(first, count, element_size, user_context, compare);
 }

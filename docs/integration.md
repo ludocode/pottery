@@ -1,8 +1,10 @@
 # Integrating Pottery into your project
 
-Pottery is a header-only library, so you only need to put it on your include path to use it. Just [grab the source](https://github.com/ludocode/pottery/archive/master.tar.gz) and add the `include/` folder to the include paths in your project.
+Pottery's templates are header files only, so you only need to put it on your include path to use it. Just [grab the source](https://github.com/ludocode/pottery/archive/master.tar.gz) and add the `include/` folder to the include paths in your project.
 
-You should also add `-DPOTTERY_AVAILABLE=1` to your compiler options to enable optional dependencies on Pottery in other libraries. You can add `bindings/cxx/include` to the include path as well if you care for the C++ templates.
+You should also add `-DPOTTERY_AVAILABLE=1` to your compiler options to enable optional dependencies on Pottery in other libraries. You can add `bindings/cxx/include/` to the include path as well if you care for the [C++ bindings](../bindings/cxx).
+
+If you'd like to include some of the [utilities](../util/pottery/) as well, add `util/` to your include path and build the `.c` files for each utility you want to use in your project. Either add the source files to your buildsystem or just `#include` the `.c` file directly into one of your source files.
 
 
 

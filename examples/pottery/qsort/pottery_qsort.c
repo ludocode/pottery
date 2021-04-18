@@ -107,8 +107,7 @@ int pottery_qsort_heap_sort_compare(pottery_qsort_heap_sort_state_t* state, void
         case pottery_qsort_variant_gnu: return state->compare.gnu(left, right, state->user_context);
         case pottery_qsort_variant_bsd: return state->compare.bsd(state->user_context, left, right);
     }
-    // unreachable
-    return 0;
+    pottery_unreachable();
 }
 
 #define POTTERY_HEAP_SORT_PREFIX pottery_qsort_heap_sort

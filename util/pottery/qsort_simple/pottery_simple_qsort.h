@@ -55,4 +55,18 @@ void pottery_simple_bsd_qsort_r(void* first, size_t count, size_t element_size,
         void* user_context,
         int (*compare)(void* user_context, const void* left, const void* right));
 
+/**
+ * Sorts an array with a custom comparator that takes a user context, where the
+ * context parameter comes first.
+ *
+ * This is Windows-style qsort_s() implemented with Pottery.
+ */
+void pottery_simple_win_qsort_s(void* first, size_t count, size_t element_size,
+        int (
+            #if defined(_MSC_VER) || defined(__MINGW32__)
+            __cdecl
+            #endif
+            *compare)(void* user_context, const void* left, const void* right),
+        void* user_context);
+
 #endif

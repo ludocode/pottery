@@ -1,6 +1,6 @@
 # POSIX `hsearch()` with Pottery
 
-This is an implementation of the mostly terrible [POSIX hash table](https://pubs.opengroup.org/onlinepubs/9699919799/functions/hcreate.html) API and its various extensions using a Pottery [`open_hash_map`](../../../include/pottery/open_hash_map/).
+This is a portable embeddable implementation of the mostly terrible [POSIX hash table](https://pubs.opengroup.org/onlinepubs/9699919799/functions/hcreate.html) API and its various extensions using a Pottery [`open_hash_map`](../../../include/pottery/open_hash_map/).
 
 ## Compatibility Details
 

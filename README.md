@@ -1,6 +1,6 @@
 # Pottery
 
-A header-only container and algorithm template library in C.
+A container and algorithm template library in C.
 
 [![Unit Tests](https://github.com/ludocode/pottery/workflows/Unit%20Tests/badge.svg)](https://github.com/ludocode/pottery/actions?query=workflow%3A%22Unit+Tests%22)
 
@@ -12,9 +12,9 @@ Pottery is a collection of templates for instantiating strongly typed containers
 
 Pottery is modern C code written in the ultra-portable intersection of C11, gnu89 and C++11 with no mandatory dependencies (not even libc.) Pottery supports many compilers including GCC, Clang, MSVC and various toy compilers. It supports (or intends to support) any modern C platform from microcontrollers to OS kernels to WebAssembly.
 
-Pottery does not use void pointer casts, function pointers, code block macros, compiler extensions, or any other inefficiencies or messyness of typical C containers. Pottery's templates are clean, composable, fast, strongly typed, and highly configurable.
+Pottery does not use void pointer casts, function pointers, code block macros, compiler extensions, or any other inefficiencies or messyness of typical C containers. Pottery's templates are clean, composable, fast, strongly typed, and highly configurable. The templates are header files only; just put [`include/`](include/pottery/) on your include path to use them.
 
-Take a look at the [template listing](include/pottery/) to see what Pottery has to offer. Use Pottery to make containers in C!
+Take a look at the [template listing](include/pottery/) or the [utilities](util/pottery/) to see what Pottery has to offer. Use Pottery to make containers in C!
 
 
 
@@ -25,6 +25,7 @@ Take a look at the [template listing](include/pottery/) to see what Pottery has 
 - [Examples](examples/pottery/)
 - [Glossary](docs/glossary.md)
 - [Template Listing](include/pottery/)
+- [Utilities](util/pottery/)
 - [Integration Guide](docs/integration.md)
 - [Lifecycle Style](docs/lifecycle_style.md)
 - [Meta-templates](meta/)

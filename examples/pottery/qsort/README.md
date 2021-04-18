@@ -20,7 +20,7 @@ These are synthetic benchmarks of course; real-world performance will vary. In p
 
 ### Implementation Details
 
-Check out the [`qsort_simple`](../qsort_simple/) example first to see how `qsort()` can be implemented with Pottery.
+Check out the embeddable [`qsort`](../../../util/pottery/qsort_simple/) first to see how `qsort()` can be implemented with Pottery.
 
 
 #### Size Specialization

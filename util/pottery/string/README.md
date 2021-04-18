@@ -1,6 +1,6 @@
 # Pottery String
 
-This shows how you can use Pottery to implement a simple mutable byte string in C. This example calls it simply `string`, and the type is `string_t`.
+This is a simple mutable byte string built with Pottery. This example calls it simply `string`, and the type is `string_t`.
 
 Even though this string is just an example to demonstrate Pottery, it is far superior to other C string libraries. Compare it to some other strings:
 
@@ -12,12 +12,48 @@ Even though this string is just an example to demonstrate Pottery, it is far sup
 
 I believe you will find this API much more sane and less error-prone (although it can be a bit more verbose.) Despite this, it probably performs better than all of these anyway since it's much more like typical implementations of `std::string`: the container itself is not allocated and it contains internal storage to avoid allocations for small strings.
 
-See [`main.c`](main.c) for an example of how it's used, and take a look at [Clayfish](../clayfish/) to see this string used in a "real" application.
-
-If you'd like to use this string, add Pottery and this example to your include path and copy `string.h` and `string.c` into your project (or just include `string.c` into one of your C files.) Rename this if you already have something else called `string`.
+Take a look at [Clayfish](../../../examples/pottery/clayfish/) to see this string used in a "real" application.
 
 
+## Example
 
+Here's a simple example of how to use this string:
+
+```c
+// Initialize a blank string
+string_t homer;
+string_init(&homer);
+
+// Append a C string
+string_append_cstr(&homer, "Homer");
+printf("%s\n", string_cstr(&homer));
+
+// Append more data
+string_append_char(&homer, ' ');
+string_append_cstr(&homer, "Simpson");
+pottery_test_assert(string_equal_cstr(&homer, "Homer Simpson"));
+printf("%s\n", string_cstr(&homer));
+
+// Insert data (enough to cause it to allocate)
+string_insert_cstr(&homer, 5, " J.");
+pottery_test_assert(string_equal_cstr(&homer, "Homer J. Simpson"));
+printf("%s\n", string_cstr(&homer));
+
+// Replace data
+string_remove(&homer, 6, 2);
+string_insert_cstr(&homer, 6, "Jay");
+pottery_test_assert(string_equal_cstr(&homer, "Homer Jay Simpson"));
+printf("%s\n", string_cstr(&homer));
+
+// Append lots more data via format strings, causing it to grow
+string_append_format(&homer, " works at the %s %s.", "Springfield", "Nuclear Power Plant");
+printf("%s\n", string_cstr(&homer));
+string_insert_format(&homer, 23, " in sector %01d%c", 7, 'G');
+printf("%s\n", string_cstr(&homer));
+
+// Clean up
+string_destroy(&homer);
+```
 
 
 ## Implementation Details
