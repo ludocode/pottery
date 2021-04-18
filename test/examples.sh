@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-for f in examples/pottery/*/ util/pottery/*/; do
+for f in examples/pottery/*/; do
     echo -e "\n\n\nBuilding $f"
 
     # We don't run clayfish since it's interactive.

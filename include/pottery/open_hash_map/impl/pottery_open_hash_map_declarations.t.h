@@ -209,7 +209,9 @@ bool pottery_ohm_entry_is_empty(pottery_ohm_t* map, pottery_ohm_entry_t entry) {
         // e.g. a struct, you should specify both EMPTY_IS_ZERO to allow the
         // map to allocated it zeroed and IS_EMPTY to test some internal struct
         // bit to see if it's zero.
-        return *entry == 0;
+        // We cast to silence zero-as-null-pointer-constant warnings in case
+        // the entry type is a pointer.
+        return *entry == pottery_cast(pottery_ohm_value_t, 0);
     #else
         #error "No way to test whether a bucket is empty!"
     #endif
@@ -232,7 +234,9 @@ void pottery_ohm_entry_set_empty(pottery_ohm_t* map, pottery_ohm_entry_t entry) 
         // a struct, you should specify both EMPTY_IS_ZERO to allow the map to
         // allocated it zeroed and IS_EMPTY to test some internal struct bit to
         // see if it's zero.
-        *entry = 0;
+        // We cast to silence zero-as-null-pointer-constant warnings in case
+        // the entry type is a pointer.
+        *entry = pottery_cast(pottery_ohm_value_t, 0);
     #else
         #error "No way to set an empty bucket!"
     #endif

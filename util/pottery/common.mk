@@ -1,1 +1,0 @@
-../../examples/pottery/common.mk

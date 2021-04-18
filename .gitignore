@@ -1,6 +1,5 @@
-/test/.build
+.build/
 /.ninja_deps
 /.ninja_log
 core.*
 vgcore.*
-/examples/pottery/*/.build/

@@ -24,14 +24,12 @@
 
 #include "string_set.h"
 
-#include <stddef.h>
-#include <stdint.h>
-#include <string.h>
+#include "pottery/pottery_dependencies.h"
 
 static inline size_t fnv1a(const char* p) {
     uint32_t hash = 2166136261;
     for (; *p != 0; ++p)
-        hash = (hash ^ (uint8_t)*p) * 16777619;
+        hash = (hash ^ pottery_cast(uint8_t, *p)) * 16777619;
     return hash;
 }
 
@@ -57,7 +55,7 @@ struct string_set_t {
 };
 
 string_set_t* string_set_new(void) {
-    string_set_t* set = (string_set_t*) malloc(sizeof(string_set_t));
+    string_set_t* set = pottery_cast(string_set_t*, malloc(sizeof(string_set_t)));
     string_set_map_init(&set->map);
     return set;
 }

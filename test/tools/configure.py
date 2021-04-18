@@ -592,7 +592,7 @@ with open(ninja, "w") as out:
                 flags = cppflags + cflags
                 objname = src[:-2]
 
-            if src.startswith("examples") or src.startswith("util"):
+            if src.startswith("examples"):
                 if compiler == "MSVC":
                     flags += [
                         "/Itest/src/pottery/isystem",

@@ -232,19 +232,19 @@ void string_append_vformat(string_t* string,
     va_end(temp_args);
 
     // If it fit, we're done.
-    if ((size_t)ret < buffer_length) {
-        string_set_length(string, original_length + (size_t)ret);
+    if (pottery_cast(size_t, ret) < buffer_length) {
+        string_set_length(string, original_length + pottery_cast(size_t, ret));
         return;
     }
 
     // Otherwise grow to the necessary size and format again.
-    buffer_length = (size_t)ret + 1;
+    buffer_length = pottery_cast(size_t, ret) + 1;
     total_length = original_length + buffer_length;
     if (total_length < original_length)
         abort();
     string_set_length(string, total_length);
     ret = vsnprintf(string_bytes(string) + original_length, buffer_length, format, args);
-    if (ret < 0 || (size_t)ret != buffer_length - 1)
+    if (ret < 0 || pottery_cast(size_t, ret) != buffer_length - 1)
         abort();
 }
 

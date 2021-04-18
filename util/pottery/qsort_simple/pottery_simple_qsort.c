@@ -24,6 +24,8 @@
 
 #include "pottery_simple_qsort.h"
 
+#include "pottery/pottery_dependencies.h"
+
 typedef enum variant_t {
     variant_c,
     variant_gnu,
@@ -57,8 +59,8 @@ int qsort_compare(state_t* state, void* left, void* right) {
 
 static inline
 void qsort_swap(state_t* state, void* vleft, void* vright) {
-    char* left = (char*)vleft;
-    char* right = (char*)vright;
+    char* left = pottery_cast(char*, vleft);
+    char* right = pottery_cast(char*, vright);
     char* end = right + state->element_size;
     while (right != end) {
         char temp = *left;
@@ -83,16 +85,16 @@ void qsort_swap(state_t* state, void* vleft, void* vright) {
 // SELECT and INDEX are used to access into the array. We offset pointers
 // by the user's element size.
 #define POTTERY_INTRO_SORT_ARRAY_ACCESS_SELECT(state, base, index) \
-        (char*)base + (index * state->element_size)
+        pottery_cast(char*, base) + (index * state->element_size)
 #define POTTERY_INTRO_SORT_ARRAY_ACCESS_INDEX(state, base, ref) \
-        (size_t)((char*)ref - (char*)base) / state->element_size
+        pottery_cast(size_t, pottery_cast(char*, ref) - pottery_cast(char*, base)) / state->element_size
 
 // EQUAL, NEXT and PREVIOUS are not required but they significantly improve
 // performance. EQUAL is especially important because without it entries can
 // only be compared by index.
 #define POTTERY_INTRO_SORT_ARRAY_ACCESS_EQUAL(state, base, left, right) left == right
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_NEXT(state, base, ref) (char*)ref + state->element_size
-#define POTTERY_INTRO_SORT_ARRAY_ACCESS_PREVIOUS(state, base, ref) (char*)ref - state->element_size
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_NEXT(state, base, ref) pottery_cast(char*, ref) + state->element_size
+#define POTTERY_INTRO_SORT_ARRAY_ACCESS_PREVIOUS(state, base, ref) pottery_cast(char*, ref) - state->element_size
 
 #include "pottery/intro_sort/pottery_intro_sort_static.t.h"
 

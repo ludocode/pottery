@@ -22,29 +22,23 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <assert.h>
+#include "pottery/qsort_simple/pottery_simple_qsort.h"
 
-#include "string_set.h"
+#include "pottery/unit/test_pottery_framework.h"
 
-int main(void) {
-    string_set_t* string_set = string_set_new();
+static inline int strcmp_wrapper(const void* left, const void* right) {
+    return strcmp(
+            *pottery_cast(const char* const*, left),
+            *pottery_cast(const char* const*, right));
+}
 
-    string_set_add(string_set, "alice");
-    string_set_add(string_set, "eve");
-    string_set_add(string_set, "bob");
+POTTERY_TEST(pottery_simple_qsort) {
+    const char* players[] = {
+        "fred", "quincy", "alice", "eve", "zack", "ned", "paul", "bob", "gary",
+        "ursula", "yves", "carl", "olivia", "steve", "rob", "mike", "wade", "dave",
+        "jake", "helen", "xavier", "karen", "tammy", "laura", "isaac", "vick",
+    };
+    size_t count = sizeof(players) / sizeof(*players);
 
-    string_set_remove(string_set, "eve");
-
-    assert(string_set_query(string_set, "alice"));
-    assert(string_set_query(string_set, "bob"));
-    assert(!string_set_query(string_set, "eve"));
-
-    printf("%s: %s\n", "alice", string_set_query(string_set, "alice") ? "exists" : "does not exist");
-    printf("%s: %s\n", "bob",   string_set_query(string_set, "bob")   ? "exists" : "does not exist");
-    printf("%s: %s\n", "eve",   string_set_query(string_set, "eve")   ? "exists" : "does not exist");
-
-    string_set_delete(string_set);
-    return EXIT_SUCCESS;
+    pottery_simple_qsort(pottery_cast(void*, players), count, sizeof(players[0]), strcmp_wrapper);
 }
