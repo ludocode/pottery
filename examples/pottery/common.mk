@@ -15,7 +15,7 @@ clean: FORCE
 FORCE:
 
 CPPFLAGS :=
-CPPFLAGS += -I../../../{include,util} -DPOTTERY_AVAILABLE=1
+CPPFLAGS += -I../../../include -I../../../util -DPOTTERY_AVAILABLE=1
 CPPFLAGS += -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter
 ifneq ($(CC),tcc)
 CPPFLAGS += -MD -MP
