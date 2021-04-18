@@ -1,6 +1,10 @@
 #!/bin/sh
 set -e
 for f in examples/pottery/*/; do
+
+    # Skip qsort/ since it's been moved.
+    [ "$f" = "examples/pottery/qsort/" ] && continue
+
     echo -e "\n\n\nBuilding $f"
 
     # We don't run clayfish since it's interactive.

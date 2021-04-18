@@ -106,7 +106,7 @@
 #define POTTERY_QUICK_SORT_ARRAY_ACCESS_EQUAL(context, base, left, right) left == right
 #define POTTERY_QUICK_SORT_ARRAY_ACCESS_NEXT(context, base, ref) (char*)ref + context.element_size
 #define POTTERY_QUICK_SORT_ARRAY_ACCESS_PREVIOUS(context, base, ref) (char*)ref - context.element_size
-#define POTTERY_QUICK_SORT_LIFECYCLE_SWAP(context, a, b) pottery_qsort_swap_any(context.element_size, a, b)
+#define POTTERY_QUICK_SORT_LIFECYCLE_SWAP(context, a, b) pottery_qsort_fast_swap_any(context.element_size, a, b)
 #define POTTERY_QUICK_SORT_DEPTH_LIMIT_FALLBACK POTTERY_QSORT_VARIABLE_DEPTH_LIMIT_FALLBACK
 #include "pottery/quick_sort/pottery_quick_sort_static.t.h"
 
@@ -124,37 +124,37 @@ void POTTERY_QSORT_NAME(void* first, size_t count, size_t element_size,
     POTTERY_QSORT_COMPARE_TYPE fixed_context = compare;
     #endif
 
-    if (element_size == sizeof(int16_t) && pottery_qsort_is_aligned_as(first, int16_t)) {
+    if (element_size == sizeof(int16_t) && pottery_qsort_fast_is_aligned_as(first, int16_t)) {
         POTTERY_QSORT_RENAME(_i16)(fixed_context, (int16_t*)first, count);
         return;
     }
 
-    if (element_size == sizeof(int32_t) && pottery_qsort_is_aligned_as(first, int32_t)) {
+    if (element_size == sizeof(int32_t) && pottery_qsort_fast_is_aligned_as(first, int32_t)) {
         POTTERY_QSORT_RENAME(_i32)(fixed_context, (int32_t*)first, count);
         return;
     }
 
-    if (element_size == sizeof(int64_t) && pottery_qsort_is_aligned_as(first, int64_t)) {
+    if (element_size == sizeof(int64_t) && pottery_qsort_fast_is_aligned_as(first, int64_t)) {
         POTTERY_QSORT_RENAME(_i64)(fixed_context, (int64_t*)first, count);
         return;
     }
 
-    if (element_size == sizeof(pottery_qsort_i32_3_t) && pottery_qsort_is_aligned_as(first, pottery_qsort_i32_3_t)) {
+    if (element_size == sizeof(pottery_qsort_i32_3_t) && pottery_qsort_fast_is_aligned_as(first, pottery_qsort_i32_3_t)) {
         POTTERY_QSORT_RENAME(_i32_3)(fixed_context, (pottery_qsort_i32_3_t*)first, count);
         return;
     }
 
-    if (element_size == sizeof(pottery_qsort_i64_2_t) && pottery_qsort_is_aligned_as(first, pottery_qsort_i64_2_t)) {
+    if (element_size == sizeof(pottery_qsort_i64_2_t) && pottery_qsort_fast_is_aligned_as(first, pottery_qsort_i64_2_t)) {
         POTTERY_QSORT_RENAME(_i64_2)(fixed_context, (pottery_qsort_i64_2_t*)first, count);
         return;
     }
 
-    if (element_size == sizeof(pottery_qsort_i64_3_t) && pottery_qsort_is_aligned_as(first, pottery_qsort_i64_3_t)) {
+    if (element_size == sizeof(pottery_qsort_i64_3_t) && pottery_qsort_fast_is_aligned_as(first, pottery_qsort_i64_3_t)) {
         POTTERY_QSORT_RENAME(_i64_3)(fixed_context, (pottery_qsort_i64_3_t*)first, count);
         return;
     }
 
-    if (element_size == sizeof(pottery_qsort_i64_4_t) && pottery_qsort_is_aligned_as(first, pottery_qsort_i64_4_t)) {
+    if (element_size == sizeof(pottery_qsort_i64_4_t) && pottery_qsort_fast_is_aligned_as(first, pottery_qsort_i64_4_t)) {
         POTTERY_QSORT_RENAME(_i64_4)(fixed_context, (pottery_qsort_i64_4_t*)first, count);
         return;
     }

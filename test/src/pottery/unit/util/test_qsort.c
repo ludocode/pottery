@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include "pottery/qsort_simple/pottery_simple_qsort.h"
+#include "pottery/qsort/pottery_qsort.h"
 
 #include "pottery/unit/test_pottery_framework.h"
 
@@ -32,7 +32,7 @@ static inline int strcmp_wrapper(const void* left, const void* right) {
             *pottery_cast(const char* const*, right));
 }
 
-POTTERY_TEST(pottery_simple_qsort) {
+POTTERY_TEST(pottery_qsort) {
     const char* players[] = {
         "fred", "quincy", "alice", "eve", "zack", "ned", "paul", "bob", "gary",
         "ursula", "yves", "carl", "olivia", "steve", "rob", "mike", "wade", "dave",
@@ -40,5 +40,5 @@ POTTERY_TEST(pottery_simple_qsort) {
     };
     size_t count = sizeof(players) / sizeof(*players);
 
-    pottery_simple_qsort(pottery_cast(void*, players), count, sizeof(players[0]), strcmp_wrapper);
+    pottery_qsort(pottery_cast(void*, players), count, sizeof(players[0]), strcmp_wrapper);
 }

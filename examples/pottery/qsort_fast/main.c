@@ -1,4 +1,4 @@
-#include "pottery_qsort.h"
+#include "pottery_qsort_fast.h"
 
 #include <string.h>
 #include <stdbool.h>
@@ -69,30 +69,30 @@ int main(void) {
 
     printf("Sorting with qsort()\n");
     fruits_t fruits = fruits_original;
-    pottery_qsort((void*)fruits.array, count, sizeof(*fruits.array), strcmp_wrapper);
+    pottery_qsort_fast((void*)fruits.array, count, sizeof(*fruits.array), strcmp_wrapper);
     test_in_order(false, fruits.array, count);
 
 
     printf("Sorting reverse with gnu_qsort_r()\n");
     fruits = fruits_original;
-    pottery_gnu_qsort_r((void*)fruits.array, count, sizeof(*fruits.array),
+    pottery_gnu_qsort_r_fast((void*)fruits.array, count, sizeof(*fruits.array),
             strcmp_wrapper_gnu, (void*)true);
     test_in_order(true, fruits.array, count);
 
     printf("Sorting forward with gnu_qsort_r()\n");
-    pottery_gnu_qsort_r((void*)fruits.array, count, sizeof(*fruits.array),
+    pottery_gnu_qsort_r_fast((void*)fruits.array, count, sizeof(*fruits.array),
             strcmp_wrapper_gnu, (void*)false);
     test_in_order(false, fruits.array, count);
 
 
     printf("Sorting forward with bsd_qsort_r()\n");
     fruits = fruits_original;
-    pottery_bsd_qsort_r((void*)fruits.array, count, sizeof(*fruits.array),
+    pottery_bsd_qsort_r_fast((void*)fruits.array, count, sizeof(*fruits.array),
             (void*)false, strcmp_wrapper_bsd);
     test_in_order(false, fruits.array, count);
 
     printf("Sorting reverse with bsd_qsort_r()\n");
-    pottery_bsd_qsort_r((void*)fruits.array, count, sizeof(*fruits.array),
+    pottery_bsd_qsort_r_fast((void*)fruits.array, count, sizeof(*fruits.array),
             (void*)true, strcmp_wrapper_bsd);
     test_in_order(true, fruits.array, count);
 

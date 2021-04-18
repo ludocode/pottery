@@ -22,20 +22,20 @@
  * SOFTWARE.
  */
 
-#include "pottery_simple_qsort.h"
+#include "pottery_qsort.h"
 
 #include "pottery/pottery_dependencies.h"
 
-typedef enum variant_t {
-    variant_c,
-    variant_gnu,
-    variant_bsd,
-} variant_t;
+typedef enum pottery_qsort_variant_t {
+    pottery_qsort_variant_c,
+    pottery_qsort_variant_gnu,
+    pottery_qsort_variant_bsd,
+} pottery_qsort_variant_t;
 
-typedef struct state_t {
+typedef struct pottery_qsort_state_t {
     size_t element_size;
 
-    variant_t variant;
+    pottery_qsort_variant_t pottery_qsort_variant;
 
     union {
         int (*c)(const void* left, const void* right);
@@ -45,20 +45,20 @@ typedef struct state_t {
     } compare;
 
     void* user_context;
-} state_t;
+} pottery_qsort_state_t;
 
 static inline
-int qsort_compare(state_t* state, void* left, void* right) {
-    switch (state->variant) {
-        case variant_c:   return state->compare.c(left, right);
-        case variant_gnu: return state->compare.gnu(left, right, state->user_context);
-        case variant_bsd: return state->compare.bsd(state->user_context, left, right);
+int pottery_qsort_compare(pottery_qsort_state_t* state, void* left, void* right) {
+    switch (state->pottery_qsort_variant) {
+        case pottery_qsort_variant_c:   return state->compare.c(left, right);
+        case pottery_qsort_variant_gnu: return state->compare.gnu(left, right, state->user_context);
+        case pottery_qsort_variant_bsd: return state->compare.bsd(state->user_context, left, right);
     }
     pottery_unreachable();
 }
 
 static inline
-void qsort_swap(state_t* state, void* vleft, void* vright) {
+void pottery_qsort_swap(pottery_qsort_state_t* state, void* vleft, void* vright) {
     char* left = pottery_cast(char*, vleft);
     char* right = pottery_cast(char*, vright);
     char* end = right + state->element_size;
@@ -76,11 +76,11 @@ void qsort_swap(state_t* state, void* vleft, void* vright) {
 // pass it as CONTEXT_TYPE. Our REF_TYPE is void* and we SWAP and COMPARE with
 // the above functions.
 
-#define POTTERY_INTRO_SORT_PREFIX qsort_impl
-#define POTTERY_INTRO_SORT_CONTEXT_TYPE state_t*
+#define POTTERY_INTRO_SORT_PREFIX pottery_qsort_impl
+#define POTTERY_INTRO_SORT_CONTEXT_TYPE pottery_qsort_state_t*
 #define POTTERY_INTRO_SORT_REF_TYPE void*
-#define POTTERY_INTRO_SORT_COMPARE_THREE_WAY qsort_compare
-#define POTTERY_INTRO_SORT_LIFECYCLE_SWAP qsort_swap
+#define POTTERY_INTRO_SORT_COMPARE_THREE_WAY pottery_qsort_compare
+#define POTTERY_INTRO_SORT_LIFECYCLE_SWAP pottery_qsort_swap
 
 // SELECT and INDEX are used to access into the array. We offset pointers
 // by the user's element size.
@@ -98,38 +98,38 @@ void qsort_swap(state_t* state, void* vleft, void* vright) {
 
 #include "pottery/intro_sort/pottery_intro_sort_static.t.h"
 
-void pottery_simple_qsort(void* first, size_t count, size_t element_size,
+void pottery_qsort(void* first, size_t count, size_t element_size,
         int (*compare)(const void* left, const void* right))
 {
-    state_t state;
+    pottery_qsort_state_t state;
     state.element_size = element_size;
-    state.variant = variant_c;
+    state.pottery_qsort_variant = pottery_qsort_variant_c;
     state.compare.c = compare;
-    qsort_impl(&state, first, count);
+    pottery_qsort_impl(&state, first, count);
 }
 
-void pottery_simple_gnu_qsort_r(void* first, size_t count, size_t element_size,
+void pottery_gnu_qsort_r(void* first, size_t count, size_t element_size,
         int (*compare)(const void* left, const void* right, void* user_context),
         void* user_context)
 {
-    state_t state;
+    pottery_qsort_state_t state;
     state.element_size = element_size;
-    state.variant = variant_gnu;
+    state.pottery_qsort_variant = pottery_qsort_variant_gnu;
     state.compare.gnu = compare;
     state.user_context = user_context;
-    qsort_impl(&state, first, count);
+    pottery_qsort_impl(&state, first, count);
 }
 
-void pottery_simple_bsd_qsort_r(void* first, size_t count, size_t element_size,
+void pottery_bsd_qsort_r(void* first, size_t count, size_t element_size,
         void* user_context,
         int (*compare)(void* user_context, const void* left, const void* right))
 {
-    state_t state;
+    pottery_qsort_state_t state;
     state.element_size = element_size;
-    state.variant = variant_bsd;
+    state.pottery_qsort_variant = pottery_qsort_variant_bsd;
     state.compare.bsd = compare;
     state.user_context = user_context;
-    qsort_impl(&state, first, count);
+    pottery_qsort_impl(&state, first, count);
 }
 
 // The compare function in Windows's qsort_s() is the same as BSD's qsort_r()
@@ -139,7 +139,7 @@ void pottery_simple_bsd_qsort_r(void* first, size_t count, size_t element_size,
 // you are compiling x86 with a different default calling convention, you
 // should at least get a compiler error from this rather than it crashing at
 // runtime.
-void pottery_simple_win_qsort_s(void* first, size_t count, size_t element_size,
+void pottery_win_qsort_s(void* first, size_t count, size_t element_size,
         int (
             #if defined(_MSC_VER) || defined(__MINGW32__)
             __cdecl
@@ -150,5 +150,5 @@ void pottery_simple_win_qsort_s(void* first, size_t count, size_t element_size,
     // No cast passing compare. We want a compiler error if the calling
     // convention is different.
     // Note that the order of arguments is different from bsd_qsort_r().
-    pottery_simple_bsd_qsort_r(first, count, element_size, user_context, compare);
+    pottery_bsd_qsort_r(first, count, element_size, user_context, compare);
 }

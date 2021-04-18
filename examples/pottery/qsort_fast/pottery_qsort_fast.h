@@ -22,46 +22,26 @@
  * SOFTWARE.
  */
 
-#ifndef POTTERY_QSORT_SIMPLE_H
-#define POTTERY_QSORT_SIMPLE_H 1
-
 #include <stddef.h>
 
-/**
- * Sorts an array with a custom comparator.
- *
- * This is the standard C qsort() function implemented with Pottery.
- */
-void pottery_simple_qsort(void* first, size_t count, size_t element_size,
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// Standard C qsort() plus some platform-specific extensions.
+
+void pottery_qsort_fast(void* first, size_t count, size_t element_size,
         int (*compare)(const void* left, const void* right));
 
-/**
- * Sorts an array with a custom comparator that takes a user context, where the
- * context parameter comes last.
- *
- * This is GNU-style qsort_r() implemented with Pottery.
- */
-void pottery_simple_gnu_qsort_r(void* first, size_t count, size_t element_size,
+void pottery_gnu_qsort_r_fast(void* first, size_t count, size_t element_size,
         int (*compare)(const void* left, const void* right, void* user_context),
         void* user_context);
 
-/**
- * Sorts an array with a custom comparator that takes a user context, where the
- * context parameter comes first.
- *
- * This is BSD-style qsort_r() implemented with Pottery.
- */
-void pottery_simple_bsd_qsort_r(void* first, size_t count, size_t element_size,
+void pottery_bsd_qsort_r_fast(void* first, size_t count, size_t element_size,
         void* user_context,
         int (*compare)(void* user_context, const void* left, const void* right));
 
-/**
- * Sorts an array with a custom comparator that takes a user context, where the
- * context parameter comes first.
- *
- * This is Windows-style qsort_s() implemented with Pottery.
- */
-void pottery_simple_win_qsort_s(void* first, size_t count, size_t element_size,
+void pottery_win_qsort_s_fast(void* first, size_t count, size_t element_size,
         int (
             #if defined(_MSC_VER) || defined(__MINGW32__)
             __cdecl
@@ -69,4 +49,15 @@ void pottery_simple_win_qsort_s(void* first, size_t count, size_t element_size,
             *compare)(void* user_context, const void* left, const void* right),
         void* user_context);
 
+#if defined(__STDC_LIB_EXT1__) && defined(__STDC_WANT_LIB_EXT1__)
+// NOTE: This doesn't call the constraint handler on error because there is no
+// way to get the current constraint handler. Instead it just aborts on error.
+// This means when it returns, the return value is always 0.
+errno_t pottery_c11_qsort_s_fast(void* first, rsize_t count, rsize_t element_size,
+        int (*compare)(const void* left, const void* right, void* user_context),
+        void* user_context);
+#endif
+
+#ifdef __cplusplus
+}
 #endif

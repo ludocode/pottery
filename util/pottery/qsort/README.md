@@ -1,15 +1,15 @@
-## Simple `qsort()` with Pottery
+## `qsort()` with Pottery
 
 This is an implementation of the standard C `qsort()` and several extensions using Pottery's [intro_sort](../../../include/pottery/intro_sort/`) template. It defines the following functions:
 
-- `pottery_simple_qsort()` - Standard C `qsort()`
-- `pottery_simple_gnu_qsort_r()` - GNU glibc (and uClibc) `qsort_r()`
-- `pottery_simple_bsd_qsort_r()` - BSD (and macOS) `qsort_r()`
-- `pottery_simple_win_qsort_s()` - Windows `qsort_s()`
+- `pottery_qsort()` - Standard C `qsort()`
+- `pottery_gnu_qsort_r()` - GNU glibc (and uClibc) `qsort_r()`
+- `pottery_bsd_qsort_r()` - BSD (and macOS) `qsort_r()`
+- `pottery_win_qsort_s()` - Windows `qsort_s()`
 
-This would be suitable for a minimal libc, or for embedding in a project as a portable replacement for the platform `qsort()` and extensions. For example if your project depends on GNU/Linux `qsort_r()` and you want to port to macOS or Windows without painful code changes, add this to your project and replace `qsort_r()` with `pottery_simple_gnu_qsort_r()`.
+This would be suitable for a minimal libc, or for embedding in a project as a portable replacement for the platform `qsort()` and extensions. For example if your project depends on GNU/Linux `qsort_r()` and you want to port to macOS or Windows without painful code changes, add this to your project and replace `qsort_r()` with `pottery_gnu_qsort_r()`.
 
-This implementation is intended to be small and simple for demonstration purposes and for ease of embedding. Despite this, it provides great performance with safe worst-case time complexity, small optimized code size, no memory allocation and strictly bounded stack usage (it does not use recursion.) For an even faster implementation, see the [qsort](../../../pottery/examples/qsort/) example.
+This implementation is intended to be small and simple for demonstration purposes and for ease of embedding. Despite this, it provides great performance with safe worst-case time complexity, small optimized code size, no memory allocation and strictly bounded stack usage (it does not use recursion.) For an even faster implementation, see the [`qsort_fast`](../../../examples/pottery/qsort_fast/) example.
 
 
 

@@ -9,6 +9,6 @@ You could in theory just include all `.c` files in `util/` recursively to your p
 These are the utilities available so far:
 
 - [hsearch](hsearch/), an implementation of the POSIX `hsearch()` hash table API
-- [qsort](qsort_simple/), an implementation of `qsort()` and its platform-specific extensions
+- [qsort](qsort/), an implementation of `qsort()` and its platform-specific extensions
 - [string](string/), a fast and easy to use mutable string library
 - [string set](string_set/), a dynamic set of unique strings

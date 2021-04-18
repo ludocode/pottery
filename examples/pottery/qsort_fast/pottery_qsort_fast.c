@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include "pottery_qsort.h"
+#include "pottery_qsort_fast.h"
 
 #include "pottery/pottery_dependencies.h"
 
@@ -40,14 +40,14 @@ typedef struct {int64_t a[4];} pottery_qsort_i64_4_t;
 
 // little helper to check alignment
 static inline
-bool pottery_qsort_is_aligned(void* p, size_t required_align) {
+bool pottery_qsort_fast_is_aligned(void* p, size_t required_align) {
     uintptr_t u = pottery_reinterpret_cast(uintptr_t, p);
     return u == (u & ~required_align);
 }
-#define pottery_qsort_is_aligned_as(p, T) pottery_qsort_is_aligned((p), pottery_alignof(T))
+#define pottery_qsort_fast_is_aligned_as(p, T) pottery_qsort_fast_is_aligned((p), pottery_alignof(T))
 
 // arbitrary size swap
-static void pottery_qsort_swap_any(size_t element_size, void* vleft, void* vright) {
+static void pottery_qsort_fast_swap_any(size_t element_size, void* vleft, void* vright) {
     char* left = pottery_cast(char*, vleft);
     char* right = pottery_cast(char*, vright);
     char* end = right + element_size;
@@ -80,16 +80,16 @@ typedef int (*pottery_bsd_qsort_r_compare_t)(void* user_context, const void* lef
  * instantiating heap_sort instead of intro_sort.
  */
 
-typedef enum pottery_qsort_variant_t {
-    pottery_qsort_variant_c,
-    pottery_qsort_variant_gnu,
-    pottery_qsort_variant_bsd,
-} pottery_qsort_variant_t;
+typedef enum pottery_qsort_fast_variant_t {
+    pottery_qsort_fast_variant_c,
+    pottery_qsort_fast_variant_gnu,
+    pottery_qsort_fast_variant_bsd,
+} pottery_qsort_fast_variant_t;
 
-typedef struct pottery_qsort_heap_sort_state_t {
+typedef struct pottery_qsort_fast_heap_sort_state_t {
     size_t element_size;
 
-    pottery_qsort_variant_t variant;
+    pottery_qsort_fast_variant_t variant;
 
     union {
         int (*c)(const void* left, const void* right);
@@ -98,24 +98,24 @@ typedef struct pottery_qsort_heap_sort_state_t {
     } compare;
 
     void* user_context;
-} pottery_qsort_heap_sort_state_t;
+} pottery_qsort_fast_heap_sort_state_t;
 
 static inline
-int pottery_qsort_heap_sort_compare(pottery_qsort_heap_sort_state_t* state, void* left, void* right) {
+int pottery_qsort_fast_heap_sort_compare(pottery_qsort_fast_heap_sort_state_t* state, void* left, void* right) {
     switch (state->variant) {
-        case pottery_qsort_variant_c:   return state->compare.c(left, right);
-        case pottery_qsort_variant_gnu: return state->compare.gnu(left, right, state->user_context);
-        case pottery_qsort_variant_bsd: return state->compare.bsd(state->user_context, left, right);
+        case pottery_qsort_fast_variant_c:   return state->compare.c(left, right);
+        case pottery_qsort_fast_variant_gnu: return state->compare.gnu(left, right, state->user_context);
+        case pottery_qsort_fast_variant_bsd: return state->compare.bsd(state->user_context, left, right);
     }
     pottery_unreachable();
 }
 
-#define POTTERY_HEAP_SORT_PREFIX pottery_qsort_heap_sort
-#define POTTERY_HEAP_SORT_CONTEXT_TYPE pottery_qsort_heap_sort_state_t*
+#define POTTERY_HEAP_SORT_PREFIX pottery_qsort_fast_heap_sort
+#define POTTERY_HEAP_SORT_CONTEXT_TYPE pottery_qsort_fast_heap_sort_state_t*
 #define POTTERY_HEAP_SORT_REF_TYPE void*
-#define POTTERY_HEAP_SORT_COMPARE_THREE_WAY pottery_qsort_heap_sort_compare
+#define POTTERY_HEAP_SORT_COMPARE_THREE_WAY pottery_qsort_fast_heap_sort_compare
 #define POTTERY_HEAP_SORT_LIFECYCLE_SWAP(state, left, right) \
-        pottery_qsort_swap_any(state->element_size, left, right)
+        pottery_qsort_fast_swap_any(state->element_size, left, right)
 
 #define POTTERY_HEAP_SORT_ARRAY_ACCESS_SELECT(state, base, index) \
         (char*)base + (index * state->element_size)
@@ -135,38 +135,38 @@ int pottery_qsort_heap_sort_compare(pottery_qsort_heap_sort_state_t* state, void
  */
 
 static
-void pottery_qsort_heap_sort_c(size_t element_size, pottery_qsort_compare_t compare,
+void pottery_qsort_fast_heap_sort_c(size_t element_size, pottery_qsort_compare_t compare,
         void* base, size_t offset, size_t count)
 {
-    pottery_qsort_heap_sort_state_t state;
+    pottery_qsort_fast_heap_sort_state_t state;
     state.element_size = element_size;
-    state.variant = pottery_qsort_variant_c;
+    state.variant = pottery_qsort_fast_variant_c;
     state.compare.c = compare;
-    pottery_qsort_heap_sort_range(&state, base, offset, count);
+    pottery_qsort_fast_heap_sort_range(&state, base, offset, count);
 }
 
 static
-void pottery_qsort_heap_sort_gnu(size_t element_size, pottery_gnu_qsort_r_compare_t compare,
+void pottery_qsort_fast_heap_sort_gnu(size_t element_size, pottery_gnu_qsort_r_compare_t compare,
         void* user_context, void* base, size_t offset, size_t count)
 {
-    pottery_qsort_heap_sort_state_t state;
+    pottery_qsort_fast_heap_sort_state_t state;
     state.element_size = element_size;
-    state.variant = pottery_qsort_variant_gnu;
+    state.variant = pottery_qsort_fast_variant_gnu;
     state.compare.gnu = compare;
     state.user_context = user_context;
-    pottery_qsort_heap_sort_range(&state, base, offset, count);
+    pottery_qsort_fast_heap_sort_range(&state, base, offset, count);
 }
 
 static
-void pottery_qsort_heap_sort_bsd(size_t element_size, pottery_bsd_qsort_r_compare_t compare,
+void pottery_qsort_fast_heap_sort_bsd(size_t element_size, pottery_bsd_qsort_r_compare_t compare,
         void* user_context, void* base, size_t offset, size_t count)
 {
-    pottery_qsort_heap_sort_state_t state;
+    pottery_qsort_fast_heap_sort_state_t state;
     state.element_size = element_size;
-    state.variant = pottery_qsort_variant_bsd;
+    state.variant = pottery_qsort_fast_variant_bsd;
     state.compare.bsd = compare;
     state.user_context = user_context;
-    pottery_qsort_heap_sort_range(&state, base, offset, count);
+    pottery_qsort_fast_heap_sort_range(&state, base, offset, count);
 }
 
 
@@ -184,7 +184,7 @@ typedef struct {
     pottery_qsort_compare_t compare;
 } pottery_qsort_variable_context_t;
 
-#define POTTERY_QSORT_NAME pottery_qsort
+#define POTTERY_QSORT_NAME pottery_qsort_fast
 #define POTTERY_QSORT_COMPARE_TYPE pottery_qsort_compare_t
 #define POTTERY_QSORT_CONTEXT_FIXED_TYPE pottery_qsort_compare_t
 #define POTTERY_QSORT_COMPARE_FIXED(compare, a, b) compare((void*)a, (void*)b)
@@ -193,10 +193,10 @@ typedef struct {
 #define POTTERY_QSORT_USER_CONTEXT 0
 #define POTTERY_QSORT_COMPARE_ARGS pottery_qsort_compare_t compare
 #define POTTERY_QSORT_FIXED_DEPTH_LIMIT_FALLBACK(compare, base, offset, count) \
-        pottery_qsort_heap_sort_c(sizeof(POTTERY_QUICK_SORT_VALUE_TYPE), compare, base, offset, count)
+        pottery_qsort_fast_heap_sort_c(sizeof(POTTERY_QUICK_SORT_VALUE_TYPE), compare, base, offset, count)
 #define POTTERY_QSORT_VARIABLE_DEPTH_LIMIT_FALLBACK(context, base, offset, count) \
-        pottery_qsort_heap_sort_c(context.element_size, context.compare, base, offset, count)
-#include "pottery_qsort_sizes.t.h"
+        pottery_qsort_fast_heap_sort_c(context.element_size, context.compare, base, offset, count)
+#include "pottery_qsort_fast_sizes.t.h"
 
 
 
@@ -217,7 +217,7 @@ typedef struct {
     void* user_context;
 } pottery_gnu_qsort_r_context_variable_t;
 
-#define POTTERY_QSORT_NAME pottery_gnu_qsort_r
+#define POTTERY_QSORT_NAME pottery_gnu_qsort_r_fast
 #define POTTERY_QSORT_COMPARE_TYPE pottery_gnu_qsort_r_compare_t
 #define POTTERY_QSORT_CONTEXT_FIXED_TYPE pottery_gnu_qsort_r_context_fixed_t
 #define POTTERY_QSORT_COMPARE_FIXED(context, a, b) context.compare((void*)a, (void*)b, context.user_context)
@@ -226,12 +226,12 @@ typedef struct {
 #define POTTERY_QSORT_USER_CONTEXT 1
 #define POTTERY_QSORT_COMPARE_ARGS pottery_gnu_qsort_r_compare_t compare, void* user_context
 #define POTTERY_QSORT_FIXED_DEPTH_LIMIT_FALLBACK(context, base, offset, count) \
-        pottery_qsort_heap_sort_gnu(sizeof(POTTERY_QUICK_SORT_VALUE_TYPE), context.compare, \
+        pottery_qsort_fast_heap_sort_gnu(sizeof(POTTERY_QUICK_SORT_VALUE_TYPE), context.compare, \
                 context.user_context, base, offset, count)
 #define POTTERY_QSORT_VARIABLE_DEPTH_LIMIT_FALLBACK(context, base, offset, count) \
-        pottery_qsort_heap_sort_gnu(context.element_size, context.compare, context.user_context, \
+        pottery_qsort_fast_heap_sort_gnu(context.element_size, context.compare, context.user_context, \
                 base, offset, count)
-#include "pottery_qsort_sizes.t.h"
+#include "pottery_qsort_fast_sizes.t.h"
 
 
 
@@ -252,7 +252,7 @@ typedef struct {
     void* user_context;
 } pottery_bsd_qsort_r_context_variable_t;
 
-#define POTTERY_QSORT_NAME pottery_bsd_qsort_r
+#define POTTERY_QSORT_NAME pottery_bsd_qsort_r_fast
 #define POTTERY_QSORT_COMPARE_TYPE pottery_bsd_qsort_r_compare_t
 #define POTTERY_QSORT_CONTEXT_FIXED_TYPE pottery_bsd_qsort_r_context_fixed_t
 #define POTTERY_QSORT_COMPARE_FIXED(context, a, b) context.compare(context.user_context, (void*)a, (void*)b)
@@ -261,12 +261,12 @@ typedef struct {
 #define POTTERY_QSORT_USER_CONTEXT 1
 #define POTTERY_QSORT_COMPARE_ARGS void* user_context, pottery_bsd_qsort_r_compare_t compare
 #define POTTERY_QSORT_FIXED_DEPTH_LIMIT_FALLBACK(context, base, offset, count) \
-        pottery_qsort_heap_sort_bsd(sizeof(POTTERY_QUICK_SORT_VALUE_TYPE), context.compare, \
+        pottery_qsort_fast_heap_sort_bsd(sizeof(POTTERY_QUICK_SORT_VALUE_TYPE), context.compare, \
                 context.user_context, base, offset, count)
 #define POTTERY_QSORT_VARIABLE_DEPTH_LIMIT_FALLBACK(context, base, offset, count) \
-        pottery_qsort_heap_sort_bsd(context.element_size, context.compare, context.user_context, \
+        pottery_qsort_fast_heap_sort_bsd(context.element_size, context.compare, context.user_context, \
                 base, offset, count)
-#include "pottery_qsort_sizes.t.h"
+#include "pottery_qsort_fast_sizes.t.h"
 
 
 
@@ -282,7 +282,7 @@ typedef struct {
 // should at least get a compiler error from this rather than it crashing at
 // runtime.
 
-void pottery_win_qsort_s(void* first, size_t count, size_t element_size,
+void pottery_win_qsort_s_fast(void* first, size_t count, size_t element_size,
         int (
             #if defined(_MSC_VER) || defined(__MINGW32__)
             __cdecl
@@ -293,7 +293,7 @@ void pottery_win_qsort_s(void* first, size_t count, size_t element_size,
     // No cast passing compare. We want a compiler error if the calling
     // convention is different.
     // Note that the order of arguments is different from bsd_qsort_r().
-    pottery_bsd_qsort_r(first, count, element_size, user_context, compare);
+    pottery_bsd_qsort_r_fast(first, count, element_size, user_context, compare);
 }
 
 
@@ -309,7 +309,7 @@ void pottery_win_qsort_s(void* first, size_t count, size_t element_size,
 // gnu_qsort_r() since the API is nearly the same.
 
 #if defined(__STDC_LIB_EXT1__) && defined(__STDC_WANT_LIB_EXT1__)
-errno_t pottery_c11_qsort_s(void* first, rsize_t count, rsize_t element_size,
+errno_t pottery_c11_qsort_s_fast(void* first, rsize_t count, rsize_t element_size,
         int (*compare)(const void* left, const void* right, void* user_context),
         void* user_context)
 {
