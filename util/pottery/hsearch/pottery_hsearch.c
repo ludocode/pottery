@@ -36,7 +36,7 @@ static bool pottery_hsearch_global_table_exists = false;
 int pottery_hcreate_r(size_t number_of_elements, struct pottery_hsearch_data* table) {
 
     // GNU checks for NULL. Not a BSD or POSIX requirement.
-    if (table == NULL) {
+    if (table == pottery_null) {
         errno = EINVAL;
         return 0;
     }
@@ -54,12 +54,12 @@ int pottery_hsearch_r(POTTERY_ENTRY item, POTTERY_ACTION action,
     // The GNU man page says it checks the table for NULL on hcreate_r() and
     // hdestroy_r(), but not hsearch_r()? We do it anyway. NULL checks are not
     // a BSD or POSIX requirement.
-    if (table != NULL) {
+    if (table != pottery_null) {
         if (action == POTTERY_FIND) {
             pottery_hsearch_impl_entry_t impl_entry =
                     pottery_hsearch_impl_find(&table->impl, item.key);
             if (!pottery_hsearch_impl_entry_exists(&table->impl, impl_entry)) {
-                *entry = NULL;
+                *entry = pottery_null;
                 // GNU and BSD require that we set errno to ESRCH. This is not
                 // actually a POSIX requirement.
                 errno = ESRCH;
@@ -70,10 +70,10 @@ int pottery_hsearch_r(POTTERY_ENTRY item, POTTERY_ACTION action,
 
         } else if (action == POTTERY_ENTER) {
             pottery_hsearch_impl_entry_t impl_entry;
-            if (POTTERY_OK != pottery_hsearch_impl_emplace_key(&table->impl, item.key, &impl_entry, NULL)) {
+            if (POTTERY_OK != pottery_hsearch_impl_emplace_key(&table->impl, item.key, &impl_entry, pottery_null)) {
                 // The BSDs require that entry be set to NULL on error. This is also
                 // necessary to allow our hsearch() wrapper to ignore the return value.
-                *entry = NULL;
+                *entry = pottery_null;
                 errno = ENOMEM;
                 return 0;
             }
@@ -84,7 +84,7 @@ int pottery_hsearch_r(POTTERY_ENTRY item, POTTERY_ACTION action,
     }
 
     // null table or unrecognized action
-    *entry = NULL;
+    *entry = pottery_null;
     errno = EINVAL;
     return 0;
 }
@@ -92,8 +92,8 @@ int pottery_hsearch_r(POTTERY_ENTRY item, POTTERY_ACTION action,
 void pottery_hdestroy1_r(struct pottery_hsearch_data *table,
         void (*free_key)(void*), void (*free_data)(void*))
 {
-    // GNU checks for NULL.
-    if (table == NULL) {
+    // GNU checks for pottery_null.
+    if (table == pottery_null) {
         errno = EINVAL;
         return;
     }
@@ -101,7 +101,7 @@ void pottery_hdestroy1_r(struct pottery_hsearch_data *table,
     // NetBSD's free functions. Note that we are freeing keys without removing
     // them from the map. The only operation we do after this is destroying the
     // map which does not involve any key comparisons so it's safe.
-    if (free_key != NULL && free_data != NULL) {
+    if (free_key != pottery_null && free_data != pottery_null) {
         pottery_hsearch_impl_entry_t impl_entry = pottery_hsearch_impl_begin(&table->impl);
         while (pottery_hsearch_impl_entry_exists(&table->impl, impl_entry)) {
             POTTERY_ENTRY* entry = impl_entry;

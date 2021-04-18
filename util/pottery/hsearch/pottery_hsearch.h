@@ -56,7 +56,7 @@ typedef struct {
 static inline size_t pottery_hsearch_fnv1a(const char* p) {
     uint32_t hash = 2166136261;
     for (; *p != 0; ++p)
-        hash = (hash ^ (uint8_t)*p) * 16777619;
+        hash = (hash ^ pottery_cast(uint8_t, *p)) * 16777619;
     return hash;
 }
 
@@ -96,7 +96,7 @@ int pottery_hsearch_r(POTTERY_ENTRY item, POTTERY_ACTION action,
 
 static inline
 void pottery_hdestroy_r(struct pottery_hsearch_data *htab) {
-    pottery_hdestroy1_r(htab, NULL, NULL);
+    pottery_hdestroy1_r(htab, pottery_null, pottery_null);
 }
 
 
@@ -122,7 +122,7 @@ void pottery_hdestroy(void);
 
 static inline
 void pottery_hdestroy_freekeys(void) {
-    pottery_hdestroy1(free, NULL);
+    pottery_hdestroy1(free, pottery_null);
 }
 
 // The above function originally used an openbsd() suffix. We keep it here in

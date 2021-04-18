@@ -26,6 +26,12 @@
 
 #include "pottery/pottery_dependencies.h"
 
+#ifdef _MSC_VER
+    #define pottery_string_set_strdup _strdup
+#else
+    #define pottery_string_set_strdup strdup
+#endif
+
 static inline size_t fnv1a(const char* p) {
     uint32_t hash = 2166136261;
     for (; *p != 0; ++p)
@@ -74,7 +80,7 @@ bool string_set_add(string_set_t* set, const char* str) {
     if (POTTERY_OK != string_set_map_emplace_key(&set->map, str, &entry, &created))
         abort();
     if (created)
-        *entry = strdup(str);
+        *entry = pottery_string_set_strdup(str);
     return created;
 }
 

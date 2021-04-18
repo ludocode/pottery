@@ -192,6 +192,18 @@ void pottery_ohm_entry_set_other(pottery_ohm_t* map, pottery_ohm_entry_t entry) 
 }
 #endif
 
+#ifdef POTTERY_OPEN_HASH_MAP_EMPTY_IS_ZERO
+    // The value type is convertible to 0. It may be a pointer or integer so we
+    // need to silence zero-as-null-pointer-constant warnings for the next
+    // couple of functions.
+    #if defined(__GNUC__) && defined(__cplusplus)
+        #define POTTERY_OPEN_HASH_MAP_IGNORE_ZERO_AS_NULL_POINTER_CONSTANT
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+    #endif
+#endif
+
+
 static inline
 bool pottery_ohm_entry_is_empty(pottery_ohm_t* map, pottery_ohm_entry_t entry) {
     (void)map;
@@ -209,9 +221,7 @@ bool pottery_ohm_entry_is_empty(pottery_ohm_t* map, pottery_ohm_entry_t entry) {
         // e.g. a struct, you should specify both EMPTY_IS_ZERO to allow the
         // map to allocated it zeroed and IS_EMPTY to test some internal struct
         // bit to see if it's zero.
-        // We cast to silence zero-as-null-pointer-constant warnings in case
-        // the entry type is a pointer.
-        return *entry == pottery_cast(pottery_ohm_value_t, 0);
+        return *entry == 0;
     #else
         #error "No way to test whether a bucket is empty!"
     #endif
@@ -234,13 +244,16 @@ void pottery_ohm_entry_set_empty(pottery_ohm_t* map, pottery_ohm_entry_t entry) 
         // a struct, you should specify both EMPTY_IS_ZERO to allow the map to
         // allocated it zeroed and IS_EMPTY to test some internal struct bit to
         // see if it's zero.
-        // We cast to silence zero-as-null-pointer-constant warnings in case
-        // the entry type is a pointer.
-        *entry = pottery_cast(pottery_ohm_value_t, 0);
+        *entry = 0;
     #else
         #error "No way to set an empty bucket!"
     #endif
 }
+
+#ifdef POTTERY_OPEN_HASH_MAP_IGNORE_ZERO_AS_NULL_POINTER_CONSTANT
+    #undef POTTERY_OPEN_HASH_MAP_IGNORE_ZERO_AS_NULL_POINTER_CONSTANT
+    #pragma GCC diagnostic pop
+#endif
 
 #if POTTERY_OPEN_HASH_MAP_TOMBSTONES
 static inline

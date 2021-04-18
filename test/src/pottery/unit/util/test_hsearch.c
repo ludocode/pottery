@@ -33,20 +33,20 @@ POTTERY_TEST(pottery_hsearch) {
     // Unfortunately we have to cast away const to put literal string keys in
     // an hsearch table. They won't actually be modified or freed (as long as
     // we don't call hdestroy1(free, ..) or hdestroy_openbsd().)
-    ENTRY alice = {pottery_const_cast(char*, "alice"), NULL};
-    ENTRY bob   = {pottery_const_cast(char*, "bob"), NULL};
-    ENTRY eve   = {pottery_const_cast(char*, "eve"), NULL};
+    ENTRY alice = {pottery_const_cast(char*, "alice"), pottery_null};
+    ENTRY bob   = {pottery_const_cast(char*, "bob"), pottery_null};
+    ENTRY eve   = {pottery_const_cast(char*, "eve"), pottery_null};
 
-    pottery_test_assert(NULL == hsearch(alice, FIND));
-    pottery_test_assert(NULL == hsearch(bob, FIND));
-    pottery_test_assert(NULL == hsearch(eve, FIND));
+    pottery_test_assert(pottery_null == hsearch(alice, FIND));
+    pottery_test_assert(pottery_null == hsearch(bob, FIND));
+    pottery_test_assert(pottery_null == hsearch(eve, FIND));
 
-    pottery_test_assert(NULL != hsearch(alice, ENTER));
-    pottery_test_assert(NULL != hsearch(bob, ENTER));
+    pottery_test_assert(pottery_null != hsearch(alice, ENTER));
+    pottery_test_assert(pottery_null != hsearch(bob, ENTER));
 
     pottery_test_assert(0 == strcmp("alice", hsearch(alice, FIND)->key));
     pottery_test_assert(0 == strcmp("bob",   hsearch(bob,   FIND)->key));
-    pottery_test_assert(NULL == hsearch(eve, FIND));
+    pottery_test_assert(pottery_null == hsearch(eve, FIND));
 
     hdestroy();
 }
