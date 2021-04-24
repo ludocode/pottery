@@ -9,12 +9,11 @@ CPPFLAGS :=
 CXXFLAGS := -std=gnu++17
 
 # We put each benchmark in its own translation unit and don't build with -flto.
-# (With LTO, GCC figures out that it can inline the comparison function in our
-# qsort() implementations.)
-CPPFLAGS += -O3
+# (With LTO, GCC figures out that it can inline qsort() comparison functions.)
+CPPFLAGS += -O3 -DNDEBUG
 #CPPFLAGS += -Og -DDEBUG -g
 CPPFLAGS += -Wall -Wextra -Wpedantic -Werror -Wfatal-errors
-CPPFLAGS += -Iinclude -Itest/src -Itest/.build/lib -Iexamples
+CPPFLAGS += -Iinclude -Iutil -Iexamples -Itest/src -Itest/.build/lib
 CPPFLAGS += -MMD -MP
 
 SRC=test/src/pottery/benchmark

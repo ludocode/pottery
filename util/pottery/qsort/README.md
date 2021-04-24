@@ -1,6 +1,6 @@
 ## `qsort()` with Pottery
 
-This is an implementation of the standard C `qsort()` and several extensions using Pottery's [intro_sort](../../../include/pottery/intro_sort/`) template. It defines the following functions:
+This is an implementation of the standard C `qsort()` and several extensions using Pottery's [intro\_sort](../../../include/pottery/intro_sort/) template. It defines the following functions:
 
 - `pottery_qsort()` - Standard C `qsort()`
 - `pottery_gnu_qsort_r()` - GNU glibc (and uClibc) `qsort_r()`
@@ -19,6 +19,8 @@ Most templated C sort algorithms (such as the excellent [swensort/sort](https://
 
 Pottery's templates are different: they operate on generalized arrays over an abstract reference type. You can define your own array access expressions for accessing array elements. This means you can implement `qsort()` with Pottery by offsetting pointers by the element size at runtime.
 
-This is demonstrated by this example. Instead of defining a `VALUE_TYPE`, we define a `REF_TYPE` of `void*`, and we define `CONTEXT_TYPE` to a struct containing our arguments. These types are passed back to our configured expressions. The custom array access functions offset by the element size, the swap function swaps bitwise, and a custom compare function calls the user's comparator through a function pointer. This is all we need to configure Pottery's `intro_sort` to build `qsort()`.
+This is demonstrated by this example. Instead of defining a `VALUE_TYPE`, we define a `REF_TYPE` of `void*`, and we define `CONTEXT_TYPE` to a struct containing our arguments. These types are passed back to our configured expressions. The custom array access functions offset by the element size, the swap function swaps bitwise, and a custom compare function calls the user's comparator through a function pointer. This is all we need to configure Pottery's intro\_sort to build `qsort()`.
+
+Intro\_sort depends on [quick\_sort](../../../include/pottery/quick_sort/) which has a number of optimizations including a three-way partitioning scheme for repeated elements. This `qsort()` includes an additional optimization common among other implementations: if the element size is 4 or 8 and the pointer is properly aligned, we swap by int or long rather than byte-by-byte.
 
 Read the [How It Works](../../../docs/how_it_works.md) documentation for more information on the inner workings of Pottery's templates.

@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+#ifndef POTTERY_QSORT_FAST_H
+#define POTTERY_QSORT_FAST_H 1
+
 #include <stddef.h>
 
 #ifdef __cplusplus
@@ -60,4 +63,6 @@ errno_t pottery_c11_qsort_s_fast(void* first, rsize_t count, rsize_t element_siz
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

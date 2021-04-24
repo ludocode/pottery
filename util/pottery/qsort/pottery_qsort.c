@@ -30,18 +30,41 @@ typedef enum pottery_qsort_variant_t {
     pottery_qsort_variant_c,
     pottery_qsort_variant_gnu,
     pottery_qsort_variant_bsd,
+    pottery_qsort_variant_windows,
 } pottery_qsort_variant_t;
+
+typedef enum pottery_qsort_size_class_t {
+    pottery_qsort_size_class_4,
+    pottery_qsort_size_class_8,
+    pottery_qsort_size_class_any,
+} pottery_qsort_size_class_t;
+
+static inline
+bool pottery_qsort_is_aligned(void* p, size_t required_align) {
+    uintptr_t u = pottery_reinterpret_cast(uintptr_t, p);
+    return u == (u & ~required_align);
+}
+#define pottery_qsort_is_aligned_as(p, T) pottery_qsort_is_aligned((p), pottery_alignof(T))
+
+static inline
+pottery_qsort_size_class_t pottery_qsort_resolve_size_class(void* first, size_t element_size) {
+    if (element_size == sizeof(uint32_t) && pottery_qsort_is_aligned_as(first, uint32_t))
+        return pottery_qsort_size_class_4;
+    if (element_size == sizeof(uint64_t) && pottery_qsort_is_aligned_as(first, uint64_t))
+        return pottery_qsort_size_class_8;
+    return pottery_qsort_size_class_any;
+}
 
 typedef struct pottery_qsort_state_t {
     size_t element_size;
+    pottery_qsort_size_class_t size_class;
 
-    pottery_qsort_variant_t pottery_qsort_variant;
-
+    pottery_qsort_variant_t variant;
     union {
         int (*c)(const void* left, const void* right);
         int (*gnu)(const void* left, const void* right, void* user_context);
         int (*bsd)(void* user_context, const void* left, const void* right);
-        // We share the bsd callback with Windows; see notes below.
+        int (pottery_qsort_cdecl *windows)(void* user_context, const void* left, const void* right);
     } compare;
 
     void* user_context;
@@ -49,24 +72,44 @@ typedef struct pottery_qsort_state_t {
 
 static inline
 int pottery_qsort_compare(pottery_qsort_state_t* state, void* left, void* right) {
-    switch (state->pottery_qsort_variant) {
-        case pottery_qsort_variant_c:   return state->compare.c(left, right);
-        case pottery_qsort_variant_gnu: return state->compare.gnu(left, right, state->user_context);
-        case pottery_qsort_variant_bsd: return state->compare.bsd(state->user_context, left, right);
+    switch (state->variant) {
+        case pottery_qsort_variant_c:       return state->compare.c(left, right);
+        case pottery_qsort_variant_gnu:     return state->compare.gnu(left, right, state->user_context);
+        case pottery_qsort_variant_bsd:     return state->compare.bsd(state->user_context, left, right);
+        case pottery_qsort_variant_windows: return state->compare.windows(state->user_context, left, right);
     }
     pottery_unreachable();
 }
 
 static inline
 void pottery_qsort_swap(pottery_qsort_state_t* state, void* vleft, void* vright) {
-    char* left = pottery_cast(char*, vleft);
-    char* right = pottery_cast(char*, vright);
-    char* end = right + state->element_size;
-    while (right != end) {
-        char temp = *left;
-        *left++ = *right;
-        *right++ = temp;
+    switch (state->size_class) {
+        case pottery_qsort_size_class_4: {
+            uint32_t* left = pottery_cast(uint32_t*, vleft);
+            uint32_t* right = pottery_cast(uint32_t*, vright);
+            uint32_t temp = *left;
+            *left = *right;
+            *right = temp;
+        } return;
+        case pottery_qsort_size_class_8: {
+            uint64_t* left = pottery_cast(uint64_t*, vleft);
+            uint64_t* right = pottery_cast(uint64_t*, vright);
+            uint64_t temp = *left;
+            *left = *right;
+            *right = temp;
+        } return;
+        case pottery_qsort_size_class_any: {
+            char* left = pottery_cast(char*, vleft);
+            char* right = pottery_cast(char*, vright);
+            char* end = right + state->element_size;
+            while (right != end) {
+                char temp = *left;
+                *left++ = *right;
+                *right++ = temp;
+            }
+        } return;
     }
+    pottery_unreachable();
 }
 
 // We will use Pottery's intro_sort template. This will give us very high
@@ -103,7 +146,8 @@ void pottery_qsort(void* first, size_t count, size_t element_size,
 {
     pottery_qsort_state_t state;
     state.element_size = element_size;
-    state.pottery_qsort_variant = pottery_qsort_variant_c;
+    state.size_class = pottery_qsort_resolve_size_class(first, element_size);
+    state.variant = pottery_qsort_variant_c;
     state.compare.c = compare;
     pottery_qsort_impl(&state, first, count);
 }
@@ -114,7 +158,8 @@ void pottery_gnu_qsort_r(void* first, size_t count, size_t element_size,
 {
     pottery_qsort_state_t state;
     state.element_size = element_size;
-    state.pottery_qsort_variant = pottery_qsort_variant_gnu;
+    state.size_class = pottery_qsort_resolve_size_class(first, element_size);
+    state.variant = pottery_qsort_variant_gnu;
     state.compare.gnu = compare;
     state.user_context = user_context;
     pottery_qsort_impl(&state, first, count);
@@ -126,29 +171,22 @@ void pottery_bsd_qsort_r(void* first, size_t count, size_t element_size,
 {
     pottery_qsort_state_t state;
     state.element_size = element_size;
-    state.pottery_qsort_variant = pottery_qsort_variant_bsd;
+    state.size_class = pottery_qsort_resolve_size_class(first, element_size);
+    state.variant = pottery_qsort_variant_bsd;
     state.compare.bsd = compare;
     state.user_context = user_context;
     pottery_qsort_impl(&state, first, count);
 }
 
-// The compare function in Windows's qsort_s() is the same as BSD's qsort_r()
-// except that it explicitly specifies __cdecl. This is the default on x86 and
-// does nothing on other platforms so we don't bother to instantiate separate
-// functions for win_qsort_s(); we just wrap bsd_qsort_r(). If for some reason
-// you are compiling x86 with a different default calling convention, you
-// should at least get a compiler error from this rather than it crashing at
-// runtime.
 void pottery_win_qsort_s(void* first, size_t count, size_t element_size,
-        int (
-            #if defined(_MSC_VER) || defined(__MINGW32__)
-            __cdecl
-            #endif
-            *compare)(void* user_context, const void* left, const void* right),
+        int (pottery_qsort_cdecl *compare)(void* user_context, const void* left, const void* right),
         void* user_context)
 {
-    // No cast passing compare. We want a compiler error if the calling
-    // convention is different.
-    // Note that the order of arguments is different from bsd_qsort_r().
-    pottery_bsd_qsort_r(first, count, element_size, user_context, compare);
+    pottery_qsort_state_t state;
+    state.element_size = element_size;
+    state.size_class = pottery_qsort_resolve_size_class(first, element_size);
+    state.variant = pottery_qsort_variant_windows;
+    state.compare.windows = compare;
+    state.user_context = user_context;
+    pottery_qsort_impl(&state, first, count);
 }

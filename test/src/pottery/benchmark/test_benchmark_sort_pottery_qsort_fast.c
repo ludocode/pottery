@@ -22,4 +22,4 @@
  * SOFTWARE.
  */
 
-#include "pottery/qsort_simple/pottery_simple_qsort.c"
+#include "pottery/qsort_fast/pottery_qsort_fast.c"

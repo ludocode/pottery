@@ -94,4 +94,5 @@ fi
 make -j8 -f test/tools/benchmark-makefile.mk
 
 # Run them
+echo "Running test/.build/benchmark/runner"
 test/.build/benchmark/runner

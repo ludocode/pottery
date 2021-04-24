@@ -22,10 +22,22 @@
  * SOFTWARE.
  */
 
-#ifndef POTTERY_QSORT_SIMPLE_H
-#define POTTERY_QSORT_SIMPLE_H 1
+#ifndef POTTERY_QSORT_H
+#define POTTERY_QSORT_H 1
 
 #include <stddef.h>
+
+#ifndef pottery_qsort_cdecl
+    #if defined(_MSC_VER) || defined(__MINGW32__)
+        #define pottery_qsort_cdecl __cdecl
+    #else
+        #define pottery_qsort_cdecl /*nothing*/
+    #endif
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * Sorts an array with a custom comparator.
@@ -62,11 +74,11 @@ void pottery_bsd_qsort_r(void* first, size_t count, size_t element_size,
  * This is Windows-style qsort_s() implemented with Pottery.
  */
 void pottery_win_qsort_s(void* first, size_t count, size_t element_size,
-        int (
-            #if defined(_MSC_VER) || defined(__MINGW32__)
-            __cdecl
-            #endif
-            *compare)(void* user_context, const void* left, const void* right),
+        int (pottery_qsort_cdecl *compare)(void* user_context, const void* left, const void* right),
         void* user_context);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

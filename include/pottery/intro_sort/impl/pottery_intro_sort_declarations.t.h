@@ -35,8 +35,9 @@ void pottery_intro_sort_range(
         size_t offset,
         size_t range_count)
 {
-    // Just call into quick_sort. We've configured it to fallback to
-    // insertion_sort for small lists and heap_sort when too deep.
+    // Just call into quick_sort. It falls back to insertion_sort for small
+    // partitions by default and we've configured it to fallback to heap_sort
+    // when too deep.
     pottery_intro_sort_quick_sort_range(
             POTTERY_INTRO_SORT_VALS
             offset, range_count);

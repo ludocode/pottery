@@ -73,18 +73,18 @@ static void pottery_bsd_qsort_r_wrapper(benchmark_int_t* ints, size_t count) {
     pottery_bsd_qsort_r(ints, count, sizeof(benchmark_int_t), NULL, benchmark_int_compare_bsd_r);
 }
 
-#include "pottery/qsort_simple/pottery_simple_qsort.h"
+#include "pottery/qsort_fast/pottery_qsort_fast.h"
 __attribute__((__unused__))
-static void pottery_simple_qsort_wrapper(benchmark_int_t* ints, size_t count) {
-    pottery_simple_qsort(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
+static void pottery_qsort_fast_wrapper(benchmark_int_t* ints, size_t count) {
+    pottery_qsort_fast(ints, count, sizeof(benchmark_int_t), benchmark_int_compare);
 }
 __attribute__((__unused__))
-static void pottery_simple_gnu_qsort_r_wrapper(benchmark_int_t* ints, size_t count) {
-    pottery_simple_gnu_qsort_r(ints, count, sizeof(benchmark_int_t), benchmark_int_compare_gnu_r, NULL);
+static void pottery_gnu_qsort_r_fast_wrapper(benchmark_int_t* ints, size_t count) {
+    pottery_gnu_qsort_r_fast(ints, count, sizeof(benchmark_int_t), benchmark_int_compare_gnu_r, NULL);
 }
 __attribute__((__unused__))
-static void pottery_simple_bsd_qsort_r_wrapper(benchmark_int_t* ints, size_t count) {
-    pottery_simple_bsd_qsort_r(ints, count, sizeof(benchmark_int_t), NULL, benchmark_int_compare_bsd_r);
+static void pottery_bsd_qsort_r_fast_wrapper(benchmark_int_t* ints, size_t count) {
+    pottery_bsd_qsort_r_fast(ints, count, sizeof(benchmark_int_t), NULL, benchmark_int_compare_bsd_r);
 }
 
 __attribute__((__unused__))
@@ -291,13 +291,13 @@ static void benchmark_sorts_variant(size_t count, variant_t variant) {
     benchmark_sort(ints, count, pottery_benchmark_intro_sort_wrapper, "pottery_intro_sort");
     #endif
     #if 1
-    benchmark_sort(ints, count, pottery_qsort_wrapper, "pottery_qsort()");
+    benchmark_sort(ints, count, pottery_qsort_fast_wrapper, "pottery_qsort_fast()");
     #if 1
+    benchmark_sort(ints, count, pottery_gnu_qsort_r_fast_wrapper, "pottery_gnu_qsort_r_fast()");
+    benchmark_sort(ints, count, pottery_bsd_qsort_r_fast_wrapper, "pottery_bsd_qsort_r_fast()");
+    benchmark_sort(ints, count, pottery_qsort_wrapper, "pottery_qsort()");
     benchmark_sort(ints, count, pottery_gnu_qsort_r_wrapper, "pottery_gnu_qsort_r()");
     benchmark_sort(ints, count, pottery_bsd_qsort_r_wrapper, "pottery_bsd_qsort_r()");
-    benchmark_sort(ints, count, pottery_simple_qsort_wrapper, "pottery_simple_qsort()");
-    benchmark_sort(ints, count, pottery_simple_gnu_qsort_r_wrapper, "pottery_simple_gnu_qsort_r()");
-    benchmark_sort(ints, count, pottery_simple_bsd_qsort_r_wrapper, "pottery_simple_bsd_qsort_r()");
     #endif
     #endif
     #if 1
