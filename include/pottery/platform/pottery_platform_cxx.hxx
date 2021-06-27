@@ -45,6 +45,11 @@
 
 // std::is_trivially_copyable
 #include <type_traits>
+
+#if POTTERY_CXX_EXCEPTIONS
+// std::exception, std::bad_alloc, std::terminate
+#include <exception>
+#endif
 #endif
 
 namespace pottery {
