@@ -505,11 +505,6 @@ if platform.system() == "Linux" and path.exists("/usr/include/jemalloc/jemalloc.
 srcs = []
 
 for root, dirs, files in itertools.chain(os.walk("test/src"), os.walk("util"), os.walk("examples")):
-
-    # skip clayfish. it requires pthreads and doesn't support windows yet
-    if root == path.join("examples", "pottery", "clayfish"):
-        continue
-
     for name in files:
         print("%s %s" % (root, name))
 

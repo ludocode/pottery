@@ -161,4 +161,4 @@ See the full example [here](examples/pottery/sort_strings/).
 
 There are more examples in the [`examples/`](examples/pottery/) folder and many more that still need to be written. Have a look at what's there so far to learn more ways you can use Pottery.
 
-In particular, take a look at [Clayfish](examples/pottery/clayfish/) to see various uses of Pottery in a "real" application.
+Take a look at [Clayfish](https://github.com/ludocode/clayfish) to see various uses of Pottery in a real application.

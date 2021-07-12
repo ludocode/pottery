@@ -12,7 +12,7 @@ Even though this string is just an example to demonstrate Pottery, it is far sup
 
 I believe you will find this API much more sane and less error-prone (although it can be a bit more verbose.) Despite this, it probably performs better than all of these anyway since it's much more like typical implementations of `std::string`: the container itself is not allocated and it contains internal storage to avoid allocations for small strings.
 
-Take a look at [Clayfish](../../../examples/pottery/clayfish/) to see this string used in a "real" application.
+Take a look at [Clayfish](https://github.com/ludocode/clayfish) to see this string used in a real application.
 
 
 ## Example

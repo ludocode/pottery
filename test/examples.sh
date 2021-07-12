@@ -2,17 +2,12 @@
 set -e
 for f in examples/pottery/*/; do
 
-    # Skip qsort/ since it's been moved.
+    # Skip qsort/ and clayfish/ since they've been moved.
     [ "$f" = "examples/pottery/qsort/" ] && continue
+    [ "$f" = "examples/pottery/clayfish/" ] && continue
 
     echo -e "\n\n\nBuilding $f"
-
-    # We don't run clayfish since it's interactive.
-    if [ "$f" = "examples/pottery/clayfish/" ]; then
-        ( cd $f ; make build )
-    else
-        ( cd $f ; make run )
-    fi
+    ( cd $f ; make run )
 done
 
 echo -e "\n\n\nDone!"
