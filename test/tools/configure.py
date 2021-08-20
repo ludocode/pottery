@@ -24,12 +24,14 @@
 
 # This is the buildsystem configuration tool for the Pottery test suite. It
 # tests the compiler for support for various flags and features and generates a
+# ninja build file to build the unit test suite in a variety of configurations.
 #
 # It can be run with a GCC-style compiler or with MSVC. To run it with MSVC,
 # you must first have the Visual Studio build tools on your path. This means
 # you need to either open a Visual Studio Build Tools command prompt, or source
 # vsvarsall.bat for some version of the Visual Studio Build Tools.
-# ninja build file to build the unit test suite in a variety of configurations.
+#
+# You shouldn't run this directly. Run test/unit.sh or test\unit.bat .
 
 import shutil, os, sys, subprocess, json, itertools, platform
 from os import path
@@ -397,7 +399,7 @@ class Build:
         self.exclude = False
 
 def addBuild(name, cppflags = defaultCPPFlags, cflags = defaultCFlags, cxxflags = defaultCXXFlags, ldflags = defaultLDFlags):
-    builds[name] = Build(name, cppflags, cflags, cxxflags, ldflags)
+    builds[name] = Build(name, cppflags[:], cflags[:], cxxflags[:], ldflags[:])
 
 def addDebugReleaseBuilds(name, cppflags = defaultCPPFlags, cflags = defaultCFlags, cxxflags = defaultCXXFlags, ldflags = defaultLDFlags):
     addBuild(name + "-debug", cppflags + debugFlags, cflags, cxxflags, ldflags)
@@ -506,8 +508,6 @@ srcs = []
 
 for root, dirs, files in itertools.chain(os.walk("test/src"), os.walk("util"), os.walk("examples")):
     for name in files:
-        print("%s %s" % (root, name))
-
         # skip any benchmark files
         if "benchmark" in name:
             continue
