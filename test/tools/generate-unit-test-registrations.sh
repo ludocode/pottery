@@ -20,7 +20,7 @@ LIST=$OUT.list
 rm -f $LIST $OUT
 
 for f in $OBJS; do
-    objdump -t $f|grep 'F \.text.*\<pottery_unit_test_register_'|awk '{print $6}' >> $LIST
+    objdump -t $f|grep -o '\<pottery_unit_test_register_[A-Za-z0-9_]*\>' >> $LIST || true
 done
 
 cat >>$OUT <<EOF
