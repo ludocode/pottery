@@ -79,6 +79,7 @@ int pottery_qsort_compare(pottery_qsort_state_t* state, void* left, void* right)
         case pottery_qsort_variant_windows: return state->compare.windows(state->user_context, left, right);
     }
     pottery_unreachable();
+    return 0;
 }
 
 static inline

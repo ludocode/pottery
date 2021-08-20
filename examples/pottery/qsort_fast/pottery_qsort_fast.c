@@ -108,6 +108,7 @@ int pottery_qsort_fast_heap_sort_compare(pottery_qsort_fast_heap_sort_state_t* s
         case pottery_qsort_fast_variant_bsd: return state->compare.bsd(state->user_context, left, right);
     }
     pottery_unreachable();
+    return 0;
 }
 
 #define POTTERY_HEAP_SORT_PREFIX pottery_qsort_fast_heap_sort
