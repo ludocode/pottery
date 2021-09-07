@@ -26,6 +26,11 @@
 
 #include "pottery/pottery_dependencies.h"
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable:4702) // unreachable code after pottery_unreachable()
+#endif
+
 
 
 /*
@@ -329,4 +334,11 @@ errno_t pottery_c11_qsort_s_fast(void* first, rsize_t count, rsize_t element_siz
 
     return 0;
 }
+#endif
+
+
+
+#ifdef _MSC_VER
+// pop warnings in case this file is included by another
+#pragma warning(pop)
 #endif

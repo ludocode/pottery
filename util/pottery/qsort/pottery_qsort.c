@@ -26,6 +26,11 @@
 
 #include "pottery/pottery_dependencies.h"
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable:4702) // unreachable code after pottery_unreachable()
+#endif
+
 typedef enum pottery_qsort_variant_t {
     pottery_qsort_variant_c,
     pottery_qsort_variant_gnu,
@@ -191,3 +196,8 @@ void pottery_win_qsort_s(void* first, size_t count, size_t element_size,
     state.user_context = user_context;
     pottery_qsort_impl(&state, first, count);
 }
+
+#ifdef _MSC_VER
+// pop warnings in case this file is included by another
+#pragma warning(pop)
+#endif
