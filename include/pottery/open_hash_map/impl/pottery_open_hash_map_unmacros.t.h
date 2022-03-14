@@ -108,12 +108,12 @@
 
 #undef POTTERY_OPEN_HASH_MAP_MINIMUM_LOG_2_SIZE
 
+#undef POTTERY_OPEN_HASH_MAP_CAN_DESTROY
+
 
 /*
  * Renaming
  */
-
-#undef pottery_ohm_entry_t
 
 #undef POTTERY_OPEN_HASH_MAP_NAME
 
@@ -122,11 +122,27 @@
 #undef pottery_ohm_impl_alloc
 #undef pottery_ohm_impl_free
 #undef pottery_ohm_impl_free_allocs
+#undef pottery_ohm_impl_alloc_metadata
+#undef pottery_ohm_impl_free_metadata
 #undef pottery_ohm_grow_if_needed
 #undef pottery_ohm_shrink_if_needed
 #undef pottery_ohm_rehash
 #undef pottery_ohm_load
 #undef pottery_ohm_init_impl
+#undef pottery_ohm_entry_move
+#undef pottery_ohm_entry_key
+#undef pottery_ohm_entry_key_equal
+#undef pottery_ohm_entry_key_hash
+#undef pottery_ohm_entry_is_empty
+#undef pottery_ohm_entry_is_value
+#undef pottery_ohm_entry_set_empty
+#undef pottery_ohm_entry_set_other
+#undef pottery_ohm_entry_metadata
+#undef pottery_ohm_rehash
+#undef pottery_ohm_bucket_state_t
+#undef pottery_ohm_bucket_state_empty
+#undef pottery_ohm_bucket_state_other
+#undef pottery_ohm_bucket_state_tombstone
 
 
 

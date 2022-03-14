@@ -165,7 +165,7 @@ void pottery_ohm_destroy(pottery_ohm_t* map) {
 
 // Re-hashes the table, possibly resizing in the process.
 pottery_noinline static
-pottery_error_t pottery_rehash(pottery_ohm_t* map, size_t new_log_2_size) {
+pottery_error_t pottery_ohm_rehash(pottery_ohm_t* map, size_t new_log_2_size) {
 
     // Allocate a new map with the new size
     pottery_ohm_t new_map;
@@ -227,7 +227,7 @@ pottery_error_t pottery_ohm_grow_if_needed(pottery_ohm_t* map) {
         #endif
         1);
 
-    return pottery_rehash(map, new_log_2_size);
+    return pottery_ohm_rehash(map, new_log_2_size);
 }
 
 static inline
@@ -242,7 +242,7 @@ void pottery_ohm_shrink_if_needed(pottery_ohm_t* map) {
 
     // Note: we ignore the return value here. If allocating the smaller table
     // fails, we just keep our larger table, this way displace can't fail.
-    (void)pottery_rehash(map, map->log_2_size - 1);
+    (void)pottery_ohm_rehash(map, map->log_2_size - 1);
 }
 
 POTTERY_OPEN_HASH_MAP_EXTERN
