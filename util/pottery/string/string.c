@@ -237,7 +237,9 @@ void string_append_vformat(string_t* string,
         return;
     }
 
-    // Otherwise grow to the necessary size and format again.
+    // Otherwise grow to the necessary size and format again. vsnprintf() will
+    // add a null-terminator so we keep an extra byte for it and then remove it
+    // afterwards.
     buffer_length = pottery_cast(size_t, ret) + 1;
     total_length = original_length + buffer_length;
     if (total_length < original_length)
@@ -246,6 +248,7 @@ void string_append_vformat(string_t* string,
     ret = vsnprintf(string_bytes(string) + original_length, buffer_length, format, args);
     if (ret < 0 || pottery_cast(size_t, ret) != buffer_length - 1)
         abort();
+    string_set_length(string, total_length - 1);
 }
 
 #ifdef __GNUC__

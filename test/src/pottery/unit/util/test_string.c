@@ -40,25 +40,30 @@ POTTERY_TEST(pottery_string) {
     string_append_char(&homer, ' ');
     string_append_cstr(&homer, "Simpson");
     pottery_test_assert(string_equal_cstr(&homer, "Homer Simpson"));
+    pottery_test_assert(strlen(string_cstr(&homer)) == string_length(&homer));
     printf("%s\n", string_cstr(&homer));
 
     // Insert data (enough to cause it to allocate)
     string_insert_cstr(&homer, 5, " J.");
     pottery_test_assert(string_equal_cstr(&homer, "Homer J. Simpson"));
+    pottery_test_assert(strlen(string_cstr(&homer)) == string_length(&homer));
     printf("%s\n", string_cstr(&homer));
 
     // Replace data
     string_remove(&homer, 6, 2);
     string_insert_cstr(&homer, 6, "Jay");
     pottery_test_assert(string_equal_cstr(&homer, "Homer Jay Simpson"));
+    pottery_test_assert(strlen(string_cstr(&homer)) == string_length(&homer));
     printf("%s\n", string_cstr(&homer));
 
     #ifndef __CLR_VER
     // Append lots more data via format strings, causing it to grow
     string_append_format(&homer, " works at the %s %s.", "Springfield", "Nuclear Power Plant");
     printf("%s\n", string_cstr(&homer));
+    pottery_test_assert(strlen(string_cstr(&homer)) == string_length(&homer));
     string_insert_format(&homer, 23, " in sector %01d%c", 7, 'G');
     printf("%s\n", string_cstr(&homer));
+    pottery_test_assert(strlen(string_cstr(&homer)) == string_length(&homer));
     #endif
 
     // Clean up
