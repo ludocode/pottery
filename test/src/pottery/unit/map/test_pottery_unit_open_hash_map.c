@@ -60,6 +60,7 @@ static inline size_t fnv1a(const char* p) {
 
 
 
+// Test of redefined open_hash_map, see issue #2
 
 typedef struct bar_s {
   unsigned long key;
@@ -67,23 +68,19 @@ typedef struct bar_s {
 } bar_t;
 
 #define POTTERY_OPEN_HASH_MAP_PREFIX map_ulong
-
 #define POTTERY_OPEN_HASH_MAP_VALUE_TYPE bar_t
 #define POTTERY_OPEN_HASH_MAP_KEY_TYPE unsigned long
 #define POTTERY_OPEN_HASH_MAP_REF_KEY(v) v->key
 #define POTTERY_OPEN_HASH_MAP_KEY_HASH(x) (x)
 #define POTTERY_OPEN_HASH_MAP_KEY_EQUAL(x, y) (x == y)
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE(p,q) memcpy(p, q, sizeof (bar_t))
-
 #include "pottery/open_hash_map/pottery_open_hash_map_static.t.h"
 
 #define POTTERY_OPEN_HASH_MAP_PREFIX map_ulong2
-
 #define POTTERY_OPEN_HASH_MAP_VALUE_TYPE bar_t
 #define POTTERY_OPEN_HASH_MAP_KEY_TYPE unsigned long
 #define POTTERY_OPEN_HASH_MAP_REF_KEY(v) v->key
 #define POTTERY_OPEN_HASH_MAP_KEY_HASH(x) (x)
 #define POTTERY_OPEN_HASH_MAP_KEY_EQUAL(x, y) (x == y)
 #define POTTERY_OPEN_HASH_MAP_LIFECYCLE_MOVE(p,q) memcpy(p, q, sizeof (bar_t))
-
 #include "pottery/open_hash_map/pottery_open_hash_map_static.t.h"

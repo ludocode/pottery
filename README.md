@@ -14,7 +14,7 @@ Pottery is modern C code written in the ultra-portable intersection of C11, gnu8
 
 Pottery does not use void pointer casts, function pointers, code block macros, compiler extensions, or any other inefficiencies or messyness of typical C containers. Pottery's templates are clean, composable, fast, strongly typed, and highly configurable. The templates are header files only; just put [`include/`](include/pottery/) on your include path to use them.
 
-Take a look at the [template listing](include/pottery/) or the [utilities](util/pottery/) to see what Pottery has to offer. Use Pottery to make containers in C!
+Take a look at the [template listing](include/pottery/) or the [utilities](util/pottery/) to see what Pottery has to offer.
 
 
 
@@ -32,7 +32,6 @@ Take a look at the [template listing](include/pottery/) or the [utilities](util/
 - [C++ Bindings](bindings/cxx)
 - [Testing](test/)
 - [FAQ](docs/faq.md)
-
 
 
 
